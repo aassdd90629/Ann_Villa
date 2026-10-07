@@ -1,0 +1,46 @@
+{
+  "transportation": {
+    "byCarZh": [
+      "國道 6 號愛蘭交流道下 -> 左轉往日月潭方向（台 21 線） -> 行駛約 8 分鐘見桃米生態村指示牌右轉 -> 順山語專屬指標上行即可抵達。",
+      "導航建議設定：「山語 Villa」或經緯度座標，山路均已鋪設柏油路面，雙向會車平整安全。"
+    ],
+    "byCarEn": [
+      "Take National Freeway 6 to Ailan Interchange -> Turn left toward Sun Moon Lake (Provincial Hwy 21) -> Drive ~8 mins to Taomi Village -> Follow Shan Yu Villa signs.",
+      "GPS Navigation: Enter 'Shan Yu Villa'. The access road is fully paved and suitable for all standard passenger vehicles."
+    ],
+    "byPublicZh": "搭乘高鐵至台中站，轉乘「台灣好行日月潭線」於桃米坑站下車，山莊可提供預約制尊榮專車接駁服務（需於入住前 3 天預訂）。",
+    "byPublicEn": "Take THSR to Taichung Station, transfer to the Sun Moon Lake Shuttle Bus to Taomi Station. Complimentary private VIP shuttle is available upon reservation (3 days in advance)."
+  },
+  "attractions": [
+    {
+      "id": "sun-moon-lake",
+      "nameZh": "日月潭國家風景區",
+      "nameEn": "Sun Moon Lake Scenic Area",
+      "driveTimeZh": "車程約 12 分鐘",
+      "driveTimeEn": "12 mins drive",
+      "descZh": "全台最負盛名的絕美高山湖泊，推薦體驗全球十大最美自行車道、向山遊客中心與專屬包船遊湖。",
+      "descEn": "Taiwan's iconic alpine lake. Explore the world-renowned lake cycling trail and Xiangshan Visitor Center.",
+      "image": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1000&q=80"
+    },
+    {
+      "id": "paper-dome",
+      "nameZh": "紙教堂新故鄉見學園區",
+      "nameEn": "Paper Dome Eco Community",
+      "driveTimeZh": "車程約 4 分鐘",
+      "driveTimeEn": "4 mins drive",
+      "descZh": "由 58 根高壓紙柱構建的現代建築奇蹟，結合生態池與在地手作陶藝、有機咖啡工坊。",
+      "descEn": "An architectural marvel constructed of 58 paper tubes, surrounded by rich wetland ecosystems and local pottery shops.",
+      "image": "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1000&q=80"
+    },
+    {
+      "id": "conas-chocolate",
+      "nameZh": "妮娜巧克力夢想城堡",
+      "nameEn": "Cona's Choc Chocolate Castle",
+      "driveTimeZh": "車程約 6 分鐘",
+      "driveTimeEn": "6 mins drive",
+      "descZh": "歐式古典巴洛克城堡莊園，世界金牌巧克力工坊，提供沉浸式巧克力手作 DIY 體驗。",
+      "descEn": "European Baroque style castle estate with world-champion chocolates and interactive DIY workshops.",
+      "image": "https://images.unsplash.com/photo-1549007994-cb92caebd54b?auto=format&fit=crop&w=1000&q=80"
+    }
+  ]
+}

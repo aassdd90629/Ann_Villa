@@ -1,0 +1,50 @@
+{
+  "currency": "TWD",
+  "exclusivePackage": {
+    "titleZh": "全區尊榮包棟方案",
+    "titleEn": "Exclusive Entire Estate Villa Package",
+    "descZh": "享有全區 4 間景觀奢華套房、無邊際山景泳池、日式溫泉湯屋、星空劇院與專屬庭園之獨立私密使用權。",
+    "descEn": "Exclusive private access to all 4 scenic luxury suites, infinity mountain pool, Japanese onsen bathhouse, star theater, and private zen garden.",
+    "weekday": 38000,
+    "weekend": 48000,
+    "holiday": 58000,
+    "deposit": 10000,
+    "includedGuests": 18,
+    "maxGuests": 22,
+    "extraPersonFee": 1500,
+    "checkInTime": "15:00",
+    "checkOutTime": "11:00"
+  },
+  "additionalServices": [
+    {
+      "id": "wedding-shoot",
+      "titleZh": "婚紗 / 商業平面與動態攝影場租",
+      "titleEn": "Wedding & Commercial Photography Rental",
+      "pricingZh": "NT$ 3,500 / 小時 (最低 3 小時)",
+      "pricingEn": "NT$ 3,500 / hr (Min 3 hrs)",
+      "hourlyRate": 3500,
+      "minHours": 3,
+      "maxPeople": 8,
+      "noteZh": "提供專屬獨立冷暖空調更衣化妝間、高階蒸氣掛燙機與專屬茶點。",
+      "noteEn": "Includes private air-conditioned fitting & makeup suite, garment steamer, and complimentary refreshments."
+    },
+    {
+      "id": "private-chef",
+      "titleZh": "頂級私廚無菜單山海晚宴代訂",
+      "titleEn": "Private Master Chef Dining Experience",
+      "pricingZh": "NT$ 2,800 ~ 4,500 / 位",
+      "pricingEn": "NT$ 2,800 ~ 4,500 / person",
+      "noteZh": "嚴選南投在地有機時蔬與頂級和牛海鮮，需於入住前 14 天預約。",
+      "noteEn": "Curated with seasonal Nantou produce and premium wagyu & seafood. Reservation required 14 days in advance."
+    },
+    {
+      "id": "private-party",
+      "titleZh": "私人派對 / 企業高階閉門戰略會議",
+      "titleEn": "Private Party & Executive Mountain Retreat",
+      "pricingZh": "專案客製洽詢",
+      "pricingEn": "Custom Quotation",
+      "noteZh": "提供劇院級影音設備、微光戶外燈光氛圍佈置、白板與投影支援。",
+      "noteEn": "Includes high-end AV theater setup, ambient mood lighting, and full meeting presentation equipment."
+    }
+  ]
+}

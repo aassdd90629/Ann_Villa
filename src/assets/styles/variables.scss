@@ -1,0 +1,50 @@
+// ==========================================================================
+// 山語 Villa - 東方靜謐奢華 Design Tokens & SCSS Variables
+// ==========================================================================
+
+// 1. 色彩系統 (Color Palette)
+// 淺色模式 (Light Mode - 晨曦雲霧)
+$color-bg-light: #F8F6F0;           // 柔和象牙白
+$color-card-light: #FFFFFF;         // 純白
+$color-text-light-primary: #1A1E1F; // 深岩灰
+$color-text-light-sub: #555047;     // 暖茶褐
+$color-text-light-muted: #8C857B;   // 淺暖灰
+$color-gold-light-primary: #C5A880; // 流金原色
+$color-gold-light-highlight: #E6D5BE; // 晨曦香檳金
+$color-gold-light-dark: #91754F;    // 古銅深金
+$color-border-light: rgba(226, 220, 206, 0.6);
+
+// 深色模式 (Dark Mode - 靜謐夜景)
+$color-bg-dark: #121415;            // 深邃玄武岩黑
+$color-card-dark: #1A1E1F;          // 炭木沉穩黑
+$color-text-dark-primary: #F8F6F0;  // 晨曦米白
+$color-text-dark-sub: #B8B3A8;      // 冷杉霧灰
+$color-text-dark-muted: #736D65;    // 沉木暗灰
+$color-gold-dark-primary: #D4BC9B;  // 夜光暖金
+$color-gold-dark-highlight: #EADBC8; // 高光香檳
+$color-gold-dark-dark: #B59972;     // 沉金
+$color-border-dark: rgba(255, 255, 255, 0.1);
+
+// 2. 字體系統 (Typography)
+$font-display: 'Cormorant Garamond', Georgia, serif;
+$font-serif: 'Noto Serif TC', Georgia, serif;
+$font-sans: 'Noto Sans TC', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+// 3. 響應式斷點 (Breakpoints)
+$bp-sm: 640px;
+$bp-md: 768px;
+$bp-lg: 1024px;
+$bp-xl: 1280px;
+$bp-2xl: 1536px;
+
+// 4. 動畫過渡 (Transitions & Easing)
+$ease-oriental: cubic-bezier(0.16, 1, 0.3, 1);
+$transition-base: all 0.35s ease;
+$transition-smooth: all 0.5s $ease-oriental;
+$transition-slow: all 0.8s $ease-oriental;
+
+// 5. 陰影層次 (Elevation & Shadows)
+$shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+$shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
+$shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.12);
+$shadow-gold: 0 8px 30px rgba(197, 168, 128, 0.25);

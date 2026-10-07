@@ -1,0 +1,42 @@
+[
+  {
+    "id": "pool",
+    "titleZh": "無邊際山景景觀泳池",
+    "titleEn": "Infinity Mountain View Pool",
+    "descZh": "水天一色的無邊際設計，直面重巒疊嶂的山谷。白天享受陽光與微風，傍晚倒映落日晚霞，池畔備有舒適防水躺椅。",
+    "descEn": "An infinity pool seamlessly merging with the breathtaking mountain ridgeline, equipped with luxury outdoor cabana sun loungers.",
+    "image": "https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?auto=format&fit=crop&w=1200&q=80",
+    "featuresZh": ["恆溫水質過濾系統", "水深 1.2 米安全水域", "專屬池畔防水音響", "夜間水底氛圍情境燈"],
+    "featuresEn": ["Filtered temperature control system", "1.2m depth safe area", "Waterproof sound system", "Ambient underwater night lighting"]
+  },
+  {
+    "id": "onsen",
+    "titleZh": "日式石造天然溫泉湯屋",
+    "titleEn": "Japanese Stone Onsen Bathhouse",
+    "descZh": "採用天然玄武岩手工砌築而成，引進頂級弱鹼性碳酸氫鈉泉質，搭配檜木香氣與柔和格柵採光，洗滌一身疲憊。",
+    "descEn": "Handcrafted with natural basalt rock and infused with gentle mineral spring water, surrounded by hinoki cypress aromas.",
+    "image": "https://images.unsplash.com/photo-1584132967334-10e028bd69f7?auto=format&fit=crop&w=1200&q=80",
+    "featuresZh": ["天然弱鹼性碳酸泉", "原木檜木坐榻與格柵", "茶籽堂高級草本洗沐品", "乾濕分離更衣梳妝區"],
+    "featuresEn": ["Natural mineral spring water", "Hinoki timber lounge seating", "Cha Tzu Tang herbal bath sets", "Private vanity & change room"]
+  },
+  {
+    "id": "theater",
+    "titleZh": "星空劇院與多功能交誼廳",
+    "titleEn": "Starry Cinema & Social Lounge",
+    "descZh": "配備 150 吋 4K 劇院投影與 Dolby Atmos 全景聲音響，支援 Netflix、YouTube 與各類遊戲主機，同樂包場的最佳空間。",
+    "descEn": "Featuring a 150-inch 4K laser projection with Dolby Atmos sound system, streaming services, and multi-game console connections.",
+    "image": "https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?auto=format&fit=crop&w=1200&q=80",
+    "featuresZh": ["150吋超大 4K 投影布幕", "Dolby Atmos 杜比環繞劇院音效", "高階歡唱 KTV 系統 (隔音完善)", "舒適深座真皮沙發"],
+    "featuresEn": ["150-inch 4K laser screen", "Dolby Atmos surround sound", "Professional soundproof KTV system", "Deep leather luxury sofa"]
+  },
+  {
+    "id": "kitchen",
+    "titleZh": "頂級中島開放式廚房與大長桌宴會廳",
+    "titleEn": "Chef Open Island Kitchen & Grand Dining Hall",
+    "descZh": "全套進口廚具、IH 感應爐、大型烤箱、洗碗機與雙門冰箱一應俱全。可容納 18~20 人的實木原木長桌，是親友歡聚盛宴的核心。",
+    "descEn": "Equipped with luxury imported appliances, induction cooktops, wine cellar, and a solid oak dining table seating up to 20 guests.",
+    "image": "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=1200&q=80",
+    "featuresZh": ["原木 20 人長宴會餐桌", "全套進口烘烤設備與洗碗機", "精品手沖與義式膠囊咖啡機", "全套精美陶瓷餐盤與酒杯"],
+    "featuresEn": ["20-person solid timber table", "Full imported oven & dishwasher", "Artisan pour-over & espresso gear", "Curated porcelain tableware & glassware"]
+  }
+]

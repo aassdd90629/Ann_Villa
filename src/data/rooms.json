@@ -1,0 +1,135 @@
+[
+  {
+    "id": "room-01",
+    "titleZh": "雲海景觀旗艦尊爵套房",
+    "titleEn": "Sea of Clouds Flagship Suite",
+    "subtitleZh": "270度環景山巒雲海・全景景觀石造浴缸",
+    "subtitleEn": "270° Panoramic Mountain Vistas & Stone Soaking Tub",
+    "capacityZh": "4 ~ 6 人",
+    "capacityEn": "4 - 6 Guests",
+    "bedTypeZh": "特大雙人床 (King Size) x 2 + 日式榻榻米加床區",
+    "bedTypeEn": "2 King Beds + Japanese Tatami Daybed",
+    "size": "78 ㎡ (約 24 坪)",
+    "image": "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1400&q=80",
+    "gallery": [
+      "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "highlightsZh": [
+      "270度超大落地觀景窗，破曉時分直面雲海日出",
+      "獨立景觀陽台與躺椅休憩區",
+      "雙人深浸式石造天然景觀浴池",
+      "Dyson 吹風機與頂級茶籽堂沐浴備品",
+      "Marshall 復古藍牙音響"
+    ],
+    "highlightsEn": [
+      "270-degree floor-to-ceiling glass wall facing sunrise and mist",
+      "Private outdoor balcony with panoramic loungers",
+      "Deep-soak natural stone scenic bath",
+      "Dyson Supersonic hairdryer & Cha Tzu Tang amenities",
+      "Marshall Bluetooth acoustic speaker"
+    ],
+    "descZh": "山莊最頂級的旗艦之作，晨起時分薄霧繚繞，推開落地窗即可俯瞰綿延千里的雲海山嵐。房內設有專屬景觀泡湯池，在沉浸於溫暖泉水時，盡覽星辰與山谷暮色。",
+    "descEn": "The crown jewel of Shan Yu Villa. Marvel at rolling sea of clouds at dawn through floor-to-ceiling panoramic glass. Features a private stone soaking tub overlooking the tranquil forest."
+  },
+  {
+    "id": "room-02",
+    "titleZh": "山語隱逸庭園雙人套房",
+    "titleEn": "Zen Garden Sanctuary Suite",
+    "subtitleZh": "私人枯山水庭園・雙人石造露天風呂",
+    "subtitleEn": "Private Zen Rock Garden & Outdoor Stone Bath",
+    "capacityZh": "2 ~ 4 人",
+    "capacityEn": "2 - 4 Guests",
+    "bedTypeZh": "特大雙人床 (King Size) x 1 + 榻榻米起居室",
+    "bedTypeEn": "1 King Bed + Tatami Living Space",
+    "size": "65 ㎡ (約 20 坪)",
+    "image": "https://images.unsplash.com/photo-1591088398332-8a7791972843?auto=format&fit=crop&w=1400&q=80",
+    "gallery": [
+      "https://images.unsplash.com/photo-1591088398332-8a7791972843?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "highlightsZh": [
+      "專屬獨立日式枯山水庭園出入口",
+      "私人雙人石造戶外露天風呂",
+      "原木品茗茶席與在地高山冷泡茶組",
+      "獨立冷暖恆溫空調系統",
+      "頂級乳膠獨立筒舒眠大床"
+    ],
+    "highlightsEn": [
+      "Exclusive private access to Japanese Zen rock garden",
+      "Private dual outdoor stone thermal bath",
+      "Handcrafted solid wood tea ceremony set with premium tea",
+      "Independent inverter climate control system",
+      "Luxury orthopaedic pocket spring mattress"
+    ],
+    "descZh": "以東方寂靜美學為設計核心，連結專屬私人日式庭園，綠竹微風搖曳。在石造風呂中享受私密放鬆時光，體驗歲月靜好的深層療癒。",
+    "descEn": "Designed with oriental wabi-sabi aesthetics, connected directly to a private zen bamboo garden. Unwind in your private stone bath amid gentle forest breezes."
+  },
+  {
+    "id": "room-03",
+    "titleZh": "星空露台家庭精緻套房",
+    "titleEn": "Starry Sky Terrace Suite",
+    "subtitleZh": "頂樓專屬觀星露台・4K劇院百吋投影",
+    "subtitleEn": "Rooftop Stargazing Terrace & 4K Cinema Projection",
+    "capacityZh": "4 人",
+    "capacityEn": "4 Guests",
+    "bedTypeZh": "加大雙人床 (Queen Size) x 2",
+    "bedTypeEn": "2 Queen Beds",
+    "size": "70 ㎡ (約 21 坪)",
+    "image": "https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=1400&q=80",
+    "gallery": [
+      "https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "highlightsZh": [
+      "頂樓無遮蔽專屬觀星大露台",
+      "4K 劇院級百吋微型雷射投影機",
+      "乾濕分離衛浴與全自動免治馬桶",
+      "家庭專屬舒適沙發交誼區",
+      "膠囊咖啡機與精選茶點"
+    ],
+    "highlightsEn": [
+      "Unobstructed rooftop terrace perfect for stargazing",
+      "4K 100-inch cinema laser projector with streaming",
+      "Separate wet & dry bathroom with smart toilet",
+      "Spacious family lounge conversation area",
+      "Capsule espresso machine & artisan cookies"
+    ],
+    "descZh": "位於山莊頂層，擁有無光害的寬闊觀星露台。夜晚可在此仰望璀璨銀河，房內更配備高階 4K 百吋劇院投影，是家庭與好友同歡的溫馨天地。",
+    "descEn": "Perched on the top floor with pristine starry views free of light pollution. Features a 100-inch 4K home theater system, making it the favorite for families and friends."
+  },
+  {
+    "id": "room-04",
+    "titleZh": "林岫沉靜大器家庭套房",
+    "titleEn": "Forest Whisper Executive Suite",
+    "subtitleZh": "大器暖木起居空間・林相環抱・靜謐茶席",
+    "subtitleEn": "Grand Timber Living Space & Forest Canopy Views",
+    "capacityZh": "4 人",
+    "capacityEn": "4 Guests",
+    "bedTypeZh": "加大雙人床 (Queen Size) x 2",
+    "bedTypeEn": "2 Queen Beds",
+    "size": "72 ㎡ (約 22 坪)",
+    "image": "https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=1400&q=80",
+    "gallery": [
+      "https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "highlightsZh": [
+      "沉穩黑胡桃木與天然珪藻土牆面",
+      "綠意森林窗景與清幽鳥語環境",
+      "乾濕分離雙洗手台寬敞衛浴",
+      "原木茶几與全套手作陶藝茶具",
+      "靜音冷藏冰箱與迎賓高山水果盤"
+    ],
+    "highlightsEn": [
+      "Warm walnut timber & natural diatomite artisan walls",
+      "Lush forest canopy windows with birdsong ambience",
+      "Spacious bathroom with dual vanities",
+      "Handcrafted pottery tea set on solid wood table",
+      "Whisper-quiet mini fridge & seasonal welcome fruit"
+    ],
+    "descZh": "沉穩溫潤的黑胡桃原木質調，窗外即是蒼翠林相。空氣中瀰漫著淡淡木香與山間芬多精，提供最純粹寧靜的深層睡眠體驗。",
+    "descEn": "Embraced by towering mountain woods, featuring natural walnut textures and serene woodland vistas. The gentle fragrance of timber ensures deep, restorative sleep."
+  }
+]

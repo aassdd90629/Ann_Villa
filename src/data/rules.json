@@ -1,0 +1,50 @@
+{
+  "checkInRulesZh": [
+    "入住時間為下午 15:00 以後，退房時間為上午 11:00 以前。為維護清消品質，恕無法無故延後退房。",
+    "全園區室內空間全面嚴禁吸菸、嚼食檳榔，若有違規者將酌收 NT$ 10,000 特殊除味清潔費。",
+    "為維護山林寧靜與住客品質，晚間 22:00 後請降低音量，戶外露台與泳池區禁止大聲喧嘩。",
+    "園區嚴禁攜帶違禁品、危險物品、施放煙火及任何違法行為，違者將立即報警處理且房費恕不退還。",
+    "入住時需收取押金 NT$ 10,000，於退房檢查無物品損壞或違規後全額無息退還。"
+  ],
+  "checkInRulesEn": [
+    "Check-in begins at 15:00; Check-out is by 11:00 AM. Late check-out without prior notice is not permitted.",
+    "Smoking and betel nut chewing are strictly prohibited indoors. A deep-cleaning fee of NT$ 10,000 applies for violations.",
+    "Quiet hours commence at 22:00 to preserve forest serenity. Please lower outdoor volume accordingly.",
+    "Illegal substances, dangerous goods, and fireworks are strictly forbidden. Violators will be reported to police with no refund.",
+    "A security deposit of NT$ 10,000 is required upon check-in and will be fully refunded upon checkout inspection."
+  ],
+  "extraGuestsZh": {
+    "title": "加人與加床規範",
+    "content": "基本包棟人數為 18 人以內，最多可加至 22 人。超過 18 人每位加收 NT$ 1,500 / 晚（含單人頂級舒適日式厚床墊、精選備品與早餐折抵券）。3 歲以下幼兒不佔床免費（每房限 1 位）。"
+  },
+  "extraGuestsEn": {
+    "title": "Extra Guests & Beds Policy",
+    "content": "Standard villa package accommodates up to 18 guests, with a maximum capacity of 22. Additional guests are NT$ 1,500 / night / person (includes luxury Japanese floor mattress, premium amenities, and breakfast voucher). Children under 3 stay free without extra bed (limit 1 per room)."
+  },
+  "faq": [
+    {
+      "qZh": "是否有提供專屬停車位？",
+      "qEn": "Is private parking available on site?",
+      "aZh": "是的，山莊內設有專屬封閉式私家停車場，可同時容納 6~8 輛轎車，並設有 2 座 Type 2 / CCS2 電動車 (EV) 充電樁提供住客免費使用。",
+      "aEn": "Yes, Shan Yu Villa provides a private gated parking lot accommodating 6-8 cars, with 2 complimentary EV charging stations (Type 2 / CCS2)."
+    },
+    {
+      "qZh": "可以攜帶寵物同行嗎？",
+      "qEn": "Are pets allowed in the villa?",
+      "aZh": "為維護高規格寢具與過敏友善環境，目前全館室內「禁止攜帶寵物入內」。若有導盲犬等需求請提前與客服專員聯繫。",
+      "aEn": "To maintain hypo-allergenic standards and luxury bedding, pets are not allowed indoors. Guide dogs are welcome with prior notice."
+    },
+    {
+      "qZh": "廚房設備與烤肉用具齊全嗎？",
+      "qEn": "What kitchen and BBQ facilities are provided?",
+      "aZh": "廚房配備大型烘烤爐、IH 雙口爐、大型冰箱、電鍋、洗碗機與手沖咖啡器材；戶外備有高階美式瓦斯烤肉爐與戶外休閒桌椅，您僅需自備食材與調味醬料即可享受饗宴。",
+      "aEn": "We provide a full open kitchen with oven, IH stoves, rice cooker, dishwasher, and pour-over coffee gear. The outdoor area includes a premium gas BBQ grill."
+    },
+    {
+      "qZh": "如何辦理預約與確認訂單？",
+      "qEn": "How do I make a reservation and confirm booking?",
+      "aZh": "請加入官方 LINE (@209yrich) 或點擊網站「預約諮詢」發送訊息，專人將於 2 小時內為您確認檔期並提供專屬匯款資訊。",
+      "aEn": "Please connect via our Official LINE (@209yrich) or click 'Inquiry' to send a request. Our concierge will confirm availability within 2 hours."
+    }
+  ]
+}

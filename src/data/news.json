@@ -1,0 +1,38 @@
+[
+  {
+    "id": "news-01",
+    "date": "2026-03-15",
+    "categoryZh": "最新公告",
+    "categoryEn": "Announcement",
+    "titleZh": "2026 春夏包棟檔期正式開放預訂與早鳥禮遇",
+    "titleEn": "2026 Spring & Summer Bookings Open with Early Bird Privileges",
+    "summaryZh": "即日起預訂 2026 年 5 月至 9 月包棟住宿，即贈送日月潭精選私廚迎賓茶點組及產地冷泡茶禮盒。",
+    "summaryEn": "Book your exclusive summer retreat now and receive a complimentary artisan welcome tea set and handcrafted local gift box.",
+    "featured": true,
+    "image": "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "news-02",
+    "date": "2026-02-28",
+    "categoryZh": "加值服務",
+    "categoryEn": "Exclusive Service",
+    "titleZh": "全新引進「私廚星空無菜單饗宴」尊榮訂製服務",
+    "titleEn": "Launching 'Private Master Chef Dining' Experience Under the Stars",
+    "summaryZh": "山語攜手在地頂級名廚，為包棟貴賓提供量身打造之高山山海無菜單料理晚宴。",
+    "summaryEn": "Partnering with top regional chefs to deliver a bespoke dining journey showcasing premium local delicacies.",
+    "featured": false,
+    "image": "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    "id": "news-03",
+    "date": "2026-01-10",
+    "categoryZh": "永續環保",
+    "categoryEn": "Sustainability",
+    "titleZh": "山語 Villa 榮獲綠色低碳旅宿認證與全區 EV 充電升級",
+    "titleEn": "Certified Green Sustainable Stay & Complete EV Charging Station Upgrade",
+    "summaryZh": "全區全面導入天然草本環保洗沐品與 2 座高效能充電樁，實踐人與自然和諧共生。",
+    "summaryEn": "Fully integrated with eco-friendly herbal toiletries and 2 high-speed EV chargers to support sustainable luxury travel.",
+    "featured": false,
+    "image": "https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=1000&q=80"
+  }
+]
