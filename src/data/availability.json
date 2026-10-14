@@ -1,0 +1,50 @@
+{
+  "lastSyncedAt": "2026-10-08T23:30:00+08:00",
+  "syncStatus": "healthy",
+  "syncIntervalMinutes": 10,
+  "channelsSynced": ["Booking.com", "Airbnb", "Direct Line"],
+  "bookedRanges": [
+    {
+      "startDate": "2026-10-12",
+      "endDate": "2026-10-14",
+      "source": "Booking.com",
+      "type": "exclusive_package",
+      "status": "confirmed"
+    },
+    {
+      "startDate": "2026-10-17",
+      "endDate": "2026-10-19",
+      "source": "Direct Line",
+      "type": "exclusive_package",
+      "status": "confirmed"
+    },
+    {
+      "startDate": "2026-10-24",
+      "endDate": "2026-10-26",
+      "source": "Airbnb",
+      "type": "exclusive_package",
+      "status": "confirmed"
+    },
+    {
+      "startDate": "2026-10-31",
+      "endDate": "2026-11-02",
+      "source": "Booking.com",
+      "type": "exclusive_package",
+      "status": "confirmed"
+    },
+    {
+      "startDate": "2026-11-07",
+      "endDate": "2026-11-09",
+      "source": "Direct Line",
+      "type": "exclusive_package",
+      "status": "confirmed"
+    },
+    {
+      "startDate": "2026-11-20",
+      "endDate": "2026-11-22",
+      "source": "Booking.com",
+      "type": "exclusive_package",
+      "status": "confirmed"
+    }
+  ]
+}

@@ -43,6 +43,34 @@ const messages = {
     theme: {
       light: '晨曦模式',
       dark: '夜景模式'
+    },
+    calendar: {
+      title: '即時空房查詢與包棟預約',
+      subtitle: '全館即時房態已與 Booking.com、Airbnb 即時連動',
+      checkIn: '入住日期',
+      checkOut: '退房日期',
+      selectDates: '請於日曆選取預計入住與退房日期',
+      selectCheckIn: '請點選入住日期',
+      selectCheckOut: '請點選退房日期',
+      nights: '晚',
+      guests: '入住人數',
+      guestCount: '人',
+      estimatedTotal: '預估包棟總金額',
+      pricingBreakdown: '費用明細試算',
+      weekdayNights: '平日晚數',
+      weekendNights: '假日晚數',
+      holidayNights: '連假晚數',
+      booked: '已預約',
+      available: '可預約',
+      selected: '已選取',
+      inRange: '選取範圍',
+      syncNotice: '房態自動同步中 (Booking.com / Airbnb / LINE 直訂)',
+      lastSync: '最後同步時間',
+      directPerksTitle: '山語 Villa 官方直訂專屬禮遇',
+      otaAltTitle: '亦可透過官方合作之 OTA 平台預訂',
+      inquireViaLine: '帶入日期透過 LINE 官方立即預約',
+      minStayNotice: '包棟預約每次至少為 1 晚',
+      contactForCustom: '如需客製拍攝場租或特殊包場，請直接聯繫管家'
     }
   },
   'en-US': {
@@ -85,6 +113,34 @@ const messages = {
     theme: {
       light: 'Dawn Mode',
       dark: 'Night Mode'
+    },
+    calendar: {
+      title: 'Live Availability & Direct Reservation',
+      subtitle: 'Real-time calendar synced with Booking.com & Airbnb',
+      checkIn: 'Check-in',
+      checkOut: 'Check-out',
+      selectDates: 'Please select your check-in & check-out dates',
+      selectCheckIn: 'Select check-in date',
+      selectCheckOut: 'Select check-out date',
+      nights: 'night(s)',
+      guests: 'Guests',
+      guestCount: 'guests',
+      estimatedTotal: 'Estimated Total',
+      pricingBreakdown: 'Rate Calculation',
+      weekdayNights: 'Weekday Nights',
+      weekendNights: 'Weekend Nights',
+      holidayNights: 'Holiday Nights',
+      booked: 'Booked',
+      available: 'Available',
+      selected: 'Selected',
+      inRange: 'In Range',
+      syncNotice: 'Live sync active (Booking.com / Airbnb / Direct)',
+      lastSync: 'Last synced',
+      directPerksTitle: 'Direct Booking Exclusive Privileges',
+      otaAltTitle: 'Or Book via Our Official OTA Partners',
+      inquireViaLine: 'Reserve Dates via Official LINE',
+      minStayNotice: 'Minimum stay is 1 night for exclusive villa retreat',
+      contactForCustom: 'For photo shoots or corporate events, please contact our concierge'
     }
   }
 }

@@ -152,3 +152,20 @@
    - 整合 `Schema.org` 之 `LodgingBusiness` 結構化資料，提升 Google 搜尋在地能見度。
 4. **Git-based CMS 規範**：
    - 後台靜態檔案放置於 `public/admin/`，以 `config.yml` 定義完整結構化欄位。
+
+---
+
+## 六、 第一版純前端「為第二版全端鋪路」之關鍵規範
+
+> 完整後端與資料庫規範詳見手冊：[`d:\hotel\1014record.md`](file:///d:/hotel/1014record.md)
+
+為了確保第一版純前端（靜態展示 + LINE / 外部預訂導流）在日後擴充升級為第二版（Cloudflare Pages Functions + MySQL 線上預訂系統）時**「不需大規模重構」**，所有前端工程師開發時必須落實以下 3 點：
+
+1. **資料層一律透過 Service 存取**：
+   - 禁止在 Vue 組件內直接 `import` JSON 寫死；一律透過 [`src/services/roomService.js`](file:///d:/hotel/Ann_Villa/src/services/roomService.js) 異步取得房型資料。
+2. **預約與跳轉行為抽象封裝**：
+   - 預約諮詢按鈕一律呼叫 [`src/services/bookingService.js`](file:///d:/hotel/Ann_Villa/src/services/bookingService.js) 的 `handleBookingAction()` 函式，由 Service 集中負責組裝 LINE 預約訊息或未來切換為 API 送出。
+3. **日期與 Schema 嚴格對齊**：
+   - 組件間傳遞的日期狀態一律使用標準 `YYYY-MM-DD` 格式字串。
+   - JSON 與資料模型欄位命名嚴格參照 [`1014record.md`](file:///d:/hotel/1014record.md) 中的 Prisma Schema。
+

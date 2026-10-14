@@ -1,0 +1,55 @@
+{
+  "directBooking": {
+    "enabled": true,
+    "lineUrl": "https://line.me/R/ti/p/@209yrich",
+    "lineId": "@209yrich",
+    "phone": "0988-888-888",
+    "perksZh": [
+      "官網直訂享專屬管家迎賓在地手作精緻茶點",
+      "享延遲退房 1 小時專屬禮遇 (視當日房態安排)",
+      "免收 15%~20% OTA 平台手續費，享有最彈性退訂與改期協調",
+      "優先預約頂級私廚無菜單山海晚宴代訂服務"
+    ],
+    "perksEn": [
+      "Complimentary handcrafted welcome afternoon tea & seasonal refreshments",
+      "Complimentary 1-hour late check-out privilege (subject to availability)",
+      "Best rate guarantee with no extra 15%-20% OTA commission fees & flexible rescheduling",
+      "Priority reservation for Private Master Chef dining experiences"
+    ]
+  },
+  "otaPlatforms": [
+    {
+      "id": "booking-com",
+      "name": "Booking.com",
+      "badgeZh": "官方合作夥伴",
+      "badgeEn": "Official Partner",
+      "taglineZh": "全球旅客常用線上預訂",
+      "taglineEn": "Worldwide Trusted Booking Platform",
+      "url": "https://www.booking.com/hotel/tw/shanyu-villa.html",
+      "iCalExportUrl": "https://admin.booking.com/hotel/hoteladmin/ical.html?t=sample_shanyu_villa",
+      "status": "active"
+    },
+    {
+      "id": "airbnb",
+      "name": "Airbnb",
+      "badgeZh": "超讚房東嚴選",
+      "badgeEn": "Superhost Selection",
+      "taglineZh": "特色度假別墅旅宿平台",
+      "taglineEn": "Luxury Vacation Home Platform",
+      "url": "https://www.airbnb.com.tw/rooms/shanyu-villa-nantou",
+      "iCalExportUrl": "https://www.airbnb.com/calendar/ical/sample_shanyu_villa.ics",
+      "status": "active"
+    },
+    {
+      "id": "agoda",
+      "name": "Agoda",
+      "badgeZh": "優選包棟住宿",
+      "badgeEn": "Top Villa Choice",
+      "taglineZh": "亞洲優質旅宿預約管道",
+      "taglineEn": "Asian Premium Accommodation",
+      "url": "https://www.agoda.com/zh-tw/shanyu-villa-nantou/hotel/nantou-tw.html",
+      "iCalExportUrl": "https://ycs.agoda.com/api/ical/sample_shanyu_villa.ics",
+      "status": "active"
+    }
+  ]
+}

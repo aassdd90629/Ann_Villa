@@ -8,8 +8,7 @@ import {
   Instagram, 
   MessageSquare, 
   ShieldCheck, 
-  ArrowUpRight,
-  Lock
+  ArrowUpRight
 } from 'lucide-vue-next'
 
 const { isEn, t } = useI18n()
@@ -105,16 +104,12 @@ const currentYear = new Date().getFullYear()
       </div>
     </div>
 
-    <!-- 底部版權宣告與 CMS 入口 -->
+    <!-- 底部版權宣告 -->
     <div class="footer-bottom">
       <div class="container bottom-container">
         <p class="copyright">
           © {{ currentYear }} {{ isEn ? siteData.brandNameEn : siteData.brandNameZh }}. {{ t('footer.rights') }}
         </p>
-        <a href="/admin/" class="admin-portal" target="_blank" rel="noopener noreferrer" title="CMS 後台管理入口">
-          <Lock :size="13" />
-          <span>{{ t('footer.admin') }}</span>
-        </a>
       </div>
     </div>
   </footer>
@@ -305,21 +300,6 @@ const currentYear = new Date().getFullYear()
     font-size: 0.82rem;
     color: var(--text-muted);
     margin: 0;
-  }
-
-  .admin-portal {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    font-size: 0.8rem;
-    color: var(--text-muted);
-    opacity: 0.6;
-    transition: opacity 0.3s ease;
-
-    &:hover {
-      opacity: 1;
-      color: var(--gold-primary);
-    }
   }
 }
 </style>

@@ -16,6 +16,7 @@ import {
   Calendar,
   Compass
 } from 'lucide-vue-next'
+import AvailabilityCalendar from '../components/booking/AvailabilityCalendar.vue'
 
 const { isEn, t, tField } = useI18n()
 </script>
@@ -207,7 +208,25 @@ const { isEn, t, tField } = useI18n()
       </div>
     </section>
 
-    <!-- 5. 尊榮包棟方案亮點 (Pricing Banner) -->
+    <!-- 5. 即時房態與線上預約 (Live Availability & Booking) -->
+    <section class="section-py home-calendar-section">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">{{ isEn ? 'AVAILABILITY & RESERVATION' : '即時房態與預約' }}</span>
+          <h2 class="section-title">{{ isEn ? 'Live Calendar Synced with Booking.com & Airbnb' : '全館檔期即時連動・線上預約試算' }}</h2>
+          <p class="section-desc">
+            {{ isEn 
+              ? 'Our calendar updates in real-time with OTA partners. Select your dates to calculate packages or book via official LINE for exclusive privileges.' 
+              : '即時整合各大訂房平台房態，點選預計入住與退房日期即可預估費用，官方直訂享延退與迎賓禮遇。' 
+            }}
+          </p>
+        </div>
+
+        <AvailabilityCalendar />
+      </div>
+    </section>
+
+    <!-- 6. 尊榮包棟方案亮點 (Pricing Banner) -->
     <section class="pricing-banner-section">
       <div class="container">
         <div class="pricing-banner-box">

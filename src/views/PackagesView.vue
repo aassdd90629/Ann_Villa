@@ -13,6 +13,7 @@ import {
   Check, 
   HelpCircle
 } from 'lucide-vue-next'
+import AvailabilityCalendar from '../components/booking/AvailabilityCalendar.vue'
 
 const { isEn, tField } = useI18n()
 const pkg = pricingData.exclusivePackage
@@ -98,7 +99,23 @@ const pkg = pricingData.exclusivePackage
           </div>
         </div>
 
-        <!-- 加值服務區塊 -->
+        <!-- 3. 即時空房日曆與 OTA 雙向連動區塊 -->
+        <div class="calendar-section" id="availability-section">
+          <div class="section-header">
+            <span class="section-tag">{{ isEn ? 'LIVE AVAILABILITY' : '即時房態' }}</span>
+            <h2 class="section-title">{{ isEn ? 'Real-Time Availability & Booking' : '即時空房查詢與線上試算' }}</h2>
+            <p class="section-desc">
+              {{ isEn 
+                ? 'Check real-time villa availability synced with Booking.com and Airbnb. Select dates to calculate rates and reserve directly.' 
+                : '日曆已即時與 Booking.com 及 Airbnb 雙向同步，您可直接點選日期試算平假日費用並一鍵預約。' 
+              }}
+            </p>
+          </div>
+
+          <AvailabilityCalendar />
+        </div>
+
+        <!-- 4. 加值服務區塊 -->
         <div class="extra-services-section">
           <div class="section-header">
             <span class="section-tag">{{ isEn ? 'ADD-ON SERVICES' : '客製加值' }}</span>
