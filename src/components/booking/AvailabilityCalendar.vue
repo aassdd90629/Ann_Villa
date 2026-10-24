@@ -189,7 +189,7 @@ const bookingCalculation = computed(() => {
   
   while (current < end) {
     const dayOfWeek = current.getDay() // 0 = Sun, 5 = Fri, 6 = Sat
-    if (dayOfWeek === 5 || dayOfWeek === 6) {
+    if (dayOfWeek === 5 || dayOfWeek === 6 || dayOfWeek === 0) {
       weekendCount++
     } else {
       weekdayCount++
@@ -354,8 +354,8 @@ const lineBookingUrl = computed(() => {
               <span class="g-count">{{ guestCount }} {{ t('calendar.guestCount') }}</span>
               <button 
                 class="g-btn" 
-                :disabled="guestCount >= 22" 
-                @click="guestCount = Math.min(22, guestCount + 1)"
+                :disabled="guestCount >= 18" 
+                @click="guestCount = Math.min(18, guestCount + 1)"
               >+</button>
             </div>
           </div>

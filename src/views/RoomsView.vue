@@ -34,11 +34,11 @@ const prevImage = (roomIndex, total) => {
     <section class="page-header">
       <div class="container header-container">
         <span class="section-tag">{{ isEn ? 'ACCOMMODATION' : '房型導覽' }}</span>
-        <h1 class="page-title">{{ isEn ? '4 Private Panoramic Suites' : '4 間獨立景觀套房' }}</h1>
+        <h1 class="page-title">{{ isEn ? '5 Private Suites' : '5 間獨立景觀客房' }}</h1>
         <p class="page-desc">
           {{ isEn 
-            ? 'Thoughtfully designed with natural materials, panoramic bathtubs, and tranquil mountain forest vistas.' 
-            : '每一間套房皆為獨立景觀設計，融入天然石材、原木與日式枯山水意境，給您最靜謐奢華的私密時光。' 
+            ? 'Features 5 comfortable bedrooms across two floors (3 on 1F, 2 on 2F) accommodating up to 18 guests in complete privacy.' 
+            : '全館共 5 間獨立客房（1樓三間、2樓兩間），最多可容納 18 位貴賓，享受極致悠閒的山林包棟假期。' 
           }}
         </p>
       </div>
@@ -57,12 +57,16 @@ const prevImage = (roomIndex, total) => {
           >
             <!-- 房型圖集輪播展示 -->
             <div class="room-gallery-column">
-              <div class="gallery-main-frame img-zoom-container">
-                <img 
-                  :src="room.gallery ? room.gallery[currentImageIndexes[index]] : room.image" 
-                  :alt="tField(room, 'title')"
-                  loading="lazy"
-                />
+              <div class="gallery-main-frame">
+                <transition name="gallery-fade">
+                  <img 
+                    :key="currentImageIndexes[index]"
+                    :src="room.gallery ? room.gallery[currentImageIndexes[index]] : room.image" 
+                    :alt="tField(room, 'title')"
+                    class="gallery-photo"
+                    loading="lazy"
+                  />
+                </transition>
                 
                 <!-- 輪播箭頭 (若有圖集) -->
                 <div v-if="room.gallery && room.gallery.length > 1" class="gallery-controls">
@@ -80,6 +84,18 @@ const prevImage = (roomIndex, total) => {
                   >
                     <ChevronRight :size="20" />
                   </button>
+                </div>
+
+                <!-- 輪播指示點 -->
+                <div v-if="room.gallery && room.gallery.length > 1" class="gallery-dots">
+                  <button 
+                    v-for="(_, gIdx) in room.gallery"
+                    :key="gIdx"
+                    class="gallery-dot"
+                    :class="{ 'active': currentImageIndexes[index] === gIdx }"
+                    @click="currentImageIndexes[index] = gIdx"
+                    :aria-label="`Go to photo ${gIdx + 1}`"
+                  ></button>
                 </div>
 
                 <div class="gallery-counter" v-if="room.gallery">
@@ -211,16 +227,23 @@ const prevImage = (roomIndex, total) => {
   .gallery-main-frame {
     position: relative;
     height: 380px;
-    border-radius: 4px;
+    border-radius: 6px;
+    overflow: hidden;
+    background-color: var(--bg-card);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
 
     @media (min-width: $bp-lg) {
       height: 480px;
     }
 
-    img {
+    .gallery-photo {
+      position: absolute;
+      top: 0;
+      left: 0;
       width: 100%;
       height: 100%;
       object-fit: cover;
+      will-change: opacity, transform;
     }
   }
 
@@ -230,10 +253,11 @@ const prevImage = (roomIndex, total) => {
     right: 1rem;
     display: flex;
     gap: 0.5rem;
+    z-index: 5;
 
     .gal-btn {
-      width: 38px;
-      height: 38px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
       background: rgba(18, 20, 21, 0.7);
       color: #FFFFFF;
@@ -241,8 +265,50 @@ const prevImage = (roomIndex, total) => {
       align-items: center;
       justify-content: center;
       backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      cursor: pointer;
+      transition: all 0.25s ease;
 
       &:hover {
+        background: var(--gold-primary);
+        color: #FFFFFF;
+        transform: scale(1.08);
+      }
+    }
+  }
+
+  .gallery-dots {
+    position: absolute;
+    bottom: 1.15rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 0.45rem;
+    align-items: center;
+    z-index: 5;
+    background: rgba(18, 20, 21, 0.55);
+    padding: 0.35rem 0.75rem;
+    border-radius: 20px;
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+
+    .gallery-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.45);
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      transition: all 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.85);
+      }
+
+      &.active {
+        width: 20px;
+        border-radius: 10px;
         background: var(--gold-primary);
       }
     }
@@ -255,10 +321,29 @@ const prevImage = (roomIndex, total) => {
     background: rgba(18, 20, 21, 0.7);
     color: #FFFFFF;
     font-size: 0.75rem;
-    padding: 0.2rem 0.6rem;
-    border-radius: 2px;
+    padding: 0.25rem 0.7rem;
+    border-radius: 4px;
     backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    z-index: 5;
   }
+}
+
+// 圖片切換平滑過渡特效 (Cinematic Cross-fade with gentle scale)
+.gallery-fade-enter-active,
+.gallery-fade-leave-active {
+  transition: opacity 0.5s cubic-bezier(0.25, 1, 0.5, 1),
+              transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.gallery-fade-enter-from {
+  opacity: 0;
+  transform: scale(1.05);
+}
+
+.gallery-fade-leave-to {
+  opacity: 0;
+  transform: scale(0.98);
 }
 
 .room-info-column {

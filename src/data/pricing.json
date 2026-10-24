@@ -1,50 +1,118 @@
 {
   "currency": "TWD",
   "exclusivePackage": {
-    "titleZh": "全區尊榮包棟方案",
-    "titleEn": "Exclusive Entire Estate Villa Package",
-    "descZh": "享有全區 4 間景觀奢華套房、無邊際山景泳池、日式溫泉湯屋、星空劇院與專屬庭園之獨立私密使用權。",
-    "descEn": "Exclusive private access to all 4 scenic luxury suites, infinity mountain pool, Japanese onsen bathhouse, star theater, and private zen garden.",
-    "weekday": 38000,
-    "weekend": 48000,
-    "holiday": 58000,
-    "deposit": 10000,
+    "titleZh": "全棟尊榮包棟方案 (整棟 5 間房)",
+    "titleEn": "Exclusive Entire Villa Estate Package (5 Rooms)",
+    "descZh": "享有全棟 5 間獨立客房（1F 三間、2F 兩間）、客廳、KTV歡唱、電動麻將桌、智能廚房、戶外泡茶區與烤肉BBQ之全區獨立專屬使用權。",
+    "descEn": "Exclusive private access to all 5 guest suites across two floors, living lounge, KTV, auto mahjong table, smart kitchen, outdoor tea patio, and BBQ pavilion.",
+    "weekday": 28000,
+    "weekend": 35000,
+    "holidayMin": 35000,
+    "holidayMax": 50000,
+    "deposit": 3000,
     "includedGuests": 18,
-    "maxGuests": 22,
-    "extraPersonFee": 1500,
+    "maxGuests": 18,
+    "hasExtraBed": false,
+    "extraPersonFee": 0,
     "checkInTime": "15:00",
-    "checkOutTime": "11:00"
+    "checkOutTime": "11:00",
+    "pricingNotesZh": "平日週一至週四；假日以星期五晚上起算（含週五、六、日）；國定假日前一天起依國定假日價計費。除過年連假外皆含早餐。",
+    "pricingNotesEn": "Weekdays: Mon-Thu; Weekends: Fri-Sun; Consecutive holidays begin from the eve of the holiday. Breakfast included (except Lunar New Year)."
   },
+  "holidays": [
+    {
+      "nameZh": "雙十連假",
+      "nameEn": "National Day Holiday",
+      "dates": "10/09 - 10/11",
+      "price": 35000,
+      "breakfast": true
+    },
+    {
+      "nameZh": "光復節連假",
+      "nameEn": "Retrocession Day Holiday",
+      "dates": "10/23 - 10/26",
+      "price": 35000,
+      "breakfast": true
+    },
+    {
+      "nameZh": "聖誕節連假",
+      "nameEn": "Christmas Holiday",
+      "dates": "12/24 - 12/27",
+      "price": 47000,
+      "breakfast": true
+    },
+    {
+      "nameZh": "跨年假期",
+      "nameEn": "New Year's Eve",
+      "dates": "12/31 - 01/01",
+      "price": 47000,
+      "breakfast": true
+    },
+    {
+      "nameZh": "2027 元旦連假",
+      "nameEn": "2027 New Year Holiday",
+      "dates": "2027/01/01 - 01/03",
+      "price": 47000,
+      "breakfast": true
+    },
+    {
+      "nameZh": "2027 農曆春節過年連假",
+      "nameEn": "2027 Lunar New Year Holiday",
+      "dates": "2027/02/03 - 02/10",
+      "price": 50000,
+      "breakfast": false,
+      "noteZh": "春節期間不含早餐",
+      "noteEn": "Breakfast not included during Lunar New Year"
+    },
+    {
+      "nameZh": "2027 和平紀念日連假",
+      "nameEn": "2027 Peace Memorial Day Holiday",
+      "dates": "2027/02/26 - 03/01",
+      "price": 38000,
+      "breakfast": true
+    },
+    {
+      "nameZh": "2027 兒童節與清明連假",
+      "nameEn": "2027 Children's & Tomb Sweeping Day",
+      "dates": "2027/04/02 - 04/05",
+      "price": 38000,
+      "breakfast": true
+    },
+    {
+      "nameZh": "2027 五一勞動節連假",
+      "nameEn": "2027 Labor Day Holiday",
+      "dates": "2027/04/29 - 05/01",
+      "price": 38000,
+      "breakfast": true
+    }
+  ],
   "additionalServices": [
     {
-      "id": "wedding-shoot",
-      "titleZh": "婚紗 / 商業平面與動態攝影場租",
-      "titleEn": "Wedding & Commercial Photography Rental",
-      "pricingZh": "NT$ 3,500 / 小時 (最低 3 小時)",
-      "pricingEn": "NT$ 3,500 / hr (Min 3 hrs)",
-      "hourlyRate": 3500,
-      "minHours": 3,
-      "maxPeople": 8,
-      "noteZh": "提供專屬獨立冷暖空調更衣化妝間、高階蒸氣掛燙機與專屬茶點。",
-      "noteEn": "Includes private air-conditioned fitting & makeup suite, garment steamer, and complimentary refreshments."
+      "id": "bbq-service",
+      "titleZh": "戶外庭園美式烤肉代訂與場地備品",
+      "titleEn": "Outdoor Garden BBQ Setup & Grill Experience",
+      "pricingZh": "提供美式大型烤肉爐與戶外用餐座席",
+      "pricingEn": "Complimentary BBQ grill & outdoor dining tables",
+      "noteZh": "備有烤肉爐具與戶外洗滌區，食材醬料可自備或由管家協助在地生鮮代訂。",
+      "noteEn": "Outdoor grill setup ready. Bring your own ingredients or coordinate with concierge for local fresh food delivery."
     },
     {
-      "id": "private-chef",
-      "titleZh": "頂級私廚無菜單山海晚宴代訂",
-      "titleEn": "Private Master Chef Dining Experience",
-      "pricingZh": "NT$ 2,800 ~ 4,500 / 位",
-      "pricingEn": "NT$ 2,800 ~ 4,500 / person",
-      "noteZh": "嚴選南投在地有機時蔬與頂級和牛海鮮，需於入住前 14 天預約。",
-      "noteEn": "Curated with seasonal Nantou produce and premium wagyu & seafood. Reservation required 14 days in advance."
+      "id": "ktv-mahjong",
+      "titleZh": "歡唱卡拉OK與電動麻將娛樂",
+      "titleEn": "KTV Karaoke & Auto Mahjong Amenities",
+      "pricingZh": "包棟住客免費尊享",
+      "pricingEn": "Complimentary with Villa Reservation",
+      "noteZh": "獨立隔音舒適客廳，配備高階音響、雙麥克風與最新電動四口麻將桌。",
+      "noteEn": "Private acoustic lounge with premium sound system, dual wireless mics, and motorized automatic mahjong table."
     },
     {
-      "id": "private-party",
-      "titleZh": "私人派對 / 企業高階閉門戰略會議",
-      "titleEn": "Private Party & Executive Mountain Retreat",
-      "pricingZh": "專案客製洽詢",
-      "pricingEn": "Custom Quotation",
-      "noteZh": "提供劇院級影音設備、微光戶外燈光氛圍佈置、白板與投影支援。",
-      "noteEn": "Includes high-end AV theater setup, ambient mood lighting, and full meeting presentation equipment."
+      "id": "butler-service",
+      "titleZh": "24 小時貼心管家諮詢與在地接待",
+      "titleEn": "24-Hour Butler & Concierge Hospitality",
+      "pricingZh": "全天候專屬禮遇",
+      "pricingEn": "All-Day Dedicated Service",
+      "noteZh": "提供在地行程導航諮詢、即時管家支援與入住退房全程尊榮引導。",
+      "noteEn": "Local itinerary guidance, on-call assistance, and personalized check-in/out hospitality."
     }
   ]
 }

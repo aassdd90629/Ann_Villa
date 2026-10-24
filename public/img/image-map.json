@@ -1,0 +1,452 @@
+[
+  {
+    "categoryZh": "1樓房間1四人房",
+    "categoryEn": "1F Quad Suite 1",
+    "oldFolder": "房間1四人房",
+    "oldFileName": "LINE_ALBUM_山語villa豪宅山莊房間1四人房_261009_1.jpg",
+    "newFolder": "room-1",
+    "newFileName": "room-1-01.jpg",
+    "webPath": "/img/room-1/room-1-01.jpg"
+  },
+  {
+    "categoryZh": "1樓房間1四人房",
+    "categoryEn": "1F Quad Suite 1",
+    "oldFolder": "房間1四人房",
+    "oldFileName": "LINE_ALBUM_山語villa豪宅山莊房間1四人房_261009_2.jpg",
+    "newFolder": "room-1",
+    "newFileName": "room-1-02.jpg",
+    "webPath": "/img/room-1/room-1-02.jpg"
+  },
+  {
+    "categoryZh": "1樓房間1四人房",
+    "categoryEn": "1F Quad Suite 1",
+    "oldFolder": "房間1四人房",
+    "oldFileName": "LINE_ALBUM_山語villa豪宅山莊房間1四人房_261009_3.jpg",
+    "newFolder": "room-1",
+    "newFileName": "room-1-03.jpg",
+    "webPath": "/img/room-1/room-1-03.jpg"
+  },
+  {
+    "categoryZh": "1樓房間1四人房",
+    "categoryEn": "1F Quad Suite 1",
+    "oldFolder": "房間1四人房",
+    "oldFileName": "LINE_ALBUM_山語villa豪宅山莊房間1四人房_261009_4.jpg",
+    "newFolder": "room-1",
+    "newFileName": "room-1-04.jpg",
+    "webPath": "/img/room-1/room-1-04.jpg"
+  },
+  {
+    "categoryZh": "1樓房間1四人房",
+    "categoryEn": "1F Quad Suite 1",
+    "oldFolder": "房間1四人房",
+    "oldFileName": "LINE_ALBUM_山語villa豪宅山莊房間1四人房_261009_5.jpg",
+    "newFolder": "room-1",
+    "newFileName": "room-1-05.jpg",
+    "webPath": "/img/room-1/room-1-05.jpg"
+  },
+  {
+    "categoryZh": "1樓房間2雙人房",
+    "categoryEn": "1F Double Suite 2",
+    "oldFolder": "房間2雙人房",
+    "oldFileName": "LINE_ALBUM_房間2雙人房_261009_1.jpg",
+    "newFolder": "room-2",
+    "newFileName": "room-2-01.jpg",
+    "webPath": "/img/room-2/room-2-01.jpg"
+  },
+  {
+    "categoryZh": "1樓房間2雙人房",
+    "categoryEn": "1F Double Suite 2",
+    "oldFolder": "房間2雙人房",
+    "oldFileName": "LINE_ALBUM_房間2雙人房_261009_2.jpg",
+    "newFolder": "room-2",
+    "newFileName": "room-2-02.jpg",
+    "webPath": "/img/room-2/room-2-02.jpg"
+  },
+  {
+    "categoryZh": "1樓房間2雙人房",
+    "categoryEn": "1F Double Suite 2",
+    "oldFolder": "房間2雙人房",
+    "oldFileName": "LINE_ALBUM_房間2雙人房_261009_3.jpg",
+    "newFolder": "room-2",
+    "newFileName": "room-2-03.jpg",
+    "webPath": "/img/room-2/room-2-03.jpg"
+  },
+  {
+    "categoryZh": "1樓房間2雙人房",
+    "categoryEn": "1F Double Suite 2",
+    "oldFolder": "房間2雙人房",
+    "oldFileName": "LINE_ALBUM_房間2雙人房_261009_4.jpg",
+    "newFolder": "room-2",
+    "newFileName": "room-2-04.jpg",
+    "webPath": "/img/room-2/room-2-04.jpg"
+  },
+  {
+    "categoryZh": "1樓房間2雙人房",
+    "categoryEn": "1F Double Suite 2",
+    "oldFolder": "房間2雙人房",
+    "oldFileName": "LINE_ALBUM_房間2雙人房_261009_5.jpg",
+    "newFolder": "room-2",
+    "newFileName": "room-2-05.jpg",
+    "webPath": "/img/room-2/room-2-05.jpg"
+  },
+  {
+    "categoryZh": "1樓房間3四人房",
+    "categoryEn": "1F Quad Suite 3",
+    "oldFolder": "房間3四人房",
+    "oldFileName": "LINE_ALBUM_房間3四人房_261009_1.jpg",
+    "newFolder": "room-3",
+    "newFileName": "room-3-01.jpg",
+    "webPath": "/img/room-3/room-3-01.jpg"
+  },
+  {
+    "categoryZh": "1樓房間3四人房",
+    "categoryEn": "1F Quad Suite 3",
+    "oldFolder": "房間3四人房",
+    "oldFileName": "LINE_ALBUM_房間3四人房_261009_2.jpg",
+    "newFolder": "room-3",
+    "newFileName": "room-3-02.jpg",
+    "webPath": "/img/room-3/room-3-02.jpg"
+  },
+  {
+    "categoryZh": "1樓房間3四人房",
+    "categoryEn": "1F Quad Suite 3",
+    "oldFolder": "房間3四人房",
+    "oldFileName": "LINE_ALBUM_房間3四人房_261009_3.jpg",
+    "newFolder": "room-3",
+    "newFileName": "room-3-03.jpg",
+    "webPath": "/img/room-3/room-3-03.jpg"
+  },
+  {
+    "categoryZh": "1樓房間3四人房",
+    "categoryEn": "1F Quad Suite 3",
+    "oldFolder": "房間3四人房",
+    "oldFileName": "LINE_ALBUM_房間3四人房_261009_4.jpg",
+    "newFolder": "room-3",
+    "newFileName": "room-3-04.jpg",
+    "webPath": "/img/room-3/room-3-04.jpg"
+  },
+  {
+    "categoryZh": "2樓房間4四人房",
+    "categoryEn": "2F Quad Suite 4",
+    "oldFolder": "二樓房間4四人房",
+    "oldFileName": "LINE_ALBUM_二樓房間4四人房_261009_1.jpg",
+    "newFolder": "room-4",
+    "newFileName": "room-4-01.jpg",
+    "webPath": "/img/room-4/room-4-01.jpg"
+  },
+  {
+    "categoryZh": "2樓房間4四人房",
+    "categoryEn": "2F Quad Suite 4",
+    "oldFolder": "二樓房間4四人房",
+    "oldFileName": "LINE_ALBUM_二樓房間4四人房_261009_2.jpg",
+    "newFolder": "room-4",
+    "newFileName": "room-4-02.jpg",
+    "webPath": "/img/room-4/room-4-02.jpg"
+  },
+  {
+    "categoryZh": "2樓房間4四人房",
+    "categoryEn": "2F Quad Suite 4",
+    "oldFolder": "二樓房間4四人房",
+    "oldFileName": "LINE_ALBUM_二樓房間4四人房_261009_3.jpg",
+    "newFolder": "room-4",
+    "newFileName": "room-4-03.jpg",
+    "webPath": "/img/room-4/room-4-03.jpg"
+  },
+  {
+    "categoryZh": "2樓房間4四人房",
+    "categoryEn": "2F Quad Suite 4",
+    "oldFolder": "二樓房間4四人房",
+    "oldFileName": "LINE_ALBUM_二樓房間4四人房_261009_4.jpg",
+    "newFolder": "room-4",
+    "newFileName": "room-4-04.jpg",
+    "webPath": "/img/room-4/room-4-04.jpg"
+  },
+  {
+    "categoryZh": "2樓房間5四人房(衛浴在1樓)",
+    "categoryEn": "2F Quad Suite 5 (1F Bath)",
+    "oldFolder": "二樓房間5浴室在一樓",
+    "oldFileName": "LINE_ALBUM_二樓房間5浴室在一樓_261009_1.jpg",
+    "newFolder": "room-5",
+    "newFileName": "room-5-01.jpg",
+    "webPath": "/img/room-5/room-5-01.jpg"
+  },
+  {
+    "categoryZh": "2樓房間5四人房(衛浴在1樓)",
+    "categoryEn": "2F Quad Suite 5 (1F Bath)",
+    "oldFolder": "二樓房間5浴室在一樓",
+    "oldFileName": "LINE_ALBUM_二樓房間5浴室在一樓_261009_2.jpg",
+    "newFolder": "room-5",
+    "newFileName": "room-5-02.jpg",
+    "webPath": "/img/room-5/room-5-02.jpg"
+  },
+  {
+    "categoryZh": "2樓房間5四人房(衛浴在1樓)",
+    "categoryEn": "2F Quad Suite 5 (1F Bath)",
+    "oldFolder": "二樓房間5浴室在一樓",
+    "oldFileName": "LINE_ALBUM_二樓房間5浴室在一樓_261009_3.jpg",
+    "newFolder": "room-5",
+    "newFileName": "room-5-03.jpg",
+    "webPath": "/img/room-5/room-5-03.jpg"
+  },
+  {
+    "categoryZh": "2樓房間5四人房(衛浴在1樓)",
+    "categoryEn": "2F Quad Suite 5 (1F Bath)",
+    "oldFolder": "二樓房間5浴室在一樓",
+    "oldFileName": "LINE_ALBUM_二樓房間5浴室在一樓_261009_4.jpg",
+    "newFolder": "room-5",
+    "newFileName": "room-5-04.jpg",
+    "webPath": "/img/room-5/room-5-04.jpg"
+  },
+  {
+    "categoryZh": "客廳與卡拉OK交誼廳",
+    "categoryEn": "Living Room & KTV Lounge",
+    "oldFolder": "客廳和卡啦ok",
+    "oldFileName": "LINE_ALBUM_客廳和卡啦ok_261009_1.jpg",
+    "newFolder": "living-ktv",
+    "newFileName": "living-ktv-01.jpg",
+    "webPath": "/img/living-ktv/living-ktv-01.jpg"
+  },
+  {
+    "categoryZh": "客廳與卡拉OK交誼廳",
+    "categoryEn": "Living Room & KTV Lounge",
+    "oldFolder": "客廳和卡啦ok",
+    "oldFileName": "LINE_ALBUM_客廳和卡啦ok_261009_2.jpg",
+    "newFolder": "living-ktv",
+    "newFileName": "living-ktv-02.jpg",
+    "webPath": "/img/living-ktv/living-ktv-02.jpg"
+  },
+  {
+    "categoryZh": "客廳與卡拉OK交誼廳",
+    "categoryEn": "Living Room & KTV Lounge",
+    "oldFolder": "客廳和卡啦ok",
+    "oldFileName": "LINE_ALBUM_客廳和卡啦ok_261009_3.jpg",
+    "newFolder": "living-ktv",
+    "newFileName": "living-ktv-03.jpg",
+    "webPath": "/img/living-ktv/living-ktv-03.jpg"
+  },
+  {
+    "categoryZh": "客廳與卡拉OK交誼廳",
+    "categoryEn": "Living Room & KTV Lounge",
+    "oldFolder": "客廳和卡啦ok",
+    "oldFileName": "LINE_ALBUM_客廳和卡啦ok_261009_4.jpg",
+    "newFolder": "living-ktv",
+    "newFileName": "living-ktv-04.jpg",
+    "webPath": "/img/living-ktv/living-ktv-04.jpg"
+  },
+  {
+    "categoryZh": "智能廚房與Mini Bar",
+    "categoryEn": "Smart Kitchen & Mini Bar",
+    "oldFolder": "智能廚房跟米妮吧",
+    "oldFileName": "LINE_ALBUM_智能廚房跟米妮吧_261009_1.jpg",
+    "newFolder": "kitchen-bar",
+    "newFileName": "kitchen-bar-01.jpg",
+    "webPath": "/img/kitchen-bar/kitchen-bar-01.jpg"
+  },
+  {
+    "categoryZh": "智能廚房與Mini Bar",
+    "categoryEn": "Smart Kitchen & Mini Bar",
+    "oldFolder": "智能廚房跟米妮吧",
+    "oldFileName": "LINE_ALBUM_智能廚房跟米妮吧_261009_2.jpg",
+    "newFolder": "kitchen-bar",
+    "newFileName": "kitchen-bar-02.jpg",
+    "webPath": "/img/kitchen-bar/kitchen-bar-02.jpg"
+  },
+  {
+    "categoryZh": "智能廚房與Mini Bar",
+    "categoryEn": "Smart Kitchen & Mini Bar",
+    "oldFolder": "智能廚房跟米妮吧",
+    "oldFileName": "LINE_ALBUM_智能廚房跟米妮吧_261009_3.jpg",
+    "newFolder": "kitchen-bar",
+    "newFileName": "kitchen-bar-03.jpg",
+    "webPath": "/img/kitchen-bar/kitchen-bar-03.jpg"
+  },
+  {
+    "categoryZh": "智能廚房與Mini Bar",
+    "categoryEn": "Smart Kitchen & Mini Bar",
+    "oldFolder": "智能廚房跟米妮吧",
+    "oldFileName": "LINE_ALBUM_智能廚房跟米妮吧_261009_4.jpg",
+    "newFolder": "kitchen-bar",
+    "newFileName": "kitchen-bar-04.jpg",
+    "webPath": "/img/kitchen-bar/kitchen-bar-04.jpg"
+  },
+  {
+    "categoryZh": "智能廚房與Mini Bar",
+    "categoryEn": "Smart Kitchen & Mini Bar",
+    "oldFolder": "智能廚房跟米妮吧",
+    "oldFileName": "LINE_ALBUM_智能廚房跟米妮吧_261009_5.jpg",
+    "newFolder": "kitchen-bar",
+    "newFileName": "kitchen-bar-05.jpg",
+    "webPath": "/img/kitchen-bar/kitchen-bar-05.jpg"
+  },
+  {
+    "categoryZh": "智能廚房與Mini Bar",
+    "categoryEn": "Smart Kitchen & Mini Bar",
+    "oldFolder": "智能廚房跟米妮吧",
+    "oldFileName": "LINE_ALBUM_智能廚房跟米妮吧_261009_6.jpg",
+    "newFolder": "kitchen-bar",
+    "newFileName": "kitchen-bar-06.jpg",
+    "webPath": "/img/kitchen-bar/kitchen-bar-06.jpg"
+  },
+  {
+    "categoryZh": "建築外觀、泡茶區與烤肉區",
+    "categoryEn": "Exterior, Tea Area & BBQ",
+    "oldFolder": "建築物、泡茶區、烤肉區",
+    "oldFileName": "LINE_ALBUM_建築物、泡茶區和烤肉區_261009_1.jpg",
+    "newFolder": "outdoor-bbq-tea",
+    "newFileName": "outdoor-bbq-tea-01.jpg",
+    "webPath": "/img/outdoor-bbq-tea/outdoor-bbq-tea-01.jpg"
+  },
+  {
+    "categoryZh": "建築外觀、泡茶區與烤肉區",
+    "categoryEn": "Exterior, Tea Area & BBQ",
+    "oldFolder": "建築物、泡茶區、烤肉區",
+    "oldFileName": "LINE_ALBUM_建築物、泡茶區和烤肉區_261009_2.jpg",
+    "newFolder": "outdoor-bbq-tea",
+    "newFileName": "outdoor-bbq-tea-02.jpg",
+    "webPath": "/img/outdoor-bbq-tea/outdoor-bbq-tea-02.jpg"
+  },
+  {
+    "categoryZh": "建築外觀、泡茶區與烤肉區",
+    "categoryEn": "Exterior, Tea Area & BBQ",
+    "oldFolder": "建築物、泡茶區、烤肉區",
+    "oldFileName": "LINE_ALBUM_建築物、泡茶區和烤肉區_261009_3.jpg",
+    "newFolder": "outdoor-bbq-tea",
+    "newFileName": "outdoor-bbq-tea-03.jpg",
+    "webPath": "/img/outdoor-bbq-tea/outdoor-bbq-tea-03.jpg"
+  },
+  {
+    "categoryZh": "建築外觀、泡茶區與烤肉區",
+    "categoryEn": "Exterior, Tea Area & BBQ",
+    "oldFolder": "建築物、泡茶區、烤肉區",
+    "oldFileName": "LINE_ALBUM_建築物、泡茶區和烤肉區_261009_4.jpg",
+    "newFolder": "outdoor-bbq-tea",
+    "newFileName": "outdoor-bbq-tea-04.jpg",
+    "webPath": "/img/outdoor-bbq-tea/outdoor-bbq-tea-04.jpg"
+  },
+  {
+    "categoryZh": "建築外觀、泡茶區與烤肉區",
+    "categoryEn": "Exterior, Tea Area & BBQ",
+    "oldFolder": "建築物、泡茶區、烤肉區",
+    "oldFileName": "LINE_ALBUM_建築物、泡茶區和烤肉區_261009_5.jpg",
+    "newFolder": "outdoor-bbq-tea",
+    "newFileName": "outdoor-bbq-tea-05.jpg",
+    "webPath": "/img/outdoor-bbq-tea/outdoor-bbq-tea-05.jpg"
+  },
+  {
+    "categoryZh": "建築外觀、泡茶區與烤肉區",
+    "categoryEn": "Exterior, Tea Area & BBQ",
+    "oldFolder": "建築物、泡茶區、烤肉區",
+    "oldFileName": "LINE_ALBUM_建築物、泡茶區和烤肉區_261009_6.jpg",
+    "newFolder": "outdoor-bbq-tea",
+    "newFileName": "outdoor-bbq-tea-06.jpg",
+    "webPath": "/img/outdoor-bbq-tea/outdoor-bbq-tea-06.jpg"
+  },
+  {
+    "categoryZh": "建築外觀、泡茶區與烤肉區",
+    "categoryEn": "Exterior, Tea Area & BBQ",
+    "oldFolder": "建築物、泡茶區、烤肉區",
+    "oldFileName": "LINE_ALBUM_建築物、泡茶區和烤肉區_261009_7.jpg",
+    "newFolder": "outdoor-bbq-tea",
+    "newFileName": "outdoor-bbq-tea-07.jpg",
+    "webPath": "/img/outdoor-bbq-tea/outdoor-bbq-tea-07.jpg"
+  },
+  {
+    "categoryZh": "建築外觀、泡茶區與烤肉區",
+    "categoryEn": "Exterior, Tea Area & BBQ",
+    "oldFolder": "建築物、泡茶區、烤肉區",
+    "oldFileName": "LINE_ALBUM_建築物、泡茶區和烤肉區_261009_8.jpg",
+    "newFolder": "outdoor-bbq-tea",
+    "newFileName": "outdoor-bbq-tea-08.jpg",
+    "webPath": "/img/outdoor-bbq-tea/outdoor-bbq-tea-08.jpg"
+  },
+  {
+    "categoryZh": "建築外觀、泡茶區與烤肉區",
+    "categoryEn": "Exterior, Tea Area & BBQ",
+    "oldFolder": "建築物、泡茶區、烤肉區",
+    "oldFileName": "LINE_ALBUM_建築物、泡茶區和烤肉區_261009_9.jpg",
+    "newFolder": "outdoor-bbq-tea",
+    "newFileName": "outdoor-bbq-tea-09.jpg",
+    "webPath": "/img/outdoor-bbq-tea/outdoor-bbq-tea-09.jpg"
+  },
+  {
+    "categoryZh": "建築外觀、泡茶區與烤肉區",
+    "categoryEn": "Exterior, Tea Area & BBQ",
+    "oldFolder": "建築物、泡茶區、烤肉區",
+    "oldFileName": "LINE_ALBUM_建築物、泡茶區和烤肉區_261009_10.jpg",
+    "newFolder": "outdoor-bbq-tea",
+    "newFileName": "outdoor-bbq-tea-10.jpg",
+    "webPath": "/img/outdoor-bbq-tea/outdoor-bbq-tea-10.jpg"
+  },
+  {
+    "categoryZh": "建築外觀、泡茶區與烤肉區",
+    "categoryEn": "Exterior, Tea Area & BBQ",
+    "oldFolder": "建築物、泡茶區、烤肉區",
+    "oldFileName": "LINE_ALBUM_建築物、泡茶區和烤肉區_261009_11.jpg",
+    "newFolder": "outdoor-bbq-tea",
+    "newFileName": "outdoor-bbq-tea-11.jpg",
+    "webPath": "/img/outdoor-bbq-tea/outdoor-bbq-tea-11.jpg"
+  },
+  {
+    "categoryZh": "日落晚霞與夜晚夜景",
+    "categoryEn": "Sunset & Night View",
+    "oldFolder": "日落與夜晚景色",
+    "oldFileName": "LINE_ALBUM_日落與夜晚景色_261009_1.jpg",
+    "newFolder": "scenery-night",
+    "newFileName": "scenery-night-01.jpg",
+    "webPath": "/img/scenery-night/scenery-night-01.jpg"
+  },
+  {
+    "categoryZh": "日落晚霞與夜晚夜景",
+    "categoryEn": "Sunset & Night View",
+    "oldFolder": "日落與夜晚景色",
+    "oldFileName": "LINE_ALBUM_日落與夜晚景色_261009_2.jpg",
+    "newFolder": "scenery-night",
+    "newFileName": "scenery-night-02.jpg",
+    "webPath": "/img/scenery-night/scenery-night-02.jpg"
+  },
+  {
+    "categoryZh": "日落晚霞與夜晚夜景",
+    "categoryEn": "Sunset & Night View",
+    "oldFolder": "日落與夜晚景色",
+    "oldFileName": "LINE_ALBUM_日落與夜晚景色_261009_3.jpg",
+    "newFolder": "scenery-night",
+    "newFileName": "scenery-night-03.jpg",
+    "webPath": "/img/scenery-night/scenery-night-03.jpg"
+  },
+  {
+    "categoryZh": "日落晚霞與夜晚夜景",
+    "categoryEn": "Sunset & Night View",
+    "oldFolder": "日落與夜晚景色",
+    "oldFileName": "LINE_ALBUM_日落與夜晚景色_261009_4.jpg",
+    "newFolder": "scenery-night",
+    "newFileName": "scenery-night-04.jpg",
+    "webPath": "/img/scenery-night/scenery-night-04.jpg"
+  },
+  {
+    "categoryZh": "日落晚霞與夜晚夜景",
+    "categoryEn": "Sunset & Night View",
+    "oldFolder": "日落與夜晚景色",
+    "oldFileName": "LINE_ALBUM_日落與夜晚景色_261009_5.jpg",
+    "newFolder": "scenery-night",
+    "newFileName": "scenery-night-05.jpg",
+    "webPath": "/img/scenery-night/scenery-night-05.jpg"
+  },
+  {
+    "categoryZh": "日落晚霞與夜晚夜景",
+    "categoryEn": "Sunset & Night View",
+    "oldFolder": "日落與夜晚景色",
+    "oldFileName": "LINE_ALBUM_日落與夜晚景色_261009_6.jpg",
+    "newFolder": "scenery-night",
+    "newFileName": "scenery-night-06.jpg",
+    "webPath": "/img/scenery-night/scenery-night-06.jpg"
+  },
+  {
+    "categoryZh": "日落晚霞與夜晚夜景",
+    "categoryEn": "Sunset & Night View",
+    "oldFolder": "日落與夜晚景色",
+    "oldFileName": "LINE_ALBUM_日落與夜晚景色_261009_7.jpg",
+    "newFolder": "scenery-night",
+    "newFileName": "scenery-night-07.jpg",
+    "webPath": "/img/scenery-night/scenery-night-07.jpg"
+  }
+]

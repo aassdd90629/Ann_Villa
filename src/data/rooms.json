@@ -1,135 +1,184 @@
 [
   {
     "id": "room-01",
-    "titleZh": "雲海景觀旗艦尊爵套房",
-    "titleEn": "Sea of Clouds Flagship Suite",
-    "subtitleZh": "270度環景山巒雲海・全景景觀石造浴缸",
-    "subtitleEn": "270° Panoramic Mountain Vistas & Stone Soaking Tub",
-    "capacityZh": "4 ~ 6 人",
-    "capacityEn": "4 - 6 Guests",
-    "bedTypeZh": "特大雙人床 (King Size) x 2 + 日式榻榻米加床區",
-    "bedTypeEn": "2 King Beds + Japanese Tatami Daybed",
-    "size": "78 ㎡ (約 24 坪)",
-    "image": "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1400&q=80",
+    "floor": "1F",
+    "titleZh": "1樓 綠意四人景觀套房",
+    "titleEn": "1F Garden View Quad Suite",
+    "subtitleZh": "1樓無障礙便利動線・大面綠意窗景・獨立乾濕分離衛浴",
+    "subtitleEn": "1F Step-Free Access · Garden Views · Private Ensuite Bath",
+    "capacityZh": "4 人",
+    "capacityEn": "4 Guests",
+    "bedTypeZh": "加大雙人床 (Queen Size) x 1 + 標準雙人床 x 1",
+    "bedTypeEn": "1 Queen Bed + 1 Standard Double Bed",
+    "size": "約 12 坪",
+    "image": "/img/room-1/room-1-01.jpg",
     "gallery": [
-      "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=1200&q=80"
+      "/img/room-1/room-1-01.jpg",
+      "/img/room-1/room-1-02.jpg",
+      "/img/room-1/room-1-03.jpg",
+      "/img/room-1/room-1-04.jpg",
+      "/img/room-1/room-1-05.jpg"
     ],
     "highlightsZh": [
-      "270度超大落地觀景窗，破曉時分直面雲海日出",
-      "獨立景觀陽台與躺椅休憩區",
-      "雙人深浸式石造天然景觀浴池",
-      "Dyson 吹風機與頂級茶籽堂沐浴備品",
-      "Marshall 復古藍牙音響"
+      "位於1樓無障礙友善動線，長輩小孩入住安心便利",
+      "配置 1 張 Queen Size 加大雙人床 + 1 張標準雙人床",
+      "大面採光觀景窗，盡攬綠意山林晨光",
+      "獨立乾濕分離衛浴與全套草本洗沐備品",
+      "獨立冷暖恆溫變頻空調"
     ],
     "highlightsEn": [
-      "270-degree floor-to-ceiling glass wall facing sunrise and mist",
-      "Private outdoor balcony with panoramic loungers",
-      "Deep-soak natural stone scenic bath",
-      "Dyson Supersonic hairdryer & Cha Tzu Tang amenities",
-      "Marshall Bluetooth acoustic speaker"
+      "Convenient 1F step-free access, ideal for seniors and families",
+      "1 Queen Bed + 1 Standard Double Bed",
+      "Generous scenic windows embracing morning forest light",
+      "Private ensuite bathroom with botanical bath amenities",
+      "Independent inverter heating and cooling AC"
     ],
-    "descZh": "山莊最頂級的旗艦之作，晨起時分薄霧繚繞，推開落地窗即可俯瞰綿延千里的雲海山嵐。房內設有專屬景觀泡湯池，在沉浸於溫暖泉水時，盡覽星辰與山谷暮色。",
-    "descEn": "The crown jewel of Shan Yu Villa. Marvel at rolling sea of clouds at dawn through floor-to-ceiling panoramic glass. Features a private stone soaking tub overlooking the tranquil forest."
+    "descZh": "位於一樓的寬敞四人套房，設有一張 Queen Size 雙人床與一張標準雙人床。溫潤木質調與大面窗景相映成趣，免除上下樓梯負擔，讓旅人在自然晨光中舒活甦醒。",
+    "descEn": "Spacious ground-floor quad suite featuring 1 Queen-size bed and 1 standard double bed. Warm timber tones and tranquil natural morning light ensure a deeply restful stay without stairs."
   },
   {
     "id": "room-02",
-    "titleZh": "山語隱逸庭園雙人套房",
-    "titleEn": "Zen Garden Sanctuary Suite",
-    "subtitleZh": "私人枯山水庭園・雙人石造露天風呂",
-    "subtitleEn": "Private Zen Rock Garden & Outdoor Stone Bath",
-    "capacityZh": "2 ~ 4 人",
-    "capacityEn": "2 - 4 Guests",
-    "bedTypeZh": "特大雙人床 (King Size) x 1 + 榻榻米起居室",
-    "bedTypeEn": "1 King Bed + Tatami Living Space",
-    "size": "65 ㎡ (約 20 坪)",
-    "image": "https://images.unsplash.com/photo-1591088398332-8a7791972843?auto=format&fit=crop&w=1400&q=80",
+    "floor": "1F",
+    "titleZh": "1樓 山語隱逸雙人套房",
+    "titleEn": "1F Serenity Double Suite",
+    "subtitleZh": "加大 Queen Size 舒眠名床・沉靜私密時光・獨立衛浴",
+    "subtitleEn": "1 Queen Size Bed · Intimate Retreat · Private Ensuite Bath",
+    "capacityZh": "2 人",
+    "capacityEn": "2 Guests",
+    "bedTypeZh": "加大雙人床 (Queen Size) x 1",
+    "bedTypeEn": "1 Queen Size Bed",
+    "size": "約 9 坪",
+    "image": "/img/room-2/room-2-01.jpg",
     "gallery": [
-      "https://images.unsplash.com/photo-1591088398332-8a7791972843?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?auto=format&fit=crop&w=1200&q=80"
+      "/img/room-2/room-2-01.jpg",
+      "/img/room-2/room-2-02.jpg",
+      "/img/room-2/room-2-03.jpg",
+      "/img/room-2/room-2-04.jpg",
+      "/img/room-2/room-2-05.jpg"
     ],
     "highlightsZh": [
-      "專屬獨立日式枯山水庭園出入口",
-      "私人雙人石造戶外露天風呂",
-      "原木品茗茶席與在地高山冷泡茶組",
-      "獨立冷暖恆溫空調系統",
-      "頂級乳膠獨立筒舒眠大床"
+      "專屬 1 張 Queen Size 加大雙人床與高支數純棉寢具",
+      "專為伴侶或知心好友設計的私密靜謐休憩空間",
+      "獨立乾濕分離衛浴與高品質洗沐備品",
+      "柔和間接氛圍情境燈光",
+      "獨立冷暖空調，四季如春"
     ],
     "highlightsEn": [
-      "Exclusive private access to Japanese Zen rock garden",
-      "Private dual outdoor stone thermal bath",
-      "Handcrafted solid wood tea ceremony set with premium tea",
-      "Independent inverter climate control system",
-      "Luxury orthopaedic pocket spring mattress"
+      "1 Queen Size Bed with high thread-count luxury linen",
+      "Intimate, peaceful retreat tailored for couples or close companions",
+      "Private ensuite wet & dry bathroom",
+      "Warm ambient lighting for deep relaxation",
+      "Independent climate control system"
     ],
-    "descZh": "以東方寂靜美學為設計核心，連結專屬私人日式庭園，綠竹微風搖曳。在石造風呂中享受私密放鬆時光，體驗歲月靜好的深層療癒。",
-    "descEn": "Designed with oriental wabi-sabi aesthetics, connected directly to a private zen bamboo garden. Unwind in your private stone bath amid gentle forest breezes."
+    "descZh": "專為兩人打造的雅緻套房，配備頂級 Queen Size 加大雙人床與舒眠寢具。空間設計雅緻沉靜，為伴侶或好友提供遠離喧囂的私密放鬆天地。",
+    "descEn": "An intimate suite tailored for couples or close companions, equipped with a plush Queen-size bed and tranquil minimalist decor for total relaxation."
   },
   {
     "id": "room-03",
-    "titleZh": "星空露台家庭精緻套房",
-    "titleEn": "Starry Sky Terrace Suite",
-    "subtitleZh": "頂樓專屬觀星露台・4K劇院百吋投影",
-    "subtitleEn": "Rooftop Stargazing Terrace & 4K Cinema Projection",
+    "floor": "1F",
+    "titleZh": "1樓 雅緻舒活四人套房",
+    "titleEn": "1F Elegance Quad Suite",
+    "subtitleZh": "標準雙人床兩張・通透採光・清幽園景與獨立衛浴",
+    "subtitleEn": "2 Standard Double Beds · Bright Airy Living · Private Ensuite Bath",
     "capacityZh": "4 人",
     "capacityEn": "4 Guests",
-    "bedTypeZh": "加大雙人床 (Queen Size) x 2",
-    "bedTypeEn": "2 Queen Beds",
-    "size": "70 ㎡ (約 21 坪)",
-    "image": "https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=1400&q=80",
+    "bedTypeZh": "標準雙人床 x 2",
+    "bedTypeEn": "2 Standard Double Beds",
+    "size": "約 11 坪",
+    "image": "/img/room-3/room-3-01.jpg",
     "gallery": [
-      "https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=1200&q=80"
+      "/img/room-3/room-3-01.jpg",
+      "/img/room-3/room-3-02.jpg",
+      "/img/room-3/room-3-03.jpg",
+      "/img/room-3/room-3-04.jpg"
     ],
     "highlightsZh": [
-      "頂樓無遮蔽專屬觀星大露台",
-      "4K 劇院級百吋微型雷射投影機",
-      "乾濕分離衛浴與全自動免治馬桶",
-      "家庭專屬舒適沙發交誼區",
-      "膠囊咖啡機與精選茶點"
+      "標準雙人床 2 張，彈性舒適的睡眠配置",
+      "1樓便利動線，鄰近客廳與戶外庭園",
+      "大面採光開窗，空氣流通視野清新",
+      "獨立乾濕分離衛浴",
+      "頂級獨立筒床墊與靜音空調"
     ],
     "highlightsEn": [
-      "Unobstructed rooftop terrace perfect for stargazing",
-      "4K 100-inch cinema laser projector with streaming",
-      "Separate wet & dry bathroom with smart toilet",
-      "Spacious family lounge conversation area",
-      "Capsule espresso machine & artisan cookies"
+      "2 Standard double beds providing flexible, cozy accommodation",
+      "Convenient 1F access near lounge and outdoor patio",
+      "Wide scenic window with superb fresh air and garden vistas",
+      "Private ensuite wet & dry bathroom",
+      "Premium pocket spring beds and silent AC"
     ],
-    "descZh": "位於山莊頂層，擁有無光害的寬闊觀星露台。夜晚可在此仰望璀璨銀河，房內更配備高階 4K 百吋劇院投影，是家庭與好友同歡的溫馨天地。",
-    "descEn": "Perched on the top floor with pristine starry views free of light pollution. Features a 100-inch 4K home theater system, making it the favorite for families and friends."
+    "descZh": "座落於一樓的典雅四人房型，配置兩張標準雙人床。通透明亮的空間規劃與柔和燈光，是家庭出遊或好友結伴出行的理想居所。",
+    "descEn": "Elegant quad room on the first floor with two standard double beds. Bright, harmonious space with serene green views, ideal for families and friends."
   },
   {
     "id": "room-04",
-    "titleZh": "林岫沉靜大器家庭套房",
-    "titleEn": "Forest Whisper Executive Suite",
-    "subtitleZh": "大器暖木起居空間・林相環抱・靜謐茶席",
-    "subtitleEn": "Grand Timber Living Space & Forest Canopy Views",
+    "floor": "2F",
+    "titleZh": "2樓 雲岫全景四人套房",
+    "titleEn": "2F Mountain Vista Quad Suite",
+    "subtitleZh": "高樓層遠眺開闊山景・標準雙人床兩張・獨立衛浴",
+    "subtitleEn": "Elevated Panoramic Mountain View · 2 Double Beds · Ensuite Bath",
     "capacityZh": "4 人",
     "capacityEn": "4 Guests",
-    "bedTypeZh": "加大雙人床 (Queen Size) x 2",
-    "bedTypeEn": "2 Queen Beds",
-    "size": "72 ㎡ (約 22 坪)",
-    "image": "https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=1400&q=80",
+    "bedTypeZh": "標準雙人床 x 2",
+    "bedTypeEn": "2 Standard Double Beds",
+    "size": "約 12 坪",
+    "image": "/img/room-4/room-4-01.jpg",
     "gallery": [
-      "https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=80"
+      "/img/room-4/room-4-01.jpg",
+      "/img/room-4/room-4-02.jpg",
+      "/img/room-4/room-4-03.jpg",
+      "/img/room-4/room-4-04.jpg"
     ],
     "highlightsZh": [
-      "沉穩黑胡桃木與天然珪藻土牆面",
-      "綠意森林窗景與清幽鳥語環境",
-      "乾濕分離雙洗手台寬敞衛浴",
-      "原木茶几與全套手作陶藝茶具",
-      "靜音冷藏冰箱與迎賓高山水果盤"
+      "位於2樓制高視野，居高臨下飽覽雲霧山嵐",
+      "標準雙人床 2 張，頂級舒眠厚床墊",
+      "大面採光木質景觀窗",
+      "房內獨立乾濕分離專屬衛浴",
+      "高雅木質內裝與靜音變頻空調"
     ],
     "highlightsEn": [
-      "Warm walnut timber & natural diatomite artisan walls",
-      "Lush forest canopy windows with birdsong ambience",
-      "Spacious bathroom with dual vanities",
-      "Handcrafted pottery tea set on solid wood table",
-      "Whisper-quiet mini fridge & seasonal welcome fruit"
+      "Elevated 2F vantage point overlooking rolling clouds and forests",
+      "2 Standard double beds with plush mattresses",
+      "Expansive scenic wood-framed window",
+      "Ensuite wet & dry bathroom inside the room",
+      "Refined timber interior with whisper-quiet climate control"
     ],
-    "descZh": "沉穩溫潤的黑胡桃原木質調，窗外即是蒼翠林相。空氣中瀰漫著淡淡木香與山間芬多精，提供最純粹寧靜的深層睡眠體驗。",
-    "descEn": "Embraced by towering mountain woods, featuring natural walnut textures and serene woodland vistas. The gentle fragrance of timber ensures deep, restorative sleep."
+    "descZh": "位於二樓的開闊景觀四人套房，居高臨下俯瞰山林蔥鬱景色。兩張舒適雙人床搭配溫潤木紋，清晨推開窗簾即可飽覽山嵐漫卷。",
+    "descEn": "Elevated on the second floor with panoramic mountain vistas. Features two double beds surrounded by natural wood aesthetics for an unforgettable morning view."
+  },
+  {
+    "id": "room-05",
+    "floor": "2F",
+    "titleZh": "2樓 星嵐景觀四人房 (專屬獨立衛浴位於1樓)",
+    "titleEn": "2F Starlight Quad Room (1F Dedicated Bath)",
+    "subtitleZh": "二樓高採光寧靜居室・標準雙人床兩張・1樓專屬獨立衛浴",
+    "subtitleEn": "Tranquil 2F Bedroom · 2 Double Beds · Exclusive 1F Dedicated Bath",
+    "capacityZh": "4 人",
+    "capacityEn": "4 Guests",
+    "bedTypeZh": "標準雙人床 x 2",
+    "bedTypeEn": "2 Standard Double Beds",
+    "size": "約 11 坪",
+    "image": "/img/room-5/room-5-01.jpg",
+    "gallery": [
+      "/img/room-5/room-5-01.jpg",
+      "/img/room-5/room-5-02.jpg",
+      "/img/room-5/room-5-03.jpg",
+      "/img/room-5/room-5-04.jpg"
+    ],
+    "highlightsZh": [
+      "2樓極致清幽睡眠空間，不受外界干擾",
+      "標準雙人床 2 張，舒適透氣天然羽絨寢具",
+      "專屬獨立衛浴規劃於1樓使用，設備完善齊全",
+      "自然通風與採光極佳，夜間可仰望星空暮色",
+      "獨立冷暖空調系統"
+    ],
+    "highlightsEn": [
+      "Deeply peaceful 2F sleeping chamber free from disturbance",
+      "2 Standard double beds with breathable down bedding",
+      "Exclusive dedicated full bathroom situated on 1F",
+      "Superb natural daylight and ventilation",
+      "Independent heating and cooling AC"
+    ],
+    "descZh": "二樓寧靜高採光的四人房型，配置兩張標準雙人床。房內視野開闊舒暢，專屬獨立衛浴設施規劃於一樓，提供隱私且舒適的睡眠體驗。",
+    "descEn": "A tranquil, light-filled quad room on the second floor with 2 double beds. Features scenic mountain windows and a dedicated private bathroom located on the first floor."
   }
 ]

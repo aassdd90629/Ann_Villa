@@ -19,13 +19,13 @@ const routes = [
     path: '/rooms',
     name: 'rooms',
     component: RoomsView,
-    meta: { title: '房型導覽 ｜ 4 間獨立景觀套房 ｜ 山語 Villa' }
+    meta: { title: '房型導覽 ｜ 5 間獨立客房 ｜ 山語 Villa' }
   },
   {
     path: '/facilities',
     name: 'facilities',
     component: FacilitiesView,
-    meta: { title: '園區設施 ｜ 泳池・湯屋・劇院 ｜ 山語 Villa' }
+    meta: { title: '園區設施 ｜ 麻將・KTV・烤肉・智能廚房・泡茶 ｜ 山語 Villa' }
   },
   {
     path: '/packages',

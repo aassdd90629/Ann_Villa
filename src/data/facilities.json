@@ -1,42 +1,62 @@
 [
   {
-    "id": "pool",
-    "titleZh": "無邊際山景景觀泳池",
-    "titleEn": "Infinity Mountain View Pool",
-    "descZh": "水天一色的無邊際設計，直面重巒疊嶂的山谷。白天享受陽光與微風，傍晚倒映落日晚霞，池畔備有舒適防水躺椅。",
-    "descEn": "An infinity pool seamlessly merging with the breathtaking mountain ridgeline, equipped with luxury outdoor cabana sun loungers.",
-    "image": "https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?auto=format&fit=crop&w=1200&q=80",
-    "featuresZh": ["恆溫水質過濾系統", "水深 1.2 米安全水域", "專屬池畔防水音響", "夜間水底氛圍情境燈"],
-    "featuresEn": ["Filtered temperature control system", "1.2m depth safe area", "Waterproof sound system", "Ambient underwater night lighting"]
+    "id": "mahjong-lounge",
+    "titleZh": "電動麻將桌娛樂交誼區",
+    "titleEn": "Automatic Mahjong Entertainment Lounge",
+    "descZh": "配備高階靜音電動四口過牌麻將桌與舒適人體工學椅，親朋好友包棟歡聚切磋牌藝的歡樂時光，徹底解放雙手、享受悠閒牌局。",
+    "descEn": "Equipped with a quiet four-port motorized automatic mahjong table and ergonomic chairs, perfect for friendly matches and leisure.",
+    "image": "/img/living-ktv/living-ktv-02.jpg",
+    "featuresZh": ["全自動靜音洗牌與升降桌面", "舒適旋轉人體工學座椅", "專用雕刻牌組與籌碼配備", "獨立交誼空間不干擾就寢區"],
+    "featuresEn": ["Automatic whisper-quiet shuffling", "Ergonomic swivel armchairs", "Full curated tiles & chips set", "Separated social space without disturbing bedrooms"]
   },
   {
-    "id": "onsen",
-    "titleZh": "日式石造天然溫泉湯屋",
-    "titleEn": "Japanese Stone Onsen Bathhouse",
-    "descZh": "採用天然玄武岩手工砌築而成，引進頂級弱鹼性碳酸氫鈉泉質，搭配檜木香氣與柔和格柵採光，洗滌一身疲憊。",
-    "descEn": "Handcrafted with natural basalt rock and infused with gentle mineral spring water, surrounded by hinoki cypress aromas.",
-    "image": "https://images.unsplash.com/photo-1584132967334-10e028bd69f7?auto=format&fit=crop&w=1200&q=80",
-    "featuresZh": ["天然弱鹼性碳酸泉", "原木檜木坐榻與格柵", "茶籽堂高級草本洗沐品", "乾濕分離更衣梳妝區"],
-    "featuresEn": ["Natural mineral spring water", "Hinoki timber lounge seating", "Cha Tzu Tang herbal bath sets", "Private vanity & change room"]
+    "id": "ktv-theater",
+    "titleZh": "大客廳與專業卡拉OK歡唱系統",
+    "titleEn": "Grand Living Hall & Professional KTV System",
+    "descZh": "挑高寬敞的豪華大客廳，配備高階音響、大螢幕電視與最新點歌卡拉OK系統，支援多人對唱，讓您的歡聚之夜充滿歌聲與笑聲。",
+    "descEn": "Soaring, spacious living hall equipped with professional acoustics, big-screen display, and the latest karaoke system with wireless microphones.",
+    "image": "/img/living-ktv/living-ktv-01.jpg",
+    "featuresZh": ["海量最新雲端伴唱歌單", "雙支無線抗噪動圈麥克風", "高傳真立體環繞音響", "寬敞深座舒適真皮大沙發"],
+    "featuresEn": ["Cloud-updated song catalog", "Dual anti-feedback wireless microphones", "Hi-Fi dynamic surround sound", "Spacious deep leather seating"]
   },
   {
-    "id": "theater",
-    "titleZh": "星空劇院與多功能交誼廳",
-    "titleEn": "Starry Cinema & Social Lounge",
-    "descZh": "配備 150 吋 4K 劇院投影與 Dolby Atmos 全景聲音響，支援 Netflix、YouTube 與各類遊戲主機，同樂包場的最佳空間。",
-    "descEn": "Featuring a 150-inch 4K laser projection with Dolby Atmos sound system, streaming services, and multi-game console connections.",
-    "image": "https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?auto=format&fit=crop&w=1200&q=80",
-    "featuresZh": ["150吋超大 4K 投影布幕", "Dolby Atmos 杜比環繞劇院音效", "高階歡唱 KTV 系統 (隔音完善)", "舒適深座真皮沙發"],
-    "featuresEn": ["150-inch 4K laser screen", "Dolby Atmos surround sound", "Professional soundproof KTV system", "Deep leather luxury sofa"]
+    "id": "tea-ceremony",
+    "titleZh": "戶外原木品茗茶席與精緻茶具",
+    "titleEn": "Outdoor Tea Ceremony Terrace & Artisan Teaware",
+    "descZh": "特別規劃戶外採光原木泡茶席，備妥全套手作陶藝茶具與高山好水。在山嵐流轉與微風吹拂下，細細品味一壺在地好茶的甘醇回甘。",
+    "descEn": "Serene outdoor solid-wood tea pavilion equipped with handcrafted pottery teaware, inviting you to savor fine mountain tea amid the gentle mountain breeze.",
+    "image": "/img/outdoor-bbq-tea/outdoor-bbq-tea-03.jpg",
+    "featuresZh": ["原木大器泡茶茶几", "全套功夫手作紫砂與陶瓷茶具", "高山甘泉煮水壺", "清風拂面與綠意環繞茶席"],
+    "featuresEn": ["Solid timber tea tasting table", "Full Kung-Fu artisan teaware", "Spring-water boiling kettle", "Tranquil open-air mountain atmosphere"]
   },
   {
-    "id": "kitchen",
-    "titleZh": "頂級中島開放式廚房與大長桌宴會廳",
-    "titleEn": "Chef Open Island Kitchen & Grand Dining Hall",
-    "descZh": "全套進口廚具、IH 感應爐、大型烤箱、洗碗機與雙門冰箱一應俱全。可容納 18~20 人的實木原木長桌，是親友歡聚盛宴的核心。",
-    "descEn": "Equipped with luxury imported appliances, induction cooktops, wine cellar, and a solid oak dining table seating up to 20 guests.",
-    "image": "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=1200&q=80",
-    "featuresZh": ["原木 20 人長宴會餐桌", "全套進口烘烤設備與洗碗機", "精品手沖與義式膠囊咖啡機", "全套精美陶瓷餐盤與酒杯"],
-    "featuresEn": ["20-person solid timber table", "Full imported oven & dishwasher", "Artisan pour-over & espresso gear", "Curated porcelain tableware & glassware"]
+    "id": "outdoor-bbq",
+    "titleZh": "戶外庭園美式烤肉 BBQ 區",
+    "titleEn": "Outdoor Garden BBQ Grill & Party Area",
+    "descZh": "寬敞的戶外庭園專屬烤肉區，配備美式大型烤肉爐、洗滌流理台與遮陽休閒桌椅，親友齊聚同享碳烤美味與星空歡笑。",
+    "descEn": "Spacious outdoor landscaped BBQ area featuring an American barbecue grill, prep sink, and festive patio dining tables under the open sky.",
+    "image": "/img/outdoor-bbq-tea/outdoor-bbq-tea-02.jpg",
+    "featuresZh": ["美式大型戶外烤肉爐具", "戶外專屬食材洗滌流理台", "休閒庭園長桌與遮陽休閒椅", "夜間氛圍情境照明"],
+    "featuresEn": ["Large American BBQ grill", "Dedicated outdoor food prep sink", "Garden dining long tables & seating", "Warm evening mood lighting"]
+  },
+  {
+    "id": "smart-kitchen",
+    "titleZh": "頂級智能廚房與時尚 Mini Bar",
+    "titleEn": "Smart Gourmet Kitchen & Mini Bar Lounge",
+    "descZh": "現代化開放式智能中島廚房與高腳 Mini Bar，大型雙門冰箱、微波爐、電鍋、熱水壺及餐具一應俱全，無論料理下廚或調飲皆隨心所欲。",
+    "descEn": "Contemporary open-concept island kitchen and stylish high-top mini bar, equipped with large double-door refrigerator, appliances, and glassware.",
+    "image": "/img/kitchen-bar/kitchen-bar-01.jpg",
+    "featuresZh": ["開放式智能料理中島與高腳吧台", "大型雙門家用冷藏冷凍冰箱", "微波爐、快煮壺、全套碗盤刀叉", "精緻高腳酒杯與品飲器皿"],
+    "featuresEn": ["Smart cooking island & high bar", "Spacious double-door refrigerator", "Microwave, kettle, full cutlery sets", "Premium glassware & drink accessories"]
+  },
+  {
+    "id": "butler-care",
+    "titleZh": "24 小時貼心管家服務與全區私密包棟",
+    "titleEn": "24-Hour Butler Support & Complete Villa Privacy",
+    "descZh": "專屬管家提供全天候貼心諮詢與即時支援，從入住引導、設施操作到周邊私房景點建議，給您最無微不至的奢華山居款待。",
+    "descEn": "Dedicated 24-hour on-call butler providing attentive service, from check-in welcome to local hidden-gem recommendations, ensuring seamless luxury.",
+    "image": "/img/scenery-night/scenery-night-01.jpg",
+    "featuresZh": ["全天候 LINE / 電話即時管家支援", "專人入住退房接待與導覽說明", "在地隱藏版美食與景點私房推薦", "100% 獨門獨院完全私密不被打擾"],
+    "featuresEn": ["24/7 on-call messaging & phone concierge", "Personal greeting & estate orientation", "Curated local itinerary recommendations", "100% private gated sanctuary"]
   }
 ]

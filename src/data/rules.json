@@ -1,50 +1,72 @@
 {
   "checkInRulesZh": [
-    "入住時間為下午 15:00 以後，退房時間為上午 11:00 以前。為維護清消品質，恕無法無故延後退房。",
-    "全園區室內空間全面嚴禁吸菸、嚼食檳榔，若有違規者將酌收 NT$ 10,000 特殊除味清潔費。",
-    "為維護山林寧靜與住客品質，晚間 22:00 後請降低音量，戶外露台與泳池區禁止大聲喧嘩。",
-    "園區嚴禁攜帶違禁品、危險物品、施放煙火及任何違法行為，違者將立即報警處理且房費恕不退還。",
-    "入住時需收取押金 NT$ 10,000，於退房檢查無物品損壞或違規後全額無息退還。"
+    "入住時間：當日下午 15:00 以後。如超過 18:00 以後入住，請於訂房時備註或是打電話告知，逾時恕不保留客房亦不退費。",
+    "退房時間：隔日上午 11:00 以前。退房時務必交還房門鑰匙；離開房間時請先關冷氣、電源。恕不延長退房，延長一小時另酌收 NT$ 2,000 元費用。",
+    "現場押金：入住當天現場需收取押金 NT$ 3,000 元，退房時經檢查無損壞、環境整理乾淨歸位，將全額退還，敬請放心。",
+    "寵物規範：全館請勿攜帶寵物入內，不便之處敬請見諒。",
+    "嚴禁爆竹：園區內全面禁止施放煙火、放鞭炮及仙女棒，以維護山林與公共安全。",
+    "人數限制：入住當天請依約定人數入住，整棟樓最多容納 18 個人，現場無法提供加床服務。",
+    "全面禁菸：本民宿嚴格適用菸害防制法，室內（包含公共空間、走廊與所有房間）全面禁止吸菸（包含傳統紙菸與電子菸）。",
+    "違法行為：屋內嚴禁轟趴、吸毒、嚼檳榔、酗酒、聚賭等任何違法性行為，若經發現一律報警處理並取消住宿且不予退費。",
+    "續住備品：續住之房客，民宿不主動進房更換毛巾或浴巾，如需更換備品請主動告知管家。",
+    "節能安全：請勿在客房內使用非民宿提供之瓦斯爐或電磁爐等危險物品，並請隨手關燈及節約用水。",
+    "保管貴重：個人貴重物品請自行妥善保管，如有遺失恕不負責，敬請見諒。",
+    "物品賠償：請愛惜並勿破壞屋內傢俱與設施，退房時若經發現損壞或遺失，需照價賠償。",
+    "慢生活理念：山語 Villa 豪宅山莊是個適合慢生活的清幽民宿，期盼各位貴賓能好好放鬆享受山裡的林靜和美好，並歡迎您常回來看我們。"
   ],
   "checkInRulesEn": [
-    "Check-in begins at 15:00; Check-out is by 11:00 AM. Late check-out without prior notice is not permitted.",
-    "Smoking and betel nut chewing are strictly prohibited indoors. A deep-cleaning fee of NT$ 10,000 applies for violations.",
-    "Quiet hours commence at 22:00 to preserve forest serenity. Please lower outdoor volume accordingly.",
-    "Illegal substances, dangerous goods, and fireworks are strictly forbidden. Violators will be reported to police with no refund.",
-    "A security deposit of NT$ 10,000 is required upon check-in and will be fully refunded upon checkout inspection."
+    "Check-in begins at 15:00. For arrivals after 18:00, please notify us in advance. Failure to notify may result in reservation cancellation without refund.",
+    "Check-out is by 11:00 AM. Please return all keys and turn off AC/power upon departure. Late checkout is subject to an additional fee of NT$ 2,000 per hour.",
+    "Security Deposit: A refundable deposit of NT$ 3,000 is collected upon arrival and will be fully returned upon checkout inspection and tidy return.",
+    "Pets Policy: Strictly no pets allowed on the premises. Thank you for your understanding.",
+    "Fireworks Policy: Fireworks, firecrackers, and sparklers are strictly prohibited on property to ensure safety.",
+    "Guest Capacity: Strict maximum capacity of 18 guests. No extra bed service is available.",
+    "Non-Smoking: All indoor areas (including guest rooms and shared spaces) are strictly non-smoking (including e-cigarettes / vapes).",
+    "Illegal Activities: Drug use, illegal gatherings, betel nuts, excessive drinking, or gambling are strictly prohibited and will be reported to the police immediately.",
+    "Multi-Night Stays: For eco-friendly hospitality, we do not automatically replace towels during consecutive nights. Please notify our butler if replacement is needed.",
+    "Safety & Energy: Portable gas stoves or high-power induction cookers are not permitted inside guest rooms. Please turn off appliances when leaving.",
+    "Valuables: Please keep personal valuables secure at all times. Shan Yu Villa is not liable for lost items.",
+    "Property Damage: Please care for our furniture and fixtures. Any damage or loss will be charged at replacement cost.",
+    "Slow Living: Shan Yu Villa is designed for tranquility and slow living. Relax, breathe in the fresh mountain air, and enjoy your stay."
   ],
   "extraGuestsZh": {
-    "title": "加人與加床規範",
-    "content": "基本包棟人數為 18 人以內，最多可加至 22 人。超過 18 人每位加收 NT$ 1,500 / 晚（含單人頂級舒適日式厚床墊、精選備品與早餐折抵券）。3 歲以下幼兒不佔床免費（每房限 1 位）。"
+    "title": "容納人數與床位規範",
+    "content": "整棟樓總共 5 間房間，最多容納 18 位貴賓，全館床位已達舒適上限，恕無法提供加床或超額入住服務。請於預訂時確實填寫入住總人數。"
   },
   "extraGuestsEn": {
-    "title": "Extra Guests & Beds Policy",
-    "content": "Standard villa package accommodates up to 18 guests, with a maximum capacity of 22. Additional guests are NT$ 1,500 / night / person (includes luxury Japanese floor mattress, premium amenities, and breakfast voucher). Children under 3 stay free without extra bed (limit 1 per room)."
+    "title": "Capacity & Bedding Policy",
+    "content": "Shan Yu Villa features 5 bedrooms accommodating up to 18 guests maximum. Extra beds are not available. Please confirm exact guest counts upon reservation."
   },
   "faq": [
     {
-      "qZh": "是否有提供專屬停車位？",
-      "qEn": "Is private parking available on site?",
-      "aZh": "是的，山莊內設有專屬封閉式私家停車場，可同時容納 6~8 輛轎車，並設有 2 座 Type 2 / CCS2 電動車 (EV) 充電樁提供住客免費使用。",
-      "aEn": "Yes, Shan Yu Villa provides a private gated parking lot accommodating 6-8 cars, with 2 complimentary EV charging stations (Type 2 / CCS2)."
+      "qZh": "整棟別墅最多可以住幾個人？可以加床嗎？",
+      "qEn": "How many guests can the villa accommodate? Can extra beds be added?",
+      "aZh": "整棟樓共設有 5 間獨立客房（1樓三間、2樓兩間），最多可舒適容納 18 個人。為維護住宿品質與消防安全，全館恕不提供加床服務。",
+      "aEn": "The villa has 5 private bedrooms (3 on 1F, 2 on 2F) accommodating up to 18 guests maximum. Extra beds cannot be added."
     },
     {
-      "qZh": "可以攜帶寵物同行嗎？",
-      "qEn": "Are pets allowed in the villa?",
-      "aZh": "為維護高規格寢具與過敏友善環境，目前全館室內「禁止攜帶寵物入內」。若有導盲犬等需求請提前與客服專員聯繫。",
-      "aEn": "To maintain hypo-allergenic standards and luxury bedding, pets are not allowed indoors. Guide dogs are welcome with prior notice."
+      "qZh": "入住時間與延遲退房如何規定？",
+      "qEn": "What are the check-in times and late check-out policy?",
+      "aZh": "入住時間為當日下午 15:00 以後（若逾 18:00 請務必提前備註告知）；退房時間為隔日上午 11:00 以前。恕不接受延長退房，若需延退以 1 小時為限並另酌收 NT$ 2,000 元清潔費。",
+      "aEn": "Check-in is from 15:00 onwards (please notify if arriving after 18:00). Check-out is by 11:00 AM. Late checkout incurs NT$ 2,000 per hour."
     },
     {
-      "qZh": "廚房設備與烤肉用具齊全嗎？",
-      "qEn": "What kitchen and BBQ facilities are provided?",
-      "aZh": "廚房配備大型烘烤爐、IH 雙口爐、大型冰箱、電鍋、洗碗機與手沖咖啡器材；戶外備有高階美式瓦斯烤肉爐與戶外休閒桌椅，您僅需自備食材與調味醬料即可享受饗宴。",
-      "aEn": "We provide a full open kitchen with oven, IH stoves, rice cooker, dishwasher, and pour-over coffee gear. The outdoor area includes a premium gas BBQ grill."
+      "qZh": "現場押金如何收取與退還？",
+      "qEn": "How does the security deposit work?",
+      "aZh": "入住當天現場需收取押金 NT$ 3,000 元。退房時管家檢查設備完整無破損、室內未吸菸且環境整理歸位乾淨，將當場全額退還給您。",
+      "aEn": "A security deposit of NT$ 3,000 is collected upon arrival. It is fully refunded upon checkout if the property is left clean and undamaged."
     },
     {
-      "qZh": "如何辦理預約與確認訂單？",
-      "qEn": "How do I make a reservation and confirm booking?",
-      "aZh": "請加入官方 LINE (@209yrich) 或點擊網站「預約諮詢」發送訊息，專人將於 2 小時內為您確認檔期並提供專屬匯款資訊。",
-      "aEn": "Please connect via our Official LINE (@209yrich) or click 'Inquiry' to send a request. Our concierge will confirm availability within 2 hours."
+      "qZh": "可以帶寵物或在庭園放煙火嗎？",
+      "qEn": "Are pets or fireworks allowed on the grounds?",
+      "aZh": "為維護高規格寢具衛生與山林防火安全，全館嚴格「禁止攜帶寵物」，並「全面禁止施放任何煙火、鞭炮及仙女棒」。",
+      "aEn": "To preserve sanitation and mountain safety, pets and all kinds of fireworks/sparklers are strictly prohibited."
+    },
+    {
+      "qZh": "別墅有提供哪些公設娛樂與廚房設備？",
+      "qEn": "What entertainment and kitchen amenities are available?",
+      "aZh": "包棟住客專享電動麻將桌、KTV歡唱卡拉OK、戶外室內品茗茶具、庭園美式烤肉BBQ設備、全套智能廚房與Mini Bar，並享有24小時管家貼心諮詢服務。",
+      "aEn": "Guests enjoy exclusive access to automatic mahjong, KTV karaoke, tea tasting sets, outdoor BBQ grill, smart kitchen with mini bar, and 24-hr butler support."
     }
   ]
 }

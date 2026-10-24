@@ -26,8 +26,9 @@ const { isEn, t, tField } = useI18n()
     <!-- 1. Hero 首屏沉浸橫幅 -->
     <section class="hero-section">
       <div class="hero-bg-overlay"></div>
+      <div class="hero-bottom-fade"></div>
       <img 
-        src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=2000&q=85" 
+        src="/img/scenery-night/scenery-night-01.jpg" 
         alt="山語 Villa 景觀" 
         class="hero-img"
         fetchpriority="high"
@@ -36,7 +37,7 @@ const { isEn, t, tField } = useI18n()
       <div class="container hero-content">
         <span class="hero-badge">
           <Sparkles :size="14" />
-          <span>{{ isEn ? 'EXCLUSIVE MOUNTAIN RETREAT' : '南投・極致東方包棟私邸' }}</span>
+          <span>{{ isEn ? 'EXCLUSIVE MOUNTAIN RETREAT' : '南投・全新完工豪宅山莊包棟' }}</span>
         </span>
         <h1 class="hero-title">
           {{ isEn ? siteData.brandNameEn : siteData.brandNameZh }}
@@ -46,8 +47,8 @@ const { isEn, t, tField } = useI18n()
         </p>
         <p class="hero-desc">
           {{ isEn 
-            ? 'Nestled amid rolling clouds and emerald ridgelines, offering 4 private scenic suites, hot onsen stone baths, and an infinity pool for up to 18 guests.' 
-            : '隱匿於雲海山嵐之間，獨享 4 間獨立景觀套房、私人石造溫泉湯屋與山景無邊際泳池，為您開啟一場洗滌心靈的奢華隱逸假期。' 
+            ? 'Nestled amid rolling mountain mist, offering 5 private bedrooms, living lounge with KTV, auto-mahjong, smart kitchen, and BBQ patio for up to 18 guests.' 
+            : '坐落於山林之間，獨享 5 間獨立客房、客廳KTV、電動麻將桌、智能廚房與庭園烤肉區，為最多 18 位貴賓打造專屬的慢活包棟時光。' 
           }}
         </p>
 
@@ -65,18 +66,18 @@ const { isEn, t, tField } = useI18n()
         <!-- 快速資訊標籤 -->
         <div class="hero-stats">
           <div class="stat-item">
-            <span class="stat-num">4</span>
-            <span class="stat-label">{{ isEn ? 'Scenic Suites' : '間獨立景觀套房' }}</span>
+            <span class="stat-num">5</span>
+            <span class="stat-label">{{ isEn ? 'Private Suites' : '間獨立景觀客房' }}</span>
           </div>
           <div class="stat-divider"></div>
           <div class="stat-item">
-            <span class="stat-num">18+</span>
-            <span class="stat-label">{{ isEn ? 'Max Guests' : '位專屬包棟容量' }}</span>
+            <span class="stat-num">18</span>
+            <span class="stat-label">{{ isEn ? 'Max Guests' : '位專屬包棟上限' }}</span>
           </div>
           <div class="stat-divider"></div>
           <div class="stat-item">
             <span class="stat-num">100%</span>
-            <span class="stat-label">{{ isEn ? 'Private Estate' : '獨立私密園區' }}</span>
+            <span class="stat-label">{{ isEn ? 'Private Estate' : '獨門獨院包棟' }}</span>
           </div>
         </div>
       </div>
@@ -106,15 +107,15 @@ const { isEn, t, tField } = useI18n()
             <div class="philosophy-features">
               <div class="p-feat">
                 <CheckCircle2 :size="18" class="feat-icon" />
-                <span>{{ isEn ? '270° Panoramic Mountain Vistas' : '270度環景雲海無光害星空' }}</span>
+                <span>{{ isEn ? '5 Private Bedrooms (Up to 18 Guests)' : '全棟5間獨立客房・專屬容納最多18位' }}</span>
               </div>
               <div class="p-feat">
                 <CheckCircle2 :size="18" class="feat-icon" />
-                <span>{{ isEn ? 'Natural Stone Basalt Onsen' : '天然玄武岩弱鹼性碳酸湯屋' }}</span>
+                <span>{{ isEn ? 'Auto-Mahjong & KTV Karaoke Lounge' : '電動麻將桌與客廳卡拉OK歡唱空間' }}</span>
               </div>
               <div class="p-feat">
                 <CheckCircle2 :size="18" class="feat-icon" />
-                <span>{{ isEn ? 'Gourmet Open Island Kitchen' : '中島廚房與 150 吋劇院級影音' }}</span>
+                <span>{{ isEn ? 'Smart Kitchen, Outdoor Tea Patio & BBQ' : '智能廚房、戶外品茗茶席與庭園烤肉BBQ' }}</span>
               </div>
             </div>
           </div>
@@ -122,15 +123,15 @@ const { isEn, t, tField } = useI18n()
           <div class="philosophy-media">
             <div class="img-frame-main img-zoom-container">
               <img 
-                src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1000&q=80" 
-                alt="山語 Villa 實景" 
+                src="/img/outdoor-bbq-tea/outdoor-bbq-tea-01.jpg" 
+                alt="山語 Villa 實景建築外觀" 
                 loading="lazy"
               />
             </div>
             <div class="img-frame-sub img-zoom-container">
               <img 
-                src="https://images.unsplash.com/photo-1591088398332-8a7791972843?auto=format&fit=crop&w=800&q=80" 
-                alt="日式庭園" 
+                src="/img/kitchen-bar/kitchen-bar-01.jpg" 
+                alt="智能廚房與吧台" 
                 loading="lazy"
               />
             </div>
@@ -139,16 +140,16 @@ const { isEn, t, tField } = useI18n()
       </div>
     </section>
 
-    <!-- 3. 精選 4 大房型導覽 (Suites Preview) -->
+    <!-- 3. 精選 5 大房型導覽 (Suites Preview) -->
     <section class="section-py rooms-preview-section">
       <div class="container">
         <div class="section-header">
-          <span class="section-tag">{{ isEn ? 'SUITES' : '獨立景觀套房' }}</span>
-          <h2 class="section-title">{{ isEn ? '4 Distinct Aesthetic Living Spaces' : '四間獨立景觀套房・各自成境' }}</h2>
+          <span class="section-tag">{{ isEn ? 'SUITES' : '獨立景觀客房' }}</span>
+          <h2 class="section-title">{{ isEn ? '5 Distinct Aesthetic Living Spaces' : '五間獨立景觀客房・舒適成境' }}</h2>
           <p class="section-desc">
             {{ isEn 
-              ? 'Each suite is thoughtfully designed with private scenery, luxury bedding, and scenic soaking baths.' 
-              : '每間套房均擁有專屬觀景視野、五星級飯店級羽絨名床與獨立衛浴泡湯池。' 
+              ? 'Features 5 comfortable bedrooms across two floors (3 on 1F, 2 on 2F) accommodating up to 18 guests.' 
+              : '全館共 5 間獨立客房（1樓三間、2樓兩間），採光明亮清幽，最多容納 18 位貴賓。' 
             }}
           </p>
         </div>
@@ -179,7 +180,7 @@ const { isEn, t, tField } = useI18n()
 
         <div class="section-more-btn">
           <RouterLink to="/rooms" class="btn btn-outline">
-            <span>{{ isEn ? 'View All 4 Suites' : '查看 4 間套房完整圖集' }}</span>
+            <span>{{ isEn ? 'View All 5 Suites' : '查看 5 間客房完整圖集' }}</span>
             <ArrowRight :size="16" />
           </RouterLink>
         </div>
@@ -298,13 +299,43 @@ const { isEn, t, tField } = useI18n()
     );
     z-index: 2;
   }
+
+  // 底部平滑過渡淡入淡出遮罩（淺色模式下自然淡入象牙白背景，消除生硬切線）
+  .hero-bottom-fade {
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 220px;
+    background: linear-gradient(
+      180deg,
+      rgba(248, 246, 240, 0) 0%,
+      rgba(248, 246, 240, 0.15) 25%,
+      rgba(248, 246, 240, 0.55) 60%,
+      rgba(248, 246, 240, 0.9) 85%,
+      var(--bg-primary) 100%
+    );
+    z-index: 2;
+    pointer-events: none;
+    transition: background 0.35s ease;
+  }
+}
+
+:root[data-theme="dark"] .hero-bottom-fade {
+  background: linear-gradient(
+    180deg,
+    rgba(18, 20, 21, 0) 0%,
+    rgba(18, 20, 21, 0.25) 30%,
+    rgba(18, 20, 21, 0.7) 65%,
+    var(--bg-primary) 100%
+  );
 }
 
 .hero-content {
   position: relative;
   z-index: 3;
   text-align: center;
-  max-width: 920px;
+  max-width: 1200px;
   color: #FFFFFF;
 
   .hero-badge {
@@ -344,7 +375,6 @@ const { isEn, t, tField } = useI18n()
     font-size: clamp(0.95rem, 1.8vw, 1.15rem);
     line-height: 1.9;
     color: rgba(255, 255, 255, 0.88);
-    max-width: 750px;
     margin: 0 auto 2.5rem;
   }
 
