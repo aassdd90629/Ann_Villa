@@ -1,5 +1,7 @@
 <script setup>
 import { useI18n } from '../composables/useI18n'
+import PageHeader from '../components/common/PageHeader.vue'
+import BookingButton from '../components/common/BookingButton.vue'
 import pricingData from '../data/pricing.json'
 import siteData from '../data/site.json'
 import { 
@@ -21,18 +23,13 @@ const pkg = pricingData.exclusivePackage
 
 <template>
   <div class="packages-page">
-    <section class="page-header">
-      <div class="container header-container">
-        <span class="section-tag">{{ isEn ? 'PACKAGES & RATES' : '包棟方案與計價' }}</span>
-        <h1 class="page-title">{{ isEn ? 'Exclusive Villa Packages & Rates' : '全館尊榮包棟與加值服務' }}</h1>
-        <p class="page-desc">
-          {{ isEn 
-            ? 'Transparent pricing with comprehensive amenities. Exclusive privacy for your ultimate retreat.' 
-            : '透明清楚的定價方案，全棟 5 間客房與所有公設完全獨立專屬，享有最極致的私密性。' 
-          }}
-        </p>
-      </div>
-    </section>
+    <PageHeader 
+      :tag="isEn ? 'PACKAGES & RATES' : '包棟方案與計價'"
+      :title="isEn ? 'Exclusive Villa Packages & Rates' : '全館尊榮包棟與加值服務'"
+      :desc="isEn 
+        ? 'Transparent pricing with comprehensive amenities. Exclusive privacy for your ultimate retreat.' 
+        : '透明清楚的定價方案，全棟 5 間客房與所有公設完全獨立專屬，享有最極致的私密性。'"
+    />
 
     <section class="section-py packages-section">
       <div class="container">
@@ -127,10 +124,12 @@ const pkg = pricingData.exclusivePackage
           </div>
 
           <div class="pkg-cta-row">
-            <a :href="siteData.lineUrl" target="_blank" rel="noopener noreferrer" class="btn btn-gold btn-large">
-              <Sparkles :size="18" />
-              <span>{{ isEn ? 'Inquire & Reserve Dates' : '立即預約包棟檔期' }}</span>
-            </a>
+            <BookingButton 
+              roomTitle="全館尊榮包棟"
+              variant="gold"
+              size="lg"
+              :text="isEn ? 'Inquire & Reserve Dates' : '立即預約包棟檔期'"
+            />
           </div>
         </div>
 
@@ -182,23 +181,6 @@ const pkg = pricingData.exclusivePackage
 <style lang="scss" scoped>
 @use '../assets/styles/variables' as *;
 
-.page-header {
-  padding-top: 8.5rem;
-  padding-bottom: 3.5rem;
-  background-color: var(--bg-card);
-  border-bottom: 1px solid var(--border-color);
-  text-align: center;
-
-  .page-title {
-    font-size: clamp(2rem, 4vw, 3rem);
-    margin: 0.8rem 0;
-  }
-
-  .page-desc {
-    font-size: 1rem;
-    color: var(--text-sub);
-  }
-}
 
 .main-package-card {
   padding: 2.5rem 1.5rem;

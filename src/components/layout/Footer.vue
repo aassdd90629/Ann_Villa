@@ -2,6 +2,7 @@
 import { RouterLink } from 'vue-router'
 import { useI18n } from '../../composables/useI18n'
 import siteData from '../../data/site.json'
+import BookingButton from '../common/BookingButton.vue'
 import { 
   Phone, 
   MapPin, 
@@ -78,17 +79,17 @@ const currentYear = new Date().getFullYear()
         </div>
 
         <div class="social-links">
-          <a 
-            :href="siteData.lineUrl" 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            class="social-btn line-btn"
+          <BookingButton 
+            variant="none"
+            customClass="social-btn line-btn"
+            :showIcon="false"
+            roomTitle="全區尊榮包棟"
             title="官方 LINE 諮詢"
           >
             <MessageSquare :size="16" />
             <span>LINE 官方預約</span>
             <ArrowUpRight :size="14" />
-          </a>
+          </BookingButton>
           <a 
             :href="siteData.instagramUrl" 
             target="_blank" 

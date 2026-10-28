@@ -3,6 +3,7 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { useI18n } from '../../composables/useI18n'
 import { useTheme } from '../../composables/useTheme'
+import BookingButton from '../common/BookingButton.vue'
 import siteData from '../../data/site.json'
 import { 
   Menu, 
@@ -107,15 +108,11 @@ onUnmounted(() => {
         </button>
 
         <!-- 預約諮詢按鈕 -->
-        <a 
-          :href="siteData.lineUrl" 
-          target="_blank" 
-          rel="noopener noreferrer" 
-          class="btn btn-gold btn-reserve desktop-only"
-        >
-          <Sparkles :size="16" />
-          <span>{{ t('nav.reserve') }}</span>
-        </a>
+        <BookingButton 
+          variant="gold" 
+          customClass="btn-reserve desktop-only" 
+          :text="t('nav.reserve')" 
+        />
 
         <!-- 手機漢堡選單按鈕 -->
         <button 
@@ -154,16 +151,16 @@ onUnmounted(() => {
         </nav>
 
         <div class="drawer-footer">
-          <a 
-            :href="siteData.lineUrl" 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            class="btn btn-gold drawer-cta"
+          <BookingButton 
+            variant="gold" 
+            customClass="drawer-cta"
             @click="closeMobileMenu"
           >
-            <MessageCircle :size="18" />
+            <template #icon>
+              <MessageCircle :size="18" />
+            </template>
             <span>{{ t('action.line') }}</span>
-          </a>
+          </BookingButton>
         </div>
       </div>
     </transition>

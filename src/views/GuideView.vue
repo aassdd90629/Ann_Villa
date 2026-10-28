@@ -1,5 +1,6 @@
 <script setup>
 import { useI18n } from '../composables/useI18n'
+import PageHeader from '../components/common/PageHeader.vue'
 import guideData from '../data/guide.json'
 import siteData from '../data/site.json'
 import { 
@@ -16,18 +17,13 @@ const { isEn } = useI18n()
 
 <template>
   <div class="guide-page">
-    <section class="page-header">
-      <div class="container header-container">
-        <span class="section-tag">{{ isEn ? 'LOCATION & GUIDE' : '交通與景點' }}</span>
-        <h1 class="page-title">{{ isEn ? 'Location & Regional Travel Guide' : '地理位置、交通與周邊景點' }}</h1>
-        <p class="page-desc">
-          {{ isEn
-            ? 'Conveniently located near Sun Moon Lake and Taomi Eco Village. Discover surrounding mountain wonders.'
-            : '隱身於埔里與日月潭交界之桃米幽境，便捷自駕與高鐵接駁，輕鬆探訪周邊自然與人文勝景。'
-          }}
-        </p>
-      </div>
-    </section>
+    <PageHeader 
+      :tag="isEn ? 'LOCATION & GUIDE' : '交通與景點'"
+      :title="isEn ? 'Location & Regional Travel Guide' : '地理位置、交通與周邊景點'"
+      :desc="isEn
+        ? 'Conveniently located near Sun Moon Lake and Taomi Eco Village. Discover surrounding mountain wonders.'
+        : '隱身於埔里與日月潭交界之桃米幽境，便捷自駕與高鐵接駁，輕鬆探訪周邊自然與人文勝景。'"
+    />
 
     <section class="section-py guide-content-section">
       <div class="container">
@@ -102,23 +98,6 @@ const { isEn } = useI18n()
 <style lang="scss" scoped>
 @use '../assets/styles/variables' as *;
 
-.page-header {
-  padding-top: 8.5rem;
-  padding-bottom: 3.5rem;
-  background-color: var(--bg-card);
-  border-bottom: 1px solid var(--border-color);
-  text-align: center;
-
-  .page-title {
-    font-size: clamp(2rem, 4vw, 3rem);
-    margin: 0.8rem 0;
-  }
-
-  .page-desc {
-    font-size: 1rem;
-    color: var(--text-sub);
-  }
-}
 
 .transport-grid {
   display: grid;

@@ -17,70 +17,66 @@ import {
   Compass
 } from 'lucide-vue-next'
 import AvailabilityCalendar from '../components/booking/AvailabilityCalendar.vue'
+import HeroCarousel from '../components/home/HeroCarousel.vue'
+import BookingButton from '../components/common/BookingButton.vue'
 
 const { isEn, t, tField } = useI18n()
 </script>
 
 <template>
   <div class="home-page">
-    <!-- 1. Hero 首屏沉浸橫幅 -->
+    <!-- 1. Hero 首屏沉浸橫幅 (動態輪播動畫) -->
     <section class="hero-section">
-      <div class="hero-bg-overlay"></div>
-      <div class="hero-bottom-fade"></div>
-      <img 
-        src="/img/scenery-night/scenery-night-01.jpg" 
-        alt="山語 Villa 景觀" 
-        class="hero-img"
-        fetchpriority="high"
-      />
-      
-      <div class="container hero-content">
-        <span class="hero-badge">
-          <Sparkles :size="14" />
-          <span>{{ isEn ? 'EXCLUSIVE MOUNTAIN RETREAT' : '南投・全新完工豪宅山莊包棟' }}</span>
-        </span>
-        <h1 class="hero-title">
-          {{ isEn ? siteData.brandNameEn : siteData.brandNameZh }}
-        </h1>
-        <p class="hero-subtitle">
-          {{ isEn ? siteData.sloganEn : siteData.sloganZh }}
-        </p>
-        <p class="hero-desc">
-          {{ isEn 
-            ? 'Nestled amid rolling mountain mist, offering 5 private bedrooms, living lounge with KTV, auto-mahjong, smart kitchen, and BBQ patio for up to 18 guests.' 
-            : '坐落於山林之間，獨享 5 間獨立客房、客廳KTV、電動麻將桌、智能廚房與庭園烤肉區，為最多 18 位貴賓打造專屬的慢活包棟時光。' 
-          }}
-        </p>
+      <HeroCarousel>
+        <div class="container hero-content">
+          <span class="hero-badge">
+            <Sparkles :size="14" />
+            <span>{{ isEn ? 'EXCLUSIVE MOUNTAIN RETREAT' : '南投・全新完工豪宅山莊包棟' }}</span>
+          </span>
+          <h1 class="hero-title">
+            {{ isEn ? siteData.brandNameEn : siteData.brandNameZh }}
+          </h1>
+          <p class="hero-subtitle">
+            {{ isEn ? siteData.sloganEn : siteData.sloganZh }}
+          </p>
+          <p class="hero-desc">
+            {{ isEn 
+              ? 'Nestled amid rolling mountain mist, offering 5 private bedrooms, living lounge with KTV, auto-mahjong, smart kitchen, and BBQ patio for up to 18 guests.' 
+              : '坐落於山林之間，獨享 5 間獨立客房、客廳KTV、電動麻將桌、智能廚房與庭園烤肉區，為最多 18 位貴賓打造專屬的慢活包棟時光。' 
+            }}
+          </p>
 
-        <div class="hero-actions">
-          <a :href="siteData.lineUrl" target="_blank" rel="noopener noreferrer" class="btn btn-gold">
-            <Sparkles :size="16" />
-            <span>{{ t('nav.reserve') }}</span>
-          </a>
-          <RouterLink to="/rooms" class="btn btn-white">
-            <span>{{ t('action.explore') }}</span>
-            <ArrowRight :size="16" />
-          </RouterLink>
-        </div>
+          <div class="hero-actions">
+            <BookingButton 
+              roomTitle="全區尊榮包棟"
+              variant="gold"
+              :text="t('nav.reserve')"
+            />
+            <RouterLink to="/rooms" class="btn btn-white">
+              <span>{{ t('action.explore') }}</span>
+              <ArrowRight :size="16" />
+            </RouterLink>
+          </div>
 
-        <!-- 快速資訊標籤 -->
-        <div class="hero-stats">
-          <div class="stat-item">
-            <span class="stat-num">5</span>
-            <span class="stat-label">{{ isEn ? 'Private Suites' : '間獨立景觀客房' }}</span>
-          </div>
-          <div class="stat-divider"></div>
-          <div class="stat-item">
-            <span class="stat-num">18</span>
-            <span class="stat-label">{{ isEn ? 'Max Guests' : '位專屬包棟上限' }}</span>
-          </div>
-          <div class="stat-divider"></div>
-          <div class="stat-item">
-            <span class="stat-num">100%</span>
-            <span class="stat-label">{{ isEn ? 'Private Estate' : '獨門獨院包棟' }}</span>
+          <!-- 快速資訊標籤 -->
+          <div class="hero-stats">
+            <div class="stat-item">
+              <span class="stat-num">5</span>
+              <span class="stat-label">{{ isEn ? 'Private Suites' : '間獨立景觀客房' }}</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+              <span class="stat-num">18</span>
+              <span class="stat-label">{{ isEn ? 'Max Guests' : '位專屬包棟上限' }}</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+              <span class="stat-num">100%</span>
+              <span class="stat-label">{{ isEn ? 'Private Estate' : '獨門獨院包棟' }}</span>
+            </div>
           </div>
         </div>
-      </div>
+      </HeroCarousel>
     </section>
 
     <!-- 2. 品牌哲思簡介 (Philosophy) -->
@@ -247,10 +243,11 @@ const { isEn, t, tField } = useI18n()
             </div>
           </div>
           <div class="pricing-banner-cta">
-            <a :href="siteData.lineUrl" target="_blank" rel="noopener noreferrer" class="btn btn-gold">
-              <Sparkles :size="16" />
-              <span>{{ isEn ? 'Book Exclusive Villa' : '立即洽詢包棟檔期' }}</span>
-            </a>
+            <BookingButton 
+              roomTitle="全館尊榮包棟"
+              variant="gold"
+              :text="isEn ? 'Book Exclusive Villa' : '立即洽詢包棟檔期'"
+            />
             <RouterLink to="/packages" class="btn btn-outline">
               <span>{{ isEn ? 'View Pricing & Policies' : '查看方案詳細規則' }}</span>
             </RouterLink>
@@ -266,77 +263,21 @@ const { isEn, t, tField } = useI18n()
 
 .hero-section {
   position: relative;
-  min-height: 92vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 100%;
   overflow: hidden;
-  padding-top: 6rem;
-  padding-bottom: 4rem;
-
-  .hero-img {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    z-index: 1;
-    transform: scale(1.02);
-  }
-
-  .hero-bg-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-      180deg,
-      rgba(18, 20, 21, 0.45) 0%,
-      rgba(18, 20, 21, 0.65) 50%,
-      rgba(18, 20, 21, 0.85) 100%
-    );
-    z-index: 2;
-  }
-
-  // 底部平滑過渡淡入淡出遮罩（淺色模式下自然淡入象牙白背景，消除生硬切線）
-  .hero-bottom-fade {
-    position: absolute;
-    bottom: -1px;
-    left: 0;
-    width: 100%;
-    height: 220px;
-    background: linear-gradient(
-      180deg,
-      rgba(248, 246, 240, 0) 0%,
-      rgba(248, 246, 240, 0.15) 25%,
-      rgba(248, 246, 240, 0.55) 60%,
-      rgba(248, 246, 240, 0.9) 85%,
-      var(--bg-primary) 100%
-    );
-    z-index: 2;
-    pointer-events: none;
-    transition: background 0.35s ease;
-  }
-}
-
-:root[data-theme="dark"] .hero-bottom-fade {
-  background: linear-gradient(
-    180deg,
-    rgba(18, 20, 21, 0) 0%,
-    rgba(18, 20, 21, 0.25) 30%,
-    rgba(18, 20, 21, 0.7) 65%,
-    var(--bg-primary) 100%
-  );
 }
 
 .hero-content {
   position: relative;
-  z-index: 3;
+  z-index: 4;
   text-align: center;
   max-width: 1200px;
   color: #FFFFFF;
+  padding: 7rem 1.5rem 5.5rem;
+
+  @media (max-width: $bp-md) {
+    padding: 5.5rem 1rem 4.5rem;
+  }
 
   .hero-badge {
     display: inline-flex;

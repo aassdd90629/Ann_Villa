@@ -1,5 +1,6 @@
 <script setup>
 import { useI18n } from '../composables/useI18n'
+import PageHeader from '../components/common/PageHeader.vue'
 import facilitiesData from '../data/facilities.json'
 import siteData from '../data/site.json'
 import { CheckCircle, Sparkles } from 'lucide-vue-next'
@@ -9,18 +10,13 @@ const { isEn, tField } = useI18n()
 
 <template>
   <div class="facilities-page">
-    <section class="page-header">
-      <div class="container header-container">
-        <span class="section-tag">{{ isEn ? 'AMENITIES' : '園區空間' }}</span>
-        <h1 class="page-title">{{ isEn ? 'Estate Facilities & Wellness' : '園區設施與休閒空間' }}</h1>
-        <p class="page-desc">
-          {{ isEn
-            ? 'From natural stone onsen to infinity panoramic pools, experience exclusive tranquility in every corner.'
-            : '無邊際山景泳池、日式天然溫泉湯屋、星空劇院與私廚中島，為您的包棟假期增添無盡風采。'
-          }}
-        </p>
-      </div>
-    </section>
+    <PageHeader 
+      :tag="isEn ? 'AMENITIES' : '園區空間'"
+      :title="isEn ? 'Estate Facilities & Wellness' : '園區設施與休閒空間'"
+      :desc="isEn
+        ? 'From natural stone onsen to infinity panoramic pools, experience exclusive tranquility in every corner.'
+        : '無邊際山景泳池、日式天然溫泉湯屋、星空劇院與私廚中島，為您的包棟假期增添無盡風采。'"
+    />
 
     <section class="section-py facilities-section">
       <div class="container">
@@ -61,23 +57,6 @@ const { isEn, tField } = useI18n()
 <style lang="scss" scoped>
 @use '../assets/styles/variables' as *;
 
-.page-header {
-  padding-top: 8.5rem;
-  padding-bottom: 3.5rem;
-  background-color: var(--bg-card);
-  border-bottom: 1px solid var(--border-color);
-  text-align: center;
-
-  .page-title {
-    font-size: clamp(2rem, 4vw, 3rem);
-    margin: 0.8rem 0;
-  }
-
-  .page-desc {
-    font-size: 1rem;
-    color: var(--text-sub);
-  }
-}
 
 .facilities-flow {
   display: flex;

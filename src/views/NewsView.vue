@@ -1,5 +1,7 @@
 <script setup>
 import { useI18n } from '../composables/useI18n'
+import PageHeader from '../components/common/PageHeader.vue'
+import BookingButton from '../components/common/BookingButton.vue'
 import newsData from '../data/news.json'
 import siteData from '../data/site.json'
 import { Calendar, Tag, ArrowRight, Sparkles } from 'lucide-vue-next'
@@ -9,18 +11,13 @@ const { isEn } = useI18n()
 
 <template>
   <div class="news-page">
-    <section class="page-header">
-      <div class="container header-container">
-        <span class="section-tag">{{ isEn ? 'NEWS & OFFERS' : '最新消息' }}</span>
-        <h1 class="page-title">{{ isEn ? 'Latest News & Seasonal Offers' : '最新消息、節慶優惠與公告' }}</h1>
-        <p class="page-desc">
-          {{ isEn
-            ? 'Stay informed about our exclusive seasonal packages, culinary events, and estate updates.'
-            : '掌握山語 Villa 最新檔期開放、早鳥限定禮遇與專案活動資訊。'
-          }}
-        </p>
-      </div>
-    </section>
+    <PageHeader 
+      :tag="isEn ? 'NEWS & OFFERS' : '最新消息'"
+      :title="isEn ? 'Latest News & Seasonal Offers' : '最新消息、節慶優惠與公告'"
+      :desc="isEn
+        ? 'Stay informed about our exclusive seasonal packages, culinary events, and estate updates.'
+        : '掌握山語 Villa 最新檔期開放、早鳥限定禮遇與專案活動資訊。'"
+    />
 
     <section class="section-py news-content-section">
       <div class="container">
@@ -49,10 +46,15 @@ const { isEn } = useI18n()
               <p class="news-summary">{{ isEn ? item.summaryEn : item.summaryZh }}</p>
 
               <div class="news-footer">
-                <a :href="siteData.lineUrl" target="_blank" rel="noopener noreferrer" class="news-cta">
+                <BookingButton 
+                  :roomTitle="isEn ? item.titleEn : item.titleZh"
+                  variant="none"
+                  customClass="news-cta"
+                  :showIcon="false"
+                >
                   <span>{{ isEn ? 'Inquire Promotion' : '洽詢專案詳情' }}</span>
                   <ArrowRight :size="15" />
-                </a>
+                </BookingButton>
               </div>
             </div>
           </article>
@@ -65,23 +67,6 @@ const { isEn } = useI18n()
 <style lang="scss" scoped>
 @use '../assets/styles/variables' as *;
 
-.page-header {
-  padding-top: 8.5rem;
-  padding-bottom: 3.5rem;
-  background-color: var(--bg-card);
-  border-bottom: 1px solid var(--border-color);
-  text-align: center;
-
-  .page-title {
-    font-size: clamp(2rem, 4vw, 3rem);
-    margin: 0.8rem 0;
-  }
-
-  .page-desc {
-    font-size: 1rem;
-    color: var(--text-sub);
-  }
-}
 
 .news-grid {
   display: grid;

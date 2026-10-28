@@ -1,0 +1,56 @@
+[
+  {
+    "id": "slide-1",
+    "image": "/img/scenery-night/scenery-night-01.jpg",
+    "titleZh": "暮色雲海・全景山莊",
+    "titleEn": "Shan Yu Twilight Estate",
+    "tagZh": "景觀全貌",
+    "tagEn": "Panoramic Estate",
+    "alt": "山語 Villa 暮色莊園外觀"
+  },
+  {
+    "id": "slide-2",
+    "image": "/img/living-ktv/living-ktv-01.jpg",
+    "titleZh": "挑高奢華客廳・歡唱 KTV",
+    "titleEn": "Grand Living Lounge & KTV",
+    "tagZh": "奢華客廳",
+    "tagEn": "Living Lounge",
+    "alt": "挑高奢華客廳與休閒設施"
+  },
+  {
+    "id": "slide-3",
+    "image": "/img/outdoor-bbq-tea/outdoor-bbq-tea-01.jpg",
+    "titleZh": "庭園品茗茶席・私密烤肉",
+    "titleEn": "Outdoor Tea Patio & BBQ",
+    "tagZh": "庭園慢活",
+    "tagEn": "Tea & BBQ Patio",
+    "alt": "庭園品茗茶席與烤肉區"
+  },
+  {
+    "id": "slide-4",
+    "image": "/img/scenery-night/scenery-night-05.jpg",
+    "titleZh": "璀璨星空夜景・靜謐山林",
+    "titleEn": "Starlit Mountain Sanctuary",
+    "tagZh": "星夜山巒",
+    "tagEn": "Night Scenery",
+    "alt": "靜謐星空夜景"
+  },
+  {
+    "id": "slide-5",
+    "image": "/img/kitchen-bar/kitchen-bar-01.jpg",
+    "titleZh": "中島吧台・智能頂級廚房",
+    "titleEn": "Chef Island & Social Bar",
+    "tagZh": "中島餐廚",
+    "tagEn": "Kitchen & Bar",
+    "alt": "智能廚房與吧台"
+  },
+  {
+    "id": "slide-6",
+    "image": "/img/room-1/room-1-01.jpg",
+    "titleZh": "四人獨立景觀套房",
+    "titleEn": "1F Panoramic Quad Suite",
+    "tagZh": "景觀客房",
+    "tagEn": "Scenic Suite",
+    "alt": "獨立景觀客房"
+  }
+]

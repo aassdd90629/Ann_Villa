@@ -1,6 +1,7 @@
 <script setup>
 import { useI18n } from '../../composables/useI18n'
 import siteData from '../../data/site.json'
+import BookingButton from '../common/BookingButton.vue'
 import { Phone, MessageSquare, MapPin } from 'lucide-vue-next'
 
 const { t } = useI18n()
@@ -13,16 +14,15 @@ const { t } = useI18n()
       <span class="label">{{ t('action.call') }}</span>
     </a>
 
-    <a 
-      :href="siteData.lineUrl" 
-      target="_blank" 
-      rel="noopener noreferrer" 
-      class="action-item primary-action"
+    <BookingButton 
+      variant="none"
+      customClass="action-item primary-action"
+      :showIcon="false"
       aria-label="LINE Consultation"
     >
       <MessageSquare :size="20" class="icon" />
       <span class="label">{{ t('action.line') }}</span>
-    </a>
+    </BookingButton>
 
     <a 
       :href="siteData.googleMapUrl" 
