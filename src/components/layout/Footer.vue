@@ -33,11 +33,16 @@ const currentYear = new Date().getFullYear()
       <!-- 品牌與介紹 -->
       <div class="footer-col brand-col">
         <div class="footer-brand">
-          <span class="footer-logo">山語</span>
-          <div class="footer-brand-text">
-            <h3>{{ isEn ? siteData.brandNameEn : siteData.brandNameZh }}</h3>
-            <p class="brand-slogan">{{ isEn ? siteData.sloganEn : siteData.sloganZh }}</p>
-          </div>
+          <img 
+            src="/img/logo-dark.png" 
+            :alt="siteData.brandNameZh" 
+            class="footer-logo-img logo-dark-version" 
+          />
+          <img 
+            src="/img/logo-white.png" 
+            :alt="siteData.brandNameZh" 
+            class="footer-logo-img logo-white-version" 
+          />
         </div>
         <p class="footer-desc">
           {{ t('footer.aboutText') }}
@@ -167,33 +172,33 @@ const currentYear = new Date().getFullYear()
 }
 
 .footer-brand {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.5rem;
 
-  .footer-logo {
-    font-family: $font-serif;
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: var(--gold-primary);
-    border: 1px solid var(--gold-primary);
-    padding: 0.2rem 0.6rem;
-    border-radius: 2px;
+  .footer-logo-img {
+    height: 52px;
+    width: auto;
+    object-fit: contain;
+    display: block;
+
+    @media (min-width: $bp-md) {
+      height: 60px;
+    }
   }
 
-  .footer-brand-text {
-    h3 {
-      font-size: 1.2rem;
-      color: var(--text-primary);
-      margin: 0;
-    }
-    .brand-slogan {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      margin: 0;
-      letter-spacing: 0.1em;
-    }
+  .logo-white-version {
+    display: none;
+  }
+  .logo-dark-version {
+    display: block;
+  }
+}
+
+:root[data-theme="dark"] .footer-brand {
+  .logo-white-version {
+    display: block;
+  }
+  .logo-dark-version {
+    display: none;
   }
 }
 

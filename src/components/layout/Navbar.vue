@@ -58,16 +58,21 @@ onUnmounted(() => {
 <template>
   <header 
     class="navbar-header"
-    :class="{ 'scrolled': isScrolled, 'menu-open': mobileMenuOpen }"
+    :class="{ 'scrolled': isScrolled, 'menu-open': mobileMenuOpen, 'is-hero': route.path === '/' && !isScrolled }"
   >
     <div class="nav-container">
       <!-- 品牌標誌 -->
-      <RouterLink to="/" class="brand-logo" @click="closeMobileMenu">
-        <span class="logo-kanji">山語</span>
-        <div class="brand-text">
-          <span class="brand-title">{{ isEn ? siteData.shortNameEn : siteData.shortNameZh }}</span>
-          <span class="brand-sub">{{ isEn ? 'LUXURY RETREAT' : siteData.sloganZh }}</span>
-        </div>
+      <RouterLink to="/" class="brand-logo" @click="closeMobileMenu" aria-label="山語 Villa 首頁">
+        <img 
+          src="/img/logo-dark.png" 
+          :alt="siteData.brandNameZh" 
+          class="brand-logo-img logo-dark-version" 
+        />
+        <img 
+          src="/img/logo-white.png" 
+          :alt="siteData.brandNameZh" 
+          class="brand-logo-img logo-white-version" 
+        />
       </RouterLink>
 
       <!-- 桌面端導航選單 -->
@@ -131,8 +136,16 @@ onUnmounted(() => {
       <div v-if="mobileMenuOpen" class="mobile-drawer">
         <div class="drawer-header">
           <div class="drawer-brand">
-            <span class="drawer-title">{{ isEn ? siteData.brandNameEn : siteData.brandNameZh }}</span>
-            <span class="drawer-slogan">{{ isEn ? siteData.sloganEn : siteData.sloganZh }}</span>
+            <img 
+              src="/img/logo-dark.png" 
+              :alt="siteData.brandNameZh" 
+              class="drawer-logo-img logo-dark-version" 
+            />
+            <img 
+              src="/img/logo-white.png" 
+              :alt="siteData.brandNameZh" 
+              class="drawer-logo-img logo-white-version" 
+            />
           </div>
         </div>
 
@@ -205,46 +218,47 @@ onUnmounted(() => {
 .brand-logo {
   display: flex;
   align-items: center;
-  gap: 0.85rem;
+  text-decoration: none;
 
-  .logo-kanji {
-    font-family: $font-serif;
-    font-size: 1.65rem;
-    font-weight: 700;
-    color: var(--gold-primary);
-    border: 1px solid var(--gold-primary);
-    padding: 0.15rem 0.45rem;
-    border-radius: 2px;
-    letter-spacing: 0.1em;
-    transition: $transition-smooth;
-  }
+  .brand-logo-img {
+    height: 44px;
+    width: auto;
+    object-fit: contain;
+    transition: transform $transition-smooth;
 
-  .brand-text {
-    display: flex;
-    flex-direction: column;
-
-    .brand-title {
-      font-family: $font-serif;
-      font-size: 1.25rem;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      color: var(--text-primary);
-      line-height: 1.2;
-    }
-
-    .brand-sub {
-      font-family: $font-display;
-      font-size: 0.7rem;
-      letter-spacing: 0.18em;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      margin-top: 2px;
+    @media (min-width: $bp-lg) {
+      height: 50px;
     }
   }
 
-  &:hover .logo-kanji {
-    background: var(--gold-primary);
-    color: #FFFFFF;
+  &:hover .brand-logo-img {
+    transform: scale(1.03);
+  }
+}
+
+.logo-white-version {
+  display: none;
+}
+
+.logo-dark-version {
+  display: block;
+}
+
+.navbar-header.is-hero:not(.scrolled):not(.menu-open) {
+  .logo-white-version {
+    display: block;
+  }
+  .logo-dark-version {
+    display: none;
+  }
+}
+
+:root[data-theme="dark"] {
+  .logo-white-version {
+    display: block;
+  }
+  .logo-dark-version {
+    display: none;
   }
 }
 
