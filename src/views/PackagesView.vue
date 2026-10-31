@@ -110,6 +110,9 @@ const pkg = pricingData.exclusivePackage
                   <tr v-for="(h, hIdx) in pricingData.holidays" :key="hIdx" :class="{ 'cny-row': h.price >= 50000 }">
                     <td class="h-name">
                       <strong>{{ isEn ? h.nameEn : h.nameZh }}</strong>
+                      <div v-if="h.noteZh" class="h-subnote-text">
+                        {{ isEn ? h.noteEn : h.noteZh }}
+                      </div>
                     </td>
                     <td class="h-dates">{{ h.dates }}</td>
                     <td class="h-price">NT$ {{ h.price.toLocaleString() }}</td>
@@ -395,6 +398,12 @@ const pkg = pricingData.exclusivePackage
         background: rgba(239, 68, 68, 0.15);
         color: #dc2626;
         font-weight: 500;
+      }
+
+      .h-subnote-text {
+        font-size: 0.78rem;
+        color: #dc2626;
+        margin-top: 2px;
       }
 
       .cny-row td {

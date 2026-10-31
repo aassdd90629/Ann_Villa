@@ -10,8 +10,8 @@
     "holidayMin": 35000,
     "holidayMax": 50000,
     "deposit": 3000,
-    "includedGuests": 18,
-    "maxGuests": 18,
+    "includedGuests": 20,
+    "maxGuests": 20,
     "hasExtraBed": false,
     "extraPersonFee": 0,
     "checkInTime": "15:00",
@@ -21,30 +21,20 @@
   },
   "holidays": [
     {
-      "nameZh": "雙十連假",
-      "nameEn": "National Day Holiday",
-      "dates": "10/09 - 10/11",
-      "price": 35000,
-      "breakfast": true
-    },
-    {
-      "nameZh": "光復節連假",
-      "nameEn": "Retrocession Day Holiday",
-      "dates": "10/23 - 10/26",
-      "price": 35000,
-      "breakfast": true
-    },
-    {
-      "nameZh": "聖誕節連假",
-      "nameEn": "Christmas Holiday",
-      "dates": "12/24 - 12/27",
+      "nameZh": "2026 聖誕節連假",
+      "nameEn": "2026 Christmas Holiday",
+      "dates": "2026/12/24 - 12/27",
+      "startDate": "2026-12-24",
+      "endDate": "2026-12-27",
       "price": 47000,
       "breakfast": true
     },
     {
-      "nameZh": "跨年假期",
-      "nameEn": "New Year's Eve",
-      "dates": "12/31 - 01/01",
+      "nameZh": "2026 跨年假期",
+      "nameEn": "2026 New Year's Eve",
+      "dates": "2026/12/31 - 2027/01/01",
+      "startDate": "2026-12-31",
+      "endDate": "2027-01-01",
       "price": 47000,
       "breakfast": true
     },
@@ -52,13 +42,17 @@
       "nameZh": "2027 元旦連假",
       "nameEn": "2027 New Year Holiday",
       "dates": "2027/01/01 - 01/03",
+      "startDate": "2027-01-01",
+      "endDate": "2027-01-03",
       "price": 47000,
       "breakfast": true
     },
     {
       "nameZh": "2027 農曆春節過年連假",
       "nameEn": "2027 Lunar New Year Holiday",
-      "dates": "2027/02/03 - 02/10",
+      "dates": "2027/02/04 - 02/10",
+      "startDate": "2027-02-04",
+      "endDate": "2027-02-10",
       "price": 50000,
       "breakfast": false,
       "noteZh": "春節期間不含早餐",
@@ -68,21 +62,90 @@
       "nameZh": "2027 和平紀念日連假",
       "nameEn": "2027 Peace Memorial Day Holiday",
       "dates": "2027/02/26 - 03/01",
+      "startDate": "2027-02-26",
+      "endDate": "2027-03-01",
       "price": 38000,
       "breakfast": true
     },
     {
-      "nameZh": "2027 兒童節與清明連假",
+      "nameZh": "2027 清明與兒童連假",
       "nameEn": "2027 Children's & Tomb Sweeping Day",
-      "dates": "2027/04/02 - 04/05",
+      "dates": "2027/04/02 - 04/06",
+      "startDate": "2027-04-02",
+      "endDate": "2027-04-06",
       "price": 38000,
       "breakfast": true
     },
     {
       "nameZh": "2027 五一勞動節連假",
       "nameEn": "2027 Labor Day Holiday",
-      "dates": "2027/04/29 - 05/01",
+      "dates": "2027/04/29 - 05/02",
+      "startDate": "2027-04-29",
+      "endDate": "2027-05-02",
       "price": 38000,
+      "breakfast": true
+    },
+    {
+      "nameZh": "2027 端午連假",
+      "nameEn": "2027 Dragon Boat Festival Holiday",
+      "dates": "2027/06/08 - 06/09",
+      "startDate": "2027-06-08",
+      "endDate": "2027-06-09",
+      "price": 35000,
+      "breakfast": true
+    },
+    {
+      "nameZh": "2027 中秋連假",
+      "nameEn": "2027 Mid-Autumn Festival Holiday",
+      "dates": "2027/09/14 - 09/15",
+      "startDate": "2027-09-14",
+      "endDate": "2027-09-15",
+      "price": 35000,
+      "breakfast": true
+    },
+    {
+      "nameZh": "2027 教師節連假",
+      "nameEn": "2027 Teachers' Day Holiday",
+      "dates": "2027/09/27 - 09/28",
+      "startDate": "2027-09-27",
+      "endDate": "2027-09-28",
+      "price": 35000,
+      "breakfast": true
+    },
+    {
+      "nameZh": "2027 雙十國慶連假",
+      "nameEn": "2027 National Day Holiday",
+      "dates": "2027/10/08 - 10/11",
+      "startDate": "2027-10-08",
+      "endDate": "2027-10-11",
+      "price": 38000,
+      "breakfast": true
+    },
+    {
+      "nameZh": "2027 光復節連假",
+      "nameEn": "2027 Retrocession Day Holiday",
+      "dates": "2027/10/22 - 10/25",
+      "startDate": "2027-10-22",
+      "endDate": "2027-10-25",
+      "price": 38000,
+      "breakfast": true
+    },
+    {
+      "nameZh": "2027 聖誕連假",
+      "nameEn": "2027 Christmas Holiday",
+      "dates": "2027/12/23 - 12/26",
+      "startDate": "2027-12-23",
+      "endDate": "2027-12-26",
+      "price": 47000,
+      "breakfast": true
+    },
+    {
+      "nameZh": "2028 跨年元旦連假",
+      "nameEn": "2028 New Year's Eve & New Year Holiday",
+      "dates": "2027/12/30 - 2028/01/02",
+      "startDate": "2027-12-30",
+      "endDate": "2028-01-02",
+      "price": 47000,
       "breakfast": true
     }
   ],
