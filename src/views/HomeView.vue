@@ -41,8 +41,8 @@ const { isEn, t, tField } = useI18n()
           </p>
           <p class="hero-desc">
             {{ isEn 
-              ? 'Nestled amid rolling mountain mist, offering 5 private bedrooms, living lounge with KTV, auto-mahjong, smart kitchen, and BBQ patio for up to 18 guests.' 
-              : '坐落於山林之間，獨享 5 間獨立客房、客廳KTV、電動麻將桌、智能廚房與庭園烤肉區，為最多 18 位貴賓打造專屬的慢活包棟時光。' 
+              ? 'Nestled amid rolling mountain mist, offering 5 private bedrooms, living lounge with KTV, auto-mahjong, smart kitchen, and BBQ patio for up to 20 guests.' 
+              : '坐落於山林之間，獨享 5 間獨立客房、客廳KTV、電動麻將桌、智能廚房與庭園烤肉區，為最多 20 位貴賓打造專屬的慢活包棟時光。' 
             }}
           </p>
 
@@ -66,7 +66,7 @@ const { isEn, t, tField } = useI18n()
             </div>
             <div class="stat-divider"></div>
             <div class="stat-item">
-              <span class="stat-num">18</span>
+              <span class="stat-num">{{ siteData.maxGuests }}</span>
               <span class="stat-label">{{ isEn ? 'Max Guests' : '位專屬包棟上限' }}</span>
             </div>
             <div class="stat-divider"></div>
@@ -103,7 +103,7 @@ const { isEn, t, tField } = useI18n()
             <div class="philosophy-features">
               <div class="p-feat">
                 <CheckCircle2 :size="18" class="feat-icon" />
-                <span>{{ isEn ? '5 Private Bedrooms (Up to 18 Guests)' : '全棟5間獨立客房・專屬容納最多18位' }}</span>
+                <span>{{ isEn ? '5 Private Bedrooms (Up to 20 Guests)' : '全棟5間獨立客房・專屬容納最多20位' }}</span>
               </div>
               <div class="p-feat">
                 <CheckCircle2 :size="18" class="feat-icon" />
@@ -144,8 +144,8 @@ const { isEn, t, tField } = useI18n()
           <h2 class="section-title">{{ isEn ? '5 Distinct Aesthetic Living Spaces' : '五間獨立景觀客房・舒適成境' }}</h2>
           <p class="section-desc">
             {{ isEn 
-              ? 'Features 5 comfortable bedrooms across two floors (3 on 1F, 2 on 2F) accommodating up to 18 guests.' 
-              : '全館共 5 間獨立客房（1樓三間、2樓兩間），採光明亮清幽，最多容納 18 位貴賓。' 
+              ? 'Features 5 comfortable bedrooms across two floors (3 on 1F, 2 on 2F) accommodating up to 20 guests.' 
+              : '全館共 5 間獨立客房（1樓三間、2樓兩間），採光明亮清幽，最多容納 20 位貴賓。' 
             }}
           </p>
         </div>

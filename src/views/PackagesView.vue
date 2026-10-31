@@ -67,7 +67,7 @@ const pkg = pricingData.exclusivePackage
               <Users :size="20" class="spec-icon" />
               <div>
                 <span class="s-title">{{ isEn ? 'Included Capacity' : '基本容納人數' }}</span>
-                <p>{{ pkg.includedGuests }} {{ isEn ? 'Guests Max (No extra beds)' : '人（最多 18 人・無加床服務）' }}</p>
+                <p>{{ pkg.includedGuests }} {{ isEn ? 'Guests Max (No extra beds)' : '人（最多 20 人・無加床服務）' }}</p>
               </div>
             </div>
 

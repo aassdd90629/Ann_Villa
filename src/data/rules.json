@@ -5,7 +5,7 @@
     "現場押金：入住當天現場需收取押金 NT$ 3,000 元，退房時經檢查無損壞、環境整理乾淨歸位，將全額退還，敬請放心。",
     "寵物規範：全館請勿攜帶寵物入內，不便之處敬請見諒。",
     "嚴禁爆竹：園區內全面禁止施放煙火、放鞭炮及仙女棒，以維護山林與公共安全。",
-    "人數限制：入住當天請依約定人數入住，整棟樓最多容納 18 個人，現場無法提供加床服務。",
+    "人數限制：入住當天請依約定人數入住，整棟樓最多容納 20 個人，現場無法提供加床服務。",
     "全面禁菸：本民宿嚴格適用菸害防制法，室內（包含公共空間、走廊與所有房間）全面禁止吸菸（包含傳統紙菸與電子菸）。",
     "違法行為：屋內嚴禁轟趴、吸毒、嚼檳榔、酗酒、聚賭等任何違法性行為，若經發現一律報警處理並取消住宿且不予退費。",
     "續住備品：續住之房客，民宿不主動進房更換毛巾或浴巾，如需更換備品請主動告知管家。",
@@ -20,7 +20,7 @@
     "Security Deposit: A refundable deposit of NT$ 3,000 is collected upon arrival and will be fully returned upon checkout inspection and tidy return.",
     "Pets Policy: Strictly no pets allowed on the premises. Thank you for your understanding.",
     "Fireworks Policy: Fireworks, firecrackers, and sparklers are strictly prohibited on property to ensure safety.",
-    "Guest Capacity: Strict maximum capacity of 18 guests. No extra bed service is available.",
+    "Guest Capacity: Strict maximum capacity of 20 guests. No extra bed service is available.",
     "Non-Smoking: All indoor areas (including guest rooms and shared spaces) are strictly non-smoking (including e-cigarettes / vapes).",
     "Illegal Activities: Drug use, illegal gatherings, betel nuts, excessive drinking, or gambling are strictly prohibited and will be reported to the police immediately.",
     "Multi-Night Stays: For eco-friendly hospitality, we do not automatically replace towels during consecutive nights. Please notify our butler if replacement is needed.",
@@ -31,18 +31,18 @@
   ],
   "extraGuestsZh": {
     "title": "容納人數與床位規範",
-    "content": "整棟樓總共 5 間房間，最多容納 18 位貴賓，全館床位已達舒適上限，恕無法提供加床或超額入住服務。請於預訂時確實填寫入住總人數。"
+    "content": "整棟樓總共 5 間房間，最多容納 20 位貴賓，全館床位已達舒適上限，恕無法提供加床或超額入住服務。請於預訂時確實填寫入住總人數。"
   },
   "extraGuestsEn": {
     "title": "Capacity & Bedding Policy",
-    "content": "Shan Yu Villa features 5 bedrooms accommodating up to 18 guests maximum. Extra beds are not available. Please confirm exact guest counts upon reservation."
+    "content": "Shan Yu Villa features 5 bedrooms accommodating up to 20 guests maximum. Extra beds are not available. Please confirm exact guest counts upon reservation."
   },
   "faq": [
     {
       "qZh": "整棟別墅最多可以住幾個人？可以加床嗎？",
       "qEn": "How many guests can the villa accommodate? Can extra beds be added?",
-      "aZh": "整棟樓共設有 5 間獨立客房（1樓三間、2樓兩間），最多可舒適容納 18 個人。為維護住宿品質與消防安全，全館恕不提供加床服務。",
-      "aEn": "The villa has 5 private bedrooms (3 on 1F, 2 on 2F) accommodating up to 18 guests maximum. Extra beds cannot be added."
+      "aZh": "整棟樓共設有 5 間獨立客房（1樓三間、2樓兩間），最多可舒適容納 20 個人。為維護住宿品質與消防安全，全館恕不提供加床服務。",
+      "aEn": "The villa has 5 private bedrooms (3 on 1F, 2 on 2F) accommodating up to 20 guests maximum. Extra beds cannot be added."
     },
     {
       "qZh": "入住時間與延遲退房如何規定？",

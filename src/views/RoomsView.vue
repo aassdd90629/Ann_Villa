@@ -24,8 +24,8 @@ const { isEn, t, tField } = useI18n()
       :tag="isEn ? 'ACCOMMODATION' : '房型導覽'"
       :title="isEn ? '5 Private Suites' : '5 間獨立景觀客房'"
       :desc="isEn 
-        ? 'Features 5 comfortable bedrooms across two floors (3 on 1F, 2 on 2F) accommodating up to 18 guests in complete privacy.' 
-        : '全館共 5 間獨立客房（1樓三間、2樓兩間），最多可容納 18 位貴賓，享受極致悠閒的山林包棟假期。'"
+        ? 'Features 5 comfortable bedrooms across two floors (3 on 1F, 2 on 2F) accommodating up to 20 guests in complete privacy.' 
+        : '全館共 5 間獨立客房（1樓三間、2樓兩間），最多可容納 20 位貴賓，享受極致悠閒的山林包棟假期。'"
     />
 
     <!-- 房型列表 -->
