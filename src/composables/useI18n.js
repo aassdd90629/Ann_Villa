@@ -1,6 +1,7 @@
 import { ref, computed } from 'vue'
 
 const currentLocale = ref(localStorage.getItem('villa_lang') || 'zh-TW')
+const isSwitchingLang = ref(false)
 
 const messages = {
   'zh-TW': {
@@ -46,7 +47,7 @@ const messages = {
     },
     calendar: {
       title: '即時空房查詢與包棟預約',
-      subtitle: '全館即時房態已與 Booking.com、Airbnb 即時連動',
+      subtitle: '點選預計入住與退房日期即可即時試算包棟費用',
       checkIn: '入住日期',
       checkOut: '退房日期',
       selectDates: '請於日曆選取預計入住與退房日期',
@@ -64,7 +65,7 @@ const messages = {
       available: '可預約',
       selected: '已選取',
       inRange: '選取範圍',
-      syncNotice: '房態自動同步中 (Booking.com / Airbnb / LINE 直訂)',
+      syncNotice: '房態僅供即時參考，最新空房檔期請以官方 LINE 管家確認為準',
       lastSync: '最後同步時間',
       directPerksTitle: '山語 Villa 官方直訂專屬禮遇',
       otaAltTitle: '亦可透過官方合作之 OTA 平台預訂',
@@ -116,7 +117,7 @@ const messages = {
     },
     calendar: {
       title: 'Live Availability & Direct Reservation',
-      subtitle: 'Real-time calendar synced with Booking.com & Airbnb',
+      subtitle: 'Select your dates to estimate your villa stay rates',
       checkIn: 'Check-in',
       checkOut: 'Check-out',
       selectDates: 'Please select your check-in & check-out dates',
@@ -134,7 +135,7 @@ const messages = {
       available: 'Available',
       selected: 'Selected',
       inRange: 'In Range',
-      syncNotice: 'Live sync active (Booking.com / Airbnb / Direct)',
+      syncNotice: 'Calendar availability is for reference; please confirm final dates with our butler via official LINE.',
       lastSync: 'Last synced',
       directPerksTitle: 'Direct Booking Exclusive Privileges',
       otaAltTitle: 'Or Book via Our Official OTA Partners',
@@ -147,8 +148,15 @@ const messages = {
 
 export function useI18n() {
   const setLocale = (lang) => {
-    currentLocale.value = lang
-    localStorage.setItem('villa_lang', lang)
+    if (currentLocale.value === lang || isSwitchingLang.value) return
+    isSwitchingLang.value = true
+    setTimeout(() => {
+      currentLocale.value = lang
+      localStorage.setItem('villa_lang', lang)
+      setTimeout(() => {
+        isSwitchingLang.value = false
+      }, 50)
+    }, 200)
   }
 
   const toggleLocale = () => {
@@ -186,6 +194,7 @@ export function useI18n() {
   return {
     locale: currentLocale,
     isEn: computed(() => currentLocale.value === 'en-US'),
+    isSwitchingLang,
     setLocale,
     toggleLocale,
     t,

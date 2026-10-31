@@ -1,10 +1,10 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useI18n } from '../../composables/useI18n'
 import pricingData from '../../data/pricing.json'
 import siteData from '../../data/site.json'
 import channelsData from '../../data/channels.json'
-import availabilityData from '../../data/availability.json'
+import { getBookedRanges } from '../../services/availabilityService'
 import { 
   Calendar as CalendarIcon, 
   ChevronLeft, 
@@ -21,12 +21,30 @@ import {
 
 const { isEn, t, tField } = useI18n()
 
-// 日曆狀態
-const currentDate = ref(new Date(2026, 9, 1)) // 2026 年 10 月 (月份為 0-indexed)
+// 民宿當前時間（以本地時間為準）
+const now = new Date()
+const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+today.setHours(0, 0, 0, 0)
+
+// 預設明天（含）之後的日期才可以開始預訂
+const minBookingDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1)
+minBookingDate.setHours(0, 0, 0, 0)
+
+// 日曆狀態：預設開啟當下月份
+const currentDate = ref(new Date(today.getFullYear(), today.getMonth(), 1))
 const checkInDate = ref(null) // 'YYYY-MM-DD'
 const checkOutDate = ref(null) // 'YYYY-MM-DD'
-const guestCount = ref(18)
+const guestCount = ref(20)
 const hoverDate = ref(null)
+const bookedRanges = ref([])
+
+onMounted(async () => {
+  try {
+    bookedRanges.value = await getBookedRanges()
+  } catch (err) {
+    bookedRanges.value = []
+  }
+})
 
 const currentYear = computed(() => currentDate.value.getFullYear())
 const currentMonth = computed(() => currentDate.value.getMonth())
@@ -36,13 +54,26 @@ const monthNamesEn = ['January', 'February', 'March', 'April', 'May', 'June', 'J
 const weekDaysZh = ['日', '一', '二', '三', '四', '五', '六']
 const weekDaysEn = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
+// 判斷是否不可再切換至上個月（不能切換到當前月份以前）
+const isPrevDisabled = computed(() => {
+  return currentYear.value < today.getFullYear() || 
+    (currentYear.value === today.getFullYear() && currentMonth.value <= today.getMonth())
+})
+
 // 切換月份
 const prevMonth = () => {
+  if (isPrevDisabled.value) return
   currentDate.value = new Date(currentYear.value, currentMonth.value - 1, 1)
 }
 
 const nextMonth = () => {
   currentDate.value = new Date(currentYear.value, currentMonth.value + 1, 1)
+}
+
+// 檢查特定日期是否為國定連假
+function getHolidayForDate(dateStr) {
+  if (!pricingData.holidays) return null
+  return pricingData.holidays.find(h => h.startDate && h.endDate && dateStr >= h.startDate && dateStr <= h.endDate) || null
 }
 
 // 產生當月日曆網格
@@ -66,7 +97,8 @@ const calendarDays = computed(() => {
       dayNum,
       isCurrentMonth: false,
       isBooked: isDateBooked(dateStr),
-      isPast: isDatePast(d)
+      isPast: isDatePast(d),
+      holiday: getHolidayForDate(dateStr)
     })
   }
   
@@ -79,7 +111,8 @@ const calendarDays = computed(() => {
       dayNum: i,
       isCurrentMonth: true,
       isBooked: isDateBooked(dateStr),
-      isPast: isDatePast(d)
+      isPast: isDatePast(d),
+      holiday: getHolidayForDate(dateStr)
     })
   }
   
@@ -93,7 +126,8 @@ const calendarDays = computed(() => {
       dayNum: i,
       isCurrentMonth: false,
       isBooked: isDateBooked(dateStr),
-      isPast: isDatePast(d)
+      isPast: isDatePast(d),
+      holiday: getHolidayForDate(dateStr)
     })
   }
   
@@ -108,20 +142,21 @@ function formatDate(d) {
 }
 
 function isDatePast(d) {
-  const today = new Date(2026, 9, 8) // 模擬當前系統日期 2026-10-08
-  today.setHours(0, 0, 0, 0)
-  return d < today
+  // 依照民宿當下的時間，預設明天（含）之後的日期才可以開始預訂
+  return d < minBookingDate
 }
 
 function isDateBooked(dateStr) {
-  return availabilityData.bookedRanges.some(range => {
+  if (!bookedRanges.value || !bookedRanges.value.length) return false
+  return bookedRanges.value.some(range => {
     return dateStr >= range.startDate && dateStr <= range.endDate
   })
 }
 
 // 取得某日期的預約來源
 function getBookingSource(dateStr) {
-  const found = availabilityData.bookedRanges.find(range => dateStr >= range.startDate && dateStr <= range.endDate)
+  if (!bookedRanges.value || !bookedRanges.value.length) return ''
+  const found = bookedRanges.value.find(range => dateStr >= range.startDate && dateStr <= range.endDate)
   return found ? found.source : ''
 }
 
@@ -176,6 +211,7 @@ const bookingCalculation = computed(() => {
       weekdayNights: 0,
       weekendNights: 0,
       holidayNights: 0,
+      holidayTotal: 0,
       baseTotal: 0,
       extraPersonFee: 0,
       grandTotal: 0
@@ -186,29 +222,40 @@ const bookingCalculation = computed(() => {
   const end = new Date(checkOutDate.value)
   let weekdayCount = 0
   let weekendCount = 0
+  let holidayCount = 0
+  let holidayTotal = 0
   
   while (current < end) {
-    const dayOfWeek = current.getDay() // 0 = Sun, 5 = Fri, 6 = Sat
-    if (dayOfWeek === 5 || dayOfWeek === 6 || dayOfWeek === 0) {
-      weekendCount++
+    const dateStr = formatDate(current)
+    const holiday = getHolidayForDate(dateStr)
+    
+    if (holiday) {
+      holidayCount++
+      holidayTotal += holiday.price
     } else {
-      weekdayCount++
+      const dayOfWeek = current.getDay() // 0 = Sun, 5 = Fri, 6 = Sat
+      if (dayOfWeek === 5 || dayOfWeek === 6 || dayOfWeek === 0) {
+        weekendCount++
+      } else {
+        weekdayCount++
+      }
     }
     current.setDate(current.getDate() + 1)
   }
   
   const pkg = pricingData.exclusivePackage
-  const baseTotal = (weekdayCount * pkg.weekday) + (weekendCount * pkg.weekend)
+  const baseTotal = (weekdayCount * pkg.weekday) + (weekendCount * pkg.weekend) + holidayTotal
   const extraGuests = Math.max(0, guestCount.value - pkg.includedGuests)
   const extraFeePerNight = extraGuests * pkg.extraPersonFee
-  const totalExtraFee = extraFeePerNight * (weekdayCount + weekendCount)
+  const totalExtraFee = extraFeePerNight * (weekdayCount + weekendCount + holidayCount)
   const grandTotal = baseTotal + totalExtraFee
   
   return {
-    nights: weekdayCount + weekendCount,
+    nights: weekdayCount + weekendCount + holidayCount,
     weekdayNights: weekdayCount,
     weekendNights: weekendCount,
-    holidayNights: 0,
+    holidayNights: holidayCount,
+    holidayTotal,
     baseTotal,
     extraPersonFee: totalExtraFee,
     grandTotal
@@ -231,15 +278,11 @@ const lineBookingUrl = computed(() => {
 
 <template>
   <div class="availability-calendar-card card-luxury">
-    <!-- 頂部即時同步狀態列 -->
+    <!-- 頂部檔期說明列 -->
     <div class="sync-banner">
       <div class="sync-status">
-        <span class="pulse-dot"></span>
-        <span class="sync-text">{{ isEn ? t('calendar.syncNotice') : '房態已與 Booking.com / Airbnb 即時雙向連動 (每 10 分鐘自動同步)' }}</span>
-      </div>
-      <div class="sync-time">
-        <RefreshCw :size="13" class="spin-hover" />
-        <span>{{ isEn ? 'Status: Live Synced' : '即時同步更新中' }}</span>
+        <Info :size="16" class="info-icon" />
+        <span class="sync-text">{{ isEn ? t('calendar.syncNotice') : '房態僅供即時參考，最新空房檔期請以官方 LINE 管家確認為準' }}</span>
       </div>
     </div>
 
@@ -254,7 +297,7 @@ const lineBookingUrl = computed(() => {
             </h3>
           </div>
           <div class="nav-btn-group">
-            <button class="nav-btn" @click="prevMonth" :aria-label="isEn ? 'Previous month' : '上一月'">
+            <button class="nav-btn" :disabled="isPrevDisabled" @click="prevMonth" :aria-label="isEn ? 'Previous month' : '上一月'">
               <ChevronLeft :size="18" />
             </button>
             <button class="nav-btn" @click="nextMonth" :aria-label="isEn ? 'Next month' : '下一月'">
@@ -287,7 +330,7 @@ const lineBookingUrl = computed(() => {
             }"
             :disabled="day.isPast || day.isBooked"
             @click="selectDate(day)"
-            :title="day.isBooked ? `${day.dateStr} (${getBookingSource(day.dateStr)} 已預約)` : day.dateStr"
+            :title="day.isBooked ? `${day.dateStr} (${getBookingSource(day.dateStr)} 已預約)` : (day.holiday ? `${day.dateStr} 【${isEn ? day.holiday.nameEn : day.holiday.nameZh} NT$ ${day.holiday.price.toLocaleString()}` + (day.holiday.breakfast ? ' 含早餐' : ' 不含早餐') + '】' : day.dateStr)"
           >
             <span class="day-number">{{ day.dayNum }}</span>
             <span v-if="day.isBooked" class="cell-tag booked-tag">
@@ -298,6 +341,9 @@ const lineBookingUrl = computed(() => {
             </span>
             <span v-else-if="day.dateStr === checkOutDate" class="cell-tag out-tag">
               {{ isEn ? 'Out' : '退房' }}
+            </span>
+            <span v-else-if="day.holiday && !day.isPast" class="cell-tag holiday-tag">
+              {{ isEn ? 'Holiday' : '連假' }}
             </span>
           </button>
         </div>
@@ -310,11 +356,15 @@ const lineBookingUrl = computed(() => {
           </div>
           <div class="legend-item">
             <span class="legend-dot booked"></span>
-            <span>{{ t('calendar.booked') }} (Booking.com / Airbnb / 直訂)</span>
+            <span>{{ t('calendar.booked') }}</span>
           </div>
           <div class="legend-item">
             <span class="legend-dot selected"></span>
             <span>{{ t('calendar.selected') }}</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-dot holiday"></span>
+            <span>{{ isEn ? 'Consecutive Holiday Rate' : '國定連續假期專案價' }}</span>
           </div>
         </div>
       </div>
@@ -354,8 +404,8 @@ const lineBookingUrl = computed(() => {
               <span class="g-count">{{ guestCount }} {{ t('calendar.guestCount') }}</span>
               <button 
                 class="g-btn" 
-                :disabled="guestCount >= 18" 
-                @click="guestCount = Math.min(18, guestCount + 1)"
+                :disabled="guestCount >= 20" 
+                @click="guestCount = Math.min(20, guestCount + 1)"
               >+</button>
             </div>
           </div>
@@ -373,6 +423,10 @@ const lineBookingUrl = computed(() => {
             <div v-if="bookingCalculation.weekendNights > 0" class="calc-row sub">
               <span>{{ isEn ? 'Weekend' : '假日' }} ({{ bookingCalculation.weekendNights }} {{ t('calendar.nights') }} × NT$ {{ pricingData.exclusivePackage.weekend.toLocaleString() }})</span>
               <span>NT$ {{ (bookingCalculation.weekendNights * pricingData.exclusivePackage.weekend).toLocaleString() }}</span>
+            </div>
+            <div v-if="bookingCalculation.holidayNights > 0" class="calc-row sub highlight-holiday">
+              <span>{{ isEn ? 'Consecutive Holidays' : '國定連續假期' }} ({{ bookingCalculation.holidayNights }} {{ t('calendar.nights') }})</span>
+              <span>NT$ {{ bookingCalculation.holidayTotal.toLocaleString() }}</span>
             </div>
             <div v-if="bookingCalculation.extraPersonFee > 0" class="calc-row sub">
               <span>{{ isEn ? 'Extra Person Fee' : '加人加床費用' }}</span>
@@ -471,13 +525,9 @@ const lineBookingUrl = computed(() => {
     align-items: center;
     gap: 0.5rem;
 
-    .pulse-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background-color: #22C55E;
-      box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.25);
-      animation: pulse 2s infinite;
+    .info-icon {
+      color: var(--gold-primary);
+      flex-shrink: 0;
     }
 
     .sync-text {
@@ -569,6 +619,12 @@ const lineBookingUrl = computed(() => {
         color: var(--gold-primary);
         background: var(--bg-card);
       }
+
+      &:disabled {
+        opacity: 0.35;
+        cursor: not-allowed;
+        pointer-events: none;
+      }
     }
   }
 }
@@ -620,6 +676,12 @@ const lineBookingUrl = computed(() => {
     margin-top: 2px;
     padding: 1px 4px;
     border-radius: 2px;
+
+    &.holiday-tag {
+      background: rgba(197, 168, 128, 0.2);
+      color: var(--gold-primary);
+      font-weight: 500;
+    }
   }
 
   &:hover:not(:disabled) {
@@ -698,6 +760,10 @@ const lineBookingUrl = computed(() => {
       }
       &.selected {
         background: var(--gold-primary);
+      }
+      &.holiday {
+        background: rgba(197, 168, 128, 0.35);
+        border: 1px solid var(--gold-primary);
       }
     }
   }
@@ -838,6 +904,11 @@ const lineBookingUrl = computed(() => {
     &.sub {
       font-size: 0.82rem;
       color: var(--text-muted);
+
+      &.highlight-holiday {
+        color: var(--gold-primary);
+        font-weight: 500;
+      }
     }
   }
 

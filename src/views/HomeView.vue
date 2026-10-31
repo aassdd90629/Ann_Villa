@@ -210,11 +210,11 @@ const { isEn, t, tField } = useI18n()
       <div class="container">
         <div class="section-header">
           <span class="section-tag">{{ isEn ? 'AVAILABILITY & RESERVATION' : '即時房態與預約' }}</span>
-          <h2 class="section-title">{{ isEn ? 'Live Calendar Synced with Booking.com & Airbnb' : '全館檔期即時連動・線上預約試算' }}</h2>
+          <h2 class="section-title">{{ isEn ? 'Villa Calendar & Online Rate Estimator' : '全館檔期查詢・線上預約試算' }}</h2>
           <p class="section-desc">
             {{ isEn 
-              ? 'Our calendar updates in real-time with OTA partners. Select your dates to calculate packages or book via official LINE for exclusive privileges.' 
-              : '即時整合各大訂房平台房態，點選預計入住與退房日期即可預估費用，官方直訂享延退與迎賓禮遇。' 
+              ? 'Select your check-in and check-out dates to estimate packages. Connect directly with our concierge via official LINE for the latest confirmed availability and exclusive privileges.' 
+              : '點選預計入住與退房日期即可即時預估包棟費用；最新空房檔期歡迎透過官方 LINE 洽詢管家確認預約。' 
             }}
           </p>
         </div>
