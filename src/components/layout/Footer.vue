@@ -47,10 +47,10 @@ const currentYear = new Date().getFullYear()
         <p class="footer-desc">
           {{ t('footer.aboutText') }}
         </p>
-        <div class="license-tag">
+        <!-- <div class="license-tag">
           <ShieldCheck :size="15" />
           <span>{{ siteData.licenseNumber }}</span>
-        </div>
+        </div> -->
       </div>
 
       <!-- 頁面快速導覽 -->
