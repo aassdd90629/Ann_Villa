@@ -71,7 +71,7 @@ const currentYear = new Date().getFullYear()
         <div class="contact-list">
           <div class="contact-item">
             <MapPin :size="17" class="item-icon" />
-            <span>{{ isEn ? siteData.addressEn : siteData.addressZh }}</span>
+            <a :href="siteData.googleMapUrl" target="_blank" rel="noopener noreferrer" class="contact-link">{{ isEn ? siteData.addressEn : siteData.addressZh }}</a>
           </div>
           <div class="contact-item">
             <Phone :size="17" class="item-icon" />
