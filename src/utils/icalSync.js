@@ -1,13 +1,13 @@
 /**
  * 山語 Villa - iCal (iCalendar) 雙向日曆同步與解析工具庫
- * 支援解析 Booking.com、Airbnb、Agoda、Google Calendar 之 .ics 格式，
+ * 支援解析 Airbnb、Google Calendar 之 .ics 格式，
  * 自動轉換為官網房態 JSON 結構。
  */
 
 /**
  * 解析 iCal (.ics) 文字內容並提取預約區間
  * @param {string} icsText - .ics 檔案字串
- * @param {string} channelName - 渠道名稱 (例如 'Booking.com' | 'Airbnb')
+ * @param {string} channelName - 渠道名稱 (例如 'Airbnb')
  * @returns {Array<{startDate: string, endDate: string, source: string, summary: string}>}
  */
 export function parseIcsCalendar(icsText, channelName = 'OTA') {
@@ -62,7 +62,7 @@ export function mergeBookedRanges(...channelEventsList) {
 }
 
 /**
- * 產生山語 Villa 官方對外之 iCal (.ics) 訂閱字串 (供 Booking.com 等 OTA 訂閱)
+ * 產生山語 Villa 官方對外之 iCal (.ics) 訂閱字串 (供 Airbnb 等外部日曆訂閱)
  * @param {Array} bookedRanges
  * @returns {string} ics file content
  */

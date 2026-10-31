@@ -143,8 +143,8 @@ const pkg = pricingData.exclusivePackage
             <h2 class="section-title">{{ isEn ? 'Real-Time Availability & Booking' : '即時空房查詢與線上試算' }}</h2>
             <p class="section-desc">
               {{ isEn 
-                ? 'Check real-time villa availability synced with Booking.com and Airbnb. Select dates to calculate rates and reserve directly.' 
-                : '日曆已即時與 Booking.com 及 Airbnb 雙向同步，您可直接點選日期試算平假日費用並一鍵預約。' 
+                ? 'Select your check-in and check-out dates to calculate rates and reserve directly via official LINE.' 
+                : '點選預計入住與退房日期即可即時試算包棟費用，歡迎透過官方 LINE 洽詢管家預約。' 
               }}
             </p>
           </div>

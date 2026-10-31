@@ -27,26 +27,6 @@
       "taglineEn": "Official Airbnb Listing for Shan Yu Villa",
       "url": "https://www.airbnb.com.tw/rooms/1785941296784004528?source_impression_id=p3_1792732762_P3vdCM0bn-RsnLPh",
       "status": "active"
-    },
-    {
-      "id": "booking-com",
-      "name": "Booking.com",
-      "badgeZh": "官方合作夥伴",
-      "badgeEn": "Official Partner",
-      "taglineZh": "全球旅客常用線上預訂",
-      "taglineEn": "Worldwide Trusted Booking Platform",
-      "url": "https://www.booking.com/hotel/tw/shanyu-villa.html",
-      "status": "active"
-    },
-    {
-      "id": "agoda",
-      "name": "Agoda",
-      "badgeZh": "優選包棟住宿",
-      "badgeEn": "Top Villa Choice",
-      "taglineZh": "亞洲優質旅宿預約管道",
-      "taglineEn": "Asian Premium Accommodation",
-      "url": "https://www.agoda.com/zh-tw/shanyu-villa-nantou/hotel/nantou-tw.html",
-      "status": "active"
     }
   ]
 }

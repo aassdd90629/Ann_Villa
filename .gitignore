@@ -22,8 +22,10 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Project Specs & Offline Sync Plans (kept in workspace root)
 PROJECT_SPEC.md
 1023.md
 IMAGE_MAP.md
-1023.md
-IMAGE_MAP.md
+AIRBNB_CALENDAR_SYNC_PLAN.md
+*.ics

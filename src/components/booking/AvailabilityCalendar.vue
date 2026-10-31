@@ -472,7 +472,7 @@ const lineBookingUrl = computed(() => {
 
         <!-- 合作 OTA 渠道標籤 -->
         <div class="ota-channels-footer">
-          <span class="ota-label">{{ isEn ? 'Official OTA Partners' : '亦可在以下合作平台預約：' }}</span>
+          <span class="ota-label">{{ isEn ? 'Official OTA Partner' : '亦可在官方 Airbnb 預約：' }}</span>
           <div class="ota-badges">
             <a 
               v-for="ota in channelsData.otaPlatforms" 
