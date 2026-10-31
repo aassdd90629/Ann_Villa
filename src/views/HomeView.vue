@@ -119,15 +119,15 @@ const { isEn, t, tField } = useI18n()
           <div class="philosophy-media">
             <div class="img-frame-main img-zoom-container">
               <img 
-                src="/img/outdoor-bbq-tea/outdoor-bbq-tea-01.jpg" 
-                alt="山語 Villa 實景建築外觀" 
+                src="/img/cloud-sea/cloud-sea-01.jpg" 
+                :alt="isEn ? 'Spectacular Sea of Clouds at Shan Yu Villa' : '山語 Villa 壯闊山林雲海景致'" 
                 loading="lazy"
               />
             </div>
             <div class="img-frame-sub img-zoom-container">
               <img 
-                src="/img/kitchen-bar/kitchen-bar-01.jpg" 
-                alt="智能廚房與吧台" 
+                src="/img/cloud-sea/cloud-sea-02.jpg" 
+                :alt="isEn ? 'Mountain Mist and Cloud Sea Horizon' : '山語莊園遠眺層巒雲霧仙境'" 
                 loading="lazy"
               />
             </div>
@@ -407,6 +407,11 @@ const { isEn, t, tField } = useI18n()
     height: 380px;
     border-radius: 4px;
     box-shadow: var(--shadow-card);
+
+    @media (max-width: $bp-sm) {
+      width: 88%;
+      height: 250px;
+    }
   }
 
   .img-frame-sub {
@@ -418,6 +423,13 @@ const { isEn, t, tField } = useI18n()
     border-radius: 4px;
     border: 6px solid var(--bg-primary);
     box-shadow: var(--shadow-card);
+
+    @media (max-width: $bp-sm) {
+      width: 55%;
+      height: 150px;
+      bottom: -15px;
+      border-width: 4px;
+    }
   }
 }
 

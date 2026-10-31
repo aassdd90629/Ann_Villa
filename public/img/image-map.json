@@ -448,5 +448,23 @@
     "newFolder": "scenery-night",
     "newFileName": "scenery-night-07.jpg",
     "webPath": "/img/scenery-night/scenery-night-07.jpg"
+  },
+  {
+    "categoryZh": "壯闊雲海與山巒景色",
+    "categoryEn": "Sea of Clouds & Mountain Views",
+    "oldFolder": "雲海",
+    "oldFileName": "雲海.jpg",
+    "newFolder": "cloud-sea",
+    "newFileName": "cloud-sea-01.jpg",
+    "webPath": "/img/cloud-sea/cloud-sea-01.jpg"
+  },
+  {
+    "categoryZh": "壯闊雲海與山巒景色",
+    "categoryEn": "Sea of Clouds & Mountain Views",
+    "oldFolder": "雲海",
+    "oldFileName": "雲海2.jpg",
+    "newFolder": "cloud-sea",
+    "newFileName": "cloud-sea-02.jpg",
+    "webPath": "/img/cloud-sea/cloud-sea-02.jpg"
   }
 ]
