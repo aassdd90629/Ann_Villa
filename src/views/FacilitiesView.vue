@@ -1,6 +1,7 @@
 <script setup>
 import { useI18n } from '../composables/useI18n'
 import PageHeader from '../components/common/PageHeader.vue'
+import ImageGallery from '../components/common/ImageGallery.vue'
 import facilitiesData from '../data/facilities.json'
 import siteData from '../data/site.json'
 import { CheckCircle, Sparkles } from 'lucide-vue-next'
@@ -14,8 +15,8 @@ const { isEn, tField } = useI18n()
       :tag="isEn ? 'AMENITIES' : '園區空間'"
       :title="isEn ? 'Estate Facilities & Wellness' : '園區設施與休閒空間'"
       :desc="isEn
-        ? 'From natural stone onsen to infinity panoramic pools, experience exclusive tranquility in every corner.'
-        : '無邊際山景泳池、日式天然溫泉湯屋、星空劇院與私廚中島，為您的包棟假期增添無盡風采。'"
+        ? 'Spacious grand lounge, professional KTV, auto mahjong, gourmet kitchen & bar, outdoor tea patio, and garden BBQ for an unforgettable luxury mountain retreat.'
+        : '挑高奢華大客廳、專業KTV歡唱、電動麻將娛樂、智能中島餐廚、戶外品茗茶席與庭園BBQ烤肉，為您的包棟假期增添無盡奢華與愜意。'"
     />
 
     <section class="section-py facilities-section">
@@ -27,8 +28,18 @@ const { isEn, tField } = useI18n()
             class="fac-item-row"
             :class="{ 'reverse': index % 2 === 1 }"
           >
-            <div class="fac-media-box img-zoom-container">
-              <img :src="fac.image" :alt="tField(fac, 'title')" loading="lazy" />
+            <!-- 自動輪播相簿（隱藏左右切換鍵與指示點） -->
+            <div class="fac-media-box">
+              <ImageGallery 
+                :images="fac.gallery"
+                :fallbackImage="fac.image"
+                :alt="tField(fac, 'title')"
+                :autoplay="true"
+                :autoplayInterval="4000 + (index * 400)"
+                :showControls="false"
+                :showDots="false"
+                :showCounter="false"
+              />
             </div>
 
             <div class="fac-content-box">
@@ -57,7 +68,6 @@ const { isEn, tField } = useI18n()
 <style lang="scss" scoped>
 @use '../assets/styles/variables' as *;
 
-
 .facilities-flow {
   display: flex;
   flex-direction: column;
@@ -76,7 +86,7 @@ const { isEn, tField } = useI18n()
 
   @media (min-width: $bp-lg) {
     grid-template-columns: 1.1fr 1fr;
-    gap: 4rem;
+    gap: 4.5rem;
 
     &.reverse {
       grid-template-columns: 1fr 1.1fr;
@@ -92,13 +102,7 @@ const { isEn, tField } = useI18n()
 }
 
 .fac-media-box {
-  height: 340px;
-  border-radius: 4px;
-  box-shadow: var(--shadow-card);
-
-  @media (min-width: $bp-lg) {
-    height: 420px;
-  }
+  width: 100%;
 }
 
 .fac-content-box {
@@ -136,10 +140,11 @@ const { isEn, tField } = useI18n()
       gap: 0.35rem;
       background: var(--bg-card);
       border: 1px solid var(--border-color);
-      padding: 0.4rem 0.85rem;
+      padding: 0.45rem 0.9rem;
       border-radius: 4px;
       font-size: 0.85rem;
       color: var(--text-primary);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
 
       .badge-icon {
         color: var(--gold-primary);

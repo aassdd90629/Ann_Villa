@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { ChevronLeft, ChevronRight } from 'lucide-vue-next'
 
 const props = defineProps({
@@ -14,10 +14,31 @@ const props = defineProps({
   alt: {
     type: String,
     default: 'Villa Gallery Photo'
+  },
+  autoplay: {
+    type: Boolean,
+    default: false
+  },
+  autoplayInterval: {
+    type: Number,
+    default: 4500
+  },
+  showControls: {
+    type: Boolean,
+    default: true
+  },
+  showDots: {
+    type: Boolean,
+    default: true
+  },
+  showCounter: {
+    type: Boolean,
+    default: true
   }
 })
 
 const currentIndex = ref(0)
+let autoplayTimer = null
 
 const photoList = computed(() => {
   if (props.images && props.images.length > 0) {
@@ -42,10 +63,42 @@ const prevImage = () => {
 const setImage = (idx) => {
   currentIndex.value = idx
 }
+
+const startAutoplay = () => {
+  if (!props.autoplay || photoList.value.length <= 1) return
+  stopAutoplay()
+  autoplayTimer = setInterval(() => {
+    nextImage()
+  }, props.autoplayInterval)
+}
+
+const stopAutoplay = () => {
+  if (autoplayTimer) {
+    clearInterval(autoplayTimer)
+    autoplayTimer = null
+  }
+}
+
+onMounted(() => {
+  startAutoplay()
+})
+
+onUnmounted(() => {
+  stopAutoplay()
+})
+
+watch(() => props.autoplay, (val) => {
+  if (val) startAutoplay()
+  else stopAutoplay()
+})
 </script>
 
 <template>
-  <div class="image-gallery">
+  <div 
+    class="image-gallery"
+    @mouseenter="stopAutoplay"
+    @mouseleave="startAutoplay"
+  >
     <div class="gallery-main-frame">
       <transition name="gallery-fade">
         <img 
@@ -57,8 +110,8 @@ const setImage = (idx) => {
         />
       </transition>
       
-      <!-- 輪播箭頭 (若有超過 1 張照片) -->
-      <div v-if="photoList.length > 1" class="gallery-controls">
+      <!-- 輪播箭頭 (若有超過 1 張照片且開啟 showControls) -->
+      <div v-if="showControls && photoList.length > 1" class="gallery-controls">
         <button 
           type="button"
           class="gal-btn" 
@@ -77,8 +130,8 @@ const setImage = (idx) => {
         </button>
       </div>
 
-      <!-- 輪播指示點 -->
-      <div v-if="photoList.length > 1" class="gallery-dots">
+      <!-- 輪播指示點 (若開啟 showDots) -->
+      <div v-if="showDots && photoList.length > 1" class="gallery-dots">
         <button 
           v-for="(_, gIdx) in photoList"
           :key="gIdx"
@@ -90,8 +143,8 @@ const setImage = (idx) => {
         ></button>
       </div>
 
-      <!-- 圖片張數計數器 -->
-      <div v-if="photoList.length > 1" class="gallery-counter">
+      <!-- 圖片張數計數器 (若開啟 showCounter) -->
+      <div v-if="showCounter && photoList.length > 1" class="gallery-counter">
         {{ currentIndex + 1 }} / {{ photoList.length }}
       </div>
     </div>
@@ -212,13 +265,13 @@ const setImage = (idx) => {
 // 圖片切換平滑過渡特效 (Cinematic Cross-fade with gentle scale)
 .gallery-fade-enter-active,
 .gallery-fade-leave-active {
-  transition: opacity 0.5s cubic-bezier(0.25, 1, 0.5, 1),
-              transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+  transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1),
+              transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .gallery-fade-enter-from {
   opacity: 0;
-  transform: scale(1.05);
+  transform: scale(1.04);
 }
 
 .gallery-fade-leave-to {

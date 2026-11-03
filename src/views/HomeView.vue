@@ -119,8 +119,8 @@ const { isEn, t, tField } = useI18n()
           <div class="philosophy-media">
             <div class="img-frame-main img-zoom-container">
               <img 
-                src="/img/cloud-sea/cloud-sea-01.jpg" 
-                :alt="isEn ? 'Spectacular Sea of Clouds at Shan Yu Villa' : '山語 Villa 壯闊山林雲海景致'" 
+                src="/img/house/house-01.jpg" 
+                :alt="isEn ? 'Shan Yu Villa Estate Exterior & Lawn' : '山語 Villa 莊園建築外觀與青翠草坪'" 
                 loading="lazy"
               />
             </div>

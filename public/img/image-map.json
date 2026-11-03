@@ -466,5 +466,14 @@
     "newFolder": "cloud-sea",
     "newFileName": "cloud-sea-02.jpg",
     "webPath": "/img/cloud-sea/cloud-sea-02.jpg"
+  },
+  {
+    "categoryZh": "莊園建築外觀與青翠草坪",
+    "categoryEn": "Villa Estate Exterior & Lawn",
+    "oldFolder": "house",
+    "oldFileName": "house1.jpg",
+    "newFolder": "house",
+    "newFileName": "house-01.jpg",
+    "webPath": "/img/house/house-01.jpg"
   }
 ]
