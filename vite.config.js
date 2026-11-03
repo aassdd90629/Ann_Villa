@@ -2,9 +2,10 @@ import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 
-const base = process.env.NODE_ENV === 'production' ? '/Ann_Villa/' : '/'
+// Cloudflare Pages 預設部署於根目錄 '/'；若仍需 GitHub Pages 次目錄可透過環境變數 VITE_BASE_PATH 指定
+const base = process.env.VITE_BASE_PATH || '/'
 
-// 解決 GitHub Pages 次目錄部署時，JSON 資料內靜態圖片路徑自動加上 base 的問題
+// 解決次目錄部署時，JSON 資料內靜態圖片路徑自動加上 base 的問題
 function prefixPublicPathPlugin() {
   return {
     name: 'prefix-public-path',

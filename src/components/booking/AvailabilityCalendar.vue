@@ -34,7 +34,7 @@ minBookingDate.setHours(0, 0, 0, 0)
 const currentDate = ref(new Date(today.getFullYear(), today.getMonth(), 1))
 const checkInDate = ref(null) // 'YYYY-MM-DD'
 const checkOutDate = ref(null) // 'YYYY-MM-DD'
-const guestCount = ref(20)
+const guestCount = ref(18)
 const hoverDate = ref(null)
 const bookedRanges = ref([])
 
@@ -149,20 +149,35 @@ function isDatePast(d) {
 function isDateBooked(dateStr) {
   if (!bookedRanges.value || !bookedRanges.value.length) return false
   return bookedRanges.value.some(range => {
-    return dateStr >= range.startDate && dateStr <= range.endDate
+    return dateStr >= range.startDate && dateStr < range.endDate
   })
 }
 
 // 取得某日期的預約來源
 function getBookingSource(dateStr) {
   if (!bookedRanges.value || !bookedRanges.value.length) return ''
-  const found = bookedRanges.value.find(range => dateStr >= range.startDate && dateStr <= range.endDate)
+  const found = bookedRanges.value.find(range => dateStr >= range.startDate && dateStr < range.endDate)
   return found ? found.source : ''
+}
+
+// 檢查某日期是否可作為目前選取的退房日（若當天是下一筆訂單的 Check-in 日，允許前一位於 11:00 前退房）
+function isCheckOutSelectable(dateStr) {
+  if (!checkInDate.value || checkOutDate.value) return false
+  if (dateStr <= checkInDate.value) return false
+  let curr = new Date(checkInDate.value)
+  const target = new Date(dateStr)
+  while (curr < target) {
+    const checkStr = formatDate(curr)
+    if (isDateBooked(checkStr)) return false
+    curr.setDate(curr.getDate() + 1)
+  }
+  return true
 }
 
 // 點擊日期
 const selectDate = (day) => {
-  if (day.isPast || day.isBooked) return
+  if (day.isPast) return
+  if (day.isBooked && !isCheckOutSelectable(day.dateStr)) return
   
   if (!checkInDate.value || (checkInDate.value && checkOutDate.value)) {
     checkInDate.value = day.dateStr
@@ -328,7 +343,7 @@ const lineBookingUrl = computed(() => {
               'is-check-in': day.dateStr === checkInDate,
               'is-check-out': day.dateStr === checkOutDate
             }"
-            :disabled="day.isPast || day.isBooked"
+            :disabled="day.isPast || (day.isBooked && !isCheckOutSelectable(day.dateStr))"
             @click="selectDate(day)"
             :title="day.isBooked ? `${day.dateStr} (${getBookingSource(day.dateStr)} 已預約)` : (day.holiday ? `${day.dateStr} 【${isEn ? day.holiday.nameEn : day.holiday.nameZh} NT$ ${day.holiday.price.toLocaleString()}` + (day.holiday.breakfast ? ' 含早餐' : ' 不含早餐') + '】' : day.dateStr)"
           >
@@ -404,8 +419,8 @@ const lineBookingUrl = computed(() => {
               <span class="g-count">{{ guestCount }} {{ t('calendar.guestCount') }}</span>
               <button 
                 class="g-btn" 
-                :disabled="guestCount >= 20" 
-                @click="guestCount = Math.min(20, guestCount + 1)"
+                :disabled="guestCount >= 18" 
+                @click="guestCount = Math.min(18, guestCount + 1)"
               >+</button>
             </div>
           </div>

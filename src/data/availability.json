@@ -1,7 +1,134 @@
 {
-  "lastSyncedAt": null,
+  "lastSyncedAt": "2026-11-03T14:25:46.273Z",
+  "syncSource": "airbnb-calendar.ics",
   "syncStatus": "healthy",
-  "syncIntervalMinutes": 10,
-  "channelsSynced": [],
-  "bookedRanges": []
+  "totalEvents": 14,
+  "bookedRanges": [
+    {
+      "startDate": "2026-11-07",
+      "endDate": "2026-11-08",
+      "source": "Airbnb",
+      "type": "blocked",
+      "status": "confirmed",
+      "summary": "Airbnb (Not available)",
+      "uid": "7f662ec65913-5f5f00655a43300dd98229aff1e3274c@airbnb.com"
+    },
+    {
+      "startDate": "2026-11-14",
+      "endDate": "2026-11-15",
+      "source": "Airbnb",
+      "type": "reserved",
+      "status": "confirmed",
+      "summary": "Reserved",
+      "uid": "1418fb94e984-dfb10b5256927ed4332087a51e2c7888@airbnb.com"
+    },
+    {
+      "startDate": "2026-11-21",
+      "endDate": "2026-11-22",
+      "source": "Airbnb",
+      "type": "reserved",
+      "status": "confirmed",
+      "summary": "Reserved",
+      "uid": "1418fb94e984-a5a2bd7bb7c1d894d6690eef326fb87f@airbnb.com"
+    },
+    {
+      "startDate": "2026-11-28",
+      "endDate": "2026-11-29",
+      "source": "Airbnb",
+      "type": "blocked",
+      "status": "confirmed",
+      "summary": "Airbnb (Not available)",
+      "uid": "7f662ec65913-4c0d617c974a763f9f8f3bc12947409d@airbnb.com"
+    },
+    {
+      "startDate": "2026-12-05",
+      "endDate": "2026-12-06",
+      "source": "Airbnb",
+      "type": "reserved",
+      "status": "confirmed",
+      "summary": "Reserved",
+      "uid": "1418fb94e984-60524b6d7e1bb9ae75b4c13f62144814@airbnb.com"
+    },
+    {
+      "startDate": "2026-12-12",
+      "endDate": "2026-12-13",
+      "source": "Airbnb",
+      "type": "reserved",
+      "status": "confirmed",
+      "summary": "Reserved",
+      "uid": "1418fb94e984-aa205786074d8f4f99ea2622341e8983@airbnb.com"
+    },
+    {
+      "startDate": "2026-12-19",
+      "endDate": "2026-12-20",
+      "source": "Airbnb",
+      "type": "reserved",
+      "status": "confirmed",
+      "summary": "Reserved",
+      "uid": "1418fb94e984-c9bce1aef4e94f67731a8e5661390e53@airbnb.com"
+    },
+    {
+      "startDate": "2027-01-01",
+      "endDate": "2027-01-02",
+      "source": "Airbnb",
+      "type": "reserved",
+      "status": "confirmed",
+      "summary": "Reserved",
+      "uid": "1418fb94e984-f007e65a8cd70b30ea9971cd7403612f@airbnb.com"
+    },
+    {
+      "startDate": "2027-01-16",
+      "endDate": "2027-01-17",
+      "source": "Airbnb",
+      "type": "blocked",
+      "status": "confirmed",
+      "summary": "Airbnb (Not available)",
+      "uid": "7f662ec65913-8bb9135f003cbed942d47513dc5574f8@airbnb.com"
+    },
+    {
+      "startDate": "2027-01-23",
+      "endDate": "2027-01-24",
+      "source": "Airbnb",
+      "type": "blocked",
+      "status": "confirmed",
+      "summary": "Airbnb (Not available)",
+      "uid": "7f662ec65913-17dbf381240246192e8982261a393f0a@airbnb.com"
+    },
+    {
+      "startDate": "2027-02-07",
+      "endDate": "2027-02-08",
+      "source": "Airbnb",
+      "type": "blocked",
+      "status": "confirmed",
+      "summary": "Airbnb (Not available)",
+      "uid": "7f662ec65913-93e400553f7dbd5f8f10d7a51bf76853@airbnb.com"
+    },
+    {
+      "startDate": "2027-02-08",
+      "endDate": "2027-02-09",
+      "source": "Airbnb",
+      "type": "reserved",
+      "status": "confirmed",
+      "summary": "Reserved",
+      "uid": "1418fb94e984-5b0ea4566e9282ed5a3e8566b8a99417@airbnb.com"
+    },
+    {
+      "startDate": "2027-02-27",
+      "endDate": "2027-03-01",
+      "source": "Airbnb",
+      "type": "blocked",
+      "status": "confirmed",
+      "summary": "Airbnb (Not available)",
+      "uid": "7f662ec65913-83d9a7977e7e950e75ecd4abd29fcd80@airbnb.com"
+    },
+    {
+      "startDate": "2027-04-30",
+      "endDate": "2027-11-01",
+      "source": "Airbnb",
+      "type": "blocked",
+      "status": "confirmed",
+      "summary": "Airbnb (Not available)",
+      "uid": "7f662ec65913-6a05e0c2784706aaf263634c18f34918@airbnb.com"
+    }
+  ]
 }

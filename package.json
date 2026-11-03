@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host",
+    "sync:ical": "node scripts/parse-ical.js",
+    "prebuild": "node scripts/parse-ical.js",
     "build": "vite build",
     "preview": "vite preview"
   },

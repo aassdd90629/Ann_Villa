@@ -10,17 +10,17 @@
   "phone": "0909-557-400",
   "lineId": "@209yrich",
   "lineUrl": "https://line.me/R/ti/p/@209yrich",
-  "lineTemplateMsg": "您好，我想洽詢山語Villa全棟包棟預約：【預計入住日期：】【人數：位（最多20人）】",
+  "lineTemplateMsg": "您好，我想洽詢山語Villa全棟包棟預約：【預計入住日期：】【人數：位（最多18人）】",
   "instagram": "villa_forfun001",
   "instagramUrl": "https://www.instagram.com/villa_forfun001/",
   "airbnbUrl": "https://www.airbnb.com.tw/rooms/1785941296784004528?source_impression_id=p3_1792732762_P3vdCM0bn-RsnLPh",
   "addressZh": "369苗栗縣卓蘭鎮景山里8鄰127-10號",
   "addressEn": "No. 127-10, Neighborhood 8, Jingshan Vil., Zhuolan Township, Miaoli County 369, Taiwan",
   "googleMapUrl": "https://maps.app.goo.gl/VhxGV5h3uJwU14mG9",
-  "maxGuests": 20,
+  "maxGuests": 18,
   "roomCount": 5,
   "deposit": 3000,
   "checkInTime": "15:00",
   "checkOutTime": "11:00",
-  "licenseNumber": "南投縣民宿第 9999 號"
+  "licenseNumber": "苗栗縣合法民宿登記"
 }
