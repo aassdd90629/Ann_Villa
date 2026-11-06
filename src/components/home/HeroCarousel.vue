@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
-import { ChevronLeft, ChevronRight, Play, Pause } from 'lucide-vue-next'
+import { ChevronLeft, ChevronRight, Play, Pause, Info } from 'lucide-vue-next'
 import { useI18n } from '../../composables/useI18n'
 import defaultSlidesData from '../../data/hero-slides.json'
 
@@ -41,6 +41,39 @@ const currentIndex = ref(0)
 const prevIndex = ref(0)
 const isPlaying = ref(props.autoplay)
 let autoplayTimer = null
+
+// 方案 A：純時間觸發型（字只出現一次，5秒後淡出，隨後開始自動播放後續圖片）
+const showContent = ref(true)
+const isIntroActive = ref(true)
+let introTimer = null
+const introDuration = 5000 // 首屏字停留 5 秒供訪客閱讀
+
+const dismissIntro = () => {
+  if (!isIntroActive.value && !showContent.value) return
+  if (introTimer) {
+    clearTimeout(introTimer)
+    introTimer = null
+  }
+  showContent.value = false
+  isIntroActive.value = false
+
+  // 文字隱退後，啟動背景自動輪播播放圖片
+  if (props.autoplay) {
+    startAutoplay()
+  }
+}
+
+// 支援手動點擊切換文字顯示/純景模式
+const toggleContent = () => {
+  showContent.value = !showContent.value
+  if (showContent.value) {
+    stopAutoplay()
+  } else {
+    if (props.autoplay) {
+      startAutoplay()
+    }
+  }
+}
 
 const currentSlide = computed(() => {
   return props.slides[currentIndex.value] || props.slides[0]
@@ -139,13 +172,21 @@ const handleTouchEnd = (e) => {
 }
 
 onMounted(() => {
-  if (props.autoplay) {
-    startAutoplay()
-  }
+  // 方案 A 初始階段：先不輪播換圖，讓首張大圖與中央文字平穩停留 5 秒
+  stopAutoplay()
+
+  // 5 秒一到，文字優雅淡出留白，並正式啟動圖片自動輪播
+  introTimer = setTimeout(() => {
+    dismissIntro()
+  }, introDuration)
 })
 
 onUnmounted(() => {
   stopAutoplay()
+  if (introTimer) {
+    clearTimeout(introTimer)
+    introTimer = null
+  }
 })
 
 watch(() => props.autoplay, (val) => {
@@ -187,14 +228,16 @@ watch(() => props.autoplay, (val) => {
       </div>
     </div>
 
-    <!-- 沉浸暗色漸變遮罩 (增強文字閱讀舒適度與東方意境) -->
-    <div class="carousel-overlay"></div>
+    <!-- 沉浸暗色漸變遮罩 (增強文字閱讀舒適度；文字淡出後自動變淡，釋放照片原色通透感) -->
+    <div class="carousel-overlay" :class="{ 'is-clear': !showContent }"></div>
     <div class="carousel-bottom-fade"></div>
 
-    <!-- 內容插槽：首屏文字、標題、按鈕與統計資訊置於最上層 -->
-    <div class="carousel-content-slot">
-      <slot></slot>
-    </div>
+    <!-- 內容插槽：首屏文字、標題、按鈕與統計資訊 (方案 A：5 秒後優雅淡出留白，開啟純景輪播) -->
+    <transition name="hero-content-fade">
+      <div v-if="showContent" class="carousel-content-slot">
+        <slot></slot>
+      </div>
+    </transition>
 
     <!-- 兩側切換箭頭 -->
     <div v-if="showArrows && slides.length > 1" class="carousel-nav-arrows">
@@ -249,8 +292,20 @@ watch(() => props.autoplay, (val) => {
         </button>
       </div>
 
-      <!-- 序號計數器與播放控制 -->
+      <!-- 序號計數器、播放控制與資訊切換按鈕 -->
       <div class="carousel-meta-box">
+        <!-- 喚回/隱藏首屏資訊按鈕 -->
+        <button 
+          type="button" 
+          class="info-toggle-btn"
+          @click="toggleContent"
+          :title="showContent ? (isEn ? 'Hide text for panoramic view' : '隱藏文字沉浸賞景') : (isEn ? 'Show estate intro' : '顯示山莊簡介')"
+          :aria-label="showContent ? 'Hide estate info' : 'Show estate info'"
+        >
+          <Info :size="13" />
+          <span class="info-toggle-text">{{ showContent ? (isEn ? 'Pure View' : '沉浸純景') : (isEn ? 'Villa Info' : '山莊簡介') }}</span>
+        </button>
+
         <span class="carousel-counter">
           <span class="current">{{ String(currentIndex + 1).padStart(2, '0') }}</span>
           <span class="separator">/</span>
@@ -354,6 +409,12 @@ watch(() => props.autoplay, (val) => {
   );
   z-index: 2;
   pointer-events: none;
+  transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+  // 文字隱退後自動淡化遮罩，釋放全景照片的原色通透感
+  &.is-clear {
+    opacity: 0.38;
+  }
 }
 
 // 底部過渡平滑銜接下一個區塊
@@ -611,6 +672,36 @@ watch(() => props.autoplay, (val) => {
     }
   }
 
+  .info-toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 20px;
+    padding: 0.2rem 0.65rem;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.76rem;
+    cursor: pointer;
+    transition: all 0.25s ease;
+
+    &:hover {
+      background: var(--gold-primary);
+      color: #FFFFFF;
+      border-color: var(--gold-primary);
+      transform: translateY(-1px);
+    }
+
+    .info-toggle-text {
+      letter-spacing: 0.05em;
+    }
+
+    @media (max-width: $bp-sm) {
+      padding: 0.18rem 0.5rem;
+      font-size: 0.72rem;
+    }
+  }
+
   .play-toggle-btn {
     background: transparent;
     border: none;
@@ -637,5 +728,21 @@ watch(() => props.autoplay, (val) => {
       font-size: 0.85rem;
     }
   }
+}
+
+// 方案 A：首屏文字平滑退場與進場過渡動畫 (如山嵐微風般輕盈)
+.hero-content-fade-enter-active,
+.hero-content-fade-leave-active {
+  transition: opacity 0.85s cubic-bezier(0.4, 0, 0.2, 1), transform 0.85s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hero-content-fade-enter-from {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.hero-content-fade-leave-to {
+  opacity: 0;
+  transform: translateY(-24px);
 }
 </style>
