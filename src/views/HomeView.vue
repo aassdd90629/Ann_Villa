@@ -18,6 +18,7 @@ import {
 } from 'lucide-vue-next'
 import AvailabilityCalendar from '../components/booking/AvailabilityCalendar.vue'
 import HeroCarousel from '../components/home/HeroCarousel.vue'
+import ImageGallery from '../components/common/ImageGallery.vue'
 import BookingButton from '../components/common/BookingButton.vue'
 
 const { isEn, t, tField } = useI18n()
@@ -183,24 +184,52 @@ const { isEn, t, tField } = useI18n()
       </div>
     </section>
 
-    <!-- 4. 園區頂級設施 (Facilities Highlight) -->
+    <!-- 4. 園區頂級設施 (Facilities Highlight - 6 格空間介紹，內嵌圖片自動輪播) -->
     <section class="section-py facilities-preview-section">
       <div class="container">
         <div class="section-header">
           <span class="section-tag">{{ isEn ? 'FACILITIES' : '頂級園區空間' }}</span>
           <h2 class="section-title">{{ isEn ? 'Curated Amenities for Unforgettable Moments' : '尊榮設施・打造極致度假儀式感' }}</h2>
+          <p class="section-desc">
+            {{ isEn 
+              ? 'Immerse yourself in our 6 private spaces: living lounge with karaoke, chef kitchen & social bar, tea terrace, garden BBQ, panoramic deck, and private lawn.' 
+              : '精心規劃 6 大空間：挑高歡唱客廳、頂級中島吧台、戶外原木品茗茶席、美式庭園烤肉、星空觀景露台與百坪青翠草坪。' 
+            }}
+          </p>
         </div>
 
         <div class="facilities-grid">
-          <div v-for="fac in facilitiesData" :key="fac.id" class="fac-card">
-            <div class="fac-img-box img-zoom-container">
-              <img :src="fac.image" :alt="tField(fac, 'title')" loading="lazy" />
+          <div 
+            v-for="(fac, index) in facilitiesData" 
+            :key="fac.id" 
+            class="fac-card card-luxury"
+          >
+            <!-- 格內圖片自動輪播 (無按鈕、平滑自動過渡) -->
+            <div class="fac-img-box">
+              <ImageGallery 
+                :images="fac.gallery"
+                :fallbackImage="fac.image"
+                :alt="tField(fac, 'title')"
+                :autoplay="true"
+                :autoplayInterval="3600 + (index * 400)"
+                :showControls="false"
+                :showDots="false"
+                :showCounter="false"
+              />
             </div>
             <div class="fac-info">
-              <h4>{{ tField(fac, 'title') }}</h4>
-              <p>{{ tField(fac, 'desc') }}</p>
+              <span class="fac-tag">0{{ index + 1 }}・{{ isEn ? 'SPACE' : '園區空間' }}</span>
+              <h4 class="fac-title">{{ tField(fac, 'title') }}</h4>
+              <p class="fac-desc">{{ tField(fac, 'desc') }}</p>
             </div>
           </div>
+        </div>
+
+        <div class="section-more-btn">
+          <RouterLink to="/facilities" class="btn btn-outline">
+            <span>{{ isEn ? 'Explore All 6 Spaces & Amenities' : '查看 6 大空間完整設施圖集' }}</span>
+            <ArrowRight :size="16" />
+          </RouterLink>
         </div>
       </div>
     </section>
@@ -527,7 +556,7 @@ const { isEn, t, tField } = useI18n()
   margin-top: 3.5rem;
 }
 
-// Facilities Preview
+// Facilities Preview (6 格空間導覽)
 .facilities-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -538,27 +567,69 @@ const { isEn, t, tField } = useI18n()
   }
 
   @media (min-width: $bp-lg) {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
 .fac-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+  }
+
   .fac-img-box {
-    height: 220px;
-    border-radius: 4px;
-    margin-bottom: 1rem;
+    width: 100%;
+    overflow: hidden;
+    background: #111;
+
+    :deep(.gallery-main-frame) {
+      height: 240px;
+      border-radius: 0;
+      box-shadow: none;
+
+      @media (max-width: $bp-sm) {
+        height: 210px;
+      }
+    }
   }
 
   .fac-info {
-    h4 {
-      font-size: 1.1rem;
-      margin-bottom: 0.4rem;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+
+    .fac-tag {
+      font-size: 0.74rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      color: var(--gold-primary);
+      text-transform: uppercase;
+      margin-bottom: 0.45rem;
+      display: inline-block;
     }
 
-    p {
+    .fac-title {
+      font-size: 1.18rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 0.65rem;
+      line-height: 1.4;
+    }
+
+    .fac-desc {
       font-size: 0.88rem;
       color: var(--text-sub);
-      line-height: 1.6;
+      line-height: 1.75;
+      flex: 1;
     }
   }
 }

@@ -1,31 +1,5 @@
 [
   {
-    "id": "mahjong-lounge",
-    "titleZh": "電動麻將桌娛樂交誼區",
-    "titleEn": "Automatic Mahjong Entertainment Lounge",
-    "descZh": "配備高階靜音電動四口過牌麻將桌與舒適人體工學椅，親朋好友包棟歡聚切磋牌藝的歡樂時光，徹底解放雙手、享受悠閒牌局。",
-    "descEn": "Equipped with a quiet four-port motorized automatic mahjong table and ergonomic chairs, perfect for friendly matches and leisure.",
-    "image": "/img/living-ktv/living-ktv-02.jpg",
-    "featuresZh": [
-      "全自動靜音洗牌與升降桌面",
-      "舒適旋轉人體工學座椅",
-      "專用雕刻牌組與籌碼配備",
-      "獨立交誼空間不干擾就寢區"
-    ],
-    "featuresEn": [
-      "Automatic whisper-quiet shuffling",
-      "Ergonomic swivel armchairs",
-      "Full curated tiles & chips set",
-      "Separated social space without disturbing bedrooms"
-    ],
-    "gallery": [
-      "/img/living-ktv/living-ktv-02.jpg",
-      "/img/living-ktv/living-ktv-03.jpg",
-      "/img/living-ktv/living-ktv-01.jpg",
-      "/img/living-ktv/living-ktv-04.jpg"
-    ]
-  },
-  {
     "id": "ktv-theater",
     "titleZh": "大客廳與專業卡拉OK歡唱系統",
     "titleEn": "Grand Living Hall & Professional KTV System",
@@ -46,9 +20,37 @@
     ],
     "gallery": [
       "/img/living-ktv/living-ktv-01.jpg",
-      "/img/living-ktv/living-ktv-04.jpg",
       "/img/living-ktv/living-ktv-03.jpg",
+      "/img/living-ktv/living-ktv-04.jpg",
       "/img/living-ktv/living-ktv-02.jpg"
+    ]
+  },
+  {
+    "id": "smart-kitchen",
+    "titleZh": "頂級智能廚房與時尚 Mini Bar",
+    "titleEn": "Smart Gourmet Kitchen & Mini Bar Lounge",
+    "descZh": "現代化開放式智能中島廚房與高腳 Mini Bar，大型雙門冰箱、微波爐、電鍋、熱水壺及餐具一應俱全，無論料理下廚或調飲皆隨心所欲。",
+    "descEn": "Contemporary open-concept island kitchen and stylish high-top mini bar, equipped with large double-door refrigerator, appliances, and glassware.",
+    "image": "/img/kitchen-bar/kitchen-bar-06.jpg",
+    "featuresZh": [
+      "開放式智能料理中島與高腳吧台",
+      "大型雙門家用冷藏冷凍冰箱",
+      "微波爐、快煮壺、全套碗盤刀叉",
+      "精緻高腳酒杯與品飲器皿"
+    ],
+    "featuresEn": [
+      "Smart cooking island & high bar",
+      "Spacious double-door refrigerator",
+      "Microwave, kettle, full cutlery sets",
+      "Premium glassware & drink accessories"
+    ],
+    "gallery": [
+      "/img/kitchen-bar/kitchen-bar-06.jpg",
+      "/img/kitchen-bar/kitchen-bar-04.jpg",
+      "/img/kitchen-bar/kitchen-bar-01.jpg",
+      "/img/kitchen-bar/kitchen-bar-02.jpg",
+      "/img/kitchen-bar/kitchen-bar-03.jpg",
+      "/img/kitchen-bar/kitchen-bar-05.jpg"
     ]
   },
   {
@@ -73,9 +75,8 @@
     "gallery": [
       "/img/outdoor-bbq-tea/outdoor-bbq-tea-03.jpg",
       "/img/outdoor-bbq-tea/outdoor-bbq-tea-04.jpg",
-      "/img/outdoor-bbq-tea/outdoor-bbq-tea-05.jpg",
       "/img/outdoor-bbq-tea/outdoor-bbq-tea-06.jpg",
-      "/img/outdoor-bbq-tea/outdoor-bbq-tea-07.jpg"
+      "/img/outdoor-bbq-tea/outdoor-bbq-tea-02.jpg"
     ]
   },
   {
@@ -84,84 +85,75 @@
     "titleEn": "Outdoor Garden BBQ Grill & Party Area",
     "descZh": "寬敞的戶外庭園專屬烤肉區，配備美式大型烤肉爐、洗滌流理台與遮陽休閒桌椅，親友齊聚同享碳烤美味與星空歡笑。",
     "descEn": "Spacious outdoor landscaped BBQ area featuring an American barbecue grill, prep sink, and festive patio dining tables under the open sky.",
-    "image": "/img/outdoor-bbq-tea/outdoor-bbq-tea-02.jpg",
+    "image": "/img/outdoor-bbq-tea/outdoor-bbq-tea-09.jpg",
     "featuresZh": [
       "美式大型戶外烤肉爐具",
-      "戶外專屬食材洗滌流理台",
+      "自動旋轉烤叉烘烤配備",
       "休閒庭園長桌與遮陽休閒椅",
-      "夜間氛圍情境照明"
+      "夜間氛圍情境照明與食材流理台"
     ],
     "featuresEn": [
       "Large American BBQ grill",
-      "Dedicated outdoor food prep sink",
+      "Auto-rotisserie skewer system",
       "Garden dining long tables & seating",
-      "Warm evening mood lighting"
+      "Warm evening mood lighting & prep sink"
     ],
     "gallery": [
-      "/img/outdoor-bbq-tea/outdoor-bbq-tea-02.jpg",
-      "/img/outdoor-bbq-tea/outdoor-bbq-tea-01.jpg",
-      "/img/outdoor-bbq-tea/outdoor-bbq-tea-08.jpg",
       "/img/outdoor-bbq-tea/outdoor-bbq-tea-09.jpg",
       "/img/outdoor-bbq-tea/outdoor-bbq-tea-10.jpg",
-      "/img/outdoor-bbq-tea/outdoor-bbq-tea-11.jpg",
-      "/img/house/house-01.jpg"
+      "/img/outdoor-bbq-tea/outdoor-bbq-tea-08.jpg"
     ]
   },
   {
-    "id": "smart-kitchen",
-    "titleZh": "頂級智能廚房與時尚 Mini Bar",
-    "titleEn": "Smart Gourmet Kitchen & Mini Bar Lounge",
-    "descZh": "現代化開放式智能中島廚房與高腳 Mini Bar，大型雙門冰箱、微波爐、電鍋、熱水壺及餐具一應俱全，無論料理下廚或調飲皆隨心所欲。",
-    "descEn": "Contemporary open-concept island kitchen and stylish high-top mini bar, equipped with large double-door refrigerator, appliances, and glassware.",
-    "image": "/img/kitchen-bar/kitchen-bar-02.jpg",
+    "id": "viewing-deck",
+    "titleZh": "觀景木棧露台與璀璨星夜",
+    "titleEn": "Panoramic Viewing Deck & Starlight Terrace",
+    "descZh": "寬敞的戶外木棧觀景露台，白天盡覽群山起伏與漫漫雲海，入夜後微光倒影輝映漫天星空，為您營造最浪漫沉靜的山居慢活時光。",
+    "descEn": "Spacious timber viewing terrace offering panoramic vistas of rolling mountains and cloud sea by day, and star-studded skies by night.",
+    "image": "/img/homebanner/homebanner-02.jpg",
     "featuresZh": [
-      "開放式智能料理中島與高腳吧台",
-      "大型雙門家用冷藏冷凍冰箱",
-      "微波爐、快煮壺、全套碗盤刀叉",
-      "精緻高腳酒杯與品飲器皿"
+      "全景開闊無遮蔽山巒視野",
+      "戶外高架景觀木棧平台",
+      "無光害夜間觀星與倒影氛圍",
+      "晨曦日出與夕陽彩霞暮色"
     ],
     "featuresEn": [
-      "Smart cooking island & high bar",
-      "Spacious double-door refrigerator",
-      "Microwave, kettle, full cutlery sets",
-      "Premium glassware & drink accessories"
+      "Panoramic unobstructed mountain views",
+      "Elevated timber viewing terrace",
+      "Zero light pollution stargazing",
+      "Sunrise mist & crimson sunset twilight"
     ],
     "gallery": [
-      "/img/kitchen-bar/kitchen-bar-02.jpg",
-      "/img/kitchen-bar/kitchen-bar-01.jpg",
-      "/img/kitchen-bar/kitchen-bar-03.jpg",
-      "/img/kitchen-bar/kitchen-bar-04.jpg",
-      "/img/kitchen-bar/kitchen-bar-05.jpg",
-      "/img/kitchen-bar/kitchen-bar-06.jpg"
-    ]
-  },
-  {
-    "id": "butler-care",
-    "titleZh": "24 小時貼心管家服務與全區私密包棟",
-    "titleEn": "24-Hour Butler Support & Complete Villa Privacy",
-    "descZh": "專屬管家提供全天候貼心諮詢與即時支援，從入住引導、設施操作到周邊私房景點建議，給您最無微不至的奢華山居款待。",
-    "descEn": "Dedicated 24-hour on-call butler providing attentive service, from check-in welcome to local hidden-gem recommendations, ensuring seamless luxury.",
-    "image": "/img/scenery-night/scenery-night-01.jpg",
-    "featuresZh": [
-      "全天候 LINE / 電話即時管家支援",
-      "專人入住退房接待與導覽說明",
-      "在地隱藏版美食與景點私房推薦",
-      "100% 獨門獨院完全私密不被打擾"
-    ],
-    "featuresEn": [
-      "24/7 on-call messaging & phone concierge",
-      "Personal greeting & estate orientation",
-      "Curated local itinerary recommendations",
-      "100% private gated sanctuary"
-    ],
-    "gallery": [
-      "/img/scenery-night/scenery-night-01.jpg",
+      "/img/homebanner/homebanner-02.jpg",
+      "/img/cloud-sea/cloud-sea-01.jpg",
       "/img/scenery-night/scenery-night-02.jpg",
-      "/img/scenery-night/scenery-night-03.jpg",
-      "/img/scenery-night/scenery-night-04.jpg",
-      "/img/scenery-night/scenery-night-05.jpg",
-      "/img/scenery-night/scenery-night-06.jpg",
-      "/img/scenery-night/scenery-night-07.jpg"
+      "/img/scenery-night/scenery-night-01.jpg"
+    ]
+  },
+  {
+    "id": "estate-grounds",
+    "titleZh": "獨門獨院莊園建築與青翠草坪",
+    "titleEn": "Private Gated Villa & Lush Green Lawn",
+    "descZh": "坐擁整座私密山坡的獨門獨院豪宅山莊，百坪青翠綠意草坪與環山景觀步道，每日僅接待一組貴賓包棟，尊享 100% 私密與貼心管家服務。",
+    "descEn": "Private gated hillside estate featuring lush sprawling lawns and nature trails. Exclusively reserved for one group daily with 24/7 butler care.",
+    "image": "/img/outdoor-bbq-tea/outdoor-bbq-tea-01.jpg",
+    "featuresZh": [
+      "100% 獨門獨院完全私密包棟",
+      "百坪青翠綠茵戶外大草坪",
+      "專屬私家停車場與景觀步道",
+      "24 小時貼心管家諮詢支援"
+    ],
+    "featuresEn": [
+      "100% private single-booking estate",
+      "Expansive manicured green lawn",
+      "Private parking & scenic walkway",
+      "24/7 dedicated butler assistance"
+    ],
+    "gallery": [
+      "/img/outdoor-bbq-tea/outdoor-bbq-tea-01.jpg",
+      "/img/homebanner/homebanner-05.jpg",
+      "/img/homebanner/homebanner-01.jpg",
+      "/img/house/house-01.jpg"
     ]
   }
 ]

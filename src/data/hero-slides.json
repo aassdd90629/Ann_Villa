@@ -1,56 +1,56 @@
 [
   {
     "id": "slide-1",
-    "image": "/img/scenery-night/scenery-night-01.jpg",
-    "titleZh": "暮色雲海・全景山莊",
-    "titleEn": "Shan Yu Twilight Estate",
-    "tagZh": "景觀全貌",
-    "tagEn": "Panoramic Estate",
-    "alt": "山語 Villa 暮色莊園外觀"
+    "image": "/img/homebanner/homebanner-01.jpg",
+    "titleZh": "星夜璀璨・豪宅山莊",
+    "titleEn": "Luminous Nightscape Estate",
+    "tagZh": "莊園夜色",
+    "tagEn": "Villa Nightscape",
+    "alt": "山語 Villa 豪宅山莊夜景"
   },
   {
     "id": "slide-2",
-    "image": "/img/living-ktv/living-ktv-01.jpg",
-    "titleZh": "挑高奢華客廳・歡唱 KTV",
-    "titleEn": "Grand Living Lounge & KTV",
-    "tagZh": "奢華客廳",
-    "tagEn": "Living Lounge",
-    "alt": "挑高奢華客廳與休閒設施"
+    "image": "/img/homebanner/homebanner-02.jpg",
+    "titleZh": "觀景露台・漫步星空下",
+    "titleEn": "Panoramic Viewing Deck",
+    "tagZh": "觀景木棧露台",
+    "tagEn": "Viewing Deck",
+    "alt": "山語 Villa 戶外觀景露台夜景"
   },
   {
     "id": "slide-3",
-    "image": "/img/outdoor-bbq-tea/outdoor-bbq-tea-01.jpg",
-    "titleZh": "庭園品茗茶席・私密烤肉",
-    "titleEn": "Outdoor Tea Patio & BBQ",
-    "tagZh": "庭園慢活",
-    "tagEn": "Tea & BBQ Patio",
-    "alt": "庭園品茗茶席與烤肉區"
+    "image": "/img/homebanner/homebanner-03.jpg",
+    "titleZh": "群山環繞・自然田園風光",
+    "titleEn": "Scenic Mountain Countryside",
+    "tagZh": "自然景致",
+    "tagEn": "Nature & Orchard",
+    "alt": "山語 Villa 周邊自然景致"
   },
   {
     "id": "slide-4",
-    "image": "/img/scenery-night/scenery-night-05.jpg",
-    "titleZh": "璀璨星空夜景・靜謐山林",
-    "titleEn": "Starlit Mountain Sanctuary",
-    "tagZh": "星夜山巒",
-    "tagEn": "Night Scenery",
-    "alt": "靜謐星空夜景"
+    "image": "/img/homebanner/homebanner-04.jpg",
+    "titleZh": "山嵐漫漫・壯闊縹緲雲海",
+    "titleEn": "Sea of Clouds & Mountain Mist",
+    "tagZh": "壯闊雲海",
+    "tagEn": "Sea of Clouds",
+    "alt": "山語 Villa 雲海繚繞絕景"
   },
   {
     "id": "slide-5",
-    "image": "/img/kitchen-bar/kitchen-bar-01.jpg",
-    "titleZh": "中島吧台・智能頂級廚房",
-    "titleEn": "Chef Island & Social Bar",
-    "tagZh": "中島餐廚",
-    "tagEn": "Kitchen & Bar",
-    "alt": "智能廚房與吧台"
+    "image": "/img/homebanner/homebanner-05.jpg",
+    "titleZh": "開闊綠意・專屬青翠草坪",
+    "titleEn": "Expansive Private Green Lawn",
+    "tagZh": "戶外休閒草坪",
+    "tagEn": "Private Lawn",
+    "alt": "山語 Villa 綠意庭園草坪"
   },
   {
     "id": "slide-6",
-    "image": "/img/room-1/room-1-01.jpg",
-    "titleZh": "四人獨立景觀套房",
-    "titleEn": "1F Panoramic Quad Suite",
-    "tagZh": "景觀客房",
-    "tagEn": "Scenic Suite",
-    "alt": "獨立景觀客房"
+    "image": "/img/homebanner/homebanner-06.jpg",
+    "titleZh": "晚霞如畫・落日彩霞暮色",
+    "titleEn": "Twilight Glow & Crimson Sunset",
+    "tagZh": "落日彩霞",
+    "tagEn": "Sunset Twilight",
+    "alt": "山語 Villa 傍晚夕陽滿天彩霞"
   }
 ]

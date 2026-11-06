@@ -64,6 +64,16 @@ const setImage = (idx) => {
   currentIndex.value = idx
 }
 
+// 支援滑鼠點一下換下一張圖
+const handleFrameClick = (event) => {
+  if (event.target.closest('.gallery-controls') || event.target.closest('.gallery-dots')) {
+    return
+  }
+  if (photoList.value.length > 1) {
+    nextImage()
+  }
+}
+
 const startAutoplay = () => {
   if (!props.autoplay || photoList.value.length <= 1) return
   stopAutoplay()
@@ -99,7 +109,11 @@ watch(() => props.autoplay, (val) => {
     @mouseenter="stopAutoplay"
     @mouseleave="startAutoplay"
   >
-    <div class="gallery-main-frame">
+    <div 
+      class="gallery-main-frame"
+      :class="{ 'clickable': photoList.length > 1 }"
+      @click="handleFrameClick"
+    >
       <transition name="gallery-fade">
         <img 
           :key="currentIndex"
@@ -115,7 +129,7 @@ watch(() => props.autoplay, (val) => {
         <button 
           type="button"
           class="gal-btn" 
-          @click="prevImage"
+          @click.stop="prevImage"
           aria-label="Previous photo"
         >
           <ChevronLeft :size="20" />
@@ -123,7 +137,7 @@ watch(() => props.autoplay, (val) => {
         <button 
           type="button"
           class="gal-btn" 
-          @click="nextImage"
+          @click.stop="nextImage"
           aria-label="Next photo"
         >
           <ChevronRight :size="20" />
@@ -138,7 +152,7 @@ watch(() => props.autoplay, (val) => {
           type="button"
           class="gallery-dot"
           :class="{ 'active': currentIndex === gIdx }"
-          @click="setImage(gIdx)"
+          @click.stop="setImage(gIdx)"
           :aria-label="`Go to photo ${gIdx + 1}`"
         ></button>
       </div>
@@ -165,6 +179,11 @@ watch(() => props.autoplay, (val) => {
   overflow: hidden;
   background-color: var(--bg-card);
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  user-select: none;
+
+  &.clickable {
+    cursor: pointer;
+  }
 
   @media (min-width: $bp-lg) {
     height: 480px;

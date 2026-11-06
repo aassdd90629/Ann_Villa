@@ -194,11 +194,33 @@ onUnmounted(() => {
   border-bottom: 1px solid transparent;
 
   &.scrolled {
-    background-color: var(--bg-nav);
+    background-color: rgba(18, 20, 22, 0.88);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    border-bottom: 1px solid var(--border-color);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+
+    .logo-white-version {
+      display: block;
+    }
+    .logo-dark-version {
+      display: none;
+    }
+
+    .btn-icon {
+      color: #FFFFFF;
+      border-color: rgba(255, 255, 255, 0.25);
+      background: rgba(255, 255, 255, 0.1);
+
+      &:hover {
+        border-color: var(--gold-primary);
+        color: var(--gold-light, #E6D5BE);
+      }
+    }
+
+    .hamburger-btn {
+      color: #FFFFFF;
+    }
   }
 }
 
@@ -251,6 +273,21 @@ onUnmounted(() => {
   .logo-dark-version {
     display: none;
   }
+
+  .btn-icon {
+    color: #FFFFFF;
+    border-color: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.12);
+
+    &:hover {
+      border-color: var(--gold-primary);
+      color: var(--gold-light, #E6D5BE);
+    }
+  }
+
+  .hamburger-btn {
+    color: #FFFFFF;
+  }
 }
 
 :root[data-theme="dark"] {
@@ -275,10 +312,12 @@ onUnmounted(() => {
     font-family: $font-sans;
     font-size: 0.95rem;
     font-weight: 500;
-    color: var(--text-primary);
+    color: #FFFFFF !important; // 因 banner 圖偏暗，中間 nav 按鈕文字固定為白色
     letter-spacing: 0.06em;
     position: relative;
     padding: 0.4rem 0;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.55);
+    transition: color 0.25s ease;
 
     &::after {
       content: '';
@@ -293,7 +332,7 @@ onUnmounted(() => {
     }
 
     &:hover, &.active {
-      color: var(--gold-primary);
+      color: var(--gold-light, #E6D5BE) !important;
 
       &::after {
         width: 100%;
