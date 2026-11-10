@@ -489,7 +489,7 @@
     "categoryZh": "首頁精選旗艦輪播大圖",
     "categoryEn": "Homepage Flagship Hero Banner",
     "oldFolder": "homebanner",
-    "oldFileName": "302108.jpg",
+    "oldFileName": "雲海_1110_1.jpg",
     "newFolder": "homebanner",
     "newFileName": "homebanner-02.jpg",
     "webPath": "/img/homebanner/homebanner-02.jpg"
@@ -507,7 +507,7 @@
     "categoryZh": "首頁精選旗艦輪播大圖",
     "categoryEn": "Homepage Flagship Hero Banner",
     "oldFolder": "homebanner",
-    "oldFileName": "305427.jpg",
+    "oldFileName": "雲海_1110_2.jpg",
     "newFolder": "homebanner",
     "newFileName": "homebanner-04.jpg",
     "webPath": "/img/homebanner/homebanner-04.jpg"
@@ -529,5 +529,32 @@
     "newFolder": "homebanner",
     "newFileName": "homebanner-06.jpg",
     "webPath": "/img/homebanner/homebanner-06.jpg"
+  },
+  {
+    "categoryZh": "首頁精選旗艦輪播大圖",
+    "categoryEn": "Homepage Flagship Hero Banner",
+    "oldFolder": "homebanner",
+    "oldFileName": "301393.jpg",
+    "newFolder": "homebanner",
+    "newFileName": "homebanner-07.jpg",
+    "webPath": "/img/homebanner/homebanner-07.jpg"
+  },
+  {
+    "categoryZh": "首頁精選旗艦輪播大圖",
+    "categoryEn": "Homepage Flagship Hero Banner",
+    "oldFolder": "homebanner",
+    "oldFileName": "306316.jpg",
+    "newFolder": "homebanner",
+    "newFileName": "homebanner-08.jpg",
+    "webPath": "/img/homebanner/homebanner-08.jpg"
+  },
+  {
+    "categoryZh": "首頁精選旗艦輪播大圖",
+    "categoryEn": "Homepage Flagship Hero Banner",
+    "oldFolder": "homebanner",
+    "oldFileName": "307436.jpg",
+    "newFolder": "homebanner",
+    "newFileName": "homebanner-09.jpg",
+    "webPath": "/img/homebanner/homebanner-09.jpg"
   }
 ]

@@ -11,11 +11,11 @@
   {
     "id": "slide-2",
     "image": "/img/homebanner/homebanner-02.jpg",
-    "titleZh": "觀景露台・漫步星空下",
-    "titleEn": "Panoramic Viewing Deck",
-    "tagZh": "觀景木棧露台",
-    "tagEn": "Viewing Deck",
-    "alt": "山語 Villa 戶外觀景露台夜景"
+    "titleZh": "露台晨曦・漫步雲海仙境",
+    "titleEn": "Panoramic Viewing Deck & Morning Mist",
+    "tagZh": "觀景露台雲海",
+    "tagEn": "Viewing Deck Vista",
+    "alt": "山語 Villa 觀景露台眺望壯闊雲海"
   },
   {
     "id": "slide-3",
@@ -52,5 +52,32 @@
     "tagZh": "落日彩霞",
     "tagEn": "Sunset Twilight",
     "alt": "山語 Villa 傍晚夕陽滿天彩霞"
+  },
+  {
+    "id": "slide-7",
+    "image": "/img/homebanner/homebanner-07.jpg",
+    "titleZh": "夜色微光・漫步翠綠草坡",
+    "titleEn": "Illuminated Gardens & Hillside Lawn",
+    "tagZh": "草坡夜間光影",
+    "tagEn": "Night Garden Lights",
+    "alt": "山語 Villa 夜間莊園草坡與暖光造景"
+  },
+  {
+    "id": "slide-8",
+    "image": "/img/homebanner/homebanner-08.jpg",
+    "titleZh": "半戶外露台・品茗眺望群山",
+    "titleEn": "Covered Viewing Terrace & Tea Lounge",
+    "tagZh": "戶外景觀座席",
+    "tagEn": "Scenic Tea Terrace",
+    "alt": "山語 Villa 半戶外景觀座席眺望群山"
+  },
+  {
+    "id": "slide-9",
+    "image": "/img/homebanner/homebanner-09.jpg",
+    "titleZh": "氣派迴廊・開闊休閒木棧平台",
+    "titleEn": "Expansive Veranda & Timber Deck",
+    "tagZh": "莊園景觀迴廊",
+    "tagEn": "Grand Veranda & Deck",
+    "alt": "山語 Villa 寬闊景觀迴廊與戶外木棧平台"
   }
 ]
