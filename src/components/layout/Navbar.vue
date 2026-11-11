@@ -193,6 +193,7 @@ onUnmounted(() => {
   background-color: transparent;
   border-bottom: 1px solid transparent;
 
+  // 任何頁面捲動超過 40px 後切換為深色毛玻璃背景，導航列文字與圖示皆維持高對比白色
   &.scrolled {
     background-color: rgba(18, 20, 22, 0.88);
     backdrop-filter: blur(16px);
@@ -214,6 +215,15 @@ onUnmounted(() => {
 
       &:hover {
         border-color: var(--gold-primary);
+        color: var(--gold-light, #E6D5BE);
+      }
+    }
+
+    .desktop-nav .nav-item {
+      color: #FFFFFF;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+
+      &:hover, &.active {
         color: var(--gold-light, #E6D5BE);
       }
     }
@@ -266,6 +276,7 @@ onUnmounted(() => {
   display: block;
 }
 
+// 首頁未捲動且未展開手機選單時：Hero 輪播底圖較暗，Logo、導航文字與按鈕固定為白色
 .navbar-header.is-hero:not(.scrolled):not(.menu-open) {
   .logo-white-version {
     display: block;
@@ -285,17 +296,32 @@ onUnmounted(() => {
     }
   }
 
+  .desktop-nav .nav-item {
+    color: #FFFFFF;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.55);
+
+    &:hover, &.active {
+      color: var(--gold-light, #E6D5BE);
+    }
+  }
+
   .hamburger-btn {
     color: #FFFFFF;
   }
 }
 
+// 夜景模式 (Dark Mode)：內頁頂部為深色底，Logo 改用白色版、hover/active 改用較亮的夜光金
 :root[data-theme="dark"] {
   .logo-white-version {
     display: block;
   }
   .logo-dark-version {
     display: none;
+  }
+  .desktop-nav .nav-item {
+    &:hover, &.active {
+      color: var(--gold-primary);
+    }
   }
 }
 
@@ -312,11 +338,11 @@ onUnmounted(() => {
     font-family: $font-sans;
     font-size: 0.95rem;
     font-weight: 500;
-    color: #FFFFFF !important; // 因 banner 圖偏暗，中間 nav 按鈕文字固定為白色
+    // 預設依主題 token 顯示（晨曦淺色底為深岩灰、夜景深色底為米白），避免內頁白字白底看不見
+    color: var(--text-primary);
     letter-spacing: 0.06em;
     position: relative;
     padding: 0.4rem 0;
-    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.55);
     transition: color 0.25s ease;
 
     &::after {
@@ -332,7 +358,8 @@ onUnmounted(() => {
     }
 
     &:hover, &.active {
-      color: var(--gold-light, #E6D5BE) !important;
+      // 淺色底上以深古銅金確保文字對比度（深色底／首頁由上方狀態規則覆寫）
+      color: var(--gold-dark);
 
       &::after {
         width: 100%;
