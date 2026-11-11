@@ -326,6 +326,8 @@ watch(() => props.autoplay, (val) => {
 </template>
 
 <style lang="scss" scoped>
+@use '../../assets/styles/variables' as *;
+
 .hero-carousel {
   position: relative;
   width: 100%;

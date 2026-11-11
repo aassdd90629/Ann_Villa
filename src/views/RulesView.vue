@@ -34,13 +34,28 @@ const { isEn } = useI18n()
 
           <ul class="rule-list">
             <li v-for="(rule, idx) in (isEn ? rulesData.checkInRulesEn : rulesData.checkInRulesZh)" :key="idx">
-              <span class="rule-num">0{{ idx + 1 }}</span>
+              <span class="rule-num">{{ String(idx + 1).padStart(2, '0') }}</span>
               <p>{{ rule }}</p>
             </li>
           </ul>
         </div>
 
-        <!-- 2. 加人加床條款 -->
+        <!-- 2. 退費規定 -->
+        <div class="rule-block card-luxury">
+          <div class="block-title-row">
+            <AlertCircle :size="22" class="title-icon" />
+            <h2>{{ isEn ? rulesData.refundPolicyEn.title : rulesData.refundPolicyZh.title }}</h2>
+          </div>
+
+          <ul class="rule-list refund-list">
+            <li v-for="(item, idx) in (isEn ? rulesData.refundPolicyEn.items : rulesData.refundPolicyZh.items)" :key="idx">
+              <span class="rule-bullet" aria-hidden="true">•</span>
+              <p>{{ item }}</p>
+            </li>
+          </ul>
+        </div>
+
+        <!-- 3. 加人加床條款 -->
         <div class="rule-block card-luxury">
           <div class="block-title-row">
             <Users :size="22" class="title-icon" />
@@ -102,13 +117,19 @@ const { isEn } = useI18n()
       align-items: flex-start;
       gap: 0.85rem;
 
-      .rule-num {
+      .rule-num,
+      .rule-bullet {
         font-family: $font-display;
         font-weight: 700;
         color: var(--gold-primary);
         font-size: 0.95rem;
         flex-shrink: 0;
         margin-top: 2px;
+      }
+
+      .rule-bullet {
+        font-size: 1.1rem;
+        line-height: 1.45;
       }
 
       p {

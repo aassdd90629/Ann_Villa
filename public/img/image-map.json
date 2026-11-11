@@ -234,6 +234,15 @@
     "webPath": "/img/living-ktv/living-ktv-04.jpg"
   },
   {
+    "categoryZh": "客廳與卡拉OK交誼廳",
+    "categoryEn": "Living Room & KTV Lounge",
+    "oldFolder": "living-ktv",
+    "oldFileName": "S__502382600.jpg",
+    "newFolder": "living-ktv",
+    "newFileName": "living-ktv-05.jpg",
+    "webPath": "/img/living-ktv/living-ktv-05.jpg"
+  },
+  {
     "categoryZh": "智能廚房與Mini Bar",
     "categoryEn": "Smart Kitchen & Mini Bar",
     "oldFolder": "智能廚房跟米妮吧",
@@ -556,5 +565,14 @@
     "newFolder": "homebanner",
     "newFileName": "homebanner-09.jpg",
     "webPath": "/img/homebanner/homebanner-09.jpg"
+  },
+  {
+    "categoryZh": "首頁精選旗艦輪播大圖",
+    "categoryEn": "Homepage Flagship Hero Banner",
+    "oldFolder": "homebanner",
+    "oldFileName": "307819.jpg",
+    "newFolder": "homebanner",
+    "newFileName": "homebanner-10.jpg",
+    "webPath": "/img/homebanner/homebanner-10.jpg"
   }
 ]

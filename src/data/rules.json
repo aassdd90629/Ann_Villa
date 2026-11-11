@@ -37,6 +37,22 @@
     "title": "Capacity & Bedding Policy",
     "content": "Shan Yu Villa features 5 bedrooms accommodating up to 18 guests maximum. Extra beds are not available. Please confirm exact guest counts upon reservation."
   },
+  "refundPolicyZh": {
+    "title": "山語Villa豪宅山莊退費規定",
+    "items": [
+      "入住前15天取消，訂金可全額退款。",
+      "入住前8-14天內取消，訂金可退還一半。",
+      "入住前7 天內取消，訂金則不退還。"
+    ]
+  },
+  "refundPolicyEn": {
+    "title": "Shan Yu Villa Cancellation & Refund Policy",
+    "items": [
+      "Cancellations made 15 days or more prior to check-in: 100% full deposit refund.",
+      "Cancellations made 8–14 days prior to check-in: 50% deposit refund.",
+      "Cancellations made within 7 days prior to check-in: Deposit is non-refundable."
+    ]
+  },
   "faq": [
     {
       "qZh": "整棟別墅最多可以住幾個人？可以加床嗎？",
