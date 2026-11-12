@@ -574,5 +574,14 @@
     "newFolder": "homebanner",
     "newFileName": "homebanner-10.jpg",
     "webPath": "/img/homebanner/homebanner-10.jpg"
+  },
+  {
+    "categoryZh": "首頁精選旗艦輪播大圖",
+    "categoryEn": "Homepage Flagship Hero Banner",
+    "oldFolder": "homebanner",
+    "oldFileName": "307801.jpg",
+    "newFolder": "homebanner",
+    "newFileName": "homebanner-11.jpg",
+    "webPath": "/img/homebanner/homebanner-11.jpg"
   }
 ]
