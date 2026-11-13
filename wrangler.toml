@@ -10,4 +10,4 @@ database_id = "6666f0e4-5033-427e-8344-6a666e2ba8e5"
 
 [vars]
 ENVIRONMENT = "development"
-AIRBNB_ICAL_URL = "https://www.airbnb.com.tw/calendar/ical/xxxx.ics"
+AIRBNB_ICAL_URL = "https://www.airbnb.com.tw/calendar/ical/1785941296784004528.ics?t=a2e12d7149904bb987257b24cb929588"
