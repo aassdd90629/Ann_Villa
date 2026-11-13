@@ -10,21 +10,27 @@ import availabilityData from '../data/availability.json';
 
 /**
  * 取得已被預約的日期區間清單
+ * 
+ * 優先順序:
+ * 1. 呼叫 Cloudflare Pages Functions 邊緣 API (/api/availability) 讀取 D1 即時房態
+ * 2. 若 API 無法連線 (例如單純執行 vite dev 靜態預覽)，自動 fallback 至本地靜態 availability.json
+ * 
  * @returns {Promise<Array<{startDate: string, endDate: string, source: string, type: string, status: string}>>}
  */
 export async function getBookedRanges() {
-  // 🚀 Phase 1 (純前端靜態版): 目前開放全部可選，回傳空陣列（或 availability.json 設定）
-  return Promise.resolve(availabilityData.bookedRanges || []);
+  try {
+    const res = await fetch('/api/availability');
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data.success && Array.isArray(data.bookedRanges)) {
+        return data.bookedRanges;
+      }
+    }
+  } catch (err) {
+    // 靜態模式或離線狀態，平滑降級使用快照 JSON
+    console.info('[AvailabilityService] 邊緣 API 離線，切換為本地快照房態資料');
+  }
 
-  // ⚙️ Phase 2 (第二版擴充): 直接切換為邊緣後端 API
-  // try {
-  //   const res = await fetch('/api/availability');
-  //   if (!res.ok) throw new Error(`API Error: ${res.statusText}`);
-  //   const data = await res.json();
-  //   return data.bookedRanges || [];
-  // } catch (err) {
-  //   console.error('Failed to fetch live availability from backend:', err);
-  //   return availabilityData.bookedRanges || [];
-  // }
+  return availabilityData.bookedRanges || [];
 }
 

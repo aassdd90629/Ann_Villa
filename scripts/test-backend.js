@@ -72,6 +72,11 @@ async function runTests() {
     const conflictData = await conflictRes.json();
     console.log(`✅ 防撞期檢核測試 (預期擋下): HTTP ${conflictRes.status} ->`, conflictData.message);
 
+    // 6. 測試 /api/sync-ical (同步端點防呆驗證)
+    const syncRes = await fetch('http://localhost:8788/api/sync-ical');
+    const syncData = await syncRes.json();
+    console.log(`✅ GET /api/sync-ical 驗證 (未填 URL 提示): HTTP ${syncRes.status} ->`, syncData.message);
+
     console.log('\n🎉 所有本地邊緣 API 與 D1 資料庫存取全部驗證通過！');
   } catch (err) {
     console.error('❌ 測試失敗:', err);

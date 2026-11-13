@@ -23,6 +23,40 @@ export function handleBookingAction(options = {}) {
 
   window.open(targetUrl, '_blank', 'noopener,noreferrer');
 
-  // ⚙️ Phase 2 (第二版擴充): 直接切換為送出 API 或開啟即時訂房 Modal
-  // return submitOnlineBooking(options);
+  // ⚙️ Phase 2 (第二版擴充): 若啟用線上訂房，可直接呼叫 submitOnlineBooking
+}
+
+/**
+ * 送出線上預約單至 Cloudflare Pages Functions 邊緣 API
+ * 
+ * @param {Object} data 訂單資料
+ * @param {string} data.roomId 房型 ID (例: 'villa-full')
+ * @param {string} data.guestName 訂房人真實姓名
+ * @param {string} data.guestPhone 聯絡電話
+ * @param {string} data.guestEmail 電子信箱
+ * @param {string} [data.lineId] LINE ID
+ * @param {string} data.checkIn 入住日 (YYYY-MM-DD)
+ * @param {string} data.checkOut 退房日 (YYYY-MM-DD)
+ * @param {number} data.guestCount 入住人數
+ * @param {string} [data.specialRequests] 特殊需求備註
+ * @returns {Promise<{success: boolean, booking?: Object, message: string}>}
+ */
+export async function submitOnlineBooking(data) {
+  try {
+    const res = await fetch('/api/bookings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+
+    const result = await res.json();
+    if (!res.ok) {
+      throw new Error(result.message || `預約失敗 (HTTP ${res.status})`);
+    }
+
+    return result;
+  } catch (err) {
+    console.error('[BookingService] 線上送單失敗:', err);
+    throw err;
+  }
 }
