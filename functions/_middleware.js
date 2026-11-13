@@ -180,6 +180,16 @@ function escapeHtml(str) {
 export async function onRequest(context) {
   const { request, env, next } = context;
   const url = new URL(request.url);
+  const pathname = url.pathname;
+
+  // 0. 防呆：清除被舊版 GitHub Pages 404 hack 污染之網址 (~and~ 死循環)
+  if (pathname.includes('~and~') || url.search.includes('~and~') || pathname.includes('/?/')) {
+    const cleanTarget = pathname.startsWith('/admin') ? '/admin' : '/';
+    return new Response(null, {
+      status: 302,
+      headers: { 'Location': cleanTarget }
+    });
+  }
 
   // 1. 若環境變數顯式關閉 (SITE_PASSWORD 為空)，直接放行
   const expectedPassword = env.SITE_PASSWORD ?? 'ryan1123_Ann';
