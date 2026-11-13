@@ -239,7 +239,8 @@ const isInRange = (dateStr) => {
     <!-- 頂部檔期說明列與即時同步按鈕 -->
     <div class="sync-banner">
       <div class="sync-status">
-        <Info :size="16" class="info-icon" />
+        <span class="demo-badge-tag">⚠️ 展示預覽環境</span>
+        <Info :size="15" class="info-icon" />
         <span class="sync-text">{{ isEn ? t('calendar.syncNotice') : '房態由 Cloudflare D1 邊緣資料庫與 Airbnb 即時同步反灰' }}</span>
       </div>
       <button 
@@ -404,6 +405,17 @@ const isInRange = (dateStr) => {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
+
+    .demo-badge-tag {
+      font-size: 0.72rem;
+      padding: 0.2rem 0.5rem;
+      background: rgba(212, 175, 55, 0.15);
+      border: 1px solid rgba(212, 175, 55, 0.35);
+      color: var(--gold-primary);
+      border-radius: 4px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
 
     .info-icon {
       color: var(--gold-primary);

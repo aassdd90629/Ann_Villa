@@ -144,10 +144,10 @@ const submitBookingForm = async () => {
           <div class="payment-instructions-box">
             <h5 class="pay-heading">
               <CreditCard :size="16" />
-              <span>{{ isEn ? 'Payment Instructions' : '定金匯款說明' }}</span>
+              <span>{{ isEn ? 'Payment Instructions' : '定金匯款說明 (展示模擬中)' }}</span>
             </h5>
             <p class="pay-desc">
-              請於 <strong>24 小時內</strong> 將定金匯款至民宿官方帳戶，匯款完成後請點擊下方按鈕加入官方 LINE (<strong>{{ siteData.lineId }}</strong>) 回報您的<strong>帳號末五碼</strong>以完成正式鎖房確認！
+              請於 <strong>24 小時內</strong> 將定金匯款至民宿帳戶：<strong>台灣銀行 (004) 123-456-789012 (展示模擬帳號，請勿真實匯款)</strong>。匯款完成後請點擊下方按鈕加入官方 LINE (<strong>{{ siteData.lineId }}</strong>) 回報您的<strong>帳號末五碼</strong>以完成正式鎖房確認！
             </p>
           </div>
 
@@ -170,6 +170,10 @@ const submitBookingForm = async () => {
         <!-- 2. 線上填單表單畫面 -->
         <div v-else class="booking-modal-form">
           <div class="modal-header">
+            <div class="demo-mode-alert">
+              <AlertCircle :size="14" />
+              <span>{{ isEn ? 'Demo Staging Mode: For verification and testing only.' : '⚠️ 系統展示預覽中 ｜ 本站為驗收測試環境，送單僅供體驗流程，不會收取款項' }}</span>
+            </div>
             <span class="modal-badge">{{ isEn ? 'Official Direct Booking' : '山語 Villa 官方直訂預約' }}</span>
             <h3 class="modal-title">{{ isEn ? 'Confirm Your Luxury Stay' : '填寫貴賓聯絡資料' }}</h3>
             <p class="modal-meta">
@@ -584,6 +588,22 @@ const submitBookingForm = async () => {
     flex-direction: column;
     gap: 0.5rem;
   }
+}
+
+.demo-mode-alert {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(212, 175, 55, 0.12);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  border-radius: 6px;
+  color: var(--gold-primary);
+  font-size: 0.78rem;
+  margin-bottom: 0.85rem;
+  line-height: 1.4;
+  letter-spacing: 0.5px;
 }
 
 @keyframes spin {

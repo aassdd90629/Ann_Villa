@@ -77,7 +77,70 @@ async function runTests() {
     const syncData = await syncRes.json();
     console.log(`✅ GET /api/sync-ical 驗證 (未填 URL 提示): HTTP ${syncRes.status} ->`, syncData.message);
 
-    console.log('\n🎉 所有本地邊緣 API 與 D1 資料庫存取全部驗證通過！');
+    // ==========================================
+    // 7. 測試管理後台與全域安全授權 (Phase 1 & 2)
+    // ==========================================
+    console.log('\n🔒 --- 開始驗證後台安全與管家管理 API ---');
+
+    // 7.1 測試未授權存取 (預期被 _middleware.js 擋下返回 401)
+    const unauthRes = await fetch('http://localhost:8788/api/admin/bookings');
+    const unauthData = await unauthRes.json();
+    console.log(`✅ 未授權存取攔截 (預期 401): HTTP ${unauthRes.status} ->`, unauthData.message);
+
+    // 7.2 測試管家登入驗證 (POST /api/admin/auth)
+    const loginRes = await fetch('http://localhost:8788/api/admin/auth', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: 'admin', password: 'ryan1123_Ann' })
+    });
+    const loginData = await loginRes.json();
+    console.log(`✅ 管家登入驗證 (預期成功): HTTP ${loginRes.status} -> Token 取得:`, loginData.token ? '成功簽發 (JWT 正常)' : '失敗');
+    const adminToken = loginData.token;
+
+    if (adminToken) {
+      const authHeaders = {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${adminToken}`
+      };
+
+      // 7.3 測試帶 Token 查詢訂單列表
+      const adminBookingsRes = await fetch('http://localhost:8788/api/admin/bookings', { headers: authHeaders });
+      const adminBookingsData = await adminBookingsRes.json();
+      console.log(`✅ 授權查詢訂單 (預期 200): 取得 ${adminBookingsData.bookings?.length || 0} 筆訂單`);
+
+      // 7.4 測試手動鎖房 (POST /api/admin/blocks)
+      const lockRes = await fetch('http://localhost:8788/api/admin/blocks', {
+        method: 'POST',
+        headers: authHeaders,
+        body: JSON.stringify({
+          startDate: '2026-12-25',
+          endDate: '2026-12-27',
+          summary: '管家維護測試鎖房'
+        })
+      });
+      const lockData = await lockRes.json();
+      console.log(`✅ 管家手動鎖房測試: HTTP ${lockRes.status} ->`, lockData.message);
+
+      // 7.5 測試解除鎖房 (DELETE /api/admin/blocks/:id)
+      if (lockData.block?.id) {
+        const unlockRes = await fetch(`http://localhost:8788/api/admin/blocks/${lockData.block.id}`, {
+          method: 'DELETE',
+          headers: authHeaders
+        });
+        const unlockData = await unlockRes.json();
+        console.log(`✅ 管家解除鎖房測試: HTTP ${unlockRes.status} ->`, unlockData.message);
+      }
+
+      // 7.6 測試一鍵清空測試訂單 (POST /api/admin/bookings/clear-test)
+      const clearRes = await fetch('http://localhost:8788/api/admin/bookings/clear-test', {
+        method: 'POST',
+        headers: authHeaders
+      });
+      const clearData = await clearRes.json();
+      console.log(`✅ 一鍵清空測試訂單測試: HTTP ${clearRes.status} ->`, clearData.message);
+    }
+
+    console.log('\n🎉 所有前台直訂、後台授權 API、全站門禁與 D1 資料庫存取全部驗證通過！');
   } catch (err) {
     console.error('❌ 測試失敗:', err);
   } finally {

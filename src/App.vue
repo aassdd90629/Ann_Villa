@@ -1,14 +1,20 @@
 <script setup>
-import { onMounted } from 'vue'
-import { RouterView } from 'vue-router'
+import { computed, onMounted } from 'vue'
+import { RouterView, useRoute } from 'vue-router'
 import Navbar from './components/layout/Navbar.vue'
 import MobileActionBar from './components/layout/MobileActionBar.vue'
 import Footer from './components/layout/Footer.vue'
 import { useTheme } from './composables/useTheme'
 import { useI18n } from './composables/useI18n'
 
+const route = useRoute()
 const { initTheme } = useTheme()
 const { isSwitchingLang } = useI18n()
+
+// 後台管理路由不渲染前台 Navbar, Footer 與行動操作條
+const isAdminRoute = computed(() => {
+  return route.path ? route.path.startsWith('/admin') : false
+})
 
 onMounted(() => {
   initTheme()
@@ -16,10 +22,10 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="app-layout" :class="{ 'lang-switching': isSwitchingLang }">
-    <Navbar />
+  <div class="app-layout" :class="{ 'lang-switching': isSwitchingLang, 'is-admin-mode': isAdminRoute }">
+    <Navbar v-if="!isAdminRoute" />
     
-    <main class="main-content">
+    <main :class="isAdminRoute ? 'admin-main-wrapper' : 'main-content'">
       <RouterView v-slot="{ Component }">
         <transition name="fade" mode="out-in">
           <component :is="Component" />
@@ -27,8 +33,8 @@ onMounted(() => {
       </RouterView>
     </main>
 
-    <Footer />
-    <MobileActionBar />
+    <Footer v-if="!isAdminRoute" />
+    <MobileActionBar v-if="!isAdminRoute" />
   </div>
 </template>
 
