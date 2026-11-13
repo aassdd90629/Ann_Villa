@@ -33,3 +33,23 @@ AIRBNB_CALENDAR_SYNC_PLAN.md
 
 # Cloudflare Wrangler Local State
 .wrangler/
+
+# Environment Variables & Secrets (機密設定嚴禁上傳)
+.env
+.env.*
+!.env.example
+
+# Credentials & Certificates (憑證與金鑰)
+*.pem
+*.key
+*.cert
+*.crt
+*.pfx
+*.p12
+
+# Database Dumps & Backups (資料庫備份與快照)
+*.sql.bak
+*.dump
+*.sqlite
+*.sqlite3
+*.db
