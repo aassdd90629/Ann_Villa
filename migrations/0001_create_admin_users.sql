@@ -66,3 +66,4 @@ INSERT OR IGNORE INTO admin_users (
   'SUPERADMIN',
   1
 );
+

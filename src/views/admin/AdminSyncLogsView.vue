@@ -266,3 +266,4 @@ const handleTriggerSync = async () => {
   to { transform: rotate(360deg); }
 }
 </style>
+
