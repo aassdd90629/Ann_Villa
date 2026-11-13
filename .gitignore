@@ -30,3 +30,6 @@ IMAGE_MAP.md
 AIRBNB_CALENDAR_SYNC_PLAN.md
 *.ics
 *.md
+
+# Cloudflare Wrangler Local State
+.wrangler/

@@ -1,4 +1,13 @@
 name = "ann-villa"
-compatibility_date = "2026-11-01"
 pages_build_output_dir = "dist"
+compatibility_date = "2026-11-01"
 
+# 綁定 D1 關聯式資料庫 (本地開發以 SQLite 模擬，線上連到 Cloudflare D1)
+[[d1_databases]]
+binding = "DB"
+database_name = "ann-villa-db"
+database_id = "6666f0e4-5033-427e-8344-6a666e2ba8e5"
+
+[vars]
+ENVIRONMENT = "development"
+AIRBNB_ICAL_URL = "https://www.airbnb.com.tw/calendar/ical/xxxx.ics"
