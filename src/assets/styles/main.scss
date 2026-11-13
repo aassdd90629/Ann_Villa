@@ -21,6 +21,11 @@
   --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.05);
   --badge-bg: rgba(197, 168, 128, 0.12);
   --badge-text: #{$color-gold-light-dark};
+  --color-danger: #{$color-error};
+  --color-danger-bg: #{$color-error-bg};
+  --color-danger-border: #{$color-error-border};
+  --color-brand-line: #{$color-brand-line};
+  --color-brand-line-bg: #{$color-brand-line-bg};
 }
 
 [data-theme="dark"] {
@@ -40,6 +45,11 @@
   --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.35);
   --badge-bg: rgba(212, 188, 155, 0.15);
   --badge-text: #{$color-gold-dark-highlight};
+  --color-danger: #F87171;
+  --color-danger-bg: rgba(248, 113, 113, 0.15);
+  --color-danger-border: rgba(248, 113, 113, 0.35);
+  --color-line: #{$color-brand-line};
+  --color-line-bg: rgba(6, 199, 85, 0.12);
 }
 
 // ==========================================================================
@@ -272,6 +282,10 @@ img {
       transform: translateY(-2px);
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
     }
+  }
+
+  &.btn-block {
+    width: 100%;
   }
 }
 
