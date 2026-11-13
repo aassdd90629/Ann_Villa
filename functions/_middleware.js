@@ -198,7 +198,6 @@ export async function onRequest(context) {
   }
 
   // 2. 靜態副檔名放行 (避免 CSS/JS/圖片/字型被中斷)
-  const pathname = url.pathname;
   const isStaticAsset = /\.(js|css|png|jpg|jpeg|gif|webp|svg|ico|woff|woff2|ttf|json|map|webmanifest|ics)$/i.test(pathname);
   if (isStaticAsset) {
     return next();
