@@ -191,10 +191,14 @@ export async function onRequest(context) {
     });
   }
 
-  // 1. 若環境變數顯式關閉 (SITE_PASSWORD 為空)，直接放行
+  // 1. 若環境變數顯式關閉 (SITE_PASSWORD 為空)，直接放行 (附帶 SPA Fallback)
   const expectedPassword = env.SITE_PASSWORD ?? 'ryan1123_Ann';
   if (!expectedPassword) {
-    return next();
+    const response = await next();
+    if (response.status === 404 && request.headers.get('accept')?.includes('text/html') && env.ASSETS) {
+      return env.ASSETS.fetch(new URL('/', request.url));
+    }
+    return response;
   }
 
   // 2. 靜態副檔名放行 (避免 CSS/JS/圖片/字型被中斷)
@@ -243,8 +247,12 @@ export async function onRequest(context) {
   );
 
   if (cookies['shanyu_demo_token'] === validSignature) {
-    // Cookie 驗章通過，放行存取
-    return next();
+    // Cookie 驗章通過，放行存取 (附帶 SPA Fallback: 若靜態檔案不存在則回退至 index.html 由 Vue Router 承接)
+    const response = await next();
+    if (response.status === 404 && request.headers.get('accept')?.includes('text/html') && env.ASSETS) {
+      return env.ASSETS.fetch(new URL('/', request.url));
+    }
+    return response;
   }
 
   // 5. 若未驗證且是 API 請求，返回 401 JSON
