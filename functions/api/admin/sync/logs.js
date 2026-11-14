@@ -10,9 +10,16 @@ export async function onRequestGet(context) {
 
   try {
     const { results } = await env.DB.prepare(`
-      SELECT id, channel, status, events_count, message, created_at 
+      SELECT 
+        id, 
+        channel, 
+        status, 
+        events_count, 
+        message, 
+        executed_at,
+        executed_at AS created_at
       FROM sync_logs 
-      ORDER BY created_at DESC 
+      ORDER BY id DESC 
       LIMIT 30
     `).all();
 
@@ -27,4 +34,3 @@ export async function onRequestGet(context) {
     );
   }
 }
-

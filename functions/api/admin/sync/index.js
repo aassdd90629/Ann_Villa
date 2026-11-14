@@ -3,8 +3,10 @@
  */
 import { onRequest as syncIcalHandler } from '../../sync-ical.js';
 
-export async function onRequestPost(context) {
-  // 直接調用既有通過嚴密驗證之 sync-ical 端點邏輯
+export async function onRequest(context) {
   return await syncIcalHandler(context);
 }
 
+export async function onRequestPost(context) {
+  return await syncIcalHandler(context);
+}

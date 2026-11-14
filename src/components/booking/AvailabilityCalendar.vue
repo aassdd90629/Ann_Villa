@@ -114,7 +114,10 @@ function isDateBooked(dateStr) {
 function getBookingSource(dateStr) {
   if (!bookedRanges.value || !bookedRanges.value.length) return ''
   const found = bookedRanges.value.find(range => dateStr >= range.startDate && dateStr < range.endDate)
-  return found ? found.source : ''
+  if (!found) return ''
+  if (found.source && found.source.toUpperCase() === 'AIRBNB') return 'Airbnb'
+  if (found.source === 'DIRECT_BOOKING' || found.source === 'Official') return isEn.value ? 'Direct' : '官網直訂'
+  return isEn.value ? 'Locked' : '管家保留'
 }
 
 // 產生當月日曆網格
