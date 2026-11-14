@@ -26,6 +26,23 @@
   --color-danger-border: #{$color-error-border};
   --color-brand-line: #{$color-brand-line};
   --color-brand-line-bg: #{$color-brand-line-bg};
+
+  // 後台專用 Token (淺色模式 - 晨曦雲霧：亮背景、深色字)
+  --admin-bg-base: #F5F3EC;
+  --admin-bg-sidebar: #FFFFFF;
+  --admin-bg-topbar: #FFFFFF;
+  --admin-bg-card: #FFFFFF;
+  --admin-th-bg: #EAE6DC;
+  --admin-tr-hover: rgba(197, 168, 128, 0.12);
+  --admin-border: rgba(197, 168, 128, 0.28);
+  --admin-border-subtle: rgba(0, 0, 0, 0.06);
+  --admin-text-main: #1A1E1F;
+  --admin-text-sub: #475569;
+  --admin-text-muted: #64748b;
+  --admin-btn-secondary-bg: #EAE6DC;
+  --admin-btn-secondary-text: #1A1E1F;
+  --admin-input-bg: #FFFFFF;
+  --admin-input-border: rgba(197, 168, 128, 0.4);
 }
 
 [data-theme="dark"] {
@@ -50,6 +67,23 @@
   --color-danger-border: rgba(248, 113, 113, 0.35);
   --color-line: #{$color-brand-line};
   --color-line-bg: rgba(6, 199, 85, 0.12);
+
+  // 後台專用 Token (深色模式 - 靜謐夜景：暗背景、亮色字)
+  --admin-bg-base: #0d131f;
+  --admin-bg-sidebar: #151f32;
+  --admin-bg-topbar: #151f32;
+  --admin-bg-card: #151f32;
+  --admin-th-bg: rgba(0, 0, 0, 0.28);
+  --admin-tr-hover: rgba(255, 255, 255, 0.03);
+  --admin-border: rgba(255, 255, 255, 0.08);
+  --admin-border-subtle: rgba(255, 255, 255, 0.04);
+  --admin-text-main: #f8fafc;
+  --admin-text-sub: #cbd5e1;
+  --admin-text-muted: #94a3b8;
+  --admin-btn-secondary-bg: rgba(255, 255, 255, 0.06);
+  --admin-btn-secondary-text: #e2e8f0;
+  --admin-input-bg: #0d131f;
+  --admin-input-border: rgba(255, 255, 255, 0.15);
 }
 
 // ==========================================================================

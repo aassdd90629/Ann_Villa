@@ -2,14 +2,27 @@
 import { ref, onMounted } from 'vue'
 import { getBookedRanges } from '../../services/availabilityService'
 import { deleteAdminBlock, triggerAdminSync } from '../../services/adminService'
-import { Calendar, Plus, RefreshCw, Trash2, Shield, Info, CheckCircle2 } from 'lucide-vue-next'
+import { usePagination } from '../../composables/usePagination'
+import { Calendar, Plus, RefreshCw, Trash2, CheckCircle2 } from 'lucide-vue-next'
 import AdminLockModal from '../../components/admin/AdminLockModal.vue'
+import Pagination from '../../components/common/Pagination.vue'
 
 const bookedRanges = ref([])
 const isLoading = ref(false)
 const isSyncing = ref(false)
 const isLockModalOpen = ref(false)
 const statusMessage = ref('')
+
+// 通用 10 筆分頁邏輯
+const {
+  currentPage,
+  pageSize,
+  totalItems,
+  totalPages,
+  paginatedItems,
+  startIndex,
+  endIndex
+} = usePagination(bookedRanges, 10)
 
 const fetchRanges = async () => {
   isLoading.value = true
@@ -31,7 +44,8 @@ const handleTriggerSync = async () => {
   statusMessage.value = ''
   try {
     const res = await triggerAdminSync()
-    statusMessage.value = `同步成功！Airbnb 已同步 ${res.count || 0} 筆檔期`
+    const count = res.eventsCount || res.count || 0
+    statusMessage.value = `同步成功！Airbnb 已同步 ${count} 筆檔期`
     await fetchRanges()
   } catch (err) {
     alert('同步失敗: ' + err.message)
@@ -123,17 +137,17 @@ const handleBlockCreated = async () => {
           <tr v-else-if="bookedRanges.length === 0">
             <td colspan="6" class="text-center py-4 text-muted">目前暫無任何鎖定檔期</td>
           </tr>
-          <tr v-for="(range, idx) in bookedRanges" :key="idx">
+          <tr v-for="(range, idx) in paginatedItems" :key="idx">
             <td>
               <span 
                 class="source-badge" 
                 :class="{
-                  'airbnb': range.source === 'AIRBNB',
+                  'airbnb': range.source && range.source.toUpperCase() === 'AIRBNB',
                   'manual': range.source === 'MANUAL_LOCK',
                   'direct': range.source === 'DIRECT_BOOKING'
                 }"
               >
-                {{ range.source === 'AIRBNB' ? 'Airbnb 同步' : (range.source === 'DIRECT_BOOKING' ? '官網直訂單' : '管家手動鎖房') }}
+                {{ (range.source && range.source.toUpperCase() === 'AIRBNB') ? 'Airbnb 同步' : (range.source === 'DIRECT_BOOKING' ? '官網直訂單' : '管家手動鎖房') }}
               </span>
             </td>
             <td class="font-mono text-gold-light">{{ range.startDate }}</td>
@@ -153,12 +167,22 @@ const handleBlockCreated = async () => {
                 <span>解除</span>
               </button>
               <span v-else class="text-dim text-xs">
-                {{ range.source === 'AIRBNB' ? '外部同步' : '正式訂單' }}
+                {{ (range.source && range.source.toUpperCase() === 'AIRBNB') ? '外部同步' : '正式訂單' }}
               </span>
             </td>
           </tr>
         </tbody>
       </table>
+
+      <!-- 通用分頁控制列 -->
+      <Pagination
+        v-model:current-page="currentPage"
+        :total-pages="totalPages"
+        :total-items="totalItems"
+        :page-size="pageSize"
+        :start-index="startIndex"
+        :end-index="endIndex"
+      />
     </div>
 
     <!-- 手動鎖房彈窗組件 -->
@@ -188,14 +212,14 @@ const handleBlockCreated = async () => {
   .view-title {
     font-size: 1.4rem;
     font-weight: 600;
-    color: #f8fafc;
+    color: var(--admin-text-main, #f8fafc);
     margin: 0 0 0.35rem 0;
     letter-spacing: 1px;
   }
 
   .view-desc {
     font-size: 0.85rem;
-    color: #94a3b8;
+    color: var(--admin-text-sub, #94a3b8);
     margin: 0;
   }
 
@@ -209,14 +233,17 @@ const handleBlockCreated = async () => {
       align-items: center;
       gap: 0.4rem;
       padding: 0.6rem 1rem;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      color: #e2e8f0;
+      background: var(--admin-btn-secondary-bg, rgba(255, 255, 255, 0.05));
+      border: 1px solid var(--admin-border, rgba(255, 255, 255, 0.2));
+      color: var(--admin-text-main, #e2e8f0);
       border-radius: 6px;
       font-size: 0.85rem;
       cursor: pointer;
       transition: all 0.2s;
-      &:hover:not(:disabled) { background: rgba(255, 255, 255, 0.1); }
+      &:hover:not(:disabled) { 
+        border-color: var(--gold-primary);
+        color: var(--gold-primary);
+      }
       &:disabled { opacity: 0.6; cursor: not-allowed; }
     }
 
@@ -227,7 +254,7 @@ const handleBlockCreated = async () => {
       padding: 0.6rem 1.15rem;
       background: var(--gold-primary, #d4af37);
       border: none;
-      color: #0d131f;
+      color: #121415;
       font-weight: 600;
       border-radius: 6px;
       font-size: 0.85rem;
@@ -245,30 +272,31 @@ const handleBlockCreated = async () => {
   padding: 0.75rem 1rem;
   background: rgba(34, 197, 94, 0.12);
   border: 1px solid rgba(34, 197, 94, 0.3);
-  color: #4ade80;
+  color: #22c55e;
   border-radius: 6px;
   font-size: 0.85rem;
 }
 
 .table-container {
-  background: #151f32;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--admin-bg-card, #151f32);
+  border: 1px solid var(--admin-border, rgba(255, 255, 255, 0.08));
   border-radius: 8px;
   overflow: hidden;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 
   .table-header-title {
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 1rem 1.25rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid var(--admin-border, rgba(255, 255, 255, 0.08));
 
     .left-info {
       display: flex;
       align-items: center;
       gap: 0.5rem;
       font-weight: 600;
-      color: #f1f5f9;
+      color: var(--admin-text-main, #f1f5f9);
       font-size: 0.95rem;
 
       .text-gold { color: var(--gold-primary, #d4af37); }
@@ -278,14 +306,17 @@ const handleBlockCreated = async () => {
       display: inline-flex;
       align-items: center;
       gap: 0.35rem;
-      background: transparent;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      color: #94a3b8;
+      background: var(--admin-btn-secondary-bg, transparent);
+      border: 1px solid var(--admin-border, rgba(255, 255, 255, 0.15));
+      color: var(--admin-text-main, #94a3b8);
       padding: 0.35rem 0.65rem;
       border-radius: 4px;
       font-size: 0.75rem;
       cursor: pointer;
-      &:hover { color: #fff; border-color: rgba(255, 255, 255, 0.3); }
+      &:hover { 
+        border-color: var(--gold-primary);
+        color: var(--gold-primary);
+      }
     }
   }
 }
@@ -298,28 +329,28 @@ const handleBlockCreated = async () => {
 
   th {
     padding: 0.85rem 1.25rem;
-    background: rgba(0, 0, 0, 0.2);
-    color: #94a3b8;
+    background: var(--admin-th-bg, rgba(0, 0, 0, 0.2));
+    color: var(--admin-text-sub, #94a3b8);
     font-weight: 500;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid var(--admin-border, rgba(255, 255, 255, 0.08));
   }
 
   td {
     padding: 0.9rem 1.25rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    color: #e2e8f0;
+    border-bottom: 1px solid var(--admin-border, rgba(255, 255, 255, 0.05));
+    color: var(--admin-text-main, #e2e8f0);
   }
 
   tr:hover td {
-    background: rgba(255, 255, 255, 0.02);
+    background: var(--admin-tr-hover, rgba(255, 255, 255, 0.02));
   }
 
   .text-right { text-align: right; }
   .text-center { text-align: center; }
   .font-mono { font-family: monospace; }
-  .text-gold-light { color: var(--gold-light, #f3e5ab); }
-  .text-muted { color: #94a3b8; }
-  .text-dim { color: #64748b; }
+  .text-gold-light { color: var(--gold-primary, #f3e5ab); font-weight: 600; }
+  .text-muted { color: var(--admin-text-muted, #94a3b8); }
+  .text-dim { color: var(--admin-text-muted, #64748b); }
   .text-xs { font-size: 0.75rem; }
 
   .source-badge {

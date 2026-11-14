@@ -2,19 +2,22 @@
 import { computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useAdminAuth } from '../../composables/useAdminAuth'
+import { useTheme } from '../../composables/useTheme'
 import { 
   Calendar, 
   FileText, 
   RefreshCw, 
   LogOut, 
   ExternalLink, 
-  ShieldCheck, 
-  UserCircle 
+  ShieldCheck,
+  Sun,
+  Moon
 } from 'lucide-vue-next'
 
 const router = useRouter()
 const route = useRoute()
 const { user, logout } = useAdminAuth()
+const { theme, toggleTheme } = useTheme()
 
 const navItems = [
   { path: '/admin/calendar', name: '房態日曆與鎖房', icon: Calendar },
@@ -74,9 +77,22 @@ const handleLogout = () => {
         </div>
 
         <div class="topbar-right">
+          <!-- 亮/暗色主題切換鈕 -->
+          <button 
+            type="button" 
+            @click="toggleTheme" 
+            class="btn-theme-toggle" 
+            :title="theme === 'light' ? '切換為夜景模式 (Dark Mode)' : '切換為晨曦模式 (Light Mode)'"
+            aria-label="Toggle theme"
+          >
+            <Moon v-if="theme === 'light'" :size="15" />
+            <Sun v-else :size="15" />
+            <span>{{ theme === 'light' ? '夜景' : '晨曦' }}</span>
+          </button>
+
           <button @click="handleLogout" class="btn-logout" title="安全登出">
-            <LogOut :size="16" />
-            <span>安全登出</span>
+            <LogOut :size="15" />
+            <span>登出</span>
           </button>
         </div>
       </header>
@@ -95,26 +111,28 @@ const handleLogout = () => {
 .admin-app-layout {
   display: flex;
   min-height: 100vh;
-  background: #0d131f;
-  color: #e2e8f0;
+  background: var(--admin-bg-base, #0d131f);
+  color: var(--admin-text-main, #e2e8f0);
   font-family: -apple-system, BlinkMacSystemFont, "PingFang TC", "Microsoft JhengHei", sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 // 側邊欄
 .admin-sidebar {
   width: 250px;
-  background: #151f32;
-  border-right: 1px solid rgba(212, 175, 55, 0.2);
+  background: var(--admin-bg-sidebar, #151f32);
+  border-right: 1px solid var(--admin-border, rgba(212, 175, 55, 0.2));
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 
   .sidebar-brand {
     padding: 1.5rem 1.25rem;
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid var(--admin-border-subtle, rgba(255, 255, 255, 0.08));
 
     .brand-gold-icon {
       color: var(--gold-primary, #d4af37);
@@ -125,12 +143,12 @@ const handleLogout = () => {
       h2 {
         font-size: 1.15rem;
         margin: 0;
-        color: var(--gold-light, #f3e5ab);
+        color: var(--gold-primary, #d4af37);
         letter-spacing: 2px;
       }
       span {
         font-size: 0.75rem;
-        color: #94a3b8;
+        color: var(--admin-text-muted, #94a3b8);
         letter-spacing: 0.5px;
       }
     }
@@ -149,20 +167,20 @@ const handleLogout = () => {
       gap: 0.75rem;
       padding: 0.75rem 1rem;
       border-radius: 6px;
-      color: #94a3b8;
+      color: var(--admin-text-sub, #94a3b8);
       text-decoration: none;
       font-size: 0.9rem;
       font-weight: 500;
       transition: all 0.2s ease;
 
       .nav-icon {
-        color: #64748b;
+        color: var(--admin-text-muted, #64748b);
         transition: color 0.2s ease;
       }
 
       &:hover {
-        background: rgba(255, 255, 255, 0.05);
-        color: #f1f5f9;
+        background: var(--admin-tr-hover, rgba(255, 255, 255, 0.05));
+        color: var(--admin-text-main, #f1f5f9);
 
         .nav-icon {
           color: var(--gold-primary, #d4af37);
@@ -171,7 +189,7 @@ const handleLogout = () => {
 
       &.active {
         background: rgba(212, 175, 55, 0.15);
-        color: var(--gold-light, #f3e5ab);
+        color: var(--gold-primary, #d4af37);
         border-left: 3px solid var(--gold-primary, #d4af37);
 
         .nav-icon {
@@ -183,22 +201,22 @@ const handleLogout = () => {
 
   .sidebar-bottom {
     padding: 1rem 0.75rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: 1px solid var(--admin-border-subtle, rgba(255, 255, 255, 0.08));
 
     .external-link {
       display: flex;
       align-items: center;
       gap: 0.5rem;
       padding: 0.6rem 1rem;
-      color: #64748b;
+      color: var(--admin-text-muted, #64748b);
       font-size: 0.85rem;
       text-decoration: none;
       border-radius: 6px;
       transition: all 0.2s ease;
 
       &:hover {
-        color: #cbd5e1;
-        background: rgba(255, 255, 255, 0.04);
+        color: var(--admin-text-main, #cbd5e1);
+        background: var(--admin-tr-hover, rgba(255, 255, 255, 0.04));
       }
     }
   }
@@ -210,18 +228,20 @@ const handleLogout = () => {
   display: flex;
   flex-direction: column;
   min-width: 0;
-  background: #0f172a;
+  background: var(--admin-bg-base, #0f172a);
+  transition: background-color 0.3s ease;
 }
 
 // 頂部導航
 .admin-topbar {
   height: 60px;
-  background: #151f32;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--admin-bg-topbar, #151f32);
+  border-bottom: 1px solid var(--admin-border, rgba(255, 255, 255, 0.08));
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 1.75rem;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 
   .topbar-left {
     display: flex;
@@ -240,20 +260,39 @@ const handleLogout = () => {
 
     .topbar-welcome {
       font-size: 0.9rem;
-      color: #cbd5e1;
+      color: var(--admin-text-sub, #cbd5e1);
     }
   }
 
   .topbar-right {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 0.75rem;
+
+    .btn-theme-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.45rem 0.8rem;
+      background: var(--admin-btn-secondary-bg, rgba(255, 255, 255, 0.06));
+      border: 1px solid var(--admin-border, rgba(255, 255, 255, 0.15));
+      color: var(--admin-text-main, #e2e8f0);
+      border-radius: 6px;
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &:hover {
+        border-color: var(--gold-primary, #d4af37);
+        color: var(--gold-primary, #d4af37);
+      }
+    }
 
     .btn-logout {
       display: inline-flex;
       align-items: center;
-      gap: 0.4rem;
-      padding: 0.45rem 0.85rem;
+      gap: 0.35rem;
+      padding: 0.45rem 0.8rem;
       background: rgba(239, 68, 68, 0.1);
       border: 1px solid rgba(239, 68, 68, 0.25);
       color: #f87171;
@@ -276,4 +315,3 @@ const handleLogout = () => {
   overflow-y: auto;
 }
 </style>
-

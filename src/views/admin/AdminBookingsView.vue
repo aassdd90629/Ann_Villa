@@ -1,23 +1,33 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { getAdminBookings, updateAdminBooking, clearTestBookings } from '../../services/adminService'
+import { usePagination } from '../../composables/usePagination'
 import { 
   FileText, 
   CheckCircle2, 
-  XCircle, 
   Eye, 
   RefreshCw, 
-  Trash2, 
-  AlertTriangle, 
-  CreditCard 
+  Trash2 
 } from 'lucide-vue-next'
 import AdminOrderDetailModal from '../../components/admin/AdminOrderDetailModal.vue'
+import Pagination from '../../components/common/Pagination.vue'
 
 const bookings = ref([])
 const isLoading = ref(false)
 const selectedBooking = ref(null)
 const isDetailModalOpen = ref(false)
 const statusMessage = ref('')
+
+// 通用 10 筆分頁邏輯
+const {
+  currentPage,
+  pageSize,
+  totalItems,
+  totalPages,
+  paginatedItems,
+  startIndex,
+  endIndex
+} = usePagination(bookings, 10)
 
 const fetchBookings = async () => {
   isLoading.value = true
@@ -133,7 +143,7 @@ const handleClearTestBookings = async () => {
           <tr v-else-if="bookings.length === 0">
             <td colspan="8" class="text-center py-4 text-muted">目前暫無任何直訂預約單</td>
           </tr>
-          <tr v-for="b in bookings" :key="b.id">
+          <tr v-for="b in paginatedItems" :key="b.id">
             <td class="font-mono text-gold-light">{{ b.id }}</td>
             <td>
               <div class="guest-info-cell">
@@ -179,6 +189,16 @@ const handleClearTestBookings = async () => {
           </tr>
         </tbody>
       </table>
+
+      <!-- 通用分頁控制列 -->
+      <Pagination
+        v-model:current-page="currentPage"
+        :total-pages="totalPages"
+        :total-items="totalItems"
+        :page-size="pageSize"
+        :start-index="startIndex"
+        :end-index="endIndex"
+      />
     </div>
 
     <!-- 訂單詳細彈窗 -->
@@ -209,12 +229,12 @@ const handleClearTestBookings = async () => {
   .view-title {
     font-size: 1.4rem;
     font-weight: 600;
-    color: #f8fafc;
+    color: var(--admin-text-main, #f8fafc);
     margin: 0 0 0.35rem 0;
   }
   .view-desc {
     font-size: 0.85rem;
-    color: #94a3b8;
+    color: var(--admin-text-sub, #94a3b8);
     margin: 0;
   }
 
@@ -243,13 +263,16 @@ const handleClearTestBookings = async () => {
       align-items: center;
       gap: 0.4rem;
       padding: 0.6rem 1rem;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      color: #e2e8f0;
+      background: var(--admin-btn-secondary-bg, rgba(255, 255, 255, 0.05));
+      border: 1px solid var(--admin-border, rgba(255, 255, 255, 0.2));
+      color: var(--admin-text-main, #e2e8f0);
       border-radius: 6px;
       font-size: 0.85rem;
       cursor: pointer;
-      &:hover:not(:disabled) { background: rgba(255, 255, 255, 0.1); }
+      &:hover:not(:disabled) { 
+        border-color: var(--gold-primary);
+        color: var(--gold-primary);
+      }
       &:disabled { opacity: 0.6; cursor: not-allowed; }
     }
   }
@@ -262,27 +285,28 @@ const handleClearTestBookings = async () => {
   padding: 0.75rem 1rem;
   background: rgba(34, 197, 94, 0.12);
   border: 1px solid rgba(34, 197, 94, 0.3);
-  color: #4ade80;
+  color: #22c55e;
   border-radius: 6px;
   font-size: 0.85rem;
 }
 
 .table-container {
-  background: #151f32;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--admin-bg-card, #151f32);
+  border: 1px solid var(--admin-border, rgba(255, 255, 255, 0.08));
   border-radius: 8px;
   overflow: hidden;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 
   .table-bar {
     padding: 1rem 1.25rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid var(--admin-border, rgba(255, 255, 255, 0.08));
 
     .bar-title {
       display: flex;
       align-items: center;
       gap: 0.5rem;
       font-weight: 600;
-      color: #f1f5f9;
+      color: var(--admin-text-main, #f1f5f9);
       font-size: 0.95rem;
       .text-gold { color: var(--gold-primary, #d4af37); }
     }
@@ -297,38 +321,38 @@ const handleClearTestBookings = async () => {
 
   th {
     padding: 0.85rem 1.25rem;
-    background: rgba(0, 0, 0, 0.2);
-    color: #94a3b8;
+    background: var(--admin-th-bg, rgba(0, 0, 0, 0.2));
+    color: var(--admin-text-sub, #94a3b8);
     font-weight: 500;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid var(--admin-border, rgba(255, 255, 255, 0.08));
   }
 
   td {
     padding: 0.9rem 1.25rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    color: #e2e8f0;
+    border-bottom: 1px solid var(--admin-border, rgba(255, 255, 255, 0.05));
+    color: var(--admin-text-main, #e2e8f0);
   }
 
-  tr:hover td { background: rgba(255, 255, 255, 0.02); }
+  tr:hover td { background: var(--admin-tr-hover, rgba(255, 255, 255, 0.02)); }
 
   .text-right { text-align: right; }
   .text-center { text-align: center; }
   .font-mono { font-family: monospace; }
-  .text-gold-light { color: var(--gold-light, #f3e5ab); }
-  .text-muted { color: #94a3b8; }
+  .text-gold-light { color: var(--gold-primary, #f3e5ab); font-weight: 600; }
+  .text-muted { color: var(--admin-text-muted, #94a3b8); }
   .text-xs { font-size: 0.78rem; }
 
   .guest-info-cell {
     display: flex;
     flex-direction: column;
-    .guest-name { font-weight: 600; color: #f1f5f9; }
-    .guest-phone { font-size: 0.75rem; color: #94a3b8; }
+    .guest-name { font-weight: 600; color: var(--admin-text-main, #f1f5f9); }
+    .guest-phone { font-size: 0.75rem; color: var(--admin-text-muted, #94a3b8); }
   }
 
   .price-cell {
     display: flex;
     flex-direction: column;
-    .total { font-weight: 600; }
+    .total { font-weight: 600; color: var(--admin-text-main); }
     .deposit { font-size: 0.75rem; color: var(--gold-primary, #d4af37); }
   }
 
@@ -337,8 +361,8 @@ const handleClearTestBookings = async () => {
     border-radius: 4px;
     font-size: 0.72rem;
     font-weight: 600;
-    &.paid { background: rgba(34, 197, 94, 0.15); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); }
-    &.unpaid { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
+    &.paid { background: rgba(34, 197, 94, 0.15); color: #16a34a; border: 1px solid rgba(34, 197, 94, 0.3); }
+    &.unpaid { background: rgba(239, 68, 68, 0.15); color: #dc2626; border: 1px solid rgba(239, 68, 68, 0.3); }
   }
 
   .tag-status {
@@ -346,9 +370,9 @@ const handleClearTestBookings = async () => {
     border-radius: 4px;
     font-size: 0.72rem;
     font-weight: 600;
-    &.confirmed { background: rgba(34, 197, 94, 0.15); color: #4ade80; }
-    &.cancelled { background: rgba(239, 68, 68, 0.15); color: #f87171; }
-    &.pending { background: rgba(234, 179, 8, 0.15); color: #facc15; }
+    &.confirmed { background: rgba(34, 197, 94, 0.15); color: #16a34a; }
+    &.cancelled { background: rgba(239, 68, 68, 0.15); color: #dc2626; }
+    &.pending { background: rgba(234, 179, 8, 0.15); color: #ca8a04; }
   }
 
   .actions-cell {
@@ -361,14 +385,14 @@ const handleClearTestBookings = async () => {
       align-items: center;
       gap: 0.25rem;
       padding: 0.3rem 0.6rem;
-      background: #22c55e;
-      color: #0d131f;
+      background: #16a34a;
+      color: #ffffff;
       font-weight: 600;
       border: none;
       border-radius: 4px;
       font-size: 0.75rem;
       cursor: pointer;
-      &:hover { background: #16a34a; color: #fff; }
+      &:hover { background: #15803d; }
     }
 
     .btn-view-sm {
@@ -376,13 +400,16 @@ const handleClearTestBookings = async () => {
       align-items: center;
       gap: 0.25rem;
       padding: 0.3rem 0.6rem;
-      background: rgba(255, 255, 255, 0.08);
-      color: #cbd5e1;
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: var(--admin-btn-secondary-bg, rgba(255, 255, 255, 0.08));
+      color: var(--admin-text-main, #cbd5e1);
+      border: 1px solid var(--admin-border, rgba(255, 255, 255, 0.15));
       border-radius: 4px;
       font-size: 0.75rem;
       cursor: pointer;
-      &:hover { background: rgba(255, 255, 255, 0.15); color: #fff; }
+      &:hover { 
+        border-color: var(--gold-primary);
+        color: var(--gold-primary);
+      }
     }
   }
 }

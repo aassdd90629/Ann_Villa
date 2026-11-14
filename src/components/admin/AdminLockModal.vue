@@ -136,11 +136,11 @@ const handleCreateBlock = async () => {
 .modal-card {
   width: 100%;
   max-width: 480px;
-  background: #151f32;
-  border: 1px solid rgba(212, 175, 55, 0.3);
+  background: var(--admin-bg-card, #151f32);
+  border: 1px solid var(--admin-border, rgba(212, 175, 55, 0.3));
   border-radius: 10px;
   padding: 1.75rem;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
 }
 
 .modal-header {
@@ -149,7 +149,7 @@ const handleCreateBlock = async () => {
   justify-content: space-between;
   margin-bottom: 1.5rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid var(--admin-border, rgba(255, 255, 255, 0.08));
 
   .header-title {
     display: flex;
@@ -159,7 +159,7 @@ const handleCreateBlock = async () => {
     h3 {
       font-size: 1.1rem;
       margin: 0;
-      color: #f1f5f9;
+      color: var(--admin-text-main, #f1f5f9);
     }
 
     .text-gold {
@@ -170,10 +170,10 @@ const handleCreateBlock = async () => {
   .btn-close {
     background: transparent;
     border: none;
-    color: #94a3b8;
+    color: var(--admin-text-muted, #94a3b8);
     cursor: pointer;
     padding: 0.25rem;
-    &:hover { color: #fff; }
+    &:hover { color: var(--admin-text-main, #fff); }
   }
 }
 
@@ -184,7 +184,7 @@ const handleCreateBlock = async () => {
   padding: 0.6rem 0.85rem;
   background: rgba(239, 68, 68, 0.15);
   border: 1px solid rgba(239, 68, 68, 0.3);
-  color: #f87171;
+  color: #dc2626;
   border-radius: 6px;
   font-size: 0.85rem;
   margin-bottom: 1.25rem;
@@ -208,16 +208,16 @@ const handleCreateBlock = async () => {
 
     .form-label {
       font-size: 0.8rem;
-      color: #cbd5e1;
+      color: var(--admin-text-sub, #cbd5e1);
       font-weight: 500;
     }
 
     .form-input, .form-select {
       padding: 0.75rem 0.85rem;
-      background: #0d131f;
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: var(--admin-input-bg, #0d131f);
+      border: 1px solid var(--admin-input-border, rgba(255, 255, 255, 0.15));
       border-radius: 6px;
-      color: #fff;
+      color: var(--admin-text-main, #fff);
       font-size: 0.9rem;
       outline: none;
 
@@ -236,18 +236,18 @@ const handleCreateBlock = async () => {
     .btn-cancel {
       padding: 0.65rem 1.2rem;
       background: transparent;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      color: #94a3b8;
+      border: 1px solid var(--admin-border, rgba(255, 255, 255, 0.2));
+      color: var(--admin-text-muted, #94a3b8);
       border-radius: 6px;
       cursor: pointer;
-      &:hover { color: #fff; background: rgba(255, 255, 255, 0.05); }
+      &:hover { color: var(--admin-text-main, #fff); background: var(--admin-btn-secondary-bg, rgba(255, 255, 255, 0.05)); }
     }
 
     .btn-submit {
       padding: 0.65rem 1.4rem;
       background: var(--gold-primary, #d4af37);
       border: none;
-      color: #0d131f;
+      color: #121415;
       font-weight: 600;
       border-radius: 6px;
       cursor: pointer;
