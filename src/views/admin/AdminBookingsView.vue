@@ -133,7 +133,7 @@ const handleClearTestBookings = async () => {
             <th>總金額 / 50% 定金</th>
             <th>定金狀態</th>
             <th>訂單狀態</th>
-            <th class="text-right">操作</th>
+            <th>操作</th>
           </tr>
         </thead>
         <tbody>
@@ -171,7 +171,7 @@ const handleClearTestBookings = async () => {
                 {{ b.status === 'CONFIRMED' ? '已確認' : (b.status === 'CANCELLED' ? '已取消' : '待確認') }}
               </span>
             </td>
-            <td class="text-right actions-cell">
+            <td class="actions-cell">
               <button 
                 v-if="b.deposit_status !== 'PAID'"
                 class="btn-pay-sm" 
@@ -316,7 +316,7 @@ const handleClearTestBookings = async () => {
 .admin-table {
   width: 100%;
   border-collapse: collapse;
-  text-align: left;
+  text-align: center;
   font-size: 0.85rem;
 
   th {
@@ -324,18 +324,21 @@ const handleClearTestBookings = async () => {
     background: var(--admin-th-bg, rgba(0, 0, 0, 0.2));
     color: var(--admin-text-sub, #94a3b8);
     font-weight: 500;
+    text-align: center;
+    vertical-align: middle;
     border-bottom: 1px solid var(--admin-border, rgba(255, 255, 255, 0.08));
   }
 
   td {
     padding: 0.9rem 1.25rem;
+    text-align: center;
+    vertical-align: middle;
     border-bottom: 1px solid var(--admin-border, rgba(255, 255, 255, 0.05));
     color: var(--admin-text-main, #e2e8f0);
   }
 
   tr:hover td { background: var(--admin-tr-hover, rgba(255, 255, 255, 0.02)); }
 
-  .text-right { text-align: right; }
   .text-center { text-align: center; }
   .font-mono { font-family: monospace; }
   .text-gold-light { color: var(--gold-primary, #f3e5ab); font-weight: 600; }
@@ -345,6 +348,7 @@ const handleClearTestBookings = async () => {
   .guest-info-cell {
     display: flex;
     flex-direction: column;
+    align-items: center;
     .guest-name { font-weight: 600; color: var(--admin-text-main, #f1f5f9); }
     .guest-phone { font-size: 0.75rem; color: var(--admin-text-muted, #94a3b8); }
   }
@@ -352,6 +356,7 @@ const handleClearTestBookings = async () => {
   .price-cell {
     display: flex;
     flex-direction: column;
+    align-items: center;
     .total { font-weight: 600; color: var(--admin-text-main); }
     .deposit { font-size: 0.75rem; color: var(--gold-primary, #d4af37); }
   }
@@ -377,7 +382,7 @@ const handleClearTestBookings = async () => {
 
   .actions-cell {
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
     gap: 0.4rem;
 
     .btn-pay-sm {

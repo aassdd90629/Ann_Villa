@@ -3,15 +3,11 @@ import { ref, computed, onMounted } from 'vue'
 import { useI18n } from '../../composables/useI18n'
 import { useBookingPricing } from '../../composables/useBookingPricing'
 import { getBookedRanges } from '../../services/availabilityService'
-import { 
-  Calendar as CalendarIcon, 
-  ChevronLeft, 
-  ChevronRight, 
-  RefreshCw, 
-  Info 
-} from 'lucide-vue-next'
+import { RefreshCw, Info } from 'lucide-vue-next'
 import BookingSummarySidebar from './BookingSummarySidebar.vue'
 import DirectBookingModal from './DirectBookingModal.vue'
+import CalendarMonthView from './CalendarMonthView.vue'
+import BookingPerksNotice from './BookingPerksNotice.vue'
 
 const { isEn, t } = useI18n()
 
@@ -68,28 +64,26 @@ const handleBookingSuccess = () => {
   refreshAvailability()
 }
 
-const currentYear = computed(() => currentDate.value.getFullYear())
-const currentMonth = computed(() => currentDate.value.getMonth())
-
-const monthNamesZh = ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月']
+const monthNamesZh = ['1 月', '2 月', '3 月', '4 月', '5 月', '6 月', '7 月', '8 月', '9 月', '10 月', '11 月', '12 月']
 const monthNamesEn = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 const weekDaysZh = ['日', '一', '二', '三', '四', '五', '六']
 const weekDaysEn = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
 // 判斷是否不可再切換至上個月（不能切換到當前月份以前）
 const isPrevDisabled = computed(() => {
-  return currentYear.value < today.getFullYear() || 
-    (currentYear.value === today.getFullYear() && currentMonth.value <= today.getMonth())
+  const m1 = currentDate.value
+  return m1.getFullYear() < today.getFullYear() || 
+    (m1.getFullYear() === today.getFullYear() && m1.getMonth() <= today.getMonth())
 })
 
 // 切換月份
 const prevMonth = () => {
   if (isPrevDisabled.value) return
-  currentDate.value = new Date(currentYear.value, currentMonth.value - 1, 1)
+  currentDate.value = new Date(currentDate.value.getFullYear(), currentDate.value.getMonth() - 1, 1)
 }
 
 const nextMonth = () => {
-  currentDate.value = new Date(currentYear.value, currentMonth.value + 1, 1)
+  currentDate.value = new Date(currentDate.value.getFullYear(), currentDate.value.getMonth() + 1, 1)
 }
 
 function formatDate(d) {
@@ -105,44 +99,24 @@ function isDatePast(d) {
 
 function isDateBooked(dateStr) {
   if (!bookedRanges.value || !bookedRanges.value.length) return false
-  return bookedRanges.value.some(range => {
-    return dateStr >= range.startDate && dateStr < range.endDate
-  })
+  return bookedRanges.value.some(range => dateStr >= range.startDate && dateStr < range.endDate)
 }
 
-// 取得某日期的預約來源
-function getBookingSource(dateStr) {
-  if (!bookedRanges.value || !bookedRanges.value.length) return ''
-  const found = bookedRanges.value.find(range => dateStr >= range.startDate && dateStr < range.endDate)
-  if (!found) return ''
-  if (found.source && found.source.toUpperCase() === 'AIRBNB') return 'Airbnb'
-  if (found.source === 'DIRECT_BOOKING' || found.source === 'Official') return isEn.value ? 'Direct' : '官網直訂'
-  return isEn.value ? 'Locked' : '管家保留'
-}
-
-// 產生當月日曆網格
-const calendarDays = computed(() => {
-  const year = currentYear.value
-  const month = currentMonth.value
-  
+// 產生單月日曆網格資料 (如同 Airbnb 留白)
+function generateMonthDays(year, month) {
   const firstDayIndex = new Date(year, month, 1).getDay()
   const daysInMonth = new Date(year, month + 1, 0).getDate()
-  const prevMonthDays = new Date(year, month, 0).getDate()
   
   const days = []
   
-  // 上個月的補白
-  for (let i = firstDayIndex - 1; i >= 0; i--) {
-    const dayNum = prevMonthDays - i
-    const d = new Date(year, month - 1, dayNum)
-    const dateStr = formatDate(d)
+  // 空白補位 (只留空，不顯示上個月日期，如同 Airbnb 原汁原味)
+  for (let i = 0; i < firstDayIndex; i++) {
     days.push({
-      dateStr,
-      dayNum,
-      isCurrentMonth: false,
-      isBooked: isDateBooked(dateStr),
-      isPast: isDatePast(d),
-      holiday: getHolidayForDate(dateStr)
+      dateStr: `empty-${year}-${month}-${i}`,
+      dayNum: '',
+      isEmpty: true,
+      isBooked: false,
+      isPast: true
     })
   }
   
@@ -153,22 +127,7 @@ const calendarDays = computed(() => {
     days.push({
       dateStr,
       dayNum: i,
-      isCurrentMonth: true,
-      isBooked: isDateBooked(dateStr),
-      isPast: isDatePast(d),
-      holiday: getHolidayForDate(dateStr)
-    })
-  }
-  
-  // 下個月的補白 (湊滿 35 或 42 格)
-  const remaining = (7 - (days.length % 7)) % 7
-  for (let i = 1; i <= remaining; i++) {
-    const d = new Date(year, month + 1, i)
-    const dateStr = formatDate(d)
-    days.push({
-      dateStr,
-      dayNum: i,
-      isCurrentMonth: false,
+      isEmpty: false,
       isBooked: isDateBooked(dateStr),
       isPast: isDatePast(d),
       holiday: getHolidayForDate(dateStr)
@@ -176,6 +135,32 @@ const calendarDays = computed(() => {
   }
   
   return days
+}
+
+// 雙月份呈現資料 (如同 Airbnb 一次呈現兩個月)
+const displayedMonths = computed(() => {
+  const m1Date = currentDate.value
+  const m1Year = m1Date.getFullYear()
+  const m1Month = m1Date.getMonth()
+  
+  const m2Date = new Date(m1Year, m1Month + 1, 1)
+  const m2Year = m2Date.getFullYear()
+  const m2Month = m2Date.getMonth()
+  
+  return [
+    {
+      key: `${m1Year}-${m1Month}`,
+      year: m1Year,
+      month: m1Month,
+      days: generateMonthDays(m1Year, m1Month)
+    },
+    {
+      key: `${m2Year}-${m2Month}`,
+      year: m2Year,
+      month: m2Month,
+      days: generateMonthDays(m2Year, m2Month)
+    }
+  ]
 })
 
 // 檢查某日期是否可作為目前選取的退房日（若當天是下一筆訂單的 Check-in 日，允許前一位於 11:00 前退房）
@@ -238,7 +223,7 @@ const isInRange = (dateStr) => {
 </script>
 
 <template>
-  <div class="availability-calendar-card card-luxury">
+  <div class="availability-calendar-card">
     <!-- 頂部檔期說明列與即時同步按鈕 -->
     <div class="sync-banner">
       <div class="sync-status">
@@ -259,77 +244,23 @@ const isInRange = (dateStr) => {
     </div>
 
     <div class="calendar-layout-grid">
-      <!-- 左側：月曆主體 -->
+      <!-- 左側：月曆主體 (如同 Airbnb 雙月份呈現) -->
       <div class="calendar-main-col">
-        <div class="calendar-header-bar">
-          <div class="month-title">
-            <CalendarIcon :size="20" class="cal-icon" />
-            <h3>
-              {{ isEn ? `${monthNamesEn[currentMonth]} ${currentYear}` : `${currentYear} 年 ${monthNamesZh[currentMonth]}` }}
-            </h3>
-          </div>
-          <div class="nav-btn-group">
-            <button 
-              type="button"
-              class="nav-btn" 
-              :disabled="isPrevDisabled" 
-              @click="prevMonth" 
-              :aria-label="isEn ? 'Previous month' : '上一月'"
-            >
-              <ChevronLeft :size="18" />
-            </button>
-            <button 
-              type="button"
-              class="nav-btn" 
-              @click="nextMonth" 
-              :aria-label="isEn ? 'Next month' : '下一月'"
-            >
-              <ChevronRight :size="18" />
-            </button>
-          </div>
-        </div>
-
-        <!-- 星期標題 -->
-        <div class="weekdays-row">
-          <span v-for="(day, idx) in (isEn ? weekDaysEn : weekDaysZh)" :key="idx" class="weekday-cell">
-            {{ day }}
-          </span>
-        </div>
-
-        <!-- 日曆網格 -->
-        <div class="days-grid">
-          <button
-            v-for="day in calendarDays"
-            :key="day.dateStr"
-            type="button"
-            class="day-cell"
-            :class="{
-              'other-month': !day.isCurrentMonth,
-              'is-past': day.isPast,
-              'is-booked': day.isBooked,
-              'is-selected': isSelected(day.dateStr),
-              'is-in-range': isInRange(day.dateStr),
-              'is-check-in': day.dateStr === checkInDate,
-              'is-check-out': day.dateStr === checkOutDate
-            }"
-            :disabled="day.isPast || (day.isBooked && !isCheckOutSelectable(day.dateStr))"
-            @click="selectDate(day)"
-            :title="day.isBooked ? `${day.dateStr} (${getBookingSource(day.dateStr)} 已預約)` : (day.holiday ? `${day.dateStr} 【${isEn ? day.holiday.nameEn : day.holiday.nameZh} NT$ ${day.holiday.price.toLocaleString()}` + (day.holiday.breakfast ? ' 含早餐' : ' 不含早餐') + '】' : day.dateStr)"
-          >
-            <span class="day-number">{{ day.dayNum }}</span>
-            <span v-if="day.isBooked" class="cell-tag booked-tag">
-              {{ isEn ? 'Booked' : '已訂' }}
-            </span>
-            <span v-else-if="day.dateStr === checkInDate" class="cell-tag in-tag">
-              {{ isEn ? 'In' : '入住' }}
-            </span>
-            <span v-else-if="day.dateStr === checkOutDate" class="cell-tag out-tag">
-              {{ isEn ? 'Out' : '退房' }}
-            </span>
-            <span v-else-if="day.holiday && !day.isPast" class="cell-tag holiday-tag">
-              {{ isEn ? 'Holiday' : '連假' }}
-            </span>
-          </button>
+        <div class="two-months-grid">
+          <CalendarMonthView
+            v-for="(m, mIdx) in displayedMonths"
+            :key="m.key"
+            :month-data="m"
+            :month-index="mIdx"
+            :total-months="displayedMonths.length"
+            :is-prev-disabled="isPrevDisabled"
+            :check-in-date="checkInDate"
+            :check-out-date="checkOutDate"
+            :is-check-out-selectable="isCheckOutSelectable"
+            @select-date="selectDate"
+            @prev-month="prevMonth"
+            @next-month="nextMonth"
+          />
         </div>
 
         <!-- 圖例說明 (Legend) -->
@@ -365,6 +296,9 @@ const isInRange = (dateStr) => {
       />
     </div>
 
+    <!-- 底部通欄：官方直訂禮遇與包棟入住叮嚀 (滿版寬度，左右 50%/50% 平均展開) -->
+    <BookingPerksNotice />
+
     <!-- 線上直訂預約彈窗 (獨立組件) -->
     <DirectBookingModal
       v-model="isModalOpen"
@@ -381,15 +315,22 @@ const isInRange = (dateStr) => {
 @use '../../assets/styles/variables' as *;
 
 .availability-calendar-card {
-  padding: 1.75rem 1.25rem;
+  padding: 1.5rem 1.25rem;
   margin: 3rem 0;
   border: 1px solid var(--border-color);
   background: var(--bg-card);
   border-radius: 6px;
   box-shadow: var(--shadow-card);
+  transition: none !important;
+
+  &:hover {
+    transform: none !important;
+    border-color: var(--border-color) !important;
+    box-shadow: var(--shadow-card) !important;
+  }
 
   @media (min-width: $bp-md) {
-    padding: 2.5rem;
+    padding: 2.25rem 2.5rem;
   }
 }
 
@@ -456,15 +397,15 @@ const isInRange = (dateStr) => {
   }
 }
 
-// 網格佈局
+// 網格佈局 (雙月曆主區塊與右側試算側欄)
 .calendar-layout-grid {
   display: grid;
   grid-template-columns: 1fr;
   gap: 2.5rem;
 
-  @media (min-width: $bp-lg) {
-    grid-template-columns: 1.15fr 1fr;
-    gap: 3rem;
+  @media (min-width: 1200px) {
+    grid-template-columns: 1.6fr 1fr;
+    gap: 2.5rem;
   }
 }
 
@@ -474,160 +415,16 @@ const isInRange = (dateStr) => {
   flex-direction: column;
 }
 
-.calendar-header-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+// 雙月份並排呈現網格 (Airbnb 風格)
+.two-months-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
   margin-bottom: 1.5rem;
 
-  .month-title {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-
-    .cal-icon {
-      color: var(--gold-primary);
-    }
-
-    h3 {
-      font-size: 1.25rem;
-      margin: 0;
-      letter-spacing: 0.05em;
-    }
-  }
-
-  .nav-btn-group {
-    display: flex;
-    gap: 0.5rem;
-
-    .nav-btn {
-      width: 34px;
-      height: 34px;
-      border-radius: 4px;
-      border: 1px solid var(--border-color);
-      background: var(--bg-primary);
-      color: var(--text-primary);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: $transition-base;
-
-      &:hover {
-        border-color: var(--gold-primary);
-        color: var(--gold-primary);
-        background: var(--bg-card);
-      }
-
-      &:disabled {
-        opacity: 0.35;
-        cursor: not-allowed;
-        pointer-events: none;
-      }
-    }
-  }
-}
-
-.weekdays-row {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  text-align: center;
-  margin-bottom: 0.75rem;
-
-  .weekday-cell {
-    font-size: 0.8rem;
-    color: var(--text-muted);
-    font-weight: 600;
-    text-transform: uppercase;
-  }
-}
-
-.days-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 4px;
-  margin-bottom: 1.5rem;
-}
-
-.day-cell {
-  position: relative;
-  height: 52px;
-  background: var(--bg-primary);
-  border: 1px solid transparent;
-  border-radius: 4px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: $transition-base;
-  color: var(--text-primary);
-
-  .day-number {
-    font-family: $font-display;
-    font-size: 1rem;
-    font-weight: 600;
-  }
-
-  .cell-tag {
-    font-size: 0.65rem;
-    line-height: 1;
-    margin-top: 2px;
-    padding: 1px 4px;
-    border-radius: 2px;
-
-    &.holiday-tag {
-      background: var(--badge-bg);
-      color: var(--gold-primary);
-      font-weight: 500;
-    }
-  }
-
-  &:hover:not(:disabled) {
-    border-color: var(--gold-primary);
-    background: var(--bg-card);
-    transform: translateY(-1px);
-  }
-
-  &.other-month {
-    opacity: 0.35;
-  }
-
-  &.is-past {
-    opacity: 0.25;
-    cursor: not-allowed;
-    background: transparent;
-  }
-
-  &.is-booked {
-    background: var(--border-color);
-    color: var(--text-muted);
-    cursor: not-allowed;
-    text-decoration: line-through;
-
-    .booked-tag {
-      text-decoration: none;
-      background: var(--bg-primary);
-      color: var(--text-muted);
-    }
-  }
-
-  &.is-selected {
-    background: var(--gold-primary) !important;
-    color: #FFFFFF !important;
-    border-color: var(--gold-primary);
-    box-shadow: 0 4px 12px var(--badge-bg);
-
-    .cell-tag {
-      background: rgba(0, 0, 0, 0.25);
-      color: #FFFFFF;
-    }
-  }
-
-  &.is-in-range {
-    background: var(--badge-bg) !important;
-    border-color: var(--gold-light);
-    color: var(--gold-dark);
+  @media (min-width: $bp-md) {
+    grid-template-columns: 1fr 1fr;
+    gap: 2.25rem;
   }
 }
 

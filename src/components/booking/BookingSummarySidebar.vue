@@ -1,15 +1,11 @@
 <script setup>
 import { useI18n } from '../../composables/useI18n'
 import pricingData from '../../data/pricing.json'
-import channelsData from '../../data/channels.json'
 import { 
   Sparkles, 
   Users, 
   Info, 
-  ShieldCheck, 
-  CheckCircle2, 
-  Send, 
-  ExternalLink 
+  Send 
 } from 'lucide-vue-next'
 
 const props = defineProps({
@@ -160,39 +156,6 @@ const handleIncrement = () => {
         >
           <Send :size="16" />
           <span>{{ t('calendar.inquireViaLine') }}</span>
-        </a>
-      </div>
-
-      <!-- 官方直訂專屬禮遇 (Perks) -->
-      <div class="direct-perks-box">
-        <div class="perks-title">
-          <ShieldCheck :size="16" class="perk-icon" />
-          <span>{{ isEn ? 'Direct Booking Privileges' : '山語 Villa 官方直訂禮遇' }}</span>
-        </div>
-        <ul class="perks-list">
-          <li v-for="(perk, pIdx) in (isEn ? channelsData.directBooking.perksEn : channelsData.directBooking.perksZh)" :key="pIdx">
-            <CheckCircle2 :size="13" class="p-check" />
-            <span>{{ perk }}</span>
-          </li>
-        </ul>
-      </div>
-    </div>
-
-    <!-- 合作 OTA 渠道標籤 -->
-    <div class="ota-channels-footer">
-      <span class="ota-label">{{ isEn ? 'Official OTA Partner' : '亦可在官方 Airbnb 預約：' }}</span>
-      <div class="ota-badges">
-        <a 
-          v-for="ota in channelsData.otaPlatforms" 
-          :key="ota.id" 
-          :href="ota.url" 
-          target="_blank" 
-          rel="noopener noreferrer"
-          class="ota-badge"
-          :title="ota.name"
-        >
-          <span>{{ ota.name }}</span>
-          <ExternalLink :size="12" />
         </a>
       </div>
     </div>
@@ -425,81 +388,6 @@ const handleIncrement = () => {
 .direct-perks-box {
   border-top: 1px solid var(--border-color);
   padding-top: 1.25rem;
-
-  .perks-title {
-    display: flex;
-    align-items: center;
-    gap: 0.45rem;
-    font-size: 0.88rem;
-    font-weight: 600;
-    color: var(--gold-primary);
-    margin-bottom: 0.75rem;
-
-    .perk-icon {
-      color: var(--gold-primary);
-    }
-  }
-
-  .perks-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-
-    li {
-      display: flex;
-      align-items: flex-start;
-      gap: 0.45rem;
-      font-size: 0.82rem;
-      color: var(--text-sub);
-      line-height: 1.5;
-
-      .p-check {
-        color: var(--gold-primary);
-        flex-shrink: 0;
-        margin-top: 2px;
-      }
-    }
-  }
-}
-
-.ota-channels-footer {
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-
-  .ota-label {
-    font-size: 0.78rem;
-    color: var(--text-muted);
-  }
-
-  .ota-badges {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.65rem;
-
-    .ota-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      padding: 0.4rem 0.85rem;
-      background: var(--bg-primary);
-      border: 1px solid var(--border-color);
-      border-radius: 4px;
-      font-size: 0.82rem;
-      color: var(--text-sub);
-      font-weight: 500;
-      transition: $transition-base;
-
-      &:hover {
-        border-color: var(--gold-primary);
-        color: var(--gold-primary);
-        background: var(--bg-card);
-      }
-    }
-  }
 }
 </style>
 

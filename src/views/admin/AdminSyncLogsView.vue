@@ -97,7 +97,7 @@ const handleTriggerSync = async () => {
             <th>狀態</th>
             <th>成功解析事件數</th>
             <th>系統反饋訊息</th>
-            <th class="text-right">同步時間 (UTC)</th>
+            <th>同步時間 (UTC)</th>
           </tr>
         </thead>
         <tbody>
@@ -119,7 +119,7 @@ const handleTriggerSync = async () => {
             </td>
             <td class="font-bold text-gold">{{ log.events_count || 0 }} 筆</td>
             <td class="text-muted text-xs">{{ log.message || '正常' }}</td>
-            <td class="text-right font-mono text-xs text-muted">{{ log.created_at }}</td>
+            <td class="font-mono text-xs text-muted">{{ log.created_at }}</td>
           </tr>
         </tbody>
       </table>
@@ -241,7 +241,7 @@ const handleTriggerSync = async () => {
 .admin-table {
   width: 100%;
   border-collapse: collapse;
-  text-align: left;
+  text-align: center;
   font-size: 0.85rem;
 
   th {
@@ -249,11 +249,15 @@ const handleTriggerSync = async () => {
     background: var(--admin-th-bg, rgba(0, 0, 0, 0.2));
     color: var(--admin-text-sub, #94a3b8);
     font-weight: 500;
+    text-align: center;
+    vertical-align: middle;
     border-bottom: 1px solid var(--admin-border, rgba(255, 255, 255, 0.08));
   }
 
   td {
     padding: 0.9rem 1.25rem;
+    text-align: center;
+    vertical-align: middle;
     border-bottom: 1px solid var(--admin-border, rgba(255, 255, 255, 0.05));
     color: var(--admin-text-main, #e2e8f0);
   }

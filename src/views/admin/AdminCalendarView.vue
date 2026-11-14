@@ -72,6 +72,36 @@ const handleBlockCreated = async () => {
   statusMessage.value = '手動鎖房成功已生效，前台已即刻反灰！'
   await fetchRanges()
 }
+
+const isAirbnb = (range) => range.source && range.source.toUpperCase() === 'AIRBNB'
+
+const isAirbnbReserved = (range) => {
+  return isAirbnb(range) && (range.type === 'reserved' || (range.summary && range.summary.toLowerCase().includes('reserved')))
+}
+
+const getSourceBadgeText = (range) => {
+  if (isAirbnb(range)) {
+    return isAirbnbReserved(range) ? 'Airbnb 旅客預約' : 'Airbnb 手動關閉'
+  }
+  if (range.source === 'DIRECT_BOOKING') return '官網直訂單'
+  return '管家手動鎖房'
+}
+
+const getSourceBadgeClass = (range) => {
+  if (isAirbnb(range)) {
+    return isAirbnbReserved(range) ? 'airbnb-reserved' : 'airbnb-manual'
+  }
+  if (range.source === 'MANUAL_LOCK') return 'manual'
+  if (range.source === 'DIRECT_BOOKING') return 'direct'
+  return ''
+}
+
+const getSummaryText = (range) => {
+  if (isAirbnb(range)) {
+    return isAirbnbReserved(range) ? 'Airbnb 旅客成單' : 'Airbnb 房態關閉'
+  }
+  return range.summary || '已保留'
+}
 </script>
 
 <template>
@@ -123,11 +153,11 @@ const handleBlockCreated = async () => {
         <thead>
           <tr>
             <th>來源管道</th>
-            <th>起始日期 (Check-in)</th>
-            <th>結束日期 (Check-out)</th>
+            <th>入住日期</th>
+            <th>退房日期</th>
             <th>晚數</th>
             <th>鎖定事由 / 說明</th>
-            <th class="text-right">操作</th>
+            <th>操作</th>
           </tr>
         </thead>
         <tbody>
@@ -141,13 +171,9 @@ const handleBlockCreated = async () => {
             <td>
               <span 
                 class="source-badge" 
-                :class="{
-                  'airbnb': range.source && range.source.toUpperCase() === 'AIRBNB',
-                  'manual': range.source === 'MANUAL_LOCK',
-                  'direct': range.source === 'DIRECT_BOOKING'
-                }"
+                :class="getSourceBadgeClass(range)"
               >
-                {{ (range.source && range.source.toUpperCase() === 'AIRBNB') ? 'Airbnb 同步' : (range.source === 'DIRECT_BOOKING' ? '官網直訂單' : '管家手動鎖房') }}
+                {{ getSourceBadgeText(range) }}
               </span>
             </td>
             <td class="font-mono text-gold-light">{{ range.startDate }}</td>
@@ -155,8 +181,8 @@ const handleBlockCreated = async () => {
             <td>
               {{ Math.max(1, Math.round((new Date(range.endDate) - new Date(range.startDate)) / (1000 * 60 * 60 * 24))) }} 晚
             </td>
-            <td class="text-muted">{{ range.summary || '已保留' }}</td>
-            <td class="text-right">
+            <td class="text-muted">{{ getSummaryText(range) }}</td>
+            <td>
               <button 
                 v-if="range.source === 'MANUAL_LOCK'"
                 class="btn-delete" 
@@ -167,7 +193,7 @@ const handleBlockCreated = async () => {
                 <span>解除</span>
               </button>
               <span v-else class="text-dim text-xs">
-                {{ (range.source && range.source.toUpperCase() === 'AIRBNB') ? '外部同步' : '正式訂單' }}
+                {{ isAirbnb(range) ? (isAirbnbReserved(range) ? '外部成單' : '手動關閉') : '正式訂單' }}
               </span>
             </td>
           </tr>
@@ -324,7 +350,7 @@ const handleBlockCreated = async () => {
 .admin-table {
   width: 100%;
   border-collapse: collapse;
-  text-align: left;
+  text-align: center;
   font-size: 0.85rem;
 
   th {
@@ -332,11 +358,15 @@ const handleBlockCreated = async () => {
     background: var(--admin-th-bg, rgba(0, 0, 0, 0.2));
     color: var(--admin-text-sub, #94a3b8);
     font-weight: 500;
+    text-align: center;
+    vertical-align: middle;
     border-bottom: 1px solid var(--admin-border, rgba(255, 255, 255, 0.08));
   }
 
   td {
     padding: 0.9rem 1.25rem;
+    text-align: center;
+    vertical-align: middle;
     border-bottom: 1px solid var(--admin-border, rgba(255, 255, 255, 0.05));
     color: var(--admin-text-main, #e2e8f0);
   }
@@ -345,7 +375,6 @@ const handleBlockCreated = async () => {
     background: var(--admin-tr-hover, rgba(255, 255, 255, 0.02));
   }
 
-  .text-right { text-align: right; }
   .text-center { text-align: center; }
   .font-mono { font-family: monospace; }
   .text-gold-light { color: var(--gold-primary, #f3e5ab); font-weight: 600; }
@@ -354,16 +383,24 @@ const handleBlockCreated = async () => {
   .text-xs { font-size: 0.75rem; }
 
   .source-badge {
-    display: inline-block;
-    padding: 0.2rem 0.55rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.22rem 0.6rem;
     border-radius: 4px;
     font-size: 0.72rem;
     font-weight: 600;
+    white-space: nowrap;
 
-    &.airbnb {
-      background: rgba(255, 90, 95, 0.15);
-      color: #ff5a5f;
-      border: 1px solid rgba(255, 90, 95, 0.3);
+    &.airbnb-reserved {
+      background: rgba(34, 197, 94, 0.15);
+      color: #4ade80;
+      border: 1px solid rgba(34, 197, 94, 0.35);
+    }
+    &.airbnb-manual {
+      background: rgba(249, 115, 22, 0.15);
+      color: #fb923c;
+      border: 1px solid rgba(249, 115, 22, 0.35);
     }
     &.manual {
       background: rgba(234, 179, 8, 0.15);
@@ -380,6 +417,7 @@ const handleBlockCreated = async () => {
   .btn-delete {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 0.3rem;
     padding: 0.3rem 0.6rem;
     background: rgba(239, 68, 68, 0.1);
@@ -388,6 +426,7 @@ const handleBlockCreated = async () => {
     border-radius: 4px;
     font-size: 0.75rem;
     cursor: pointer;
+    margin: 0 auto;
     &:hover { background: rgba(239, 68, 68, 0.2); }
   }
 }
