@@ -18,6 +18,7 @@ import {
 } from 'lucide-vue-next'
 import AvailabilityCalendar from '../components/booking/AvailabilityCalendar.vue'
 import HeroCarousel from '../components/home/HeroCarousel.vue'
+import RoomCarousel from '../components/home/RoomCarousel.vue'
 import ImageGallery from '../components/common/ImageGallery.vue'
 import BookingButton from '../components/common/BookingButton.vue'
 
@@ -137,7 +138,7 @@ const { isEn, t, tField } = useI18n()
       </div>
     </section>
 
-    <!-- 3. 精選 5 大房型導覽 (Suites Preview) -->
+    <!-- 3. 精選 5 大房型導覽 (Suites Preview - 直式卡片輪播) -->
     <section class="section-py rooms-preview-section">
       <div class="container">
         <div class="section-header">
@@ -145,35 +146,14 @@ const { isEn, t, tField } = useI18n()
           <h2 class="section-title">{{ isEn ? '5 Distinct Aesthetic Living Spaces' : '五間獨立景觀客房・舒適成境' }}</h2>
           <p class="section-desc">
             {{ isEn 
-              ? 'Features 5 comfortable bedrooms across two floors (3 on 1F, 2 on 2F) accommodating up to 20 guests.' 
+              ? 'Features 5 comfortable bedrooms across two floors (3 on 1F, 2 on 2F) accommodating up to 18 guests.' 
               : '全館共 5 間獨立客房（1樓三間、2樓兩間），採光明亮清幽，最多容納 18 位貴賓。' 
             }}
           </p>
         </div>
 
-        <div class="rooms-grid">
-          <div v-for="room in roomsData" :key="room.id" class="room-card card-luxury">
-            <div class="room-img-wrapper img-zoom-container">
-              <img :src="room.image" :alt="tField(room, 'title')" loading="lazy" />
-              <div class="room-capacity-badge">
-                <Users :size="14" />
-                <span>{{ tField(room, 'capacity') }}</span>
-              </div>
-            </div>
-            <div class="room-card-body">
-              <h3 class="room-name">{{ tField(room, 'title') }}</h3>
-              <p class="room-sub">{{ tField(room, 'subtitle') }}</p>
-              <p class="room-desc-short">{{ tField(room, 'desc') }}</p>
-              <div class="room-card-footer">
-                <span class="room-size">{{ room.size }}</span>
-                <RouterLink to="/rooms" class="room-link">
-                  <span>{{ t('action.details') }}</span>
-                  <ArrowRight :size="15" />
-                </RouterLink>
-              </div>
-            </div>
-          </div>
-        </div>
+        <!-- 直式卡片輪播：滑鼠移到上方暫停、點擊彈窗詳細介紹 -->
+        <RoomCarousel :rooms="roomsData" />
 
         <div class="section-more-btn">
           <RouterLink to="/rooms" class="btn btn-outline">
@@ -463,94 +443,6 @@ const { isEn, t, tField } = useI18n()
 }
 
 // Rooms Preview Section
-.rooms-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 2rem;
-
-  @media (min-width: $bp-sm) {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-.room-card {
-  display: flex;
-  flex-direction: column;
-
-  .room-img-wrapper {
-    position: relative;
-    height: 260px;
-
-    .room-capacity-badge {
-      position: absolute;
-      top: 1rem;
-      right: 1rem;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      background: rgba(18, 20, 21, 0.75);
-      color: #FFFFFF;
-      padding: 0.25rem 0.65rem;
-      border-radius: 2px;
-      font-size: 0.75rem;
-      backdrop-filter: blur(6px);
-    }
-  }
-
-  .room-card-body {
-    padding: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-
-    .room-name {
-      font-size: 1.35rem;
-      margin-bottom: 0.35rem;
-    }
-
-    .room-sub {
-      font-size: 0.85rem;
-      color: var(--gold-primary);
-      margin-bottom: 0.85rem;
-    }
-
-    .room-desc-short {
-      font-size: 0.9rem;
-      color: var(--text-sub);
-      line-height: 1.7;
-      margin-bottom: 1.25rem;
-      flex: 1;
-    }
-
-    .room-card-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-top: 1px solid var(--border-color);
-      padding-top: 1rem;
-
-      .room-size {
-        font-size: 0.85rem;
-        color: var(--text-muted);
-      }
-
-      .room-link {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.3rem;
-        font-size: 0.9rem;
-        font-weight: 500;
-        color: var(--gold-primary);
-
-        &:hover {
-          color: var(--gold-dark);
-          transform: translateX(3px);
-        }
-      }
-    }
-  }
-}
-
 .section-more-btn {
   text-align: center;
   margin-top: 3.5rem;
