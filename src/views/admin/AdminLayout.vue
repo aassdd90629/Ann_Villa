@@ -5,6 +5,7 @@ import { useAdminAuth } from '../../composables/useAdminAuth'
 import { useTheme } from '../../composables/useTheme'
 import { 
   Calendar, 
+  CalendarX,
   FileText, 
   RefreshCw, 
   LogOut, 
@@ -21,6 +22,7 @@ const { theme, toggleTheme } = useTheme()
 
 const navItems = [
   { path: '/admin/calendar', name: '房態日曆與鎖房', icon: Calendar },
+  { path: '/admin/close-calendar', name: '自主關閉月曆', icon: CalendarX },
   { path: '/admin/bookings', name: '直訂單與定金核銷', icon: FileText },
   { path: '/admin/sync', name: 'Airbnb 同步歷史', icon: RefreshCw }
 ]

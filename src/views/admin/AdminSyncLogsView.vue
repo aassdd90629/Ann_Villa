@@ -63,13 +63,15 @@ const handleTriggerSync = async () => {
     <div class="view-header">
       <div>
         <h1 class="view-title">Airbnb 檔期排程同步日誌</h1>
-        <p class="view-desc">追蹤山語 Villa 官方網站與 Airbnb 外部行事曆之自動與手動同步記錄</p>
+        <p class="view-desc">追蹤山語 Villa 官方網站與 Airbnb 外部行事曆之自動與手動同步記錄（目前匯入已暫停）</p>
       </div>
 
-      <button class="btn-action-gold" :disabled="isSyncing" @click="handleTriggerSync">
-        <RefreshCw :size="15" :class="{ 'spin-anim': isSyncing }" />
-        <span>{{ isSyncing ? '正在同步中...' : '手動觸發即時同步' }}</span>
-      </button>
+      <!-- Airbnb 同步按鈕依需求暫時隱藏 -->
+      <span class="badge-paused">匯入同步功能暫停中</span>
+    </div>
+
+    <div class="alert-paused">
+      <span>⚠️ 系統提醒：目前已暫停 Airbnb 外部匯入月曆，避免覆蓋本地房態。若需調整檔期，請前往【自主關閉月曆】頁面設定。</span>
     </div>
 
     <div v-if="message" class="alert-success">
@@ -181,6 +183,28 @@ const handleTriggerSync = async () => {
     &:hover:not(:disabled) { background: #dfbc46; }
     &:disabled { opacity: 0.6; cursor: not-allowed; }
   }
+}
+
+.badge-paused {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.4rem 0.8rem;
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  color: #f59e0b;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.alert-paused {
+  padding: 0.75rem 1rem;
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  color: #f59e0b;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  line-height: 1.5;
 }
 
 .alert-success {

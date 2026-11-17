@@ -22,8 +22,9 @@ export async function onRequestGet(context) {
       }, { status: 500 });
     }
 
-    // 自動同步檢測：確保訪客總是看到最新的 Airbnb 房態
-    const hasValidUrl = env.AIRBNB_ICAL_URL && !env.AIRBNB_ICAL_URL.includes('xxxx.ics');
+    // 自動同步檢測：目前先將 Airbnb 匯入月曆暫停 (改為後台管家自主關閉月曆管理)
+    const ENABLE_AIRBNB_SYNC = false;
+    const hasValidUrl = ENABLE_AIRBNB_SYNC && env.AIRBNB_ICAL_URL && !env.AIRBNB_ICAL_URL.includes('xxxx.ics');
     if (hasValidUrl) {
       try {
         const countRow = await env.DB.prepare(`

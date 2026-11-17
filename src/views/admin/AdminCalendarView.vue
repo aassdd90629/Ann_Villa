@@ -110,11 +110,13 @@ const getSummaryText = (range) => {
     <div class="view-header">
       <div>
         <h1 class="view-title">房態檔期與即時鎖房</h1>
-        <p class="view-desc">檢視當前已佔用之檔期，支援管家手動保留與即時同步 Airbnb</p>
+        <p class="view-desc">檢視當前已佔用之檔期，支援管家手動保留與月曆關閉管理</p>
       </div>
 
       <div class="header-actions">
+        <!-- Airbnb 同步按鈕依需求暫時隱藏 -->
         <button 
+          v-if="false"
           class="btn-action-outline" 
           :disabled="isSyncing" 
           @click="handleTriggerSync"
@@ -122,6 +124,11 @@ const getSummaryText = (range) => {
           <RefreshCw :size="15" :class="{ 'spin-anim': isSyncing }" />
           <span>{{ isSyncing ? '正在拉取 Airbnb...' : '立即同步 Airbnb 檔期' }}</span>
         </button>
+
+        <router-link to="/admin/close-calendar" class="btn-action-outline">
+          <Calendar :size="15" />
+          <span>自主關閉月曆管理</span>
+        </router-link>
 
         <button class="btn-action-gold" @click="isLockModalOpen = true">
           <Plus :size="16" />

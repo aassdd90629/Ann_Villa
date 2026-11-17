@@ -3,7 +3,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useI18n } from '../../composables/useI18n'
 import { useBookingPricing } from '../../composables/useBookingPricing'
 import { getBookedRanges } from '../../services/availabilityService'
-import { RefreshCw, Info } from 'lucide-vue-next'
+import { Info } from 'lucide-vue-next'
 import BookingSummarySidebar from './BookingSummarySidebar.vue'
 import DirectBookingModal from './DirectBookingModal.vue'
 import CalendarMonthView from './CalendarMonthView.vue'
@@ -224,23 +224,14 @@ const isInRange = (dateStr) => {
 
 <template>
   <div class="availability-calendar-card">
-    <!-- 頂部檔期說明列與即時同步按鈕 -->
+    <!-- 頂部檔期說明列 (Airbnb 匯入與即時同步按鈕依需求暫時隱藏) -->
     <div class="sync-banner">
       <div class="sync-status">
         <span class="demo-badge-tag">⚠️ 展示預覽環境</span>
         <Info :size="15" class="info-icon" />
-        <span class="sync-text">{{ isEn ? t('calendar.syncNotice') : '房態由 Cloudflare D1 邊緣資料庫與 Airbnb 即時同步反灰' }}</span>
+        <span class="sync-text">{{ isEn ? t('calendar.syncNotice') : '房態由 Cloudflare D1 邊緣資料庫即時同步反灰' }}</span>
       </div>
-      <button 
-        type="button"
-        class="btn-refresh-sync" 
-        :class="{ 'is-spinning': isSyncing }" 
-        @click="refreshAvailability" 
-        :title="isEn ? 'Refresh Live Availability' : '重新整理即時房態'"
-      >
-        <RefreshCw :size="14" />
-        <span>{{ isSyncing ? (isEn ? 'Updating...' : '更新中...') : (isEn ? 'Live Sync' : '即時同步') }}</span>
-      </button>
+      <!-- 暫停 Airbnb 匯入，即時同步按鈕先隱藏 -->
     </div>
 
     <div class="calendar-layout-grid">

@@ -76,6 +76,12 @@ const routes = [
         meta: { title: '房態日曆與即時鎖房 ｜ 山語 Villa 後台', requiresAuth: true }
       },
       {
+        path: 'close-calendar',
+        name: 'admin-close-calendar',
+        component: () => import('../views/admin/AdminCloseCalendarView.vue'),
+        meta: { title: '自主關閉月曆 ｜ 山語 Villa 後台', requiresAuth: true }
+      },
+      {
         path: 'bookings',
         name: 'admin-bookings',
         component: () => import('../views/admin/AdminBookingsView.vue'),
