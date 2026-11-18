@@ -88,16 +88,20 @@ const routes = [
         meta: { title: '直訂單管理與定金核銷 ｜ 山語 Villa 後台', requiresAuth: true }
       },
       {
-        path: 'sync',
-        name: 'admin-sync',
-        component: () => import('../views/admin/AdminSyncLogsView.vue'),
-        meta: { title: 'Airbnb 同步歷史 ｜ 山語 Villa 後台', requiresAuth: true }
-      },
-      {
         path: 'pricing',
         name: 'admin-pricing',
         component: () => import('../views/admin/AdminPricingView.vue'),
         meta: { title: '房價政策與連假管理 ｜ 山語 Villa 後台', requiresAuth: true }
+      },
+      {
+        path: 'logs',
+        name: 'admin-logs',
+        component: () => import('../views/admin/AdminLogsView.vue'),
+        meta: { title: '系統稽核與 LOG 紀錄 ｜ 山語 Villa 後台', requiresAuth: true }
+      },
+      {
+        path: 'sync',
+        redirect: '/admin/logs?tab=sync'
       }
     ]
   },

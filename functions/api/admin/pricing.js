@@ -242,6 +242,19 @@ export async function onRequestPut(context) {
       }
     }
 
+    // 3. 寫入審計操作日誌 (Audit Log)
+    try {
+      await env.DB.prepare(`
+        INSERT INTO admin_audit_logs (category, action, target_id, summary, details_json, operator)
+        VALUES ('pricing', 'UPDATE_PRICING', 'pricing_settings', ?, ?, 'admin')
+      `).bind(
+        `更新全區包棟房價政策：平日（${pricing?.weekdayTier1 || 20000}/${pricing?.weekdayTier2 || 25000}/${pricing?.weekdayTier3 || 30000}）、一般假日（${pricing?.weekend || 35000}），連假檔期（共 ${holidays?.length || 0} 組）`,
+        JSON.stringify({ pricing, holidayCount: holidays?.length || 0 })
+      ).run();
+    } catch (logErr) {
+      console.warn('寫入 pricing audit log 警告:', logErr.message);
+    }
+
     return Response.json({
       success: true,
       message: '全站定價政策與國定連續假期設定已成功儲存！'

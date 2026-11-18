@@ -121,4 +121,16 @@ export async function saveAdminPricing(payload) {
   return handleResponse(res)
 }
 
+/**
+ * 查詢後台全方位稽核與操作日誌 (含類別篩選與分頁)
+ * @param {Object} params - { category, page, limit }
+ */
+export async function getAdminAuditLogs(params = {}) {
+  const query = new URLSearchParams(params).toString()
+  const url = `/api/admin/logs${query ? `?${query}` : ''}`
+  const res = await fetch(url, { headers: getAuthHeaders() })
+  return handleResponse(res)
+}
+
+
 

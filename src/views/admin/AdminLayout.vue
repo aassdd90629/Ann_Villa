@@ -13,7 +13,8 @@ import {
   ShieldCheck,
   Sun,
   Moon,
-  DollarSign
+  DollarSign,
+  ScrollText
 } from 'lucide-vue-next'
 
 const router = useRouter()
@@ -26,7 +27,7 @@ const navItems = [
   { path: '/admin/close-calendar', name: '自主關閉月曆', icon: CalendarX },
   { path: '/admin/bookings', name: '直訂單與定金核銷', icon: FileText },
   { path: '/admin/pricing', name: '房價政策與連假', icon: DollarSign },
-  { path: '/admin/sync', name: 'Airbnb 同步歷史', icon: RefreshCw }
+  { path: '/admin/logs', name: 'LOG 紀錄', icon: ScrollText }
 ]
 
 const currentPath = computed(() => route.path)
