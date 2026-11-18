@@ -119,24 +119,24 @@ const activeTabInfo = computed(() => {
 .logs-nav-tabs {
   display: flex;
   align-items: center;
-  gap: 0.65rem;
+  gap: 0.75rem;
   overflow-x: auto;
-  padding: 0.65rem;
+  padding: 0.65rem 0.85rem;
   margin-bottom: 1.25rem;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-color);
+  background: var(--admin-bg-card, #FFFFFF);
+  border: 1px solid var(--admin-border, rgba(197, 168, 128, 0.35));
   border-radius: 12px;
-  box-shadow: var(--shadow-sm, 0 2px 6px rgba(0, 0, 0, 0.03));
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
 
   .tab-btn {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.7rem 1.25rem;
+    padding: 0.75rem 1.35rem;
     border-radius: 8px;
-    border: 1px solid var(--border-color);
-    background: var(--bg-primary);
-    color: var(--text-primary);
+    border: 1px solid rgba(197, 168, 128, 0.45);
+    background: var(--admin-btn-secondary-bg, #EAE6DC);
+    color: var(--admin-text-main, #1A1E1F);
     font-size: 0.88rem;
     font-weight: 600;
     cursor: pointer;
@@ -144,26 +144,26 @@ const activeTabInfo = computed(() => {
     transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
 
     .tab-icon {
-      color: var(--gold-primary);
+      color: var(--gold-dark, #8C6D3F);
       transition: color 0.2s ease;
     }
 
     &:hover {
-      background: rgba(200, 169, 110, 0.12);
-      border-color: rgba(200, 169, 110, 0.4);
-      color: var(--gold-primary);
+      background: rgba(197, 168, 128, 0.35);
+      border-color: var(--gold-primary, #C5A880);
+      color: #000000;
 
       .tab-icon {
-        color: var(--gold-primary);
+        color: #000000;
       }
     }
 
     &.active {
-      background: var(--gold-primary);
+      background: var(--gold-primary, #C5A880) !important;
       color: #121614 !important;
-      border-color: var(--gold-primary);
-      box-shadow: 0 4px 12px rgba(200, 169, 110, 0.28);
-      font-weight: 700;
+      border: 1px solid #B08D5B !important;
+      box-shadow: 0 4px 14px rgba(176, 141, 91, 0.45);
+      font-weight: 800;
 
       .tab-icon {
         color: #121614 !important;
@@ -176,11 +176,12 @@ const activeTabInfo = computed(() => {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  padding: 0.75rem 1.25rem;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-color);
-  border-left: 4px solid var(--gold-primary);
+  padding: 0.85rem 1.25rem;
+  background: var(--admin-bg-card, #FFFFFF);
+  border: 1px solid var(--admin-border, rgba(197, 168, 128, 0.35));
+  border-left: 5px solid var(--gold-primary, #C5A880);
   border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
   font-size: 0.88rem;
   margin-bottom: 1.5rem;
 

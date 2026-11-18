@@ -8,6 +8,7 @@
   // 淺色模式 (晨曦雲霧 - Light Mode)
   --bg-primary: #{$color-bg-light};
   --bg-card: #{$color-card-light};
+  --bg-surface: #FFFFFF;
   --bg-card-glass: rgba(255, 255, 255, 0.82);
   --bg-nav: rgba(248, 246, 240, 0.88);
   --text-primary: #{$color-text-light-primary};
@@ -49,6 +50,7 @@
   // 深色模式 (靜謐夜景 - Dark Mode)
   --bg-primary: #{$color-bg-dark};
   --bg-card: #{$color-card-dark};
+  --bg-surface: #1A1E1F;
   --bg-card-glass: rgba(26, 30, 31, 0.85);
   --bg-nav: rgba(18, 20, 21, 0.88);
   --text-primary: #{$color-text-dark-primary};
