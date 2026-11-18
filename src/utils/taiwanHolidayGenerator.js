@@ -214,12 +214,12 @@ export function generateVillaHolidays(year = 2027) {
 }
 
 /**
- * 取得支援一鍵匯入的年份選項
+ * 取得支援一鍵匯入的年份選項 (時間順序排列)
  */
 export function getSupportedHolidayYears() {
   return [
-    { year: 2027, label: '2027 年度 (最新建議)' },
-    { year: 2026, label: '2026 年度 (過渡/回推)' },
-    { year: 2028, label: '2028 年度 (遠期規劃)' }
+    { year: 2026, label: '2026 年度' },
+    { year: 2027, label: '2027 年度 (目前年度)' },
+    { year: 2028, label: '2028 年度' }
   ]
 }

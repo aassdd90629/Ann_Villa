@@ -62,18 +62,18 @@ const handleTriggerImport = () => {
           </select>
           <button 
             type="button" 
-            class="btn btn-gold btn-sm btn-gov-import" 
+            class="btn btn-gold btn-gov-import" 
             :disabled="isImporting"
             @click="handleTriggerImport"
             title="一鍵抓取官方公告連假，自動往前扣 1 天計算起算日與早餐設定"
           >
-            <DownloadCloud :size="15" />
+            <DownloadCloud :size="16" />
             <span>{{ isImporting ? '匯入中...' : '一鍵匯入政府連假' }}</span>
           </button>
         </div>
 
-        <button type="button" class="btn btn-outline btn-sm btn-add" @click="emit('add-holiday')">
-          <Plus :size="14" />
+        <button type="button" class="btn btn-outline btn-add" @click="emit('add-holiday')">
+          <Plus :size="16" />
           <span>手動新增假期</span>
         </button>
       </div>
@@ -196,24 +196,26 @@ const handleTriggerImport = () => {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    gap: 0.75rem;
+    gap: 0.85rem;
 
     .gov-import-box {
       display: flex;
       align-items: center;
-      gap: 0.4rem;
+      gap: 0.5rem;
       background: var(--bg-primary);
-      padding: 0.25rem 0.4rem;
-      border-radius: 6px;
+      padding: 0.3rem 0.4rem 0.3rem 0.85rem;
+      border-radius: 8px;
       border: 1px solid var(--border-color);
+      min-height: 42px;
+      box-sizing: border-box;
 
       .year-select {
         border: none;
         background: transparent;
-        font-size: 0.82rem;
+        font-size: 0.9rem;
         font-weight: 600;
         color: var(--text-primary);
-        padding: 0.2rem 0.4rem;
+        padding: 0.35rem 0.5rem;
         cursor: pointer;
 
         &:focus { outline: none; }
@@ -223,23 +225,26 @@ const handleTriggerImport = () => {
       .btn-gov-import {
         display: inline-flex;
         align-items: center;
-        gap: 0.35rem;
-        padding: 0.35rem 0.75rem;
-        font-size: 0.82rem;
+        gap: 0.45rem;
+        padding: 0.55rem 1.15rem;
+        font-size: 0.88rem;
         font-weight: 600;
-        border-radius: 4px;
+        border-radius: 6px;
         white-space: nowrap;
+        min-height: 36px;
       }
     }
 
     .btn-add {
       display: inline-flex;
       align-items: center;
-      gap: 0.35rem;
-      padding: 0.45rem 0.85rem;
-      font-size: 0.82rem;
-      border-radius: 4px;
+      gap: 0.45rem;
+      padding: 0.55rem 1.25rem;
+      font-size: 0.88rem;
+      font-weight: 600;
+      border-radius: 8px;
       white-space: nowrap;
+      min-height: 42px;
     }
   }
 
