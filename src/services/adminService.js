@@ -99,3 +99,26 @@ export async function triggerAdminSync() {
   return handleResponse(res)
 }
 
+/**
+ * 取得後台全站定價與國定連假設定
+ */
+export async function getAdminPricing() {
+  const res = await fetch('/api/admin/pricing', {
+    headers: getAuthHeaders()
+  })
+  return handleResponse(res)
+}
+
+/**
+ * 儲存後台定價政策與連假更新
+ */
+export async function saveAdminPricing(payload) {
+  const res = await fetch('/api/admin/pricing', {
+    method: 'PUT',
+    headers: getAuthHeaders(),
+    body: JSON.stringify(payload)
+  })
+  return handleResponse(res)
+}
+
+

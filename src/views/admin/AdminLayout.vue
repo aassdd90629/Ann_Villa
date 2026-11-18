@@ -12,7 +12,8 @@ import {
   ExternalLink, 
   ShieldCheck,
   Sun,
-  Moon
+  Moon,
+  DollarSign
 } from 'lucide-vue-next'
 
 const router = useRouter()
@@ -24,6 +25,7 @@ const navItems = [
   { path: '/admin/calendar', name: '房態日曆與鎖房', icon: Calendar },
   { path: '/admin/close-calendar', name: '自主關閉月曆', icon: CalendarX },
   { path: '/admin/bookings', name: '直訂單與定金核銷', icon: FileText },
+  { path: '/admin/pricing', name: '房價政策與連假', icon: DollarSign },
   { path: '/admin/sync', name: 'Airbnb 同步歷史', icon: RefreshCw }
 ]
 

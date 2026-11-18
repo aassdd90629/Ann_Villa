@@ -57,10 +57,11 @@ export async function onRequestPost(context) {
       return Response.json({ success: false, message: '所選房型不存在。' }, { status: 404 });
     }
 
-    if (guestCount > room.capacity_max) {
+    const maxGuests = Math.max(room.capacity_max || 14, 18);
+    if (guestCount > maxGuests) {
       return Response.json({
         success: false,
-        message: `所選房型最多僅容納 ${room.capacity_max} 人，請重新調整人數。`
+        message: `所選房型最多僅容納 ${maxGuests} 人，請重新調整人數。`
       }, { status: 400 });
     }
 
@@ -90,9 +91,86 @@ export async function onRequestPost(context) {
       }, { status: 409 });
     }
 
-    // 5. 計算總金額與定金 (平日/假日基本定價試算)
-    const basePrice = room.base_price;
-    const totalAmount = basePrice * nights;
+    // 5. 計算總金額與定金 (金流防竄改：優先讀取 D1 動態定價與連假設定，自動備援預設常數)
+    const DEFAULT_HOLIDAYS = [
+      { start: '2026-12-24', end: '2026-12-27', price: 47000 },
+      { start: '2026-12-31', end: '2027-01-01', price: 47000 },
+      { start: '2027-01-01', end: '2027-01-03', price: 47000 },
+      { start: '2027-02-04', end: '2027-02-10', price: 50000 },
+      { start: '2027-02-26', end: '2027-03-01', price: 38000 },
+      { start: '2027-04-02', end: '2027-04-06', price: 38000 },
+      { start: '2027-04-29', end: '2027-05-02', price: 38000 },
+      { start: '2027-06-08', end: '2027-06-09', price: 35000 },
+      { start: '2027-09-14', end: '2027-09-15', price: 35000 },
+      { start: '2027-09-27', end: '2027-09-28', price: 35000 },
+      { start: '2027-10-08', end: '2027-10-11', price: 38000 },
+      { start: '2027-10-22', end: '2027-10-25', price: 38000 },
+      { start: '2027-12-23', end: '2027-12-26', price: 47000 },
+      { start: '2027-12-30', end: '2028-01-02', price: 47000 }
+    ];
+
+    let dynamicHolidays = DEFAULT_HOLIDAYS;
+    let t1Price = 20000;
+    let t2Price = 25000;
+    let t3Price = 30000;
+    let weekendPrice = 35000;
+
+    try {
+      // 嘗試自 pricing_settings 讀取最新價格
+      const pRows = await env.DB.prepare('SELECT setting_key, setting_value FROM pricing_settings').all();
+      if (pRows && pRows.results) {
+        for (const row of pRows.results) {
+          if (row.setting_key === 'weekday_tier1_price') t1Price = Number(row.setting_value) || t1Price;
+          if (row.setting_key === 'weekday_tier2_price') t2Price = Number(row.setting_value) || t2Price;
+          if (row.setting_key === 'weekday_tier3_price') t3Price = Number(row.setting_value) || t3Price;
+          if (row.setting_key === 'weekend_price') weekendPrice = Number(row.setting_value) || weekendPrice;
+        }
+      }
+
+      // 嘗試自 holiday_rates 讀取連假
+      const hRows = await env.DB.prepare('SELECT start_date, end_date, price FROM holiday_rates WHERE is_active = 1').all();
+      if (hRows && hRows.results && hRows.results.length > 0) {
+        dynamicHolidays = hRows.results.map(r => ({
+          start: r.start_date,
+          end: r.end_date,
+          price: Number(r.price)
+        }));
+      }
+    } catch {
+      // 若尚未套用 migration 則自動採用備援預設值
+    }
+
+    const getWeekdayTierPrice = (count) => {
+      const g = Number(count) || 18;
+      if (g <= 10) return t1Price;
+      if (g <= 14) return t2Price;
+      return t3Price;
+    };
+
+    let totalAmount = 0;
+    let curr = new Date(checkIn);
+    const end = new Date(checkOut);
+
+    while (curr < end) {
+      const y = curr.getFullYear();
+      const m = String(curr.getMonth() + 1).padStart(2, '0');
+      const d = String(curr.getDate()).padStart(2, '0');
+      const dateStr = `${y}-${m}-${d}`;
+
+      const holiday = dynamicHolidays.find(h => dateStr >= h.start && dateStr <= h.end);
+      if (holiday) {
+        totalAmount += holiday.price;
+      } else {
+        const dayOfWeek = curr.getDay(); // 0 = Sun, 5 = Fri, 6 = Sat
+        if (dayOfWeek === 5 || dayOfWeek === 6 || dayOfWeek === 0) {
+          totalAmount += (room.holiday_price || weekendPrice);
+        } else {
+          totalAmount += getWeekdayTierPrice(guestCount);
+        }
+      }
+      curr.setDate(curr.getDate() + 1);
+    }
+
     const depositAmount = Math.round(totalAmount * 0.5);
 
     // 6. 產生唯一訂單編號

@@ -117,7 +117,7 @@ const isInRange = (dateStr) => {
           }"
           :disabled="day.isPast || (day.isBooked && !isCheckOutSelectable(day.dateStr))"
           @click="emit('select-date', day)"
-          :title="day.isBooked ? `${day.dateStr} 【${isEn ? 'Reserved' : '已有旅客預訂'}】` : (day.holiday ? `${day.dateStr} 【${isEn ? day.holiday.nameEn : day.holiday.nameZh} NT$ ${day.holiday.price.toLocaleString()}` + (day.holiday.breakfast ? ' 含早餐' : ' 不含早餐') + '】' : day.dateStr)"
+          :title="day.isBooked ? `${day.dateStr} 【${isEn ? 'Reserved' : '已有旅客預訂'}】` : (day.holiday ? `${day.dateStr} 【${isEn ? day.holiday.nameEn : day.holiday.nameZh} NT$ ${day.holiday.price.toLocaleString()}${day.holiday.breakfast ? ' (含早餐)' : ' (過年不提供早餐)'}】` : (day.isWeekday ? `${day.dateStr} 【平日(含早餐)：10人以下2萬 / 11-14人2.5萬 / 15-18人3萬】` : `${day.dateStr} 【一般假日(週五~日)：NT$ 35,000 含早餐】`))"
         >
           <span class="day-number">{{ day.dayNum }}</span>
           <span v-if="day.isBooked" class="cell-tag booked-tag">
@@ -131,6 +131,9 @@ const isInRange = (dateStr) => {
           </span>
           <span v-else-if="day.holiday && !day.isPast" class="cell-tag holiday-tag">
             {{ isEn ? 'Holiday' : '連假' }}
+          </span>
+          <span v-else-if="day.isWeekday && !day.isPast" class="cell-tag weekday-tag">
+            {{ isEn ? '20k+' : '平日特惠' }}
           </span>
         </button>
       </template>
@@ -272,6 +275,13 @@ const isInRange = (dateStr) => {
       background: var(--badge-bg);
       color: var(--gold-primary);
       font-weight: 500;
+    }
+
+    &.weekday-tag {
+      background: rgba(200, 169, 110, 0.12);
+      color: var(--gold-primary);
+      font-weight: 600;
+      border: 1px solid rgba(200, 169, 110, 0.28);
     }
   }
 

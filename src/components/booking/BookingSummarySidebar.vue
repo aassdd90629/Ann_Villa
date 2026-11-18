@@ -1,5 +1,6 @@
 <script setup>
 import { useI18n } from '../../composables/useI18n'
+import { WEEKDAY_TIERS } from '../../composables/useBookingPricing'
 import pricingData from '../../data/pricing.json'
 import { 
   Sparkles, 
@@ -103,22 +104,41 @@ const handleIncrement = () => {
         </div>
       </div>
 
+      <!-- 平日彈性分級優惠快捷鈕 -->
+      <div class="weekday-quick-tiers">
+        <span class="quick-title">{{ isEn ? 'Weekday tiers (Mon-Thu):' : '平日分級特惠 (週一~週四)：' }}</span>
+        <div class="pills-grid">
+          <button
+            v-for="tier in WEEKDAY_TIERS"
+            :key="tier.price"
+            type="button"
+            class="pill-btn"
+            :class="{ active: guestCount <= tier.max && (tier.min === 1 || guestCount >= tier.min) }"
+            @click="emit('update:guestCount', tier.count)"
+            :title="isEn ? `Set to ${tier.labelEn}` : `點擊切換為 ${tier.labelZh}`"
+          >
+            <span class="p-text">{{ tier.labelZh }}</span>
+            <span class="p-price">NT$ {{ (tier.price / 1000) }}k</span>
+          </button>
+        </div>
+      </div>
+
       <!-- 價格計算明細 -->
       <div v-if="calculation.nights > 0" class="calc-breakdown">
         <div class="calc-row">
           <span>{{ isEn ? 'Stay Duration' : '入住晚數' }}</span>
           <span class="calc-val">{{ calculation.nights }} {{ t('calendar.nights') }}</span>
         </div>
-        <div v-if="calculation.weekdayNights > 0" class="calc-row sub">
-          <span>{{ isEn ? 'Weekday' : '平日' }} ({{ calculation.weekdayNights }} {{ t('calendar.nights') }} × NT$ {{ pricingData.exclusivePackage.weekday.toLocaleString() }})</span>
-          <span>NT$ {{ (calculation.weekdayNights * pricingData.exclusivePackage.weekday).toLocaleString() }}</span>
+        <div v-if="calculation.weekdayNights > 0" class="calc-row sub highlight-weekday">
+          <span>{{ isEn ? 'Weekday (Mon-Thu)' : '平日 (週一~週四)' }} ({{ calculation.weekdayTier?.labelZh ? calculation.weekdayTier.labelZh + '・' : '' }}{{ calculation.weekdayNights }} {{ t('calendar.nights') }} × NT$ {{ (calculation.weekdayUnitPrice || 20000).toLocaleString() }}・含早餐)</span>
+          <span>NT$ {{ (calculation.weekdayNights * (calculation.weekdayUnitPrice || 20000)).toLocaleString() }}</span>
         </div>
         <div v-if="calculation.weekendNights > 0" class="calc-row sub">
-          <span>{{ isEn ? 'Weekend' : '假日' }} ({{ calculation.weekendNights }} {{ t('calendar.nights') }} × NT$ {{ pricingData.exclusivePackage.weekend.toLocaleString() }})</span>
+          <span>{{ isEn ? 'Regular Weekend (Fri-Sun)' : '一般假日 (週五~週日)' }} ({{ calculation.weekendNights }} {{ t('calendar.nights') }} × NT$ {{ pricingData.exclusivePackage.weekend.toLocaleString() }}・含早餐)</span>
           <span>NT$ {{ (calculation.weekendNights * pricingData.exclusivePackage.weekend).toLocaleString() }}</span>
         </div>
         <div v-if="calculation.holidayNights > 0" class="calc-row sub highlight-holiday">
-          <span>{{ isEn ? 'Consecutive Holidays' : '國定連續假期' }} ({{ calculation.holidayNights }} {{ t('calendar.nights') }})</span>
+          <span>{{ isEn ? 'Consecutive Holidays' : '國定連續假期' }} ({{ calculation.holidayNights }} {{ t('calendar.nights') }}・含早餐除過年外)</span>
           <span>NT$ {{ calculation.holidayTotal.toLocaleString() }}</span>
         </div>
         <div v-if="calculation.extraPersonFee > 0" class="calc-row sub">
@@ -287,6 +307,64 @@ const handleIncrement = () => {
   }
 }
 
+.weekday-quick-tiers {
+  background: var(--bg-card);
+  border: 1px dashed var(--border-gold-subtle, rgba(200, 169, 110, 0.3));
+  border-radius: 6px;
+  padding: 0.65rem 0.75rem;
+  margin-bottom: 1.25rem;
+
+  .quick-title {
+    display: block;
+    font-size: 0.76rem;
+    font-weight: 600;
+    color: var(--gold-primary);
+    margin-bottom: 0.45rem;
+  }
+
+  .pills-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.4rem;
+
+    .pill-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 0.35rem 0.2rem;
+      border-radius: 4px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-primary);
+      color: var(--text-sub);
+      cursor: pointer;
+      transition: $transition-base;
+
+      .p-text {
+        font-size: 0.72rem;
+        font-weight: 500;
+      }
+
+      .p-price {
+        font-size: 0.74rem;
+        font-weight: 700;
+        color: var(--gold-primary);
+      }
+
+      &.active {
+        border-color: var(--gold-primary);
+        background: var(--badge-bg);
+        color: var(--gold-primary);
+        box-shadow: 0 0 6px rgba(200, 169, 110, 0.2);
+      }
+
+      &:hover:not(.active) {
+        border-color: var(--border-gold-subtle, rgba(200, 169, 110, 0.5));
+      }
+    }
+  }
+}
+
 .calc-breakdown {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
@@ -306,6 +384,11 @@ const handleIncrement = () => {
       color: var(--text-muted);
 
       &.highlight-holiday {
+        color: var(--gold-primary);
+        font-weight: 500;
+      }
+
+      &.highlight-weekday {
         color: var(--gold-primary);
         font-weight: 500;
       }

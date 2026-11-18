@@ -3,7 +3,6 @@ import { useI18n } from '../composables/useI18n'
 import PageHeader from '../components/common/PageHeader.vue'
 import BookingButton from '../components/common/BookingButton.vue'
 import pricingData from '../data/pricing.json'
-import siteData from '../data/site.json'
 import { 
   Sparkles, 
   Users, 
@@ -11,13 +10,11 @@ import {
   ShieldAlert, 
   Camera, 
   Utensils, 
-  Wine, 
-  Check, 
-  HelpCircle
+  Wine 
 } from 'lucide-vue-next'
 import AvailabilityCalendar from '../components/booking/AvailabilityCalendar.vue'
 
-const { isEn, tField } = useI18n()
+const { isEn } = useI18n()
 const pkg = pricingData.exclusivePackage
 </script>
 
@@ -44,21 +41,26 @@ const pkg = pricingData.exclusivePackage
           <div class="pricing-matrix">
             <div class="matrix-item">
               <span class="m-label">{{ isEn ? 'Weekday (Mon - Thu)' : '平日 (週一 ~ 週四)' }}</span>
-              <span class="m-price">NT$ {{ pkg.weekday.toLocaleString() }}</span>
+              <span class="m-price">NT$ {{ pkg.weekday.toLocaleString() }} <small class="m-from">{{ isEn ? 'up' : '起' }}</small></span>
               <span class="m-unit">{{ isEn ? '/ night (w/ Breakfast)' : '/ 晚 (含早餐)' }}</span>
+              <div class="m-subtiers">
+                <div class="tier-line"><span>{{ isEn ? '≤10 guests' : '10人以下' }}</span><strong>NT$ 20,000</strong></div>
+                <div class="tier-line"><span>{{ isEn ? '11-14 guests' : '11-14人' }}</span><strong>NT$ 25,000</strong></div>
+                <div class="tier-line"><span>{{ isEn ? '15-18 guests' : '15-18人' }}</span><strong>NT$ 30,000</strong></div>
+              </div>
             </div>
 
             <div class="matrix-item featured">
               <span class="m-tag">{{ isEn ? 'Popular' : '熱門首選' }}</span>
-              <span class="m-label">{{ isEn ? 'Weekend (Fri - Sun)' : '假日 (週五 ~ 週日)' }}</span>
+              <span class="m-label">{{ isEn ? 'Regular Weekend (Fri - Sun)' : '一般假日 (週五 ~ 週日)' }}</span>
               <span class="m-price">NT$ {{ pkg.weekend.toLocaleString() }}</span>
-              <span class="m-unit">{{ isEn ? '/ night (w/ Breakfast)' : '/ 晚 (含早餐)' }}</span>
+              <span class="m-unit">{{ isEn ? '/ night (w/ Breakfast)' : '/ 晚 (3.5萬含早餐)' }}</span>
             </div>
 
             <div class="matrix-item">
               <span class="m-label">{{ isEn ? 'Consecutive Holidays' : '國定連續假期' }}</span>
               <span class="m-price">NT$ {{ pkg.holidayMin ? pkg.holidayMin.toLocaleString() : '35,000' }} ~ {{ pkg.holidayMax ? pkg.holidayMax.toLocaleString() : '50,000' }}</span>
-              <span class="m-unit">{{ isEn ? '/ night (See table below)' : '/ 晚 (見下方明細)' }}</span>
+              <span class="m-unit">{{ isEn ? '/ night (Eve starts・w/ Breakfast except LNY)' : '/ 晚 (假日前一天起算・除過年外含早餐)' }}</span>
             </div>
           </div>
 
@@ -93,7 +95,7 @@ const pkg = pricingData.exclusivePackage
             <div class="holiday-header">
               <Sparkles :size="16" class="h-icon" />
               <h3 class="holiday-title">{{ isEn ? 'Official Consecutive Holidays Rate Schedule' : '國定假日與連續假期專案價目表' }}</h3>
-              <span class="holiday-subnote">{{ isEn ? '(Rates apply starting from holiday eve)' : '（一律國定假日前一天開始計算國定假日價）' }}</span>
+              <span class="holiday-subnote">{{ isEn ? '(Rates apply starting from holiday eve w/ breakfast, except LNY)' : '（一律國定假日前一天開始計算國定假日房價含早餐，但過年房價不提供早餐）' }}</span>
             </div>
 
             <div class="holiday-table-wrapper">
@@ -184,7 +186,6 @@ const pkg = pricingData.exclusivePackage
 <style lang="scss" scoped>
 @use '../assets/styles/variables' as *;
 
-
 .main-package-card {
   padding: 2.5rem 1.5rem;
   margin-bottom: 5rem;
@@ -236,12 +237,42 @@ const pkg = pricingData.exclusivePackage
       color: var(--text-sub);
       margin-bottom: 0.5rem;
     }
-
     .m-price {
       font-family: $font-display;
       font-size: 1.85rem;
       font-weight: 700;
       color: var(--text-primary);
+      .m-from {
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: var(--gold-primary);
+      }
+    }
+
+    .m-subtiers {
+      margin-top: 0.65rem;
+      padding-top: 0.5rem;
+      border-top: 1px dashed var(--border-gold-subtle, rgba(200, 169, 110, 0.3));
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      width: 100%;
+      max-width: 200px;
+      margin-left: auto;
+      margin-right: auto;
+
+      .tier-line {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.76rem;
+        color: var(--text-sub);
+
+        strong {
+          color: var(--gold-primary);
+          font-weight: 600;
+        }
+      }
     }
 
     .m-unit {
@@ -298,14 +329,12 @@ const pkg = pricingData.exclusivePackage
       flex-shrink: 0;
       margin-top: 3px;
     }
-
     .s-title {
       display: block;
       font-size: 0.85rem;
       color: var(--text-muted);
       margin-bottom: 2px;
     }
-
     p {
       font-size: 0.95rem;
       font-weight: 500;
@@ -334,13 +363,11 @@ const pkg = pricingData.exclusivePackage
     .h-icon {
       color: var(--gold-primary);
     }
-
     .holiday-title {
       font-size: 1.15rem;
       color: var(--gold-primary);
       margin: 0;
     }
-
     .holiday-subnote {
       font-size: 0.85rem;
       color: var(--text-muted);
@@ -356,17 +383,18 @@ const pkg = pricingData.exclusivePackage
       font-size: 0.92rem;
       text-align: left;
 
-      th {
-        padding: 0.75rem 1rem;
-        background: var(--badge-bg);
-        color: var(--gold-primary);
-        font-weight: 600;
+      th, td {
+        padding: 0.85rem 1rem;
         border-bottom: 1px solid var(--border-color);
       }
 
+      th {
+        background: var(--badge-bg);
+        color: var(--gold-primary);
+        font-weight: 600;
+      }
+
       td {
-        padding: 0.85rem 1rem;
-        border-bottom: 1px solid var(--border-color);
         color: var(--text-primary);
       }
 
@@ -380,24 +408,23 @@ const pkg = pricingData.exclusivePackage
         color: var(--gold-primary);
       }
 
-      .badge-included {
-        display: inline-block;
-        padding: 0.2rem 0.6rem;
-        border-radius: 4px;
-        font-size: 0.8rem;
-        background: rgba(34, 197, 94, 0.15);
-        color: #16a34a;
-        font-weight: 500;
-      }
-
+      .badge-included,
       .badge-excluded {
         display: inline-block;
         padding: 0.2rem 0.6rem;
         border-radius: 4px;
         font-size: 0.8rem;
+        font-weight: 500;
+      }
+
+      .badge-included {
+        background: rgba(34, 197, 94, 0.15);
+        color: #16a34a;
+      }
+
+      .badge-excluded {
         background: rgba(239, 68, 68, 0.15);
         color: #dc2626;
-        font-weight: 500;
       }
 
       .h-subnote-text {
@@ -415,7 +442,6 @@ const pkg = pricingData.exclusivePackage
 
 .pkg-cta-row {
   text-align: center;
-
   .btn-large {
     padding: 0.9rem 2.5rem;
     font-size: 1.05rem;

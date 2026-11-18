@@ -6,6 +6,7 @@ import { getBookedRanges } from '../../services/availabilityService'
 import { Info } from 'lucide-vue-next'
 import BookingSummarySidebar from './BookingSummarySidebar.vue'
 import DirectBookingModal from './DirectBookingModal.vue'
+import WeekdayPricingModal from './WeekdayPricingModal.vue'
 import CalendarMonthView from './CalendarMonthView.vue'
 import BookingPerksNotice from './BookingPerksNotice.vue'
 
@@ -29,10 +30,18 @@ const bookedRanges = ref([])
 const isSyncing = ref(false)
 
 // 價格與試算 Composable
-const { getHolidayForDate, bookingCalculation, lineBookingUrl } = useBookingPricing(checkInDate, checkOutDate, guestCount)
+const { getHolidayForDate, isWeekdayDate, bookingCalculation, lineBookingUrl } = useBookingPricing(checkInDate, checkOutDate, guestCount)
 
 // 線上預約填單 Modal 狀態
 const isModalOpen = ref(false)
+
+// 平日階梯價格 Modal 狀態
+const isWeekdayModalOpen = ref(false)
+const weekdayModalDate = ref('')
+
+const handleApplyWeekdayTier = (count) => {
+  guestCount.value = count
+}
 
 const refreshAvailability = async () => {
   isSyncing.value = true
@@ -130,6 +139,7 @@ function generateMonthDays(year, month) {
       isEmpty: false,
       isBooked: isDateBooked(dateStr),
       isPast: isDatePast(d),
+      isWeekday: isWeekdayDate(dateStr),
       holiday: getHolidayForDate(dateStr)
     })
   }
@@ -181,6 +191,12 @@ function isCheckOutSelectable(dateStr) {
 const selectDate = (day) => {
   if (day.isPast) return
   if (day.isBooked && !isCheckOutSelectable(day.dateStr)) return
+
+  // 若點選的日期為平日 (週一至週四)，自動彈出平日優惠價格與階梯選擇
+  if (day.isWeekday && !day.isPast) {
+    weekdayModalDate.value = day.dateStr
+    isWeekdayModalOpen.value = true
+  }
   
   if (!checkInDate.value || (checkInDate.value && checkOutDate.value)) {
     checkInDate.value = day.dateStr
@@ -298,6 +314,14 @@ const isInRange = (dateStr) => {
       :guest-count="guestCount"
       :calculation="bookingCalculation"
       @booking-success="handleBookingSuccess"
+    />
+
+    <!-- 平日價格彈窗 (獨立組件) -->
+    <WeekdayPricingModal
+      v-model="isWeekdayModalOpen"
+      :selected-date="weekdayModalDate"
+      :current-guests="guestCount"
+      @apply-tier="handleApplyWeekdayTier"
     />
   </div>
 </template>

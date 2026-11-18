@@ -350,6 +350,24 @@ img {
 }
 
 // ==========================================================================
+// 後台管理介面規範 (Admin Static Stability Rule)
+// 嚴格禁止後台管理介面中任何區塊、卡片、按鈕或表格行在 hover 時產生 translateY 上下位移
+// 保證後台視覺純靜態穩定，避免操作與點擊目標跳動
+// ==========================================================================
+.admin-app-layout {
+  .card-luxury:hover,
+  .pricing-card:hover,
+  .admin-card:hover,
+  .btn:hover,
+  button:hover,
+  tr:hover,
+  .card:hover,
+  .nav-link:hover {
+    transform: none !important;
+  }
+}
+
+// ==========================================================================
 // Subtle Animations & Transitions
 // ==========================================================================
 .fade-enter-active,

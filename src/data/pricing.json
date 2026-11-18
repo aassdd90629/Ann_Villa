@@ -5,7 +5,30 @@
     "titleEn": "Exclusive Entire Villa Estate Package (5 Rooms)",
     "descZh": "享有全棟 5 間獨立客房（1F 三間、2F 兩間）、客廳、KTV歡唱、電動麻將桌、智能廚房、戶外泡茶區與烤肉BBQ之全區獨立專屬使用權。",
     "descEn": "Exclusive private access to all 5 guest suites across two floors, living lounge, KTV, auto mahjong table, smart kitchen, outdoor tea patio, and BBQ pavilion.",
-    "weekday": 30000,
+    "weekday": 20000,
+    "weekdayTiers": [
+      {
+        "min": 1,
+        "max": 10,
+        "price": 20000,
+        "labelZh": "10人以下",
+        "labelEn": "10 guests or fewer"
+      },
+      {
+        "min": 11,
+        "max": 14,
+        "price": 25000,
+        "labelZh": "11-14人",
+        "labelEn": "11-14 guests"
+      },
+      {
+        "min": 15,
+        "max": 18,
+        "price": 30000,
+        "labelZh": "15-18人",
+        "labelEn": "15-18 guests"
+      }
+    ],
     "weekend": 35000,
     "holidayMin": 35000,
     "holidayMax": 50000,
@@ -16,8 +39,8 @@
     "extraPersonFee": 0,
     "checkInTime": "15:00",
     "checkOutTime": "11:00",
-    "pricingNotesZh": "平日週一至週四；假日以星期五晚上起算（含週五、六、日）；國定假日前一天起依國定假日價計費。除過年連假外皆含早餐。",
-    "pricingNotesEn": "Weekdays: Mon-Thu; Weekends: Fri-Sun; Consecutive holidays begin from the eve of the holiday. Breakfast included (except Lunar New Year)."
+    "pricingNotesZh": "【平日 (週一至週四)】10人以下 20,000$ (含早餐) / 11-14人以下 25,000$ (含早餐) / 15-18人以下 30,000$ (含早餐)；【一般假日 (週五、六、日)】35,000$ (含早餐)；【國定假日】一律自國定假日前一天起算國定假日房價 (含早餐)，唯農曆春節過年房價不提供早餐。",
+    "pricingNotesEn": "Weekdays (Mon-Thu): ≤10 guests NT$20,000 (w/ Breakfast) / 11-14 guests NT$25,000 (w/ Breakfast) / 15-18 guests NT$30,000 (w/ Breakfast); Regular Weekends (Fri-Sun): NT$35,000 (w/ Breakfast); Consecutive Holidays begin from the eve of the holiday (w/ Breakfast), except Lunar New Year (breakfast not provided)."
   },
   "holidays": [
     {

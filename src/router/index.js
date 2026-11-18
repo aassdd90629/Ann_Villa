@@ -92,6 +92,12 @@ const routes = [
         name: 'admin-sync',
         component: () => import('../views/admin/AdminSyncLogsView.vue'),
         meta: { title: 'Airbnb 同步歷史 ｜ 山語 Villa 後台', requiresAuth: true }
+      },
+      {
+        path: 'pricing',
+        name: 'admin-pricing',
+        component: () => import('../views/admin/AdminPricingView.vue'),
+        meta: { title: '房價政策與連假管理 ｜ 山語 Villa 後台', requiresAuth: true }
       }
     ]
   },

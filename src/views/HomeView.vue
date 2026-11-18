@@ -242,12 +242,12 @@ const { isEn, t, tField } = useI18n()
             <p class="pricing-desc">{{ isEn ? pricingData.exclusivePackage.descEn : pricingData.exclusivePackage.descZh }}</p>
             <div class="price-tags">
               <div class="price-chip">
-                <span class="label">{{ isEn ? 'Weekday' : '平日包棟' }}</span>
-                <span class="val">NT$ {{ pricingData.exclusivePackage.weekday.toLocaleString() }}</span>
+                <span class="label">{{ isEn ? 'Weekday (Mon - Thu)' : '平日 (週一~週四・含早餐)' }}</span>
+                <span class="val">NT$ {{ pricingData.exclusivePackage.weekday.toLocaleString() }} <small>{{ isEn ? 'up' : '起' }}</small></span>
               </div>
               <div class="price-chip highlight">
-                <span class="label">{{ isEn ? 'Weekend' : '假日包棟' }}</span>
-                <span class="val">NT$ {{ pricingData.exclusivePackage.weekend.toLocaleString() }}</span>
+                <span class="label">{{ isEn ? 'Weekend (Fri - Sun)' : '一般假日 (週五~週日)' }}</span>
+                <span class="val">NT$ {{ pricingData.exclusivePackage.weekend.toLocaleString() }} <small>{{ isEn ? '(w/ Breakfast)' : '(3.5萬含早餐)' }}</small></span>
               </div>
             </div>
           </div>

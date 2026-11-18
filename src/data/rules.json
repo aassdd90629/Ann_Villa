@@ -55,6 +55,12 @@
   },
   "faq": [
     {
+      "qZh": "平假日與國定連假的收費標準與早餐如何規定？",
+      "qEn": "What are the pricing rules for weekdays, weekends, consecutive holidays, and breakfast?",
+      "aZh": "【平日 (週一至週四)】：10人以下 20,000$ (含早餐)、11-14人以下 25,000$ (含早餐)、15-18人以下 30,000$ (含早餐)。【一般假日 (週五、六、日)】：35,000$ (含早餐)。【國定假日】：一律自國定假日前一天起算國定假日房價 (含早餐)，唯農曆春節過年房價不提供早餐。",
+      "aEn": "Weekdays (Mon-Thu): ≤10 guests NT$20,000 / 11-14 guests NT$25,000 / 15-18 guests NT$30,000 (all include breakfast). Regular Weekends (Fri-Sun): NT$35,000 (includes breakfast). Consecutive Holidays: calculated from the eve of the holiday (includes breakfast), except Lunar New Year (breakfast not provided)."
+    },
+    {
       "qZh": "整棟別墅最多可以住幾個人？可以加床嗎？",
       "qEn": "How many guests can the villa accommodate? Can extra beds be added?",
       "aZh": "整棟樓共設有 5 間獨立客房（1樓三間、2樓兩間），最多可舒適容納 18 個人。為維護住宿品質與消防安全，全館恕不提供加床服務。",
