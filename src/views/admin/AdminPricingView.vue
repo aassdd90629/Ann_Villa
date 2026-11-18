@@ -2,22 +2,20 @@
 import { ref, onMounted } from 'vue'
 import { getAdminPricing, saveAdminPricing } from '../../services/adminService'
 import { 
-  Sparkles, 
   Save, 
   RotateCcw, 
-  CalendarDays, 
-  Plus, 
-  Trash2, 
   CheckCircle2, 
-  AlertCircle,
-  Coffee
+  AlertCircle 
 } from 'lucide-vue-next'
+import AdminBasePricingCard from '../../components/admin/AdminBasePricingCard.vue'
+import AdminHolidaysTable from '../../components/admin/AdminHolidaysTable.vue'
 
 const isLoading = ref(false)
 const isSaving = ref(false)
 const saveSuccess = ref(false)
 const errorMessage = ref('')
 
+// 基礎平假日與保證金
 const pricing = ref({
   weekdayTier1: 20000,
   weekdayTier2: 25000,
@@ -27,6 +25,7 @@ const pricing = ref({
   maxCapacity: 18
 })
 
+// 國定連假列表
 const holidays = ref([])
 
 const loadPricingData = async () => {
@@ -54,6 +53,7 @@ onMounted(() => {
   loadPricingData()
 })
 
+// 新增自訂連假檔期
 const handleAddHoliday = () => {
   const newId = `h-custom-${Date.now()}`
   holidays.value.push({
@@ -68,12 +68,21 @@ const handleAddHoliday = () => {
   })
 }
 
+// 刪除連假檔期
 const handleRemoveHoliday = (index) => {
   if (confirm(`確定要刪除「${holidays.value[index].nameZh}」嗎？`)) {
     holidays.value.splice(index, 1)
   }
 }
 
+// 接收來自子組件的一鍵匯入政府連假清單
+const handleImportGovHolidays = (importedList) => {
+  if (Array.isArray(importedList)) {
+    holidays.value = importedList
+  }
+}
+
+// 儲存所有定價設定寫入 D1
 const handleSaveAll = async () => {
   isSaving.value = true
   errorMessage.value = ''
@@ -107,11 +116,21 @@ const handleSaveAll = async () => {
       </div>
 
       <div class="header-actions">
-        <button type="button" class="btn btn-outline btn-refresh" :disabled="isLoading || isSaving" @click="loadPricingData">
+        <button 
+          type="button" 
+          class="btn btn-outline btn-refresh" 
+          :disabled="isLoading || isSaving" 
+          @click="loadPricingData"
+        >
           <RotateCcw :size="15" :class="{ 'spin-icon': isLoading }" />
           <span>重新讀取</span>
         </button>
-        <button type="button" class="btn btn-gold btn-save" :disabled="isSaving" @click="handleSaveAll">
+        <button 
+          type="button" 
+          class="btn btn-gold btn-save" 
+          :disabled="isSaving" 
+          @click="handleSaveAll"
+        >
           <Save :size="16" />
           <span>{{ isSaving ? '儲存中...' : '儲存所有定價設定' }}</span>
         </button>
@@ -128,150 +147,16 @@ const handleSaveAll = async () => {
       <span>{{ errorMessage }}</span>
     </div>
 
-    <!-- 2. 平假日包棟定價設定卡片 -->
-    <div class="pricing-card">
-      <div class="card-head-row">
-        <div class="head-title">
-          <Sparkles :size="20" class="text-gold" />
-          <h3>全區包棟基礎定價政策 (含早餐)</h3>
-        </div>
-        <span class="policy-tag">平日週一~四・一般假日週五~日</span>
-      </div>
+    <!-- 2. 平假日包棟基礎定價卡片 (獨立組件) -->
+    <AdminBasePricingCard :pricing="pricing" />
 
-      <div class="pricing-grid-cols">
-        <!-- 平日 10人以下 -->
-        <div class="price-input-group highlight-group">
-          <label class="p-label">
-            <span class="badge-num">1</span>
-            <span>平日 10人以下 (NT$ / 晚)</span>
-          </label>
-          <div class="input-with-unit">
-            <span class="currency">NT$</span>
-            <input type="number" v-model.number="pricing.weekdayTier1" min="1000" step="1000" class="form-control" />
-            <span class="unit-tag">含早餐</span>
-          </div>
-          <p class="field-note">週一至週四，小家庭/摯友特惠</p>
-        </div>
-
-        <!-- 平日 11-14人 -->
-        <div class="price-input-group highlight-group">
-          <label class="p-label">
-            <span class="badge-num">2</span>
-            <span>平日 11-14人以下 (NT$ / 晚)</span>
-          </label>
-          <div class="input-with-unit">
-            <span class="currency">NT$</span>
-            <input type="number" v-model.number="pricing.weekdayTier2" min="1000" step="1000" class="form-control" />
-            <span class="unit-tag">含早餐</span>
-          </div>
-          <p class="field-note">週一至週四，中型聚會高CP</p>
-        </div>
-
-        <!-- 平日 15-18人 -->
-        <div class="price-input-group highlight-group">
-          <label class="p-label">
-            <span class="badge-num">3</span>
-            <span>平日 15-18人以下 (NT$ / 晚)</span>
-          </label>
-          <div class="input-with-unit">
-            <span class="currency">NT$</span>
-            <input type="number" v-model.number="pricing.weekdayTier3" min="1000" step="1000" class="form-control" />
-            <span class="unit-tag">含早餐</span>
-          </div>
-          <p class="field-note">週一至週四，全開滿額包棟</p>
-        </div>
-
-        <!-- 一般假日 -->
-        <div class="price-input-group weekend-group">
-          <label class="p-label">
-            <span class="badge-tag-holiday">假日</span>
-            <span>一般假日每晚 (週五、六、日)</span>
-          </label>
-          <div class="input-with-unit">
-            <span class="currency">NT$</span>
-            <input type="number" v-model.number="pricing.weekend" min="1000" step="1000" class="form-control" />
-            <span class="unit-tag">含早餐</span>
-          </div>
-          <p class="field-note">週五晚上起算（含週五、六、日）</p>
-        </div>
-
-        <!-- 現場押金 -->
-        <div class="price-input-group">
-          <label class="p-label">
-            <span>現場入住押金 (保證金)</span>
-          </label>
-          <div class="input-with-unit">
-            <span class="currency">NT$</span>
-            <input type="number" v-model.number="pricing.deposit" min="0" step="500" class="form-control" />
-            <span class="unit-tag">退房退還</span>
-          </div>
-          <p class="field-note">入住現場收取，退房無損全退</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- 3. 國定連續假期價目表卡片 -->
-    <div class="pricing-card holidays-card">
-      <div class="card-head-row">
-        <div class="head-title">
-          <CalendarDays :size="20" class="text-gold" />
-          <h3>國定假日與連續假期專案價目表</h3>
-        </div>
-        <button type="button" class="btn btn-outline btn-sm btn-add" @click="handleAddHoliday">
-          <Plus :size="14" />
-          <span>新增假期檔期</span>
-        </button>
-      </div>
-      <p class="card-desc">依業主規範：國定假日一律自「假日前一天」開始起算連假房價含早餐；農曆過年期間不提供早餐。</p>
-
-      <div class="table-responsive">
-        <table class="admin-pricing-table">
-          <thead>
-            <tr>
-              <th style="width: 22%;">連假名稱</th>
-              <th style="width: 15%;">開始日期 (前夕)</th>
-              <th style="width: 15%;">結束日期</th>
-              <th style="width: 18%;">每晚專案價 (NT$)</th>
-              <th style="width: 16%;">早餐供應</th>
-              <th style="width: 14%; text-align: center;">操作</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(h, idx) in holidays" :key="h.id || idx" :class="{ 'is-cny': h.nameZh.includes('春節') || h.nameZh.includes('過年') }">
-              <td>
-                <input type="text" v-model="h.nameZh" class="form-control table-input" placeholder="連假名稱" />
-              </td>
-              <td>
-                <input type="date" v-model="h.startDate" class="form-control table-input" />
-              </td>
-              <td>
-                <input type="date" v-model="h.endDate" class="form-control table-input" />
-              </td>
-              <td>
-                <div class="table-price-wrap">
-                  <span class="p-sign">NT$</span>
-                  <input type="number" v-model.number="h.price" min="10000" step="1000" class="form-control table-input text-right" />
-                </div>
-              </td>
-              <td>
-                <label class="breakfast-toggle-label">
-                  <input type="checkbox" v-model="h.hasBreakfast" class="toggle-checkbox" />
-                  <span class="toggle-text" :class="{ 'has-bf': h.hasBreakfast, 'no-bf': !h.hasBreakfast }">
-                    <Coffee :size="13" />
-                    <span>{{ h.hasBreakfast ? '提供早餐' : '不含早餐' }}</span>
-                  </span>
-                </label>
-              </td>
-              <td class="text-center">
-                <button type="button" class="btn-del-row" @click="handleRemoveHoliday(idx)" title="刪除此連假">
-                  <Trash2 :size="15" />
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
+    <!-- 3. 國定連假價目表卡片 (獨立組件，支援政府行事曆一鍵匯入) -->
+    <AdminHolidaysTable 
+      :holidays="holidays" 
+      @add-holiday="handleAddHoliday" 
+      @remove-holiday="handleRemoveHoliday"
+      @import-gov-holidays="handleImportGovHolidays"
+    />
   </div>
 </template>
 
@@ -329,263 +214,6 @@ const handleSaveAll = async () => {
     background: rgba(239, 68, 68, 0.12);
     border: 1px solid rgba(239, 68, 68, 0.3);
     color: #ef4444;
-  }
-}
-
-.pricing-card {
-  padding: 1.75rem 2rem;
-  margin-bottom: 2rem;
-  border-radius: 12px;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-color);
-  transform: none !important;
-
-  &:hover {
-    transform: none !important;
-  }
-
-  .card-head-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 0.75rem;
-
-    .head-title {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-
-      h3 {
-        font-size: 1.2rem;
-        margin: 0;
-        font-weight: 700;
-        color: var(--text-primary);
-      }
-    }
-
-    .policy-tag {
-      font-size: 0.8rem;
-      padding: 0.2rem 0.6rem;
-      border-radius: 4px;
-      background: var(--badge-bg);
-      color: var(--gold-primary);
-      font-weight: 600;
-    }
-  }
-
-  .card-desc {
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    margin: 0 0 1.25rem;
-  }
-}
-
-.pricing-grid-cols {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1.25rem;
-  margin-top: 1rem;
-}
-
-.price-input-group {
-  display: flex;
-  flex-direction: column;
-  padding: 1rem;
-  border-radius: 8px;
-  background: var(--bg-primary);
-  border: 1px solid var(--border-color);
-
-  &.highlight-group {
-    border-color: rgba(200, 169, 110, 0.3);
-  }
-
-  &.weekend-group {
-    border-color: rgba(200, 169, 110, 0.6);
-    background: rgba(200, 169, 110, 0.05);
-  }
-
-  .p-label {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: var(--text-sub);
-    margin-bottom: 0.65rem;
-
-    .badge-num {
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      background: var(--gold-primary);
-      color: #121614;
-      font-size: 0.7rem;
-      font-weight: 800;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .badge-tag-holiday {
-      padding: 0.1rem 0.35rem;
-      border-radius: 3px;
-      background: var(--gold-primary);
-      color: #121614;
-      font-size: 0.7rem;
-      font-weight: 700;
-    }
-  }
-
-  .input-with-unit {
-    display: flex;
-    align-items: center;
-    gap: 0.35rem;
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    padding: 0.25rem 0.5rem;
-
-    .currency {
-      font-size: 0.82rem;
-      color: var(--gold-primary);
-      font-weight: 700;
-    }
-
-    input {
-      border: none;
-      background: transparent;
-      padding: 0.35rem 0;
-      font-size: 1.15rem;
-      font-weight: 700;
-      color: var(--text-primary);
-      width: 100%;
-
-      &:focus {
-        outline: none;
-      }
-    }
-
-    .unit-tag {
-      font-size: 0.72rem;
-      padding: 0.15rem 0.4rem;
-      border-radius: 3px;
-      background: rgba(200, 169, 110, 0.15);
-      color: var(--gold-primary);
-      white-space: nowrap;
-    }
-  }
-
-  .field-note {
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    margin: 0.5rem 0 0;
-  }
-}
-
-.table-responsive {
-  overflow-x: auto;
-}
-
-.admin-pricing-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.88rem;
-
-  th {
-    padding: 0.75rem 0.85rem;
-    text-align: left;
-    background: var(--bg-primary);
-    color: var(--gold-primary);
-    font-weight: 600;
-    border-bottom: 1px solid var(--border-color);
-  }
-
-  td {
-    padding: 0.65rem 0.85rem;
-    border-bottom: 1px solid var(--border-color);
-    color: var(--text-primary);
-    vertical-align: middle;
-  }
-
-  tr.is-cny td {
-    background: rgba(200, 169, 110, 0.05);
-  }
-
-  .table-input {
-    width: 100%;
-    padding: 0.45rem 0.6rem;
-    border-radius: 4px;
-    border: 1px solid var(--border-color);
-    background: var(--bg-card);
-    color: var(--text-primary);
-    font-size: 0.88rem;
-
-    &.text-right {
-      text-align: right;
-      font-weight: 600;
-    }
-
-    &:focus {
-      border-color: var(--gold-primary);
-      outline: none;
-    }
-  }
-
-  .table-price-wrap {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-
-    .p-sign {
-      color: var(--gold-primary);
-      font-weight: 600;
-      font-size: 0.82rem;
-    }
-  }
-
-  .breakfast-toggle-label {
-    display: inline-flex;
-    align-items: center;
-    cursor: pointer;
-
-    .toggle-checkbox {
-      margin-right: 0.4rem;
-    }
-
-    .toggle-text {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.25rem;
-      font-size: 0.8rem;
-      padding: 0.2rem 0.5rem;
-      border-radius: 4px;
-
-      &.has-bf {
-        background: rgba(34, 197, 94, 0.15);
-        color: #22c55e;
-      }
-
-      &.no-bf {
-        background: rgba(239, 68, 68, 0.15);
-        color: #ef4444;
-      }
-    }
-  }
-
-  .btn-del-row {
-    background: transparent;
-    border: 1px solid transparent;
-    color: var(--text-muted);
-    cursor: pointer;
-    padding: 0.35rem;
-    border-radius: 4px;
-    transition: all 0.2s ease;
-
-    &:hover {
-      background: rgba(239, 68, 68, 0.15);
-      color: #ef4444;
-      border-color: rgba(239, 68, 68, 0.3);
-    }
   }
 }
 
