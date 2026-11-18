@@ -119,48 +119,54 @@ const activeTabInfo = computed(() => {
 .logs-nav-tabs {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.65rem;
   overflow-x: auto;
-  padding-bottom: 0.5rem;
-  margin-bottom: 1rem;
-  border-bottom: 1px solid var(--border-color);
+  padding: 0.65rem;
+  margin-bottom: 1.25rem;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm, 0 2px 6px rgba(0, 0, 0, 0.03));
 
   .tab-btn {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.65rem 1.15rem;
-    border-radius: 8px 8px 0 0;
-    border: 1px solid transparent;
-    border-bottom: none;
-    background: transparent;
-    color: var(--text-muted);
-    font-size: 0.9rem;
+    padding: 0.7rem 1.25rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-size: 0.88rem;
     font-weight: 600;
     cursor: pointer;
     white-space: nowrap;
-    transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
 
     .tab-icon {
+      color: var(--gold-primary);
       transition: color 0.2s ease;
     }
 
     &:hover {
-      color: var(--text-primary);
-      background: rgba(200, 169, 110, 0.05);
-    }
-
-    &.active {
+      background: rgba(200, 169, 110, 0.12);
+      border-color: rgba(200, 169, 110, 0.4);
       color: var(--gold-primary);
-      background: var(--bg-surface);
-      border-color: var(--border-color);
-      border-bottom-color: var(--bg-surface);
-      position: relative;
-      margin-bottom: -1px;
-      padding-bottom: calc(0.65rem + 1px);
 
       .tab-icon {
         color: var(--gold-primary);
+      }
+    }
+
+    &.active {
+      background: var(--gold-primary);
+      color: #121614 !important;
+      border-color: var(--gold-primary);
+      box-shadow: 0 4px 12px rgba(200, 169, 110, 0.28);
+      font-weight: 700;
+
+      .tab-icon {
+        color: #121614 !important;
       }
     }
   }
@@ -170,12 +176,13 @@ const activeTabInfo = computed(() => {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  padding: 0.65rem 1rem;
+  padding: 0.75rem 1.25rem;
   background: var(--bg-surface);
   border: 1px solid var(--border-color);
-  border-radius: 6px;
-  font-size: 0.85rem;
-  margin-bottom: 1.25rem;
+  border-left: 4px solid var(--gold-primary);
+  border-radius: 8px;
+  font-size: 0.88rem;
+  margin-bottom: 1.5rem;
 
   .desc-badge {
     background: rgba(200, 169, 110, 0.15);
