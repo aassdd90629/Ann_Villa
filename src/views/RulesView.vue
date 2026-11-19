@@ -1,5 +1,6 @@
 <script setup>
 import { useI18n } from '../composables/useI18n'
+import { useSiteContent } from '../composables/useSiteContent'
 import PageHeader from '../components/common/PageHeader.vue'
 import Accordion from '../components/common/Accordion.vue'
 import rulesData from '../data/rules.json'
@@ -11,6 +12,8 @@ import {
 } from 'lucide-vue-next'
 
 const { isEn } = useI18n()
+const { faqList, fetchContent } = useSiteContent()
+fetchContent()
 </script>
 
 <template>
@@ -73,7 +76,7 @@ const { isEn } = useI18n()
             <h2 class="section-title">{{ isEn ? 'Frequently Asked Questions' : '常見問題與解答' }}</h2>
           </div>
 
-          <Accordion :items="rulesData.faq" />
+          <Accordion :items="faqList" />
         </div>
       </div>
     </section>

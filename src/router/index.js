@@ -94,6 +94,12 @@ const routes = [
         meta: { title: '房價政策與連假管理 ｜ 山語 Villa 後台', requiresAuth: true }
       },
       {
+        path: 'content',
+        name: 'admin-content',
+        component: () => import('../views/admin/AdminContentView.vue'),
+        meta: { title: '全站文案與動態內容管理 ｜ 山語 Villa 後台', requiresAuth: true }
+      },
+      {
         path: 'logs',
         name: 'admin-logs',
         component: () => import('../views/admin/AdminLogsView.vue'),

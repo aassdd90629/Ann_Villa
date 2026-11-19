@@ -1,12 +1,14 @@
 <script setup>
 import { useI18n } from '../composables/useI18n'
+import { useSiteContent } from '../composables/useSiteContent'
 import PageHeader from '../components/common/PageHeader.vue'
 import BookingButton from '../components/common/BookingButton.vue'
-import newsData from '../data/news.json'
 import siteData from '../data/site.json'
 import { Calendar, Tag, ArrowRight, Sparkles } from 'lucide-vue-next'
 
 const { isEn } = useI18n()
+const { newsList, fetchContent } = useSiteContent()
+fetchContent()
 </script>
 
 <template>
@@ -23,7 +25,7 @@ const { isEn } = useI18n()
       <div class="container">
         <div class="news-grid">
           <article 
-            v-for="item in newsData" 
+            v-for="item in newsList" 
             :key="item.id"
             class="news-card card-luxury"
             :class="{ 'featured': item.featured }"

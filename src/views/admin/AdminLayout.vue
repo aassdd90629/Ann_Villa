@@ -15,7 +15,8 @@ import {
   Moon,
   DollarSign,
   ScrollText,
-  Users
+  Users,
+  FileEdit
 } from 'lucide-vue-next'
 
 const router = useRouter()
@@ -28,6 +29,7 @@ const allNavItems = [
   { path: '/admin/close-calendar', name: '自主關閉月曆', icon: CalendarX },
   { path: '/admin/bookings', name: '直訂單與定金核銷', icon: FileText },
   { path: '/admin/pricing', name: '房價政策與連假', icon: DollarSign, superAdminOnly: true },
+  { path: '/admin/content', name: '全站文案與內容', icon: FileEdit },
   { path: '/admin/users', name: '人員與權限管理', icon: Users, superAdminOnly: true },
   { path: '/admin/logs', name: 'LOG 紀錄', icon: ScrollText }
 ]

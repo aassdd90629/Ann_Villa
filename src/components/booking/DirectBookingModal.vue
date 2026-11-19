@@ -1,8 +1,12 @@
 <script setup>
 import { ref } from 'vue'
 import { useI18n } from '../../composables/useI18n'
+import { useSiteContent } from '../../composables/useSiteContent'
 import siteData from '../../data/site.json'
 import { submitOnlineBooking } from '../../services/bookingService'
+
+const { basicInfo, formattedBankInfo, fetchContent } = useSiteContent()
+fetchContent()
 import { 
   X, 
   CheckCircle2, 
@@ -147,13 +151,13 @@ const submitBookingForm = async () => {
               <span>{{ isEn ? 'Payment Instructions' : '定金匯款說明 (展示模擬中)' }}</span>
             </h5>
             <p class="pay-desc">
-              請於 <strong>24 小時內</strong> 將定金匯款至民宿帳戶：<strong>台灣銀行 (004) 123-456-789012 (展示模擬帳號，請勿真實匯款)</strong>。匯款完成後請點擊下方按鈕加入官方 LINE (<strong>{{ siteData.lineId }}</strong>) 回報您的<strong>帳號末五碼</strong>以完成正式鎖房確認！
+              請於 <strong>24 小時內</strong> 將定金匯款至民宿帳戶：<strong>{{ formattedBankInfo }}</strong>。匯款完成後請點擊下方按鈕加入官方 LINE (<strong>{{ basicInfo.lineId }}</strong>) 回報您的<strong>帳號末五碼</strong>以完成正式鎖房確認！
             </p>
           </div>
 
           <div class="modal-actions-col">
             <a 
-              :href="`https://line.me/R/ti/p/@209yrich?text=${encodeURIComponent(`您好，我已送出線上直訂！\n【訂單編號】：${bookingSuccess.id}\n【訂房人】：${bookingSuccess.guestName}\n【入住日期】：${bookingSuccess.checkIn} 至 ${bookingSuccess.checkOut}\n【應付定金】：NT$ ${Number(bookingSuccess.depositAmount).toLocaleString()}\n【匯款後五碼】：`)}`"
+              :href="`${basicInfo.lineUrl || 'https://line.me/R/ti/p/@209yrich'}?text=${encodeURIComponent(`您好，我已送出線上直訂！\n【訂單編號】：${bookingSuccess.id}\n【訂房人】：${bookingSuccess.guestName}\n【入住日期】：${bookingSuccess.checkIn} 至 ${bookingSuccess.checkOut}\n【應付定金】：NT$ ${Number(bookingSuccess.depositAmount).toLocaleString()}\n【匯款後五碼】：`)}`"
               target="_blank" 
               rel="noopener noreferrer" 
               class="btn btn-gold btn-block"
