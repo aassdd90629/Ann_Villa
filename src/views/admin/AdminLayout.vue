@@ -16,7 +16,8 @@ import {
   DollarSign,
   ScrollText,
   Users,
-  FileEdit
+  FileEdit,
+  Image as ImageIcon
 } from 'lucide-vue-next'
 
 const router = useRouter()
@@ -30,6 +31,7 @@ const allNavItems = [
   { path: '/admin/bookings', name: '直訂單與定金核銷', icon: FileText },
   { path: '/admin/pricing', name: '房價政策與連假', icon: DollarSign, superAdminOnly: true },
   { path: '/admin/content', name: '全站文案與內容', icon: FileEdit },
+  { path: '/admin/media', name: '圖片與媒體庫', icon: ImageIcon },
   { path: '/admin/users', name: '人員與權限管理', icon: Users, superAdminOnly: true },
   { path: '/admin/logs', name: 'LOG 紀錄', icon: ScrollText }
 ]

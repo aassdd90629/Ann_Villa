@@ -100,6 +100,12 @@ const routes = [
         meta: { title: '全站文案與動態內容管理 ｜ 山語 Villa 後台', requiresAuth: true }
       },
       {
+        path: 'media',
+        name: 'admin-media',
+        component: () => import('../views/admin/AdminMediaView.vue'),
+        meta: { title: '圖片與媒體庫管理 ｜ 山語 Villa 後台', requiresAuth: true }
+      },
+      {
         path: 'logs',
         name: 'admin-logs',
         component: () => import('../views/admin/AdminLogsView.vue'),

@@ -21,15 +21,18 @@ import HeroCarousel from '../components/home/HeroCarousel.vue'
 import RoomCarousel from '../components/home/RoomCarousel.vue'
 import ImageGallery from '../components/common/ImageGallery.vue'
 import BookingButton from '../components/common/BookingButton.vue'
+import { useMediaAssets } from '../composables/useMediaAssets'
 
 const { isEn, t, tField } = useI18n()
+const { heroSlides, fetchMedia } = useMediaAssets()
+fetchMedia()
 </script>
 
 <template>
   <div class="home-page">
     <!-- 1. Hero 首屏沉浸橫幅 (動態輪播動畫) -->
     <section class="hero-section">
-      <HeroCarousel>
+      <HeroCarousel :slides="heroSlides">
         <div class="container hero-content">
           <span class="hero-badge">
             <Sparkles :size="14" />
