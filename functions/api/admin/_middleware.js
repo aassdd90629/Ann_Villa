@@ -57,7 +57,53 @@ export async function onRequest(context) {
     );
   }
 
-  // 4. 通過校驗，注入至 context.data 供後續 API 使用
+  // 4. 即時檢查帳號是否已被停用 (即時踢出已停用管家) 與同步最新角色
+  if (env.DB && adminUser.id && adminUser.id !== 'admin-fallback-01') {
+    try {
+      const dbUser = await env.DB.prepare(
+        'SELECT display_name, role, is_active FROM admin_users WHERE id = ?'
+      ).bind(adminUser.id).first();
+
+      if (dbUser) {
+        if (dbUser.is_active === 0) {
+          return new Response(
+            JSON.stringify({ success: false, message: '存取被拒：您的管家帳號已被停用，請洽超級管理員。' }),
+            { status: 403, headers: { 'Content-Type': 'application/json; charset=utf-8' } }
+          );
+        }
+        adminUser.displayName = dbUser.display_name;
+        adminUser.role = dbUser.role === 'HOST' ? 'CONCIERGE' : dbUser.role;
+      }
+    } catch (dbErr) {
+      // 容錯跳過，依賴 Token 資訊
+    }
+  }
+
+  // 5. RBAC 權限角色檢查
+  const isWriteMethod = ['POST', 'PUT', 'PATCH', 'DELETE'].includes(request.method);
+
+  // (1) 唯讀人員 (VIEWER) 禁止所有寫入操作
+  if (isWriteMethod && adminUser.role === 'VIEWER') {
+    return new Response(
+      JSON.stringify({ success: false, message: '權限不足：您的帳號為「唯讀人員 (VIEWER)」，無法進行任何新增、修改或刪除操作。' }),
+      { status: 403, headers: { 'Content-Type': 'application/json; charset=utf-8' } }
+    );
+  }
+
+  // (2) 超級管理員專屬權限守門
+  const requiresSuperAdmin = 
+    pathname.startsWith('/api/admin/users') ||
+    pathname.startsWith('/api/admin/bookings/clear-test') ||
+    (pathname.startsWith('/api/admin/pricing') && request.method === 'POST');
+
+  if (requiresSuperAdmin && adminUser.role !== 'SUPERADMIN') {
+    return new Response(
+      JSON.stringify({ success: false, message: '權限不足：此項操作僅限「超級管理員 (SUPERADMIN)」執行。' }),
+      { status: 403, headers: { 'Content-Type': 'application/json; charset=utf-8' } }
+    );
+  }
+
+  // 6. 通過校驗，注入至 context.data 供後續 API 使用
   context.data.adminUser = adminUser;
   return next();
 }

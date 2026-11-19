@@ -100,6 +100,12 @@ const routes = [
         meta: { title: '系統稽核與 LOG 紀錄 ｜ 山語 Villa 後台', requiresAuth: true }
       },
       {
+        path: 'users',
+        name: 'admin-users',
+        component: () => import('../views/admin/AdminUsersView.vue'),
+        meta: { title: '人員帳號與權限管理 ｜ 山語 Villa 後台', requiresAuth: true, requiresSuperAdmin: true }
+      },
+      {
         path: 'sync',
         redirect: '/admin/logs?tab=sync'
       }
@@ -139,6 +145,19 @@ router.beforeEach((to, from, next) => {
         path: '/admin/login',
         query: { redirect: to.fullPath }
       })
+    }
+
+    // 若需要超級管理員權限 (requiresSuperAdmin)
+    if (to.matched.some(record => record.meta.requiresSuperAdmin)) {
+      try {
+        const userJson = localStorage.getItem('shanyu_admin_user')
+        const user = userJson ? JSON.parse(userJson) : null
+        if (!user || user.role !== 'SUPERADMIN') {
+          return next({ path: '/admin/calendar' })
+        }
+      } catch (e) {
+        return next({ path: '/admin/calendar' })
+      }
     }
   }
 

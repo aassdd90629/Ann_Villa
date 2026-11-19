@@ -51,6 +51,26 @@ export async function onRequestPost(context) {
       externalUid
     ).run();
 
+    // 寫入審計日誌
+    try {
+      const currentAdmin = context.data?.adminUser;
+      const operatorTag = currentAdmin?.displayName 
+        ? `${currentAdmin.displayName} (${currentAdmin.username})` 
+        : 'admin';
+
+      await env.DB.prepare(`
+        INSERT INTO admin_audit_logs (category, action, target_id, summary, details_json, operator)
+        VALUES ('calendar', 'MANUAL_LOCK', ?, ?, ?, ?)
+      `).bind(
+        blockId,
+        `管家手動自訂關房：${startDate} ~ ${endDate}（${summary.trim()}）`,
+        JSON.stringify({ startDate, endDate, roomId, summary: summary.trim(), blockId }),
+        operatorTag
+      ).run();
+    } catch (logErr) {
+      console.warn('寫入 blocks audit log 警告:', logErr.message);
+    }
+
     return Response.json({
       success: true,
       message: '檔期鎖定成功，官網日曆已即刻反灰',

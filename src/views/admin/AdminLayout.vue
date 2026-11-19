@@ -14,21 +14,27 @@ import {
   Sun,
   Moon,
   DollarSign,
-  ScrollText
+  ScrollText,
+  Users
 } from 'lucide-vue-next'
 
 const router = useRouter()
 const route = useRoute()
-const { user, logout } = useAdminAuth()
+const { user, isSuperAdmin, roleName, logout } = useAdminAuth()
 const { theme, toggleTheme } = useTheme()
 
-const navItems = [
+const allNavItems = [
   { path: '/admin/calendar', name: '房態日曆與鎖房', icon: Calendar },
   { path: '/admin/close-calendar', name: '自主關閉月曆', icon: CalendarX },
   { path: '/admin/bookings', name: '直訂單與定金核銷', icon: FileText },
-  { path: '/admin/pricing', name: '房價政策與連假', icon: DollarSign },
+  { path: '/admin/pricing', name: '房價政策與連假', icon: DollarSign, superAdminOnly: true },
+  { path: '/admin/users', name: '人員與權限管理', icon: Users, superAdminOnly: true },
   { path: '/admin/logs', name: 'LOG 紀錄', icon: ScrollText }
 ]
+
+const navItems = computed(() => {
+  return allNavItems.filter(item => !item.superAdminOnly || isSuperAdmin.value)
+})
 
 const currentPath = computed(() => route.path)
 
@@ -77,7 +83,9 @@ const handleLogout = () => {
       <!-- 頂部資訊列 -->
       <header class="admin-topbar">
         <div class="topbar-left">
-          <span class="badge-role">{{ user?.role === 'SUPERADMIN' ? '超級管理員' : '駐館管家' }}</span>
+          <span :class="['badge-role', user?.role?.toLowerCase() || 'concierge']">
+            {{ user?.role === 'SUPERADMIN' ? '👑 超級管理員' : user?.role === 'VIEWER' ? '👀 唯讀人員' : '🛎️ 駐館管家' }}
+          </span>
           <span class="topbar-welcome">歡迎登入，{{ user?.displayName || '管家' }}</span>
         </div>
 
@@ -254,13 +262,32 @@ const handleLogout = () => {
     gap: 0.75rem;
 
     .badge-role {
-      font-size: 0.72rem;
-      padding: 0.2rem 0.5rem;
-      background: rgba(212, 175, 55, 0.15);
-      border: 1px solid rgba(212, 175, 55, 0.35);
-      color: var(--gold-primary, #d4af37);
+      font-size: 0.75rem;
+      padding: 0.25rem 0.6rem;
       border-radius: 4px;
       font-weight: 600;
+      letter-spacing: 0.5px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+
+      &.superadmin {
+        background: rgba(212, 175, 55, 0.18);
+        border: 1px solid rgba(212, 175, 55, 0.45);
+        color: var(--gold-primary, #d4af37);
+      }
+
+      &.concierge, &.host {
+        background: rgba(56, 189, 248, 0.15);
+        border: 1px solid rgba(56, 189, 248, 0.35);
+        color: #38bdf8;
+      }
+
+      &.viewer {
+        background: rgba(148, 163, 184, 0.15);
+        border: 1px solid rgba(148, 163, 184, 0.35);
+        color: #94a3b8;
+      }
     }
 
     .topbar-welcome {

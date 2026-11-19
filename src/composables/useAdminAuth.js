@@ -17,6 +17,20 @@ export function useAdminAuth() {
     return Boolean(token.value && user.value)
   })
 
+  // 角色權限判斷 helper
+  const isSuperAdmin = computed(() => user.value?.role === 'SUPERADMIN')
+  const isConcierge = computed(() => user.value?.role === 'CONCIERGE' || user.value?.role === 'HOST')
+  const isViewer = computed(() => user.value?.role === 'VIEWER')
+
+  const roleName = computed(() => {
+    if (!user.value) return ''
+    const r = user.value.role
+    if (r === 'SUPERADMIN') return '超級管理員'
+    if (r === 'CONCIERGE' || r === 'HOST') return '駐館管家'
+    if (r === 'VIEWER') return '唯讀人員'
+    return r
+  })
+
   // 登入
   const login = async (username, password) => {
     isLoading.value = true
@@ -93,6 +107,10 @@ export function useAdminAuth() {
     token,
     user,
     isAuthenticated,
+    isSuperAdmin,
+    isConcierge,
+    isViewer,
+    roleName,
     isLoading,
     errorMessage,
     login,

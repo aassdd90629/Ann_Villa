@@ -28,17 +28,24 @@ export async function onRequestPost(context) {
     if (env.DB) {
       try {
         const user = await env.DB.prepare(
-          'SELECT * FROM admin_users WHERE username = ? AND is_active = 1'
-        ).bind(username.trim()).first();
+          'SELECT * FROM admin_users WHERE username = ?'
+        ).bind(username.trim().toLowerCase()).first();
 
         if (user) {
+          if (user.is_active === 0) {
+            return Response.json(
+              { success: false, message: '登入失敗：此管家帳號已被停用，請聯繫超級管理員。' },
+              { status: 403 }
+            );
+          }
+
           const inputHash = await hashPassword(password, user.salt);
           if (inputHash === user.password_hash) {
             matchedUser = {
               id: user.id,
               username: user.username,
               displayName: user.display_name,
-              role: user.role
+              role: user.role === 'HOST' ? 'CONCIERGE' : user.role
             };
 
             // 更新最後登入時間
@@ -55,7 +62,7 @@ export async function onRequestPost(context) {
     // 2. 備援認證 (當 D1 尚未遷移或本機單機測試時，允許預設管理員登入)
     if (!matchedUser) {
       const fallbackPassword = env.ADMIN_PASSWORD || 'ryan1123_Ann';
-      if (username.trim() === 'admin' && password === fallbackPassword) {
+      if (username.trim().toLowerCase() === 'admin' && password === fallbackPassword) {
         matchedUser = {
           id: 'admin-fallback-01',
           username: 'admin',
@@ -73,7 +80,27 @@ export async function onRequestPost(context) {
       );
     }
 
-    // 4. 簽發 7 天效期之安全 Token
+    // 4. 寫入登入稽核日誌
+    if (env.DB) {
+      try {
+        const clientIp = request.headers.get('CF-Connecting-IP') || request.headers.get('X-Forwarded-For') || 'unknown';
+        const roleZhMap = { SUPERADMIN: '超級管理員', CONCIERGE: '駐館管家', VIEWER: '唯讀人員', HOST: '駐館管家' };
+        await env.DB.prepare(`
+          INSERT INTO admin_audit_logs (category, action, target_id, summary, details_json, operator, ip_address)
+          VALUES ('security', 'ADMIN_LOGIN', ?, ?, ?, ?, ?)
+        `).bind(
+          matchedUser.username,
+          `管家「${matchedUser.displayName}」(${matchedUser.username}) 成功登入後台管理系統`,
+          JSON.stringify({ role: matchedUser.role, roleName: roleZhMap[matchedUser.role] || matchedUser.role }),
+          `${matchedUser.displayName} (${matchedUser.username})`,
+          clientIp
+        ).run();
+      } catch (logErr) {
+        // 容錯不阻擋登入
+      }
+    }
+
+    // 5. 簽發 7 天效期之安全 Token
     const token = await signToken(matchedUser, secret);
 
     return Response.json({

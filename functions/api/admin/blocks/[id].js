@@ -16,6 +16,26 @@ export async function onRequestDelete(context) {
       WHERE (id = ? OR external_uid = ?) AND source = 'MANUAL_LOCK'
     `).bind(blockId, blockId).run();
 
+    // 寫入審計日誌
+    try {
+      const currentAdmin = context.data?.adminUser;
+      const operatorTag = currentAdmin?.displayName 
+        ? `${currentAdmin.displayName} (${currentAdmin.username})` 
+        : 'admin';
+
+      await env.DB.prepare(`
+        INSERT INTO admin_audit_logs (category, action, target_id, summary, details_json, operator)
+        VALUES ('calendar', 'UNLOCK', ?, ?, ?, ?)
+      `).bind(
+        blockId,
+        `解除手動鎖房檔期（${blockId}），重新開放官網預訂`,
+        JSON.stringify({ blockId }),
+        operatorTag
+      ).run();
+    } catch (logErr) {
+      console.warn('寫入 blocks delete audit log 警告:', logErr.message);
+    }
+
     return Response.json({
       success: true,
       message: '已成功解除該檔期之手動鎖定，前台日曆已重新開放預訂'

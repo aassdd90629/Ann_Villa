@@ -37,6 +37,33 @@ export async function onRequestPatch(context) {
       WHERE id = ?
     `).bind(newDepositStatus, newStatus, bookingId).run();
 
+    // 寫入審計日誌
+    try {
+      const currentAdmin = context.data?.adminUser;
+      const operatorTag = currentAdmin?.displayName 
+        ? `${currentAdmin.displayName} (${currentAdmin.username})` 
+        : 'admin';
+
+      const isDepositPaid = depositStatus === 'PAID' && existing.deposit_status !== 'PAID';
+      const actionName = isDepositPaid ? 'CONFIRM_DEPOSIT' : 'UPDATE_BOOKING';
+      const summaryText = isDepositPaid
+        ? `核銷直訂單「${bookingId}」50% 定金入帳，定金狀態變更為【已付定金 (PAID)】`
+        : `更新直訂單「${bookingId}」狀態：定金狀態【${newDepositStatus}】、訂單狀態【${newStatus}】`;
+
+      await env.DB.prepare(`
+        INSERT INTO admin_audit_logs (category, action, target_id, summary, details_json, operator)
+        VALUES ('booking', ?, ?, ?, ?, ?)
+      `).bind(
+        actionName,
+        bookingId,
+        summaryText,
+        JSON.stringify({ oldDepositStatus: existing.deposit_status, newDepositStatus, oldStatus: existing.status, newStatus }),
+        operatorTag
+      ).run();
+    } catch (logErr) {
+      console.warn('寫入 booking audit log 警告:', logErr.message);
+    }
+
     return Response.json({
       success: true,
       message: '訂單狀態更新成功',
