@@ -55,27 +55,27 @@ async function ensureMediaAssetsTable(db) {
     if (!countRes || countRes.cnt === 0) {
       await db.prepare(`
         INSERT INTO media_assets (id, category, sub_category, title_zh, title_en, tag_zh, tag_en, cdn_url, sort_order, is_active) VALUES
-          ('hero-slide-1', 'hero', 'banner', '星夜璀璨・豪宅山莊', 'Luminous Nightscape Estate', '莊園夜色', 'Villa Nightscape', '/img/homebanner/homebanner-01.jpg', 1, 1),
-          ('hero-slide-2', 'hero', 'banner', '露台晨曦・漫步雲海仙境', 'Panoramic Viewing Deck & Morning Mist', '觀景露台雲海', 'Viewing Deck Vista', '/img/homebanner/homebanner-02.jpg', 2, 1),
-          ('hero-slide-3', 'hero', 'banner', '群山環繞・自然田園風光', 'Scenic Mountain Countryside', '自然景致', 'Nature & Orchard', '/img/homebanner/homebanner-03.jpg', 3, 1),
-          ('hero-slide-4', 'hero', 'banner', '山嵐漫漫・壯闊縹緲雲海', 'Sea of Clouds & Mountain Mist', '壯闊雲海', 'Sea of Clouds', '/img/homebanner/homebanner-04.jpg', 4, 1),
-          ('hero-slide-5', 'hero', 'banner', '開闊綠意・專屬青翠草坪', 'Expansive Private Green Lawn', '戶外休閒草坪', 'Private Lawn', '/img/homebanner/homebanner-05.jpg', 5, 1),
-          ('hero-slide-6', 'hero', 'banner', '晚霞如畫・落日彩霞暮色', 'Twilight Glow & Crimson Sunset', '落日彩霞', 'Sunset Twilight', '/img/homebanner/homebanner-06.jpg', 6, 1),
-          ('hero-slide-7', 'hero', 'banner', '夜色微光・漫步翠綠草坡', 'Illuminated Gardens & Hillside Lawn', '夜間草坪步道', 'Night Garden Lawn', '/img/homebanner/homebanner-07.jpg', 7, 1),
-          ('hero-slide-8', 'hero', 'banner', '隱逸山居・享受慢活時光', 'Mountain Sanctuary & Slow Living', '山莊全景', 'Estate Vista', '/img/homebanner/homebanner-08.jpg', 8, 1),
-          ('hero-slide-9', 'hero', 'banner', '晨曦微露・遠眺層疊山嵐', 'Dawning Light & Layered Peaks', '晨曦山嶺', 'Morning Peaks', '/img/homebanner/homebanner-09.jpg', 9, 1),
-          ('hero-slide-10', 'hero', 'banner', '雲霧繚繞・私享山林幽靜', 'Drifting Clouds & Woodland Solitude', '清幽山嵐', 'Misty Woodland', '/img/homebanner/homebanner-10.jpg', 10, 1),
-          ('hero-slide-11', 'hero', 'banner', '露台星空・共度溫馨之夜', 'Starry Terrace & Cherished Moments', '星空露台聚會', 'Starry Terrace', '/img/homebanner/homebanner-11.jpg', 11, 1),
-          ('room-01-cover', 'room', 'room-1', '1F 綠意四人景觀套房 (封面主圖)', '1F Garden View Quad Suite Cover', '1F 四人房', '1F Quad', '/img/room-1/room-1-01.jpg', 1, 1),
-          ('room-02-cover', 'room', 'room-2', '1F 山語隱逸雙人套房 (封面主圖)', '1F Serenity Double Suite Cover', '1F 雙人房', '1F Double', '/img/room-2/room-2-01.jpg', 2, 1),
-          ('room-03-cover', 'room', 'room-3', '1F 風荷清幽四人套房 (封面主圖)', '1F Lotus Breeze Quad Suite Cover', '1F 四人房', '1F Quad', '/img/room-3/room-3-01.jpg', 3, 1),
-          ('room-04-cover', 'room', 'room-4', '2F 星空露台四人套房 (封面主圖)', '2F Starlight Terrace Quad Suite Cover', '2F 四人房', '2F Quad', '/img/room-4/room-4-01.jpg', 4, 1),
-          ('room-05-cover', 'room', 'room-5', '2F 晨曦觀景四人套房 (封面主圖)', '2F Dawn Mountain View Quad Suite Cover', '2F 四人房', '2F Quad', '/img/room-5/room-5-01.jpg', 5, 1),
-          ('fac-ktv-01', 'facility', 'living-ktv', 'Grand Lounge 奢華客廳與 KTV 劇院', 'Grand Lounge & KTV Entertainment', '客廳KTV', 'KTV Lounge', '/img/living-ktv/living-ktv-01.jpg', 1, 1),
-          ('fac-mahjong-01', 'facility', 'mahjong', '頂級電動過山車麻將娛樂室', 'Automatic Mahjong Table Experience', '電動麻將', 'Mahjong', '/img/mahjong/mahjong-01.jpg', 2, 1),
-          ('fac-kitchen-01', 'facility', 'kitchen', '中島開放式智能廚房與吧檯', 'Open Island Kitchen & Bar', '智能廚房', 'Kitchen', '/img/kitchen/kitchen-01.jpg', 3, 1),
-          ('fac-bbq-01', 'facility', 'bbq', '戶外庭院專業美式 BBQ 烤肉區', 'Outdoor Courtyard Premium BBQ', '美式烤肉', 'BBQ Courtyard', '/img/bbq/bbq-01.jpg', 4, 1),
-          ('fac-tea-01', 'facility', 'tea', '高山山景品茗賞景茶席', 'Scenic Mountain Tea Ceremony Pavilion', '品茗茶席', 'Tea Pavilion', '/img/tea/tea-01.jpg', 5, 1)
+          ('hero-slide-1', 'hero', 'banner', '星夜璀璨・豪宅山莊', 'Luminous Nightscape Estate', '莊園夜色', 'Villa Nightscape', '/img/homebanner/homebanner-01.webp', 1, 1),
+          ('hero-slide-2', 'hero', 'banner', '露台晨曦・漫步雲海仙境', 'Panoramic Viewing Deck & Morning Mist', '觀景露台雲海', 'Viewing Deck Vista', '/img/homebanner/homebanner-02.webp', 2, 1),
+          ('hero-slide-3', 'hero', 'banner', '群山環繞・自然田園風光', 'Scenic Mountain Countryside', '自然景致', 'Nature & Orchard', '/img/homebanner/homebanner-03.webp', 3, 1),
+          ('hero-slide-4', 'hero', 'banner', '山嵐漫漫・壯闊縹緲雲海', 'Sea of Clouds & Mountain Mist', '壯闊雲海', 'Sea of Clouds', '/img/homebanner/homebanner-04.webp', 4, 1),
+          ('hero-slide-5', 'hero', 'banner', '開闊綠意・專屬青翠草坪', 'Expansive Private Green Lawn', '戶外休閒草坪', 'Private Lawn', '/img/homebanner/homebanner-05.webp', 5, 1),
+          ('hero-slide-6', 'hero', 'banner', '晚霞如畫・落日彩霞暮色', 'Twilight Glow & Crimson Sunset', '落日彩霞', 'Sunset Twilight', '/img/homebanner/homebanner-06.webp', 6, 1),
+          ('hero-slide-7', 'hero', 'banner', '夜色微光・漫步翠綠草坡', 'Illuminated Gardens & Hillside Lawn', '夜間草坪步道', 'Night Garden Lawn', '/img/homebanner/homebanner-07.webp', 7, 1),
+          ('hero-slide-8', 'hero', 'banner', '隱逸山居・享受慢活時光', 'Mountain Sanctuary & Slow Living', '山莊全景', 'Estate Vista', '/img/homebanner/homebanner-08.webp', 8, 1),
+          ('hero-slide-9', 'hero', 'banner', '晨曦微露・遠眺層疊山嵐', 'Dawning Light & Layered Peaks', '晨曦山嶺', 'Morning Peaks', '/img/homebanner/homebanner-09.webp', 9, 1),
+          ('hero-slide-10', 'hero', 'banner', '雲霧繚繞・私享山林幽靜', 'Drifting Clouds & Woodland Solitude', '清幽山嵐', 'Misty Woodland', '/img/homebanner/homebanner-10.webp', 10, 1),
+          ('hero-slide-11', 'hero', 'banner', '露台星空・共度溫馨之夜', 'Starry Terrace & Cherished Moments', '星空露台聚會', 'Starry Terrace', '/img/homebanner/homebanner-11.webp', 11, 1),
+          ('room-01-cover', 'room', 'room-1', '1F 綠意四人景觀套房 (封面主圖)', '1F Garden View Quad Suite Cover', '1F 四人房', '1F Quad', '/img/room-1/room-1-01.webp', 1, 1),
+          ('room-02-cover', 'room', 'room-2', '1F 山語隱逸雙人套房 (封面主圖)', '1F Serenity Double Suite Cover', '1F 雙人房', '1F Double', '/img/room-2/room-2-01.webp', 2, 1),
+          ('room-03-cover', 'room', 'room-3', '1F 風荷清幽四人套房 (封面主圖)', '1F Lotus Breeze Quad Suite Cover', '1F 四人房', '1F Quad', '/img/room-3/room-3-01.webp', 3, 1),
+          ('room-04-cover', 'room', 'room-4', '2F 星空露台四人套房 (封面主圖)', '2F Starlight Terrace Quad Suite Cover', '2F 四人房', '2F Quad', '/img/room-4/room-4-01.webp', 4, 1),
+          ('room-05-cover', 'room', 'room-5', '2F 晨曦觀景四人套房 (封面主圖)', '2F Dawn Mountain View Quad Suite Cover', '2F 四人房', '2F Quad', '/img/room-5/room-5-01.webp', 5, 1),
+          ('fac-ktv-01', 'facility', 'living-ktv', 'Grand Lounge 奢華客廳與 KTV 劇院', 'Grand Lounge & KTV Entertainment', '客廳KTV', 'KTV Lounge', '/img/living-ktv/living-ktv-01.webp', 1, 1),
+          ('fac-mahjong-01', 'facility', 'mahjong', '頂級電動過山車麻將娛樂室', 'Automatic Mahjong Table Experience', '電動麻將', 'Mahjong', '/img/mahjong/mahjong-01.webp', 2, 1),
+          ('fac-kitchen-01', 'facility', 'kitchen', '中島開放式智能廚房與吧檯', 'Open Island Kitchen & Bar', '智能廚房', 'Kitchen', '/img/kitchen/kitchen-01.webp', 3, 1),
+          ('fac-bbq-01', 'facility', 'bbq', '戶外庭院專業美式 BBQ 烤肉區', 'Outdoor Courtyard Premium BBQ', '美式烤肉', 'BBQ Courtyard', '/img/bbq/bbq-01.webp', 4, 1),
+          ('fac-tea-01', 'facility', 'tea', '高山山景品茗賞景茶席', 'Scenic Mountain Tea Ceremony Pavilion', '品茗茶席', 'Tea Pavilion', '/img/tea/tea-01.webp', 5, 1)
       `).run();
     }
   } catch (err) {

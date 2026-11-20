@@ -1,7 +1,7 @@
 [
   {
     "id": "slide-1",
-    "image": "/img/homebanner/homebanner-01.jpg",
+    "image": "/img/homebanner/homebanner-01.webp",
     "titleZh": "星夜璀璨・豪宅山莊",
     "titleEn": "Luminous Nightscape Estate",
     "tagZh": "莊園夜色",
@@ -10,7 +10,7 @@
   },
   {
     "id": "slide-2",
-    "image": "/img/homebanner/homebanner-02.jpg",
+    "image": "/img/homebanner/homebanner-02.webp",
     "titleZh": "露台晨曦・漫步雲海仙境",
     "titleEn": "Panoramic Viewing Deck & Morning Mist",
     "tagZh": "觀景露台雲海",
@@ -19,7 +19,7 @@
   },
   {
     "id": "slide-3",
-    "image": "/img/homebanner/homebanner-03.jpg",
+    "image": "/img/homebanner/homebanner-03.webp",
     "titleZh": "群山環繞・自然田園風光",
     "titleEn": "Scenic Mountain Countryside",
     "tagZh": "自然景致",
@@ -28,7 +28,7 @@
   },
   {
     "id": "slide-4",
-    "image": "/img/homebanner/homebanner-04.jpg",
+    "image": "/img/homebanner/homebanner-04.webp",
     "titleZh": "山嵐漫漫・壯闊縹緲雲海",
     "titleEn": "Sea of Clouds & Mountain Mist",
     "tagZh": "壯闊雲海",
@@ -37,7 +37,7 @@
   },
   {
     "id": "slide-5",
-    "image": "/img/homebanner/homebanner-05.jpg",
+    "image": "/img/homebanner/homebanner-05.webp",
     "titleZh": "開闊綠意・專屬青翠草坪",
     "titleEn": "Expansive Private Green Lawn",
     "tagZh": "戶外休閒草坪",
@@ -46,7 +46,7 @@
   },
   {
     "id": "slide-6",
-    "image": "/img/homebanner/homebanner-06.jpg",
+    "image": "/img/homebanner/homebanner-06.webp",
     "titleZh": "晚霞如畫・落日彩霞暮色",
     "titleEn": "Twilight Glow & Crimson Sunset",
     "tagZh": "落日彩霞",
@@ -55,7 +55,7 @@
   },
   {
     "id": "slide-7",
-    "image": "/img/homebanner/homebanner-07.jpg",
+    "image": "/img/homebanner/homebanner-07.webp",
     "titleZh": "夜色微光・漫步翠綠草坡",
     "titleEn": "Illuminated Gardens & Hillside Lawn",
     "tagZh": "草坡夜間光影",
@@ -64,7 +64,7 @@
   },
   {
     "id": "slide-8",
-    "image": "/img/homebanner/homebanner-08.jpg",
+    "image": "/img/homebanner/homebanner-08.webp",
     "titleZh": "半戶外露台・品茗眺望群山",
     "titleEn": "Covered Viewing Terrace & Tea Lounge",
     "tagZh": "戶外景觀座席",
@@ -73,7 +73,7 @@
   },
   {
     "id": "slide-9",
-    "image": "/img/homebanner/homebanner-09.jpg",
+    "image": "/img/homebanner/homebanner-09.webp",
     "titleZh": "氣派迴廊・開闊休閒木棧平台",
     "titleEn": "Expansive Veranda & Timber Deck",
     "tagZh": "莊園景觀迴廊",
@@ -82,7 +82,7 @@
   },
   {
     "id": "slide-10",
-    "image": "/img/homebanner/homebanner-10.jpg",
+    "image": "/img/homebanner/homebanner-10.webp",
     "titleZh": "晴空莊園・石砌門廊與翠綠庭園",
     "titleEn": "Sunlit Stone Veranda & Garden Patio",
     "tagZh": "晴日莊園外觀",
@@ -91,7 +91,7 @@
   },
   {
     "id": "slide-11",
-    "image": "/img/homebanner/homebanner-11.jpg",
+    "image": "/img/homebanner/homebanner-11.webp",
     "titleZh": "晴日木棧露台・石柱長廊遠眺群巒",
     "titleEn": "Sunlit Timber Deck & Mountain Corridor",
     "tagZh": "晴空觀景長廊",

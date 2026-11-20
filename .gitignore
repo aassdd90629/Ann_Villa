@@ -53,3 +53,5 @@ AIRBNB_CALENDAR_SYNC_PLAN.md
 *.sqlite
 *.sqlite3
 *.db
+backup_jpgs/
+

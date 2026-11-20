@@ -124,14 +124,14 @@ fetchMedia()
           <div class="philosophy-media">
             <div class="img-frame-main img-zoom-container">
               <img 
-                src="/img/house/house-01.jpg" 
+                src="/img/house/house-01.webp" 
                 :alt="isEn ? 'Shan Yu Villa Estate Exterior & Lawn' : '山語 Villa 莊園建築外觀與青翠草坪'" 
                 loading="lazy"
               />
             </div>
             <div class="img-frame-sub img-zoom-container">
               <img 
-                src="/img/cloud-sea/cloud-sea-02.jpg" 
+                src="/img/cloud-sea/cloud-sea-02.webp" 
                 :alt="isEn ? 'Mountain Mist and Cloud Sea Horizon' : '山語莊園遠眺層巒雲霧仙境'" 
                 loading="lazy"
               />
