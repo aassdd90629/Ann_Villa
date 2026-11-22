@@ -1,4 +1,5 @@
 <script setup>
+import { defineAsyncComponent } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useI18n } from '../composables/useI18n'
 import siteData from '../data/site.json'
@@ -16,12 +17,14 @@ import {
   Calendar,
   Compass
 } from 'lucide-vue-next'
-import AvailabilityCalendar from '../components/booking/AvailabilityCalendar.vue'
 import HeroCarousel from '../components/home/HeroCarousel.vue'
 import RoomCarousel from '../components/home/RoomCarousel.vue'
-import ImageGallery from '../components/common/ImageGallery.vue'
 import BookingButton from '../components/common/BookingButton.vue'
 import { useMediaAssets } from '../composables/useMediaAssets'
+
+// 首屏外重型組件改採異步非同步載入 (Lazy Async Components)，釋放首屏主執行緒
+const AvailabilityCalendar = defineAsyncComponent(() => import('../components/booking/AvailabilityCalendar.vue'))
+const ImageGallery = defineAsyncComponent(() => import('../components/common/ImageGallery.vue'))
 
 const { isEn, t, tField } = useI18n()
 const { heroSlides, fetchMedia } = useMediaAssets()

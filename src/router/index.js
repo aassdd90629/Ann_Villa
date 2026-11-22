@@ -1,15 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 import HomeView from '../views/HomeView.vue'
-import RoomsView from '../views/RoomsView.vue'
-import FacilitiesView from '../views/FacilitiesView.vue'
-import PackagesView from '../views/PackagesView.vue'
-import RulesView from '../views/RulesView.vue'
-import GuideView from '../views/GuideView.vue'
-import NewsView from '../views/NewsView.vue'
 
 const routes = [
-  // 前台公開路由
+  // 前台公開路由 (首頁保持同步載入保證首屏直出，其他頁面 Lazy Loading 代碼拆分以極大化首屏載入速度)
   {
     path: '/',
     name: 'home',
@@ -19,37 +13,37 @@ const routes = [
   {
     path: '/rooms',
     name: 'rooms',
-    component: RoomsView,
+    component: () => import('../views/RoomsView.vue'),
     meta: { title: '房型導覽 ｜ 5 間獨立客房 ｜ 山語 Villa' }
   },
   {
     path: '/facilities',
     name: 'facilities',
-    component: FacilitiesView,
+    component: () => import('../views/FacilitiesView.vue'),
     meta: { title: '園區設施 ｜ 麻將・KTV・烤肉・智能廚房・泡茶 ｜ 山語 Villa' }
   },
   {
     path: '/packages',
     name: 'packages',
-    component: PackagesView,
+    component: () => import('../views/PackagesView.vue'),
     meta: { title: '包棟方案與加值服務 ｜ 山語 Villa' }
   },
   {
     path: '/rules',
     name: 'rules',
-    component: RulesView,
+    component: () => import('../views/RulesView.vue'),
     meta: { title: '入住須知與 FAQ ｜ 山語 Villa' }
   },
   {
     path: '/guide',
     name: 'guide',
-    component: GuideView,
+    component: () => import('../views/GuideView.vue'),
     meta: { title: '交通指引與周邊景點 ｜ 山語 Villa' }
   },
   {
     path: '/news',
     name: 'news',
-    component: NewsView,
+    component: () => import('../views/NewsView.vue'),
     meta: { title: '最新消息與優惠 ｜ 山語 Villa' }
   },
 
