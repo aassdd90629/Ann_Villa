@@ -29,10 +29,10 @@ const INITIAL_FACILITIES = [
     titleEn: 'Automatic Mahjong Table Experience',
     descZh: '專屬配置最新型全自動過山車靜音電動麻將桌，洗牌迅速順暢、零噪音打擾。舒適人體工學皮椅與明亮採光，是好友徹夜切磋的最佳娛樂。',
     descEn: 'Features the latest whisper-quiet automatic mahjong table with rapid shuffling and zero jams. Ergonomic executive chairs ensure comfortable gaming sessions.',
-    image: '/img/mahjong/mahjong-01.webp',
+    image: '/img/living-ktv/living-ktv-04.webp',
     featuresZh: ['最新四口過山車全自動靜音洗牌機', '配備兩副頂級磁吸刻字專用麻將牌', '人體工學高承重透氣皮椅', '專屬飲料杯架與籌碼置物槽'],
     featuresEn: ['Whisper-quiet auto-shuffling table mechanism', 'Dual sets of weighted engraved tiles', 'Ergonomic supportive executive seating', 'Integrated cup holders and chip trays'],
-    gallery: ['/img/mahjong/mahjong-01.webp', '/img/mahjong/mahjong-02.webp', '/img/mahjong/mahjong-03.webp', '/img/mahjong/mahjong-04.webp']
+    gallery: ['/img/living-ktv/living-ktv-04.webp', '/img/living-ktv/living-ktv-02.webp', '/img/living-ktv/living-ktv-05.webp']
   },
   {
     id: 'outdoor-bbq',
@@ -40,10 +40,10 @@ const INITIAL_FACILITIES = [
     titleEn: 'Outdoor Courtyard Premium BBQ Area',
     descZh: '寬敞專屬的戶外庭園烤肉專區，備有大型美式不鏽鋼悶烤爐、專業烤肉網架與戶外野餐長桌，享受大自然芬多精與炭火美食的微醺聚餐時光。',
     descEn: 'Generous private courtyard featuring heavy-duty American BBQ grill, stainless food prep tables, and picnic bench seating beneath forest canopies.',
-    image: '/img/bbq/bbq-01.webp',
+    image: '/img/outdoor-bbq-tea/outdoor-bbq-tea-09.webp',
     featuresZh: ['專業級大型美式厚鋼附蓋烤肉爐', '戶外獨立洗滌料理水槽與操作檯面', '庭園夜間照明營造溫馨聚會氣氛', '寬敞戶外休閒用餐長桌椅'],
     featuresEn: ['Heavy-duty American barrel smoker grill', 'Dedicated outdoor wash sink & food prep station', 'Atmospheric ambient warm courtyard lighting', 'Generous outdoor dining picnic tables'],
-    gallery: ['/img/bbq/bbq-01.webp', '/img/bbq/bbq-02.webp', '/img/bbq/bbq-03.webp', '/img/bbq/bbq-04.webp']
+    gallery: ['/img/outdoor-bbq-tea/outdoor-bbq-tea-09.webp', '/img/outdoor-bbq-tea/outdoor-bbq-tea-10.webp', '/img/outdoor-bbq-tea/outdoor-bbq-tea-08.webp']
   },
   {
     id: 'tea-ceremony',
@@ -51,10 +51,21 @@ const INITIAL_FACILITIES = [
     titleEn: 'Scenic Mountain Tea Tasting Lounge',
     descZh: '特別規劃的景觀茶席空間，備有典雅精緻茶具與山泉水快煮設備。在雲霧繚繞中細細品嚐高山冷泡茶或東方美人茶，沉澱心靈享受隱逸慢時光。',
     descEn: 'A tranquil space dedicated to slow tea appreciation, complete with handcrafted ceramic tea ware, overlooking panoramic mountain mists.',
-    image: '/img/tea/tea-01.webp',
+    image: '/img/outdoor-bbq-tea/outdoor-bbq-tea-03.webp',
     featuresZh: ['典雅手作陶藝高山品茗茶具組', '專屬山景茶席座位，採光清幽恬靜', '附贈苗栗在地特產精選高山冷泡茶葉', '適合三五好友午後靜心對談'],
     featuresEn: ['Handcrafted ceramic tea set with pot and cups', 'Sun-drenched scenic seating with forest views', 'Complimentary local Miaoli specialty mountain tea', 'Perfect for mindful conversations and serene afternoons'],
-    gallery: ['/img/tea/tea-01.webp', '/img/tea/tea-02.webp', '/img/tea/tea-03.webp', '/img/tea/tea-04.webp']
+    gallery: ['/img/outdoor-bbq-tea/outdoor-bbq-tea-03.webp', '/img/outdoor-bbq-tea/outdoor-bbq-tea-04.webp', '/img/outdoor-bbq-tea/outdoor-bbq-tea-06.webp', '/img/outdoor-bbq-tea/outdoor-bbq-tea-02.webp']
+  },
+  {
+    id: 'viewing-deck',
+    titleZh: '觀景木棧露台與璀璨星夜',
+    titleEn: 'Panoramic Viewing Deck & Starlight Terrace',
+    descZh: '寬敞的戶外木棧觀景露台，白天盡覽群山起伏與漫漫雲海，入夜後微光倒影輝映漫天星空，為您營造最浪漫沉靜的山居慢活時光。',
+    descEn: 'Spacious timber viewing terrace offering panoramic vistas of rolling mountains and cloud sea by day, and star-studded skies by night.',
+    image: '/img/homebanner/homebanner-02.webp',
+    featuresZh: ['全景開闊無遮蔽山巒視野', '戶外高架景觀木棧平台', '無光害夜間觀星與倒影氛圍', '晨曦日出與夕陽彩霞暮色'],
+    featuresEn: ['Panoramic unobstructed mountain views', 'Elevated timber viewing terrace', 'Zero light pollution stargazing', 'Sunrise mist & crimson sunset twilight'],
+    gallery: ['/img/homebanner/homebanner-02.webp', '/img/cloud-sea/cloud-sea-01.webp', '/img/scenery-night/scenery-night-02.webp', '/img/scenery-night/scenery-night-01.webp']
   }
 ]
 
