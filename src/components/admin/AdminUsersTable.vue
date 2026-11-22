@@ -150,10 +150,20 @@ const formatDateTime = (val) => {
 .table-responsive {
   width: 100%;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+
+  &::-webkit-scrollbar {
+    height: 6px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: var(--admin-border, rgba(212, 175, 55, 0.3));
+    border-radius: 3px;
+  }
 }
 
 .users-table {
   width: 100%;
+  min-width: 680px;
   border-collapse: collapse;
   text-align: left;
   font-size: 0.85rem;

@@ -86,6 +86,7 @@ defineExpose({ refresh: fetchAuditLogs })
         <div class="bar-title">
           <Clock :size="18" class="text-gold" />
           <span>{{ getCategoryLabel(category).label }} 審計紀錄 (共 {{ logs.length }} 筆)</span>
+          <span class="scroll-hint-text">↔ 可左右滑動</span>
         </div>
         <button class="btn-refresh-sm" @click="fetchAuditLogs" :disabled="isLoading">
           <RefreshCw :size="13" :class="{ 'spin-anim': isLoading }" />
@@ -93,7 +94,8 @@ defineExpose({ refresh: fetchAuditLogs })
         </button>
       </div>
 
-      <table class="admin-table">
+      <div class="table-responsive-wrapper">
+        <table class="admin-table">
         <thead>
           <tr>
             <th style="width: 10%;">日誌編號</th>
@@ -156,6 +158,7 @@ defineExpose({ refresh: fetchAuditLogs })
           </template>
         </tbody>
       </table>
+      </div>
 
       <Pagination
         v-if="logs.length > 0"
@@ -196,6 +199,16 @@ defineExpose({ refresh: fetchAuditLogs })
     font-weight: 600;
     color: var(--text-primary);
     font-size: 0.92rem;
+
+    .scroll-hint-text {
+      display: none;
+      font-size: 0.72rem;
+      color: var(--gold-primary);
+      background: rgba(200, 169, 110, 0.15);
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-weight: 500;
+    }
   }
 }
 
@@ -217,8 +230,23 @@ defineExpose({ refresh: fetchAuditLogs })
   }
 }
 
+.table-responsive-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+
+  &::-webkit-scrollbar {
+    height: 6px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 3px;
+  }
+}
+
 .admin-table {
   width: 100%;
+  min-width: 750px;
   border-collapse: collapse;
   font-size: 0.88rem;
 
@@ -351,5 +379,15 @@ defineExpose({ refresh: fetchAuditLogs })
 @keyframes spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
+}
+
+@media (max-width: 768px) {
+  .table-bar {
+    padding: 0.75rem 1rem;
+
+    .bar-title .scroll-hint-text {
+      display: inline-block;
+    }
+  }
 }
 </style>

@@ -198,4 +198,31 @@ const activeTabInfo = computed(() => {
     color: var(--text-muted);
   }
 }
+
+@media (max-width: 768px) {
+  .admin-page-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.85rem;
+
+    .page-title {
+      font-size: 1.25rem;
+    }
+  }
+
+  .logs-nav-tabs {
+    -webkit-overflow-scrolling: touch;
+    padding: 0.5rem;
+
+    .tab-btn {
+      padding: 0.55rem 0.95rem;
+      font-size: 0.8rem;
+    }
+  }
+
+  .tab-description-card {
+    padding: 0.65rem 0.85rem;
+    font-size: 0.8rem;
+  }
+}
 </style>

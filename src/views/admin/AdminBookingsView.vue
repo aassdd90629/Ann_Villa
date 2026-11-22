@@ -3,12 +3,11 @@ import { ref, onMounted } from 'vue'
 import { getAdminBookings, updateAdminBooking, clearTestBookings } from '../../services/adminService'
 import { usePagination } from '../../composables/usePagination'
 import { 
-  FileText, 
-  CheckCircle2, 
-  Eye, 
   RefreshCw, 
-  Trash2 
+  Trash2,
+  CheckCircle2
 } from 'lucide-vue-next'
+import AdminBookingsTable from '../../components/admin/AdminBookingsTable.vue'
 import AdminOrderDetailModal from '../../components/admin/AdminOrderDetailModal.vue'
 import Pagination from '../../components/common/Pagination.vue'
 
@@ -98,7 +97,7 @@ const handleClearTestBookings = async () => {
         <!-- 專屬 Demo 驗收清理按鈕 -->
         <button class="btn-clear-test" @click="handleClearTestBookings" title="Demo 結束後一鍵清空測試預約">
           <Trash2 :size="15" />
-          <span>一鍵清空測試訂單</span>
+          <span>Demo 結束一鍵清空測試單</span>
         </button>
 
         <button class="btn-refresh" @click="fetchBookings" :disabled="isLoading">
@@ -108,98 +107,31 @@ const handleClearTestBookings = async () => {
       </div>
     </div>
 
-    <!-- 成功提示 -->
+    <!-- 成功提示條 -->
     <div v-if="statusMessage" class="alert-success">
       <CheckCircle2 :size="16" />
       <span>{{ statusMessage }}</span>
     </div>
 
-    <!-- 訂單列表表格 -->
-    <div class="table-container">
-      <div class="table-bar">
-        <div class="bar-title">
-          <FileText :size="18" class="text-gold" />
-          <span>全部直訂單 (共 {{ bookings.length }} 筆)</span>
-        </div>
-      </div>
-
-      <table class="admin-table">
-        <thead>
-          <tr>
-            <th>訂單編號</th>
-            <th>訂房人</th>
-            <th>入住 / 退房日期</th>
-            <th>晚數 / 人數</th>
-            <th>總金額 / 50% 定金</th>
-            <th>定金狀態</th>
-            <th>訂單狀態</th>
-            <th>操作</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-if="isLoading">
-            <td colspan="8" class="text-center py-4">正在載入訂單資料...</td>
-          </tr>
-          <tr v-else-if="bookings.length === 0">
-            <td colspan="8" class="text-center py-4 text-muted">目前暫無任何直訂預約單</td>
-          </tr>
-          <tr v-for="b in paginatedItems" :key="b.id">
-            <td class="font-mono text-gold-light">{{ b.id }}</td>
-            <td>
-              <div class="guest-info-cell">
-                <span class="guest-name">{{ b.guest_name }}</span>
-                <span class="guest-phone">{{ b.guest_phone }}</span>
-              </div>
-            </td>
-            <td class="font-mono text-xs">
-              {{ b.check_in }} ~ {{ b.check_out }}
-            </td>
-            <td>{{ b.nights }} 晚・{{ b.guest_count }} 人</td>
-            <td>
-              <div class="price-cell">
-                <span class="total">NT$ {{ Number(b.total_amount).toLocaleString() }}</span>
-                <span class="deposit">定金 NT$ {{ Number(b.deposit_amount).toLocaleString() }}</span>
-              </div>
-            </td>
-            <td>
-              <span class="tag-deposit" :class="b.deposit_status === 'PAID' ? 'paid' : 'unpaid'">
-                {{ b.deposit_status === 'PAID' ? '定金已付' : '待付定金' }}
-              </span>
-            </td>
-            <td>
-              <span class="tag-status" :class="b.status?.toLowerCase()">
-                {{ b.status === 'CONFIRMED' ? '已確認' : (b.status === 'CANCELLED' ? '已取消' : '待確認') }}
-              </span>
-            </td>
-            <td class="actions-cell">
-              <button 
-                v-if="b.deposit_status !== 'PAID'"
-                class="btn-pay-sm" 
-                @click="handleMarkDepositPaid(b)"
-                title="確認定金入帳"
-              >
-                <CheckCircle2 :size="13" />
-                <span>收定</span>
-              </button>
-              <button class="btn-view-sm" @click="openDetail(b)" title="查看詳細資料">
-                <Eye :size="13" />
-                <span>詳情</span>
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-
-      <!-- 通用分頁控制列 -->
-      <Pagination
-        v-model:current-page="currentPage"
-        :total-pages="totalPages"
-        :total-items="totalItems"
-        :page-size="pageSize"
-        :start-index="startIndex"
-        :end-index="endIndex"
-      />
-    </div>
+    <!-- 直訂單表格組件 -->
+    <AdminBookingsTable
+      :bookings="paginatedItems"
+      :total-count="bookings.length"
+      :is-loading="isLoading"
+      @open-detail="openDetail"
+      @confirm-paid="handleMarkDepositPaid"
+    >
+      <template #pagination>
+        <Pagination
+          v-model:current-page="currentPage"
+          :total-pages="totalPages"
+          :total-items="totalItems"
+          :page-size="pageSize"
+          :start-index="startIndex"
+          :end-index="endIndex"
+        />
+      </template>
+    </AdminBookingsTable>
 
     <!-- 訂單詳細彈窗 -->
     <AdminOrderDetailModal 
@@ -290,135 +222,6 @@ const handleClearTestBookings = async () => {
   font-size: 0.85rem;
 }
 
-.table-container {
-  background: var(--admin-bg-card, #151f32);
-  border: 1px solid var(--admin-border, rgba(255, 255, 255, 0.08));
-  border-radius: 8px;
-  overflow: hidden;
-  transition: background-color 0.3s ease, border-color 0.3s ease;
-
-  .table-bar {
-    padding: 1rem 1.25rem;
-    border-bottom: 1px solid var(--admin-border, rgba(255, 255, 255, 0.08));
-
-    .bar-title {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-weight: 600;
-      color: var(--admin-text-main, #f1f5f9);
-      font-size: 0.95rem;
-      .text-gold { color: var(--gold-primary, #d4af37); }
-    }
-  }
-}
-
-.admin-table {
-  width: 100%;
-  border-collapse: collapse;
-  text-align: center;
-  font-size: 0.85rem;
-
-  th {
-    padding: 0.85rem 1.25rem;
-    background: var(--admin-th-bg, rgba(0, 0, 0, 0.2));
-    color: var(--admin-text-sub, #94a3b8);
-    font-weight: 500;
-    text-align: center;
-    vertical-align: middle;
-    border-bottom: 1px solid var(--admin-border, rgba(255, 255, 255, 0.08));
-  }
-
-  td {
-    padding: 0.9rem 1.25rem;
-    text-align: center;
-    vertical-align: middle;
-    border-bottom: 1px solid var(--admin-border, rgba(255, 255, 255, 0.05));
-    color: var(--admin-text-main, #e2e8f0);
-  }
-
-  tr:hover td { background: var(--admin-tr-hover, rgba(255, 255, 255, 0.02)); }
-
-  .text-center { text-align: center; }
-  .font-mono { font-family: monospace; }
-  .text-gold-light { color: var(--gold-primary, #f3e5ab); font-weight: 600; }
-  .text-muted { color: var(--admin-text-muted, #94a3b8); }
-  .text-xs { font-size: 0.78rem; }
-
-  .guest-info-cell {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    .guest-name { font-weight: 600; color: var(--admin-text-main, #f1f5f9); }
-    .guest-phone { font-size: 0.75rem; color: var(--admin-text-muted, #94a3b8); }
-  }
-
-  .price-cell {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    .total { font-weight: 600; color: var(--admin-text-main); }
-    .deposit { font-size: 0.75rem; color: var(--gold-primary, #d4af37); }
-  }
-
-  .tag-deposit {
-    padding: 0.2rem 0.5rem;
-    border-radius: 4px;
-    font-size: 0.72rem;
-    font-weight: 600;
-    &.paid { background: rgba(34, 197, 94, 0.15); color: #16a34a; border: 1px solid rgba(34, 197, 94, 0.3); }
-    &.unpaid { background: rgba(239, 68, 68, 0.15); color: #dc2626; border: 1px solid rgba(239, 68, 68, 0.3); }
-  }
-
-  .tag-status {
-    padding: 0.2rem 0.5rem;
-    border-radius: 4px;
-    font-size: 0.72rem;
-    font-weight: 600;
-    &.confirmed { background: rgba(34, 197, 94, 0.15); color: #16a34a; }
-    &.cancelled { background: rgba(239, 68, 68, 0.15); color: #dc2626; }
-    &.pending { background: rgba(234, 179, 8, 0.15); color: #ca8a04; }
-  }
-
-  .actions-cell {
-    display: flex;
-    justify-content: center;
-    gap: 0.4rem;
-
-    .btn-pay-sm {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.25rem;
-      padding: 0.3rem 0.6rem;
-      background: #16a34a;
-      color: #ffffff;
-      font-weight: 600;
-      border: none;
-      border-radius: 4px;
-      font-size: 0.75rem;
-      cursor: pointer;
-      &:hover { background: #15803d; }
-    }
-
-    .btn-view-sm {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.25rem;
-      padding: 0.3rem 0.6rem;
-      background: var(--admin-btn-secondary-bg, rgba(255, 255, 255, 0.08));
-      color: var(--admin-text-main, #cbd5e1);
-      border: 1px solid var(--admin-border, rgba(255, 255, 255, 0.15));
-      border-radius: 4px;
-      font-size: 0.75rem;
-      cursor: pointer;
-      &:hover { 
-        border-color: var(--gold-primary);
-        color: var(--gold-primary);
-      }
-    }
-  }
-}
-
 .spin-anim {
   animation: spin 0.8s linear infinite;
 }
@@ -427,5 +230,29 @@ const handleClearTestBookings = async () => {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
-</style>
 
+@media (max-width: 768px) {
+  .view-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.85rem;
+
+    .view-title {
+      font-size: 1.25rem;
+    }
+
+    .header-actions {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+
+      .btn-clear-test,
+      .btn-refresh {
+        justify-content: center;
+        padding: 0.6rem 0.5rem;
+        font-size: 0.82rem;
+      }
+    }
+  }
+}
+</style>

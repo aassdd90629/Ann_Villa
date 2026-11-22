@@ -89,4 +89,11 @@
     }
   }
 }
+
+@media (max-width: 640px) {
+  .role-overview-cards {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+}
 </style>

@@ -304,7 +304,6 @@ const handleLogin = async () => {
 
     &:hover:not(:disabled) {
       background: #dfbc46;
-      transform: translateY(-1px);
       box-shadow: 0 4px 15px rgba(212, 175, 55, 0.35);
     }
 
@@ -321,5 +320,25 @@ const handleLogin = async () => {
   font-size: 0.75rem;
   color: var(--admin-text-muted, #64748b);
   letter-spacing: 0.5px;
+}
+
+@media (max-width: 640px) {
+  .admin-login-wrapper {
+    padding: 1rem;
+  }
+
+  .login-theme-toggle {
+    top: 1rem;
+    right: 1rem;
+    padding: 0.4rem 0.6rem;
+
+    span {
+      display: none;
+    }
+  }
+
+  .login-card {
+    padding: 2rem 1.25rem;
+  }
 }
 </style>

@@ -439,4 +439,56 @@ const handlePasswordResetSaved = (payload) => {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+@media (max-width: 768px) {
+  .admin-page-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.85rem;
+
+    .page-title {
+      font-size: 1.25rem;
+    }
+
+    .btn-add-user {
+      justify-content: center;
+      width: 100%;
+    }
+  }
+
+  .users-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+
+    .toolbar-left {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0.75rem;
+
+      .search-box {
+        width: 100%;
+        .search-input {
+          width: 100%;
+        }
+      }
+
+      .role-filter-group {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 0.25rem;
+        flex-wrap: nowrap;
+
+        .filter-pill {
+          white-space: nowrap;
+        }
+      }
+    }
+
+    .btn-refresh {
+      justify-content: center;
+      width: 100%;
+    }
+  }
+}
 </style>

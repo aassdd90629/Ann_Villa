@@ -193,39 +193,42 @@ const {
         <div class="bar-title">
           <Lock :size="17" class="text-gold" />
           <span>目前已手動關閉之月曆檔期 (共 {{ manualClosedRanges.length }} 筆)</span>
+          <span class="scroll-hint-text">↔ 可左右滑動</span>
         </div>
       </div>
 
-      <table class="admin-table">
-        <thead>
-          <tr>
-            <th>關閉起始日</th>
-            <th>關閉結束日</th>
-            <th>晚數</th>
-            <th>自訂關閉理由說明</th>
-            <th>操作</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-if="manualClosedRanges.length === 0">
-            <td colspan="5" class="text-center py-4 text-muted">目前沒有任何手動關閉的月曆檔期，前台全部開放預訂</td>
-          </tr>
-          <tr v-for="item in paginatedItems" :key="item.id || item.uid">
-            <td class="font-mono text-gold-light">{{ item.startDate || item.start_date }}</td>
-            <td class="font-mono text-gold-light">{{ item.endDate || item.end_date }}</td>
-            <td>
-              {{ Math.max(1, Math.round((new Date(item.endDate || item.end_date) - new Date(item.startDate || item.start_date)) / (1000 * 60 * 60 * 24))) }} 晚
-            </td>
-            <td class="text-muted">{{ item.summary || '手動保留' }}</td>
-            <td>
-              <button class="btn-delete" @click="handleUnlockBlock(item)" title="解除關閉重新開放">
-                <Trash2 :size="14" />
-                <span>解除關閉 (開放)</span>
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="table-responsive-wrapper">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>關閉起始日</th>
+              <th>關閉結束日</th>
+              <th>晚數</th>
+              <th>自訂關閉理由說明</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-if="manualClosedRanges.length === 0">
+              <td colspan="5" class="text-center py-4 text-muted">目前沒有任何手動關閉的月曆檔期，前台全部開放預訂</td>
+            </tr>
+            <tr v-for="item in paginatedItems" :key="item.id || item.uid">
+              <td class="font-mono text-gold-light">{{ item.startDate || item.start_date }}</td>
+              <td class="font-mono text-gold-light">{{ item.endDate || item.end_date }}</td>
+              <td>
+                {{ Math.max(1, Math.round((new Date(item.endDate || item.end_date) - new Date(item.startDate || item.start_date)) / (1000 * 60 * 60 * 24))) }} 晚
+              </td>
+              <td class="text-muted">{{ item.summary || '手動保留' }}</td>
+              <td>
+                <button class="btn-delete" @click="handleUnlockBlock(item)" title="解除關閉重新開放">
+                  <Trash2 :size="14" />
+                  <span>解除關閉 (開放)</span>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
       <Pagination
         v-model:current-page="currentPage"
@@ -323,7 +326,7 @@ const {
 
 .two-months-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 1.25rem;
 }
 
@@ -344,11 +347,36 @@ const {
       font-weight: 600;
       color: var(--admin-text-main, #1A1E1F);
       font-size: 0.95rem;
+
+      .scroll-hint-text {
+        display: none;
+        font-size: 0.72rem;
+        color: var(--gold-dark, #91754F);
+        background: rgba(197, 168, 128, 0.2);
+        padding: 0.15rem 0.4rem;
+        border-radius: 4px;
+        font-weight: 500;
+      }
+    }
+  }
+
+  .table-responsive-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+
+    &::-webkit-scrollbar {
+      height: 6px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: var(--admin-border, rgba(197, 168, 128, 0.4));
+      border-radius: 3px;
     }
   }
 
   .admin-table {
     width: 100%;
+    min-width: 580px;
     border-collapse: collapse;
     font-size: 0.85rem;
 
@@ -359,6 +387,7 @@ const {
       background: var(--admin-th-bg, #EAE6DC);
       font-weight: 600;
       border-bottom: 1px solid var(--admin-border, rgba(197, 168, 128, 0.2));
+      white-space: nowrap;
     }
 
     td {
@@ -380,6 +409,7 @@ const {
     font-size: 0.75rem;
     font-weight: 500;
     cursor: pointer;
+    white-space: nowrap;
     transition: all 0.2s;
     &:hover {
       background: #dc2626;
@@ -394,4 +424,28 @@ const {
 .text-center { text-align: center; }
 .py-4 { padding-top: 1.5rem; padding-bottom: 1.5rem; }
 .font-mono { font-family: monospace; }
+
+@media (max-width: 768px) {
+  .view-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.85rem;
+
+    .view-title {
+      font-size: 1.25rem;
+    }
+  }
+
+  .two-months-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .table-container .table-bar {
+    padding: 0.75rem 1rem;
+
+    .bar-title .scroll-hint-text {
+      display: inline-block;
+    }
+  }
+}
 </style>

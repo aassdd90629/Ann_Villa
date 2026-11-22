@@ -330,5 +330,48 @@ const closeModal = () => {
     &:hover { border-color: var(--gold-primary); color: var(--gold-primary); }
   }
 }
+
+@media (max-width: 640px) {
+  .modal-overlay {
+    padding: 0.75rem;
+  }
+
+  .modal-card {
+    max-height: 94vh;
+    border-radius: 8px;
+  }
+
+  .modal-header {
+    padding: 1rem;
+  }
+
+  .modal-body {
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .status-summary-bar {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .section-card .info-grid {
+    grid-template-columns: 1fr;
+    gap: 0.35rem;
+  }
+
+  .modal-footer {
+    padding: 0.85rem 1rem;
+    flex-direction: column-reverse;
+    gap: 0.5rem;
+
+    .btn-action-paid,
+    .btn-close-modal {
+      width: 100%;
+      justify-content: center;
+      padding: 0.65rem;
+    }
+  }
+}
 </style>
 

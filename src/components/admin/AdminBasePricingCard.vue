@@ -238,4 +238,21 @@ const props = defineProps({
     margin: 0.5rem 0 0;
   }
 }
+
+@media (max-width: 640px) {
+  .pricing-card {
+    padding: 1.25rem 1rem;
+
+    .card-head-row {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+  }
+
+  .pricing-grid-cols {
+    grid-template-columns: 1fr;
+    gap: 0.85rem;
+  }
+}
 </style>

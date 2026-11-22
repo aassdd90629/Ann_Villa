@@ -50,6 +50,7 @@ const handleTriggerImport = () => {
       <div class="head-title">
         <CalendarDays :size="20" class="text-gold" />
         <h3>國定假日與連續假期專案價目表</h3>
+        <span class="scroll-hint-text">↔ 可左右滑動</span>
       </div>
 
       <!-- 右側動作區：政府行事曆快速匯入 + 手動新增 -->
@@ -189,6 +190,16 @@ const handleTriggerImport = () => {
         font-weight: 700;
         color: var(--text-primary);
       }
+
+      .scroll-hint-text {
+        display: none;
+        font-size: 0.72rem;
+        color: var(--gold-primary);
+        background: rgba(200, 169, 110, 0.15);
+        padding: 0.15rem 0.4rem;
+        border-radius: 4px;
+        font-weight: 500;
+      }
     }
   }
 
@@ -270,11 +281,22 @@ const handleTriggerImport = () => {
 }
 
 .table-responsive {
+  width: 100%;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+
+  &::-webkit-scrollbar {
+    height: 6px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 3px;
+  }
 }
 
 .admin-pricing-table {
   width: 100%;
+  min-width: 700px;
   border-collapse: collapse;
   font-size: 0.88rem;
 
@@ -382,6 +404,43 @@ const handleTriggerImport = () => {
     &:hover {
       color: #ef4444;
       background: rgba(239, 68, 68, 0.1);
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .holidays-card {
+    padding: 1.25rem 1rem;
+
+    .card-head-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0.75rem;
+
+      .head-title .scroll-hint-text {
+        display: inline-block;
+      }
+    }
+
+    .card-actions-group {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0.5rem;
+
+      .gov-import-box {
+        width: 100%;
+        justify-content: space-between;
+
+        .btn-gov-import {
+          flex: 1;
+          justify-content: center;
+        }
+      }
+
+      .btn-add {
+        width: 100%;
+        justify-content: center;
+      }
     }
   }
 }

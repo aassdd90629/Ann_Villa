@@ -256,5 +256,36 @@ const handleCreateBlock = async () => {
     }
   }
 }
+
+@media (max-width: 640px) {
+  .modal-overlay {
+    padding: 0.75rem;
+  }
+
+  .modal-card {
+    padding: 1.25rem 1rem;
+    max-height: 94vh;
+    overflow-y: auto;
+  }
+
+  .modal-form {
+    .grid-dates {
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+    }
+
+    .modal-actions {
+      flex-direction: column-reverse;
+      gap: 0.5rem;
+
+      .btn-cancel,
+      .btn-submit {
+        width: 100%;
+        text-align: center;
+        padding: 0.75rem;
+      }
+    }
+  }
+}
 </style>
 

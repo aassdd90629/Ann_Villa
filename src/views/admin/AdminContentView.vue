@@ -389,4 +389,31 @@ const handleModalSaved = () => {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+@media (max-width: 768px) {
+  .admin-page-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.85rem;
+
+    .page-title {
+      font-size: 1.25rem;
+    }
+
+    .btn-refresh {
+      justify-content: center;
+      width: 100%;
+    }
+  }
+
+  .content-nav-tabs {
+    -webkit-overflow-scrolling: touch;
+    padding: 0.35rem;
+
+    .tab-btn {
+      padding: 0.5rem 0.85rem;
+      font-size: 0.8rem;
+    }
+  }
+}
 </style>
