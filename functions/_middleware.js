@@ -19,13 +19,32 @@ async function generateSignature(password) {
 }
 
 // 產生高奢山語質感的解鎖 HTML
-function renderUnlockPage(errorMessage = '', returnUrl = '/') {
+function renderUnlockPage(errorMessage = '', returnUrl = '/', origin = 'https://ann-villa.pages.dev') {
   return `<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>山語 Villa ｜ 專案驗收展示門禁</title>
+  <title>山語 Villa 豪宅山莊包棟別墅｜頂級山林奢華隱逸</title>
+  <meta name="description" content="山語 Villa 豪宅山莊包棟別墅，坐落於山嵐雲海之間，提供 4 間獨立景觀奢華套房、無邊際山景泳池、日式石造溫泉湯屋與星空劇院，為您打造極致東方隱逸度假體驗。">
+
+  <!-- 社群分享預覽卡片 (Open Graph / LINE / Facebook) -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="${origin}/">
+  <meta property="og:title" content="山語 Villa 豪宅山莊包棟別墅｜頂級山林奢華隱逸">
+  <meta property="og:description" content="山語 Villa 豪宅山莊包棟別墅，坐落於山嵐雲海之間，提供 4 間獨立景觀奢華套房、無邊際山景泳池、日式石造溫泉湯屋與星空劇院，為您打造極致東方隱逸度假體驗。">
+  <meta property="og:image" content="${origin}/img/og-cover.jpg">
+  <meta property="og:image:secure_url" content="${origin}/img/og-cover.jpg">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="山語 Villa 豪宅山莊包棟別墅">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="山語 Villa 豪宅山莊包棟別墅｜頂級山林奢華隱逸">
+  <meta name="twitter:description" content="山語 Villa 豪宅山莊包棟別墅，坐落於山嵐雲海之間，提供 4 間獨立景觀奢華套房、無邊際山景泳池、日式石造溫泉湯屋與星空劇院，為您打造極致東方隱逸度假體驗。">
+  <meta name="twitter:image" content="${origin}/img/og-cover.jpg">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -207,6 +226,17 @@ export async function onRequest(context) {
     return next();
   }
 
+  // 2.1 社群分享爬蟲放行 (LINE, Facebook, Twitter, Discord, Telegram 等抓取 OG 預覽卡片)
+  const userAgent = request.headers.get('User-Agent') || '';
+  const isSocialCrawler = /facebookexternalhit|Facebot|LineBot|Twitterbot|LinkedInBot|TelegramBot|Discordbot|WhatsApp|Pinterest|Slackbot/i.test(userAgent);
+  if (isSocialCrawler) {
+    const response = await next();
+    if (response.status === 404 && request.headers.get('accept')?.includes('text/html') && env.ASSETS) {
+      return env.ASSETS.fetch(new URL('/', request.url));
+    }
+    return response;
+  }
+
   const validSignature = await generateSignature(expectedPassword);
 
   // 3. 處理密碼提交 POST /__site_unlock
@@ -228,7 +258,7 @@ export async function onRequest(context) {
       } else {
         // 密碼錯誤，重新渲染解鎖頁並帶錯誤提示
         return new Response(
-          renderUnlockPage('通關密碼錯誤，請重新確認後再試。', returnUrl),
+          renderUnlockPage('通關密碼錯誤，請重新確認後再試。', returnUrl, url.origin),
           { status: 401, headers: { 'Content-Type': 'text/html; charset=utf-8' } }
         );
       }
@@ -265,7 +295,7 @@ export async function onRequest(context) {
 
   // 6. 其他頁面請求 (HTML)，攔截並渲染展示解鎖頁
   return new Response(
-    renderUnlockPage('', pathname + url.search),
+    renderUnlockPage('', pathname + url.search, url.origin),
     { status: 200, headers: { 'Content-Type': 'text/html; charset=utf-8' } }
   );
 }
