@@ -1,9 +1,9 @@
 <script setup>
 import { ref } from 'vue'
 import { useI18n } from '../composables/useI18n'
+import { useGuide } from '../composables/useGuide'
+import { useSiteContent } from '../composables/useSiteContent'
 import PageHeader from '../components/common/PageHeader.vue'
-import guideData from '../data/guide.json'
-import siteData from '../data/site.json'
 import { 
   Car, 
   Train, 
@@ -18,6 +18,8 @@ import {
 } from 'lucide-vue-next'
 
 const { isEn } = useI18n()
+const { guide: guideData } = useGuide()
+const { basicInfo: siteData } = useSiteContent()
 const activeTab = ref('all') // 'all', 'attractions', 'dining'
 </script>
 

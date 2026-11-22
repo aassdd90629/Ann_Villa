@@ -116,6 +116,9 @@ async function main() {
     bookedRanges: events
   };
 
+  if (!fs.existsSync(path.dirname(outputPath))) {
+    fs.mkdirSync(path.dirname(outputPath), { recursive: true });
+  }
   fs.writeFileSync(outputPath, JSON.stringify(outputData, null, 2), 'utf8');
 
   console.log(`✅ 成功解析 ${events.length} 組 Airbnb 檔期事件！`);

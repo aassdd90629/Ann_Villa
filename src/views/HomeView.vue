@@ -1,11 +1,11 @@
 <script setup>
-import { defineAsyncComponent } from 'vue'
+import { ref, onMounted, defineAsyncComponent } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useI18n } from '../composables/useI18n'
-import siteData from '../data/site.json'
-import roomsData from '../data/rooms.json'
-import facilitiesData from '../data/facilities.json'
-import pricingData from '../data/pricing.json'
+import { useSiteContent } from '../composables/useSiteContent'
+import { useFacilities } from '../composables/useFacilities'
+import { useBookingPricing } from '../composables/useBookingPricing'
+import { getRooms } from '../services/roomService'
 import { 
   Users, 
   Sparkles, 
@@ -27,8 +27,16 @@ const AvailabilityCalendar = defineAsyncComponent(() => import('../components/bo
 const ImageGallery = defineAsyncComponent(() => import('../components/common/ImageGallery.vue'))
 
 const { isEn, t, tField } = useI18n()
+const { basicInfo: siteData } = useSiteContent()
+const { facilities: facilitiesData } = useFacilities()
+const { pricingData } = useBookingPricing()
 const { heroSlides, fetchMedia } = useMediaAssets()
 fetchMedia()
+
+const roomsData = ref([])
+onMounted(async () => {
+  roomsData.value = await getRooms()
+})
 </script>
 
 <template>

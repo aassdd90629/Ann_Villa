@@ -2,12 +2,11 @@
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { ChevronLeft, ChevronRight, Play, Pause, Info } from 'lucide-vue-next'
 import { useI18n } from '../../composables/useI18n'
-import defaultSlidesData from '../../data/hero-slides.json'
 
 const props = defineProps({
   slides: {
     type: Array,
-    default: () => defaultSlidesData
+    default: () => []
   },
   interval: {
     type: Number,

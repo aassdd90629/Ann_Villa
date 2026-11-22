@@ -1,12 +1,12 @@
 <script setup>
 import { useI18n } from '../composables/useI18n'
+import { useFacilities } from '../composables/useFacilities'
 import PageHeader from '../components/common/PageHeader.vue'
 import ImageGallery from '../components/common/ImageGallery.vue'
-import facilitiesData from '../data/facilities.json'
-import siteData from '../data/site.json'
 import { CheckCircle, Sparkles } from 'lucide-vue-next'
 
 const { isEn, tField } = useI18n()
+const { facilities: facilitiesData } = useFacilities()
 </script>
 
 <template>

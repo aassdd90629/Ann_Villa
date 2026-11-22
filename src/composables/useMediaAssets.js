@@ -1,7 +1,20 @@
-import { ref, computed } from 'vue'
-import defaultHeroSlides from '../data/hero-slides.json'
+import { ref } from 'vue'
 
-const heroSlides = ref([...defaultHeroSlides])
+const INITIAL_HERO_SLIDES = [
+  { id: 'slide-1', image: '/img/homebanner/homebanner-01.webp', titleZh: '星夜璀璨・豪宅山莊', titleEn: 'Luminous Nightscape Estate', tagZh: '莊園夜色', tagEn: 'Villa Nightscape', alt: '山語 Villa 豪宅山莊夜景' },
+  { id: 'slide-2', image: '/img/homebanner/homebanner-02.webp', titleZh: '露台晨曦・漫步雲海仙境', titleEn: 'Panoramic Viewing Deck & Morning Mist', tagZh: '觀景露台雲海', tagEn: 'Viewing Deck Vista', alt: '山語 Villa 觀景露台眺望壯闊雲海' },
+  { id: 'slide-3', image: '/img/homebanner/homebanner-03.webp', titleZh: '群山環繞・自然田園風光', titleEn: 'Scenic Mountain Countryside', tagZh: '自然景致', tagEn: 'Nature & Orchard', alt: '山語 Villa 周邊自然景致' },
+  { id: 'slide-4', image: '/img/homebanner/homebanner-04.webp', titleZh: '山嵐漫漫・壯闊縹緲雲海', titleEn: 'Sea of Clouds & Mountain Mist', tagZh: '壯闊雲海', tagEn: 'Sea of Clouds', alt: '山語 Villa 雲海繚繞絕景' },
+  { id: 'slide-5', image: '/img/homebanner/homebanner-05.webp', titleZh: '開闊綠意・專屬青翠草坪', titleEn: 'Expansive Private Green Lawn', tagZh: '戶外休閒草坪', tagEn: 'Private Lawn', alt: '山語 Villa 綠意庭園草坪' },
+  { id: 'slide-6', image: '/img/homebanner/homebanner-06.webp', titleZh: '晚霞如畫・落日彩霞暮色', titleEn: 'Twilight Glow & Crimson Sunset', tagZh: '落日彩霞', tagEn: 'Sunset Twilight', alt: '山語 Villa 傍晚夕陽滿天彩霞' },
+  { id: 'slide-7', image: '/img/homebanner/homebanner-07.webp', titleZh: '夜色微光・漫步翠綠草坡', titleEn: 'Illuminated Gardens & Hillside Lawn', tagZh: '草坡夜間光影', tagEn: 'Night Garden Lights', alt: '山語 Villa 夜間莊園草坡與暖光造景' },
+  { id: 'slide-8', image: '/img/homebanner/homebanner-08.webp', titleZh: '半戶外露台・品茗眺望群山', titleEn: 'Covered Viewing Terrace & Tea Lounge', tagZh: '戶外景觀座席', tagEn: 'Scenic Tea Terrace', alt: '山語 Villa 半戶外景觀座席眺望群山' },
+  { id: 'slide-9', image: '/img/homebanner/homebanner-09.webp', titleZh: '氣派迴廊・開闊休閒木棧平台', titleEn: 'Expansive Veranda & Timber Deck', tagZh: '莊園景觀迴廊', tagEn: 'Grand Veranda & Deck', alt: '山語 Villa 寬闊景觀迴廊與戶外木棧平台' },
+  { id: 'slide-10', image: '/img/homebanner/homebanner-10.webp', titleZh: '晴空莊園・石砌門廊與翠綠庭園', titleEn: 'Sunlit Stone Veranda & Garden Patio', tagZh: '晴日莊園外觀', tagEn: 'Sunny Estate Exterior', alt: '山語 Villa 晴空下石砌外觀迴廊與戶外庭園草坪' },
+  { id: 'slide-11', image: '/img/homebanner/homebanner-11.webp', titleZh: '晴日木棧露台・石柱長廊遠眺群巒', titleEn: 'Sunlit Timber Deck & Mountain Corridor', tagZh: '晴空觀景長廊', tagEn: 'Sunlit Veranda Deck', alt: '山語 Villa 晴空下寬敞木棧觀景露台與石柱長廊' }
+]
+
+const heroSlides = ref([...INITIAL_HERO_SLIDES])
 const roomMedia = ref([])
 const facilityMedia = ref([])
 const isLoaded = ref(false)
@@ -38,10 +51,15 @@ export function useMediaAssets() {
         }
       }
     } catch (err) {
-      console.warn('載入動態媒體庫失敗，使用靜態備援:', err)
+      console.warn('[useMediaAssets] 載入動態媒體庫失敗，保持預設資源:', err)
     } finally {
       isLoading.value = false
     }
+  }
+
+  // 自動同步一次
+  if (!isLoaded.value && !isLoading.value) {
+    fetchMedia()
   }
 
   return {

@@ -1,6 +1,6 @@
 <script setup>
 import { useI18n } from '../../composables/useI18n'
-import channelsData from '../../data/channels.json'
+import { useSiteContent } from '../../composables/useSiteContent'
 import { 
   ShieldCheck, 
   CheckCircle2, 
@@ -11,6 +11,7 @@ import {
 } from 'lucide-vue-next'
 
 const { isEn } = useI18n()
+const { channelsInfo } = useSiteContent()
 </script>
 
 <template>
@@ -24,7 +25,7 @@ const { isEn } = useI18n()
           <h4>{{ isEn ? 'Direct Booking Privileges' : '山語 Villa 官方直訂專屬禮遇' }}</h4>
         </div>
         <ul class="perks-list">
-          <li v-for="(perk, idx) in (isEn ? channelsData.directBooking.perksEn : channelsData.directBooking.perksZh)" :key="idx">
+          <li v-for="(perk, idx) in (isEn ? channelsInfo.directBooking.perksEn : channelsInfo.directBooking.perksZh)" :key="idx">
             <CheckCircle2 :size="14" class="check-icon" />
             <span>{{ perk }}</span>
           </li>
@@ -75,7 +76,7 @@ const { isEn } = useI18n()
       <span class="ota-title">{{ isEn ? 'Official OTA Partner' : '亦可在官方 Airbnb 預約：' }}</span>
       <div class="ota-links">
         <a 
-          v-for="ota in channelsData.otaPlatforms" 
+          v-for="ota in channelsInfo.otaPlatforms" 
           :key="ota.id" 
           :href="ota.url" 
           target="_blank" 

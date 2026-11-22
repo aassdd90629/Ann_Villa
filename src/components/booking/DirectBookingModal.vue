@@ -2,7 +2,6 @@
 import { ref } from 'vue'
 import { useI18n } from '../../composables/useI18n'
 import { useSiteContent } from '../../composables/useSiteContent'
-import siteData from '../../data/site.json'
 import { submitOnlineBooking } from '../../services/bookingService'
 
 const { basicInfo, formattedBankInfo, fetchContent } = useSiteContent()

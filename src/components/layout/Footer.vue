@@ -1,7 +1,7 @@
 <script setup>
 import { RouterLink } from 'vue-router'
 import { useI18n } from '../../composables/useI18n'
-import siteData from '../../data/site.json'
+import { useSiteContent } from '../../composables/useSiteContent'
 import BookingButton from '../common/BookingButton.vue'
 import { 
   Phone, 
@@ -13,6 +13,7 @@ import {
 } from 'lucide-vue-next'
 
 const { isEn, t } = useI18n()
+const { basicInfo: siteData } = useSiteContent()
 
 const navLinks = [
   { path: '/', labelKey: 'nav.home' },

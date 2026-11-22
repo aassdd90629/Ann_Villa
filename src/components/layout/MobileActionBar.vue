@@ -1,10 +1,11 @@
 <script setup>
 import { useI18n } from '../../composables/useI18n'
-import siteData from '../../data/site.json'
+import { useSiteContent } from '../../composables/useSiteContent'
 import BookingButton from '../common/BookingButton.vue'
 import { Phone, MessageSquare, MapPin } from 'lucide-vue-next'
 
 const { t } = useI18n()
+const { basicInfo: siteData } = useSiteContent()
 </script>
 
 <template>

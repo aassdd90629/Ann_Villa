@@ -3,7 +3,6 @@ import { useI18n } from '../composables/useI18n'
 import { useSiteContent } from '../composables/useSiteContent'
 import PageHeader from '../components/common/PageHeader.vue'
 import BookingButton from '../components/common/BookingButton.vue'
-import siteData from '../data/site.json'
 import { Calendar, Tag, ArrowRight, Sparkles } from 'lucide-vue-next'
 
 const { isEn } = useI18n()

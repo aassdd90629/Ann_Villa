@@ -1,7 +1,6 @@
 <script setup>
 import { useI18n } from '../../composables/useI18n'
 import { WEEKDAY_TIERS } from '../../composables/useBookingPricing'
-import pricingData from '../../data/pricing.json'
 import { 
   Sparkles, 
   Users, 
@@ -134,8 +133,8 @@ const handleIncrement = () => {
           <span>NT$ {{ (calculation.weekdayNights * (calculation.weekdayUnitPrice || 20000)).toLocaleString() }}</span>
         </div>
         <div v-if="calculation.weekendNights > 0" class="calc-row sub">
-          <span>{{ isEn ? 'Regular Weekend (Fri-Sun)' : '一般假日 (週五~週日)' }} ({{ calculation.weekendNights }} {{ t('calendar.nights') }} × NT$ {{ pricingData.exclusivePackage.weekend.toLocaleString() }}・含早餐)</span>
-          <span>NT$ {{ (calculation.weekendNights * pricingData.exclusivePackage.weekend).toLocaleString() }}</span>
+          <span>{{ isEn ? 'Regular Weekend (Fri-Sun)' : '一般假日 (週五~週日)' }} ({{ calculation.weekendNights }} {{ t('calendar.nights') }} × NT$ {{ (calculation.weekendUnitPrice || 35000).toLocaleString() }}・含早餐)</span>
+          <span>NT$ {{ (calculation.weekendNights * (calculation.weekendUnitPrice || 35000)).toLocaleString() }}</span>
         </div>
         <div v-if="calculation.holidayNights > 0" class="calc-row sub highlight-holiday">
           <span>{{ isEn ? 'Consecutive Holidays' : '國定連續假期' }} ({{ calculation.holidayNights }} {{ t('calendar.nights') }}・含早餐除過年外)</span>

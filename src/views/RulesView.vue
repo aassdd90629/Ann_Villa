@@ -3,7 +3,6 @@ import { useI18n } from '../composables/useI18n'
 import { useSiteContent } from '../composables/useSiteContent'
 import PageHeader from '../components/common/PageHeader.vue'
 import Accordion from '../components/common/Accordion.vue'
-import rulesData from '../data/rules.json'
 import { 
   ShieldCheck, 
   AlertCircle, 
@@ -12,7 +11,7 @@ import {
 } from 'lucide-vue-next'
 
 const { isEn } = useI18n()
-const { faqList, fetchContent } = useSiteContent()
+const { rulesInfo: rulesData, faqList, fetchContent } = useSiteContent()
 fetchContent()
 </script>
 

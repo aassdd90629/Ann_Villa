@@ -1,10 +1,10 @@
 <script setup>
+import { ref, onMounted } from 'vue'
 import { useI18n } from '../composables/useI18n'
 import PageHeader from '../components/common/PageHeader.vue'
 import BookingButton from '../components/common/BookingButton.vue'
 import ImageGallery from '../components/common/ImageGallery.vue'
-import roomsData from '../data/rooms.json'
-import siteData from '../data/site.json'
+import { getRooms } from '../services/roomService'
 import { 
   Users, 
   Bed, 
@@ -15,6 +15,11 @@ import {
 } from 'lucide-vue-next'
 
 const { isEn, t, tField } = useI18n()
+const roomsData = ref([])
+
+onMounted(async () => {
+  roomsData.value = await getRooms()
+})
 </script>
 
 <template>

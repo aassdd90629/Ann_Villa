@@ -3,8 +3,8 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { useI18n } from '../../composables/useI18n'
 import { useTheme } from '../../composables/useTheme'
+import { useSiteContent } from '../../composables/useSiteContent'
 import BookingButton from '../common/BookingButton.vue'
-import siteData from '../../data/site.json'
 import { 
   Menu, 
   X, 
@@ -18,6 +18,7 @@ import {
 
 const { isEn, toggleLocale, t } = useI18n()
 const { theme, toggleTheme } = useTheme()
+const { basicInfo } = useSiteContent()
 const route = useRoute()
 
 const isScrolled = ref(false)
@@ -65,12 +66,12 @@ onUnmounted(() => {
       <RouterLink to="/" class="brand-logo" @click="closeMobileMenu" aria-label="山語 Villa 首頁">
         <img 
           src="/img/logo-dark.png" 
-          :alt="siteData.brandNameZh" 
+          :alt="basicInfo.brandNameZh" 
           class="brand-logo-img logo-dark-version" 
         />
         <img 
           src="/img/logo-white.png" 
-          :alt="siteData.brandNameZh" 
+          :alt="basicInfo.brandNameZh" 
           class="brand-logo-img logo-white-version" 
         />
       </RouterLink>
@@ -138,12 +139,12 @@ onUnmounted(() => {
           <div class="drawer-brand">
             <img 
               src="/img/logo-dark.png" 
-              :alt="siteData.brandNameZh" 
+              :alt="basicInfo.brandNameZh" 
               class="drawer-logo-img logo-dark-version" 
             />
             <img 
               src="/img/logo-white.png" 
-              :alt="siteData.brandNameZh" 
+              :alt="basicInfo.brandNameZh" 
               class="drawer-logo-img logo-white-version" 
             />
           </div>

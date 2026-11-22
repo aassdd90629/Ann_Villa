@@ -1,9 +1,7 @@
-import siteData from '../data/site.json';
-
 /**
- * 預約行為處理器 (Phase 1 為 Phase 2 鋪路規範)
+ * 預約行為處理器 (100% 資料庫驅動，已移除 site.json 依賴)
  * 
- * 組件內嚴禁直接 hardcode 跳轉連結，一律透過此函式處理預約行為。
+ * 組件內一律透過此函式處理預約行為與送單。
  * 
  * @param {Object} options
  * @param {string} [options.roomId] 房型 ID (例如: room-01)
@@ -11,19 +9,18 @@ import siteData from '../data/site.json';
  * @param {string} [options.checkIn] 入住日 (標準格式: YYYY-MM-DD)
  * @param {string} [options.checkOut] 退房日 (標準格式: YYYY-MM-DD)
  * @param {number} [options.guests] 入住人數
+ * @param {string} [options.lineUrl] 官方 LINE 連結
  */
 export function handleBookingAction(options = {}) {
-  // 🚀 Phase 1 (純前端先行版): 組裝 LINE 洽詢範本並開啟 LINE
   const roomName = options.roomTitle || options.roomId || '全區尊榮包棟';
   const dates = options.checkIn ? `${options.checkIn} 至 ${options.checkOut || ''}` : '檔期洽詢';
   const guests = options.guests ? `${options.guests} 位` : '依方案人數';
 
   const text = `您好，我想洽詢山語 Villa 預約諮詢：\n【諮詢項目】：${roomName}\n【預計入住日期】：${dates}\n【預計入住人數】：${guests}`;
-  const targetUrl = `${siteData.lineUrl}?text=${encodeURIComponent(text)}`;
+  const baseLineUrl = options.lineUrl || 'https://line.me/R/ti/p/@209yrich';
+  const targetUrl = `${baseLineUrl}?text=${encodeURIComponent(text)}`;
 
   window.open(targetUrl, '_blank', 'noopener,noreferrer');
-
-  // ⚙️ Phase 2 (第二版擴充): 若啟用線上訂房，可直接呼叫 submitOnlineBooking
 }
 
 /**
@@ -50,13 +47,11 @@ export async function submitOnlineBooking(data) {
     });
 
     const result = await res.json();
-    if (!res.ok) {
-      throw new Error(result.message || `預約失敗 (HTTP ${res.status})`);
-    }
-
     return result;
   } catch (err) {
-    console.error('[BookingService] 線上送單失敗:', err);
-    throw err;
+    return {
+      success: false,
+      message: err.message || '網路連線失敗，請檢查網路後重試'
+    };
   }
 }

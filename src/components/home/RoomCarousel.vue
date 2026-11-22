@@ -2,13 +2,12 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useI18n } from '../../composables/useI18n'
 import RoomVerticalCard from './RoomVerticalCard.vue'
-import defaultRoomsData from '../../data/rooms.json'
 import { Sparkles, Pause, Play } from 'lucide-vue-next'
 
 const props = defineProps({
   rooms: {
     type: Array,
-    default: () => defaultRoomsData
+    default: () => []
   },
   interval: {
     type: Number,

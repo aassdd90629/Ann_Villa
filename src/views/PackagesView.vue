@@ -1,8 +1,9 @@
 <script setup>
+import { computed } from 'vue'
 import { useI18n } from '../composables/useI18n'
+import { useBookingPricing } from '../composables/useBookingPricing'
 import PageHeader from '../components/common/PageHeader.vue'
 import BookingButton from '../components/common/BookingButton.vue'
-import pricingData from '../data/pricing.json'
 import { 
   Sparkles, 
   Users, 
@@ -15,7 +16,8 @@ import {
 import AvailabilityCalendar from '../components/booking/AvailabilityCalendar.vue'
 
 const { isEn } = useI18n()
-const pkg = pricingData.exclusivePackage
+const { pricingData } = useBookingPricing()
+const pkg = computed(() => pricingData.value.exclusivePackage)
 </script>
 
 <template>
