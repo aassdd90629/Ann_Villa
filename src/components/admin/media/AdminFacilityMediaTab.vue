@@ -23,6 +23,20 @@ const facilityPresets = [
   { id: 'bbq', nameZh: '戶外庭院專業美式 BBQ 烤肉區' },
   { id: 'tea', nameZh: '高山山景品茗賞景茶席' }
 ]
+
+const handleImageError = (e, asset) => {
+  const fallbacks = {
+    'living-ktv': '/img/living-ktv/living-ktv-01.webp',
+    'mahjong': '/img/living-ktv/living-ktv-04.webp',
+    'kitchen': '/img/kitchen-bar/kitchen-bar-06.webp',
+    'bbq': '/img/outdoor-bbq-tea/outdoor-bbq-tea-09.webp',
+    'tea': '/img/outdoor-bbq-tea/outdoor-bbq-tea-03.webp'
+  }
+  const fallbackSrc = asset?.subCategory ? fallbacks[asset.subCategory] : null
+  if (fallbackSrc && !e.target.src.endsWith(fallbackSrc)) {
+    e.target.src = fallbackSrc
+  }
+}
 </script>
 
 <template>
@@ -62,7 +76,12 @@ const facilityPresets = [
             :class="{ inactive: !asset.isActive }"
           >
             <div class="thumb-box">
-              <img :src="asset.cdnUrl" :alt="asset.titleZh" />
+              <img 
+                :src="asset.cdnUrl" 
+                :alt="asset.titleZh" 
+                @error="(e) => handleImageError(e, asset)"
+                loading="lazy"
+              />
               <button 
                 type="button" 
                 class="status-dot" 

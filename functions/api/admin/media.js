@@ -72,12 +72,34 @@ async function ensureMediaAssetsTable(db) {
           ('room-04-cover', 'room', 'room-4', '2F 星空露台四人套房 (封面主圖)', '2F Starlight Terrace Quad Suite Cover', '2F 四人房', '2F Quad', '/img/room-4/room-4-01.webp', 4, 1),
           ('room-05-cover', 'room', 'room-5', '2F 晨曦觀景四人套房 (封面主圖)', '2F Dawn Mountain View Quad Suite Cover', '2F 四人房', '2F Quad', '/img/room-5/room-5-01.webp', 5, 1),
           ('fac-ktv-01', 'facility', 'living-ktv', 'Grand Lounge 奢華客廳與 KTV 劇院', 'Grand Lounge & KTV Entertainment', '客廳KTV', 'KTV Lounge', '/img/living-ktv/living-ktv-01.webp', 1, 1),
-          ('fac-mahjong-01', 'facility', 'mahjong', '頂級電動過山車麻將娛樂室', 'Automatic Mahjong Table Experience', '電動麻將', 'Mahjong', '/img/mahjong/mahjong-01.webp', 2, 1),
-          ('fac-kitchen-01', 'facility', 'kitchen', '中島開放式智能廚房與吧檯', 'Open Island Kitchen & Bar', '智能廚房', 'Kitchen', '/img/kitchen/kitchen-01.webp', 3, 1),
-          ('fac-bbq-01', 'facility', 'bbq', '戶外庭院專業美式 BBQ 烤肉區', 'Outdoor Courtyard Premium BBQ', '美式烤肉', 'BBQ Courtyard', '/img/bbq/bbq-01.webp', 4, 1),
-          ('fac-tea-01', 'facility', 'tea', '高山山景品茗賞景茶席', 'Scenic Mountain Tea Ceremony Pavilion', '品茗茶席', 'Tea Pavilion', '/img/tea/tea-01.webp', 5, 1)
+          ('fac-mahjong-01', 'facility', 'mahjong', '頂級電動過山車麻將娛樂室', 'Automatic Mahjong Table Experience', '電動麻將', 'Mahjong', '/img/living-ktv/living-ktv-04.webp', 2, 1),
+          ('fac-kitchen-01', 'facility', 'kitchen', '中島開放式智能廚房與吧檯', 'Open Island Kitchen & Bar', '智能廚房', 'Kitchen', '/img/kitchen-bar/kitchen-bar-06.webp', 3, 1),
+          ('fac-bbq-01', 'facility', 'bbq', '戶外庭院專業美式 BBQ 烤肉區', 'Outdoor Courtyard Premium BBQ', '美式烤肉', 'BBQ Courtyard', '/img/outdoor-bbq-tea/outdoor-bbq-tea-09.webp', 4, 1),
+          ('fac-tea-01', 'facility', 'tea', '高山山景品茗賞景茶席', 'Scenic Mountain Tea Ceremony Pavilion', '品茗茶席', 'Tea Pavilion', '/img/outdoor-bbq-tea/outdoor-bbq-tea-03.webp', 5, 1)
       `).run();
     }
+
+    // 自動自我修復舊版公設無效圖片路徑
+    await db.prepare(`
+      UPDATE media_assets 
+      SET cdn_url = '/img/living-ktv/living-ktv-04.webp', thumbnail_url = '/img/living-ktv/living-ktv-04.webp', updated_at = CURRENT_TIMESTAMP 
+      WHERE id = 'fac-mahjong-01' AND cdn_url LIKE '%/img/mahjong/%'
+    `).run();
+    await db.prepare(`
+      UPDATE media_assets 
+      SET cdn_url = '/img/kitchen-bar/kitchen-bar-06.webp', thumbnail_url = '/img/kitchen-bar/kitchen-bar-06.webp', updated_at = CURRENT_TIMESTAMP 
+      WHERE id = 'fac-kitchen-01' AND cdn_url LIKE '%/img/kitchen/%'
+    `).run();
+    await db.prepare(`
+      UPDATE media_assets 
+      SET cdn_url = '/img/outdoor-bbq-tea/outdoor-bbq-tea-09.webp', thumbnail_url = '/img/outdoor-bbq-tea/outdoor-bbq-tea-09.webp', updated_at = CURRENT_TIMESTAMP 
+      WHERE id = 'fac-bbq-01' AND cdn_url LIKE '%/img/bbq/%'
+    `).run();
+    await db.prepare(`
+      UPDATE media_assets 
+      SET cdn_url = '/img/outdoor-bbq-tea/outdoor-bbq-tea-03.webp', thumbnail_url = '/img/outdoor-bbq-tea/outdoor-bbq-tea-03.webp', updated_at = CURRENT_TIMESTAMP 
+      WHERE id = 'fac-tea-01' AND cdn_url LIKE '%/img/tea/%'
+    `).run();
   } catch (err) {
     console.warn('[AdminMedia] ensureMediaAssetsTable warning:', err.message);
   }
