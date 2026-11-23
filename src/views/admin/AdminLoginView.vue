@@ -60,12 +60,6 @@ const handleLogin = async () => {
         <span>{{ localError || errorMessage }}</span>
       </div>
 
-      <!-- Demo 展示提示 -->
-      <div class="alert-box warning">
-        <Lock :size="16" />
-        <span>展示驗收預設密碼：<code>ryan1123_Ann</code></span>
-      </div>
-
       <form @submit.prevent="handleLogin" class="login-form">
         <div class="form-item">
           <label class="form-label">管家管理員帳號</label>
@@ -219,20 +213,6 @@ const handleLogin = async () => {
     background: rgba(239, 68, 68, 0.12);
     border: 1px solid rgba(239, 68, 68, 0.3);
     color: #dc2626;
-  }
-
-  &.warning {
-    background: rgba(234, 179, 8, 0.12);
-    border: 1px solid rgba(234, 179, 8, 0.3);
-    color: #ca8a04;
-
-    code {
-      background: rgba(0, 0, 0, 0.15);
-      padding: 0.1rem 0.3rem;
-      border-radius: 3px;
-      font-family: monospace;
-      font-weight: 600;
-    }
   }
 }
 
