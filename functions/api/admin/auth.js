@@ -61,7 +61,7 @@ export async function onRequestPost(context) {
 
     // 2. 備援認證 (當 D1 尚未遷移或本機單機測試時，允許預設管理員登入)
     if (!matchedUser) {
-      const fallbackPassword = env.ADMIN_PASSWORD || 'ryan1123_Ann';
+      const fallbackPassword = env.ADMIN_PASSWORD || 'HccDNH!8dQDGupqb';
       if (username.trim().toLowerCase() === 'admin' && password === fallbackPassword) {
         matchedUser = {
           id: 'admin-fallback-01',

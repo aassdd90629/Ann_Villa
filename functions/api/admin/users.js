@@ -62,8 +62,8 @@ async function ensureAdminUsersTable(db) {
         ) VALUES (
           'admin-shanyu-01',
           'admin',
-          '29f659084369aadb3eb0602e939c7d227fc03ef824058b57630964242e677836',
-          'shanyu_villa_salt_2026',
+          '4e11ed2f81b1db021810f93780ab1fc2a9e0720376f7490122175ca270dd5090',
+          '596a9427ad9549c2e12a65d156a35878',
           '山語專屬管家',
           'SUPERADMIN',
           1

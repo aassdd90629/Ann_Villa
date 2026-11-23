@@ -91,7 +91,7 @@ async function runTests() {
     const loginRes = await fetch('http://localhost:8788/api/admin/auth', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username: 'admin', password: 'ryan1123_Ann' })
+      body: JSON.stringify({ username: 'admin', password: 'HccDNH!8dQDGupqb' })
     });
     const loginData = await loginRes.json();
     console.log(`✅ 管家登入驗證 (預期成功): HTTP ${loginRes.status} -> Token 取得:`, loginData.token ? '成功簽發 (JWT 正常)' : '失敗');
