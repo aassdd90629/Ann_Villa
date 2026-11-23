@@ -23,6 +23,7 @@ export async function onRequestPost(context) {
 
     const secret = env.JWT_SECRET || 'shanyu_villa_jwt_super_secret_key_2026';
     let matchedUser = null;
+    let userFoundInDb = false;
 
     // 1. 優先查詢 D1 資料庫 admin_users 表
     if (env.DB) {
@@ -32,6 +33,8 @@ export async function onRequestPost(context) {
         ).bind(username.trim().toLowerCase()).first();
 
         if (user) {
+          userFoundInDb = true;
+
           if (user.is_active === 0) {
             return Response.json(
               { success: false, message: '登入失敗：此管家帳號已被停用，請聯繫超級管理員。' },
@@ -52,6 +55,13 @@ export async function onRequestPost(context) {
             await env.DB.prepare(
               'UPDATE admin_users SET last_login_at = CURRENT_TIMESTAMP WHERE id = ?'
             ).bind(user.id).run();
+          } else {
+            // 🚨 資安關鍵防護：資料庫中已有該帳號但密碼不吻合，必須立即回絕 401！
+            // 嚴禁繼續執行後續備援邏輯，徹底防止舊密碼或預設備援密碼繞過驗證！
+            return Response.json(
+              { success: false, message: '帳號或密碼錯誤，請重新確認。' },
+              { status: 401 }
+            );
           }
         }
       } catch (dbErr) {
@@ -59,10 +69,10 @@ export async function onRequestPost(context) {
       }
     }
 
-    // 2. 備援認證 (當 D1 尚未遷移或本機單機測試時，允許預設管理員登入)
-    if (!matchedUser) {
-      const fallbackPassword = env.ADMIN_PASSWORD || 'HccDNH!8dQDGupqb';
-      if (username.trim().toLowerCase() === 'admin' && password === fallbackPassword) {
+    // 2. 備援認證 (僅當 D1 尚未遷移或無此帳號時，且必須在環境變數中明確設定 ADMIN_PASSWORD 才啟用)
+    // 嚴禁在代碼中寫死任何明文預設密碼！
+    if (!matchedUser && !userFoundInDb && env.ADMIN_PASSWORD) {
+      if (username.trim().toLowerCase() === 'admin' && password === env.ADMIN_PASSWORD) {
         matchedUser = {
           id: 'admin-fallback-01',
           username: 'admin',
