@@ -47,7 +47,13 @@ export async function onRequest(context) {
   }
 
   // 3. 邊緣校驗 Token 有效性與簽章
-  const secret = env.JWT_SECRET || 'shanyu_villa_jwt_super_secret_key_2026';
+  const secret = env.JWT_SECRET;
+  if (!secret) {
+    return new Response(
+      JSON.stringify({ success: false, message: '伺服器資安設定異常：未配置 JWT_SECRET 環境變數。' }),
+      { status: 500, headers: { 'Content-Type': 'application/json; charset=utf-8' } }
+    );
+  }
   const adminUser = await verifyToken(token, secret);
 
   if (!adminUser) {

@@ -5,8 +5,6 @@
  * 零第三方依賴，完美相容 Cloudflare Pages Functions / Workers 邊緣節點。
  */
 
-const DEFAULT_SECRET = 'shanyu_villa_jwt_super_secret_key_2026';
-
 function base64UrlEncode(str) {
   const bytes = new TextEncoder().encode(str);
   let binary = '';
@@ -34,10 +32,13 @@ function base64UrlDecode(str) {
 
 // 產生 HMAC-SHA256 密鑰
 async function getCryptoKey(secret) {
+  if (!secret) {
+    throw new Error('伺服器資安異常：缺少 JWT_SECRET 金鑰，拒絕執行簽章運算。');
+  }
   const enc = new TextEncoder();
   return await crypto.subtle.importKey(
     'raw',
-    enc.encode(secret || DEFAULT_SECRET),
+    enc.encode(secret),
     { name: 'HMAC', hash: 'SHA-256' },
     false,
     ['sign', 'verify']

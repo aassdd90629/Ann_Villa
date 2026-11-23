@@ -21,7 +21,13 @@ export async function onRequestPost(context) {
       );
     }
 
-    const secret = env.JWT_SECRET || 'shanyu_villa_jwt_super_secret_key_2026';
+    const secret = env.JWT_SECRET;
+    if (!secret) {
+      return Response.json(
+        { success: false, message: '伺服器資安設定異常：未配置 JWT_SECRET 環境變數，拒絕處理登入。' },
+        { status: 500 }
+      );
+    }
     let matchedUser = null;
     let userFoundInDb = false;
 

@@ -38,6 +38,8 @@ AIRBNB_CALENDAR_SYNC_PLAN.md
 .env
 .env.*
 !.env.example
+.dev.vars
+.dev.vars.*
 
 # Credentials & Certificates (憑證與金鑰)
 *.pem
