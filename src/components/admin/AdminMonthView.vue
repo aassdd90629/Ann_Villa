@@ -18,17 +18,9 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
-  checkInDate: {
-    type: String,
-    default: null
-  },
-  checkOutDate: {
-    type: String,
-    default: null
-  },
-  isCheckOutSelectable: {
-    type: Function,
-    required: true
+  selectedDates: {
+    type: Array,
+    default: () => []
   }
 })
 
@@ -37,12 +29,7 @@ const emit = defineEmits(['select-date', 'prev-month', 'next-month', 'unlock-blo
 const weekDays = ['日', '一', '二', '三', '四', '五', '六']
 
 const isSelected = (dateStr) => {
-  return dateStr === props.checkInDate || dateStr === props.checkOutDate
-}
-
-const isInRange = (dateStr) => {
-  if (!props.checkInDate || !props.checkOutDate) return false
-  return dateStr > props.checkInDate && dateStr < props.checkOutDate
+  return props.selectedDates && props.selectedDates.includes(dateStr)
 }
 
 const getCellTitle = (day) => {
@@ -56,7 +43,9 @@ const getCellTitle = (day) => {
   if (day.isDirectBooking) {
     return `${day.dateStr} 【官網直訂單】點擊查看、修改或取消`
   }
-  return `${day.dateStr} (點擊選擇)`
+  return isSelected(day.dateStr)
+    ? `${day.dateStr} 【已選取】點擊可取消選取`
+    : `${day.dateStr} (點擊選取加入關閉清單)`
 }
 
 const handleDayClick = (day) => {
@@ -125,10 +114,7 @@ const handleDayClick = (day) => {
             'is-booked': day.isDirectBooking,
             'is-airbnb': day.isAirbnb,
             'is-manual-lock': day.isManualLock,
-            'is-selected': isSelected(day.dateStr),
-            'is-in-range': isInRange(day.dateStr),
-            'is-check-in': day.dateStr === checkInDate,
-            'is-check-out': day.dateStr === checkOutDate
+            'is-selected': isSelected(day.dateStr)
           }"
           :disabled="day.isPast"
           @click="handleDayClick(day)"
@@ -144,11 +130,8 @@ const handleDayClick = (day) => {
           <span v-else-if="day.isDirectBooking || day.isBooked" class="cell-tag booked-tag">
             已訂單
           </span>
-          <span v-else-if="day.dateStr === checkInDate" class="cell-tag in-tag">
-            開始
-          </span>
-          <span v-else-if="day.dateStr === checkOutDate" class="cell-tag out-tag">
-            結束
+          <span v-else-if="isSelected(day.dateStr)" class="cell-tag selected-tag">
+            已選取
           </span>
         </button>
       </template>
@@ -299,27 +282,12 @@ const handleDayClick = (day) => {
     }
   }
 
-  &.is-in-range {
-    background: rgba(197, 168, 128, 0.25) !important;
-    color: var(--gold-dark, #91754F) !important;
-    font-weight: 600;
-    border-radius: 0;
-  }
-
-  &.is-check-in {
+  &.is-selected {
     background: var(--gold-primary, #C5A880) !important;
     color: #121415 !important;
     font-weight: 700;
-    border-top-left-radius: 6px;
-    border-bottom-left-radius: 6px;
-  }
-
-  &.is-check-out {
-    background: var(--gold-primary, #C5A880) !important;
-    color: #121415 !important;
-    font-weight: 700;
-    border-top-right-radius: 6px;
-    border-bottom-right-radius: 6px;
+    border-radius: 6px;
+    box-shadow: 0 0 0 2px var(--gold-dark, #91754F);
   }
 
   .day-number {
@@ -348,11 +316,10 @@ const handleDayClick = (day) => {
       color: #1d4ed8;
       font-weight: 600;
     }
-    &.in-tag,
-    &.out-tag {
+    &.selected-tag {
       background: rgba(0, 0, 0, 0.25);
       color: #121415;
-      font-weight: 600;
+      font-weight: 700;
     }
   }
 }

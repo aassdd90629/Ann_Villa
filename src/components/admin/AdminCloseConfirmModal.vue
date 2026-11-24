@@ -6,17 +6,9 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
-  startDate: {
-    type: String,
-    default: ''
-  },
-  endDate: {
-    type: String,
-    default: ''
-  },
-  nights: {
-    type: Number,
-    default: 0
+  dates: {
+    type: Array,
+    default: () => []
   },
   reason: {
     type: String,
@@ -44,7 +36,7 @@ const closeModal = () => {
         <div class="modal-header">
           <div class="header-info">
             <CalendarX :size="20" class="text-gold" />
-            <h3>確認關閉月曆檔期</h3>
+            <h3>確認關閉月曆日期</h3>
           </div>
           <button class="btn-close" @click="closeModal" :disabled="isSubmitting" aria-label="Close">
             <X :size="18" />
@@ -55,23 +47,23 @@ const closeModal = () => {
           <div class="notice-box">
             <AlertTriangle :size="18" class="text-warning" />
             <div class="notice-text">
-              <strong>即將手動關閉以下檔期</strong>
-              <p>關閉送出後，前台預訂月曆將即刻反灰，訪客將無法預約此時段。</p>
+              <strong>即將手動關閉以下 {{ dates.length }} 個日期</strong>
+              <p>關閉送出後，前台預訂月曆此時段將即刻反灰，訪客將無法線上預約。</p>
             </div>
           </div>
 
           <div class="dates-summary-card">
             <div class="summary-row">
-              <span class="label">關閉起始日 (Check-in)：</span>
-              <span class="value font-mono">{{ startDate }}</span>
+              <span class="label">關閉總天數：</span>
+              <span class="value font-bold text-gold">共 {{ dates.length }} 天</span>
             </div>
-            <div class="summary-row">
-              <span class="label">關閉結束日 (Check-out)：</span>
-              <span class="value font-mono">{{ endDate }}</span>
-            </div>
-            <div class="summary-row">
-              <span class="label">關閉總晚數：</span>
-              <span class="value font-bold text-gold">{{ nights }} 晚</span>
+            <div class="summary-row dates-list-row">
+              <span class="label">選定日期清單：</span>
+              <div class="modal-dates-wrap">
+                <span v-for="d in dates" :key="d" class="modal-date-chip font-mono">
+                  {{ d }}
+                </span>
+              </div>
             </div>
             <div class="summary-row reason-row">
               <span class="label">關閉理由說明：</span>
@@ -90,7 +82,7 @@ const closeModal = () => {
             @click="emit('confirm')"
           >
             <Check :size="16" />
-            <span>{{ isSubmitting ? '正在鎖定關閉中...' : '確認關閉此檔期' }}</span>
+            <span>{{ isSubmitting ? '正在鎖定關閉中...' : (dates.length > 1 ? `確認關閉這 ${dates.length} 個日期` : '確認關閉此日期') }}</span>
           </button>
           <button
             type="button"
@@ -248,6 +240,32 @@ const closeModal = () => {
 
     .text-gold {
       color: var(--gold-dark, #91754F);
+    }
+  }
+
+  .dates-list-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.45rem;
+    border-top: 1px dashed var(--admin-border, rgba(197, 168, 128, 0.3));
+    padding-top: 0.65rem;
+
+    .modal-dates-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      max-height: 110px;
+      overflow-y: auto;
+      width: 100%;
+
+      .modal-date-chip {
+        font-size: 0.78rem;
+        padding: 0.2rem 0.5rem;
+        background: var(--admin-bg-card, #FFFFFF);
+        border: 1px solid var(--admin-border, rgba(197, 168, 128, 0.3));
+        border-radius: 4px;
+        color: var(--admin-text-main, #1A1E1F);
+      }
     }
   }
 

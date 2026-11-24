@@ -2,17 +2,9 @@
 import { CalendarX, Lock, RotateCcw } from 'lucide-vue-next'
 
 const props = defineProps({
-  checkInDate: {
-    type: String,
-    default: null
-  },
-  checkOutDate: {
-    type: String,
-    default: null
-  },
-  selectedNights: {
-    type: Number,
-    default: 0
+  selectedDates: {
+    type: Array,
+    default: () => []
   },
   modelValue: {
     type: String,
@@ -24,32 +16,43 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['update:modelValue', 'confirm', 'clear'])
+const emit = defineEmits(['update:modelValue', 'confirm', 'clear', 'remove-date'])
 </script>
 
 <template>
   <div class="action-card">
     <div class="card-head">
       <CalendarX :size="18" class="text-gold" />
-      <h3 class="card-title">關閉月曆設定</h3>
+      <h3 class="card-title">自主關閉月曆設定</h3>
     </div>
 
-    <!-- 選取的日期區間摘要 -->
-    <div class="selected-range-box">
-      <div class="range-field">
-        <span class="field-label">開始關閉日 (Check-in)</span>
-        <span class="field-value font-mono" :class="{ 'is-empty': !checkInDate }">
-          {{ checkInDate || '請在左側月曆點選' }}
-        </span>
-      </div>
-      <div class="range-field">
-        <span class="field-label">結束關閉日 (Check-out)</span>
-        <span class="field-value font-mono" :class="{ 'is-empty': !checkOutDate }">
-          {{ checkOutDate || '請在左側月曆點選' }}
-        </span>
-      </div>
-      <div v-if="checkInDate && checkOutDate" class="range-nights">
-        共關閉 <strong>{{ selectedNights }}</strong> 晚檔期
+    <!-- 選取的日期摘要 (支援單選與多選) -->
+    <div class="selected-date-box">
+      <div class="date-field">
+        <div class="field-header">
+          <span class="field-label">欲關閉日期</span>
+          <span v-if="selectedDates.length > 0" class="badge-count">
+            已選 {{ selectedDates.length }} 天
+          </span>
+        </div>
+
+        <div v-if="selectedDates.length === 0" class="empty-hint">
+          請在左側月曆點選欲關閉的日期（可多選）
+        </div>
+
+        <div v-else class="chips-container">
+          <span v-for="d in selectedDates" :key="d" class="date-chip">
+            <span class="chip-text">{{ d }}</span>
+            <button
+              type="button"
+              class="chip-remove"
+              @click.stop="emit('remove-date', d)"
+              title="移除此日期"
+            >
+              ✕
+            </button>
+          </span>
+        </div>
       </div>
     </div>
 
@@ -72,21 +75,21 @@ const emit = defineEmits(['update:modelValue', 'confirm', 'clear'])
       <button
         type="button"
         class="btn-confirm-close"
-        :disabled="!checkInDate || !checkOutDate || isSubmitting"
+        :disabled="selectedDates.length === 0 || isSubmitting"
         @click="emit('confirm')"
       >
         <Lock :size="15" />
-        <span>{{ isSubmitting ? '正在關閉中...' : '確認關閉此檔期月曆' }}</span>
+        <span>{{ isSubmitting ? '正在關閉中...' : (selectedDates.length > 1 ? `確認關閉所選 ${selectedDates.length} 個日期` : '確認關閉此日期月曆') }}</span>
       </button>
 
       <button
-        v-if="checkInDate || checkOutDate || modelValue"
+        v-if="selectedDates.length > 0 || modelValue"
         type="button"
         class="btn-clear"
         @click="emit('clear')"
       >
         <RotateCcw :size="14" />
-        <span>重選 / 清除</span>
+        <span>全部清除 / 重選</span>
       </button>
     </div>
   </div>
@@ -119,46 +122,78 @@ const emit = defineEmits(['update:modelValue', 'confirm', 'clear'])
   }
 }
 
-.selected-range-box {
+.selected-date-box {
   background: var(--admin-bg-base, #F5F3EC);
   border: 1px solid var(--admin-border, rgba(197, 168, 128, 0.28));
   border-radius: 6px;
-  padding: 1rem 1.15rem;
+  padding: 0.9rem 1.1rem;
   display: flex;
   flex-direction: column;
-  gap: 0.85rem;
 
-  .range-field {
+  .date-field {
     display: flex;
     flex-direction: column;
-    gap: 0.3rem;
+    gap: 0.5rem;
 
-    .field-label {
-      font-size: 0.8rem;
-      font-weight: 500;
-      color: var(--admin-text-sub, #475569);
-    }
+    .field-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
 
-    .field-value {
-      font-size: 0.95rem;
-      font-weight: 600;
-      color: var(--gold-dark, #91754F);
-      
-      &.is-empty {
-        color: var(--admin-text-muted, #64748b);
-        font-weight: 400;
+      .field-label {
         font-size: 0.85rem;
-        opacity: 0.85;
+        font-weight: 600;
+        color: var(--admin-text-main, #1A1E1F);
+      }
+
+      .badge-count {
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 0.15rem 0.5rem;
+        background: rgba(197, 168, 128, 0.2);
+        color: var(--gold-dark, #91754F);
+        border-radius: 4px;
       }
     }
-  }
 
-  .range-nights {
-    padding-top: 0.6rem;
-    border-top: 1px dashed var(--admin-border, rgba(197, 168, 128, 0.3));
-    font-size: 0.85rem;
-    color: var(--admin-text-main, #1A1E1F);
-    strong { color: var(--gold-dark, #91754F); font-size: 1rem; }
+    .empty-hint {
+      color: var(--admin-text-muted, #64748b);
+      font-size: 0.85rem;
+      padding: 0.35rem 0;
+    }
+
+    .chips-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      max-height: 120px;
+      overflow-y: auto;
+      padding-top: 0.25rem;
+    }
+
+    .date-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.25rem 0.55rem;
+      background: var(--admin-bg-card, #FFFFFF);
+      border: 1px solid var(--admin-border, rgba(197, 168, 128, 0.35));
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-family: monospace;
+      color: var(--admin-text-main, #1A1E1F);
+
+      .chip-remove {
+        background: transparent;
+        border: none;
+        color: var(--admin-text-muted, #64748b);
+        cursor: pointer;
+        font-size: 0.75rem;
+        padding: 0 0.15rem;
+        line-height: 1;
+        &:hover { color: #dc2626; }
+      }
+    }
   }
 }
 

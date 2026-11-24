@@ -1,8 +1,7 @@
 import { ref, computed } from 'vue'
 
 export function useAdminCloseCalendar(bookedRanges) {
-  const checkInDate = ref(null)
-  const checkOutDate = ref(null)
+  const selectedDates = ref([]) // 多選日期陣列 ['YYYY-MM-DD', ...]
 
   const today = new Date()
   const minBookingDate = new Date(today.getFullYear(), today.getMonth(), today.getDate())
@@ -105,84 +104,38 @@ export function useAdminCloseCalendar(bookedRanges) {
     ]
   })
 
-  const isDateBooked = (dateStr) => {
-    const block = findBlockForDate(dateStr)
-    return !!block && block.source !== 'MANUAL_LOCK'
-  }
-
-  const isCheckOutSelectable = (dateStr) => {
-    if (!checkInDate.value || checkOutDate.value) return false
-    if (dateStr <= checkInDate.value) return false
-    let curr = new Date(checkInDate.value)
-    const target = new Date(dateStr)
-    while (curr < target) {
-      const checkStr = formatDate(curr)
-      if (isDateBooked(checkStr)) return false
-      curr.setDate(curr.getDate() + 1)
-    }
-    return true
-  }
-
+  // 多選切換：點選加入選取，再次點選則取消選取，支援單選或多選多天
   const selectDate = (day) => {
     if (day.isPast) return null
-    if (day.isBooked && !day.isManualLock && !isCheckOutSelectable(day.dateStr)) return null
+    if (day.isBooked && !day.isManualLock) return null
     
-    if (!checkInDate.value || (checkInDate.value && checkOutDate.value)) {
-      checkInDate.value = day.dateStr
-      checkOutDate.value = null
-      return `已選擇開始關閉日期：${day.dateStr}，請點選結束日期。`
-    } else if (checkInDate.value && !checkOutDate.value) {
-      if (day.dateStr <= checkInDate.value) {
-        checkInDate.value = day.dateStr
-        return `已重設開始關閉日期：${day.dateStr}。`
-      } else {
-        let hasOverlap = false
-        let curr = new Date(checkInDate.value)
-        const target = new Date(day.dateStr)
-        while (curr < target) {
-          curr.setDate(curr.getDate() + 1)
-          const checkStr = formatDate(curr)
-          if (checkStr < day.dateStr && isDateBooked(checkStr)) {
-            hasOverlap = true
-            break
-          }
-        }
-        
-        if (hasOverlap) {
-          checkInDate.value = day.dateStr
-          return `中間有正式訂單無法跨越，已重設為開始日期：${day.dateStr}。`
-        } else {
-          checkOutDate.value = day.dateStr
-          return `已選擇區間：${checkInDate.value} 至 ${checkOutDate.value}，請確認後送出關閉。`
-        }
-      }
+    const idx = selectedDates.value.indexOf(day.dateStr)
+    if (idx !== -1) {
+      selectedDates.value = selectedDates.value.filter(d => d !== day.dateStr)
+      return `已取消選取 ${day.dateStr}（目前已選 ${selectedDates.value.length} 天）。`
+    } else {
+      selectedDates.value = [...selectedDates.value, day.dateStr].sort()
+      return `已選取關閉日期：${day.dateStr}（目前已選 ${selectedDates.value.length} 天）。`
     }
-    return null
+  }
+
+  const removeDate = (dateStr) => {
+    selectedDates.value = selectedDates.value.filter(d => d !== dateStr)
   }
 
   const clearSelection = () => {
-    checkInDate.value = null
-    checkOutDate.value = null
+    selectedDates.value = []
   }
-
-  const selectedNights = computed(() => {
-    if (!checkInDate.value || !checkOutDate.value) return 0
-    const d1 = new Date(checkInDate.value)
-    const d2 = new Date(checkOutDate.value)
-    return Math.max(1, Math.round((d2 - d1) / (1000 * 60 * 60 * 24)))
-  })
 
   return {
     currentDate,
-    checkInDate,
-    checkOutDate,
+    selectedDates,
     isPrevDisabled,
     displayedMonths,
-    selectedNights,
     prevMonth,
     nextMonth,
-    isCheckOutSelectable,
     selectDate,
+    removeDate,
     clearSelection
   }
 }

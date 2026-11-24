@@ -56,17 +56,15 @@ onMounted(() => {
   fetchData()
 })
 
-// 月曆互動 Composable
+// 月曆互動 Composable (支援單選與多選，不分開始結束)
 const {
-  checkInDate,
-  checkOutDate,
+  selectedDates,
   isPrevDisabled,
   displayedMonths,
-  selectedNights,
   prevMonth,
   nextMonth,
-  isCheckOutSelectable,
   selectDate,
+  removeDate,
   clearSelection: resetCalendarSelection
 } = useAdminCloseCalendar(bookedRanges)
 
@@ -75,37 +73,45 @@ const handleSelectDate = (day) => {
   if (msg) statusMessage.value = msg
 }
 
+const handleRemoveDate = (dateStr) => {
+  removeDate(dateStr)
+}
+
 const handleClearAll = () => {
   resetCalendarSelection()
   closeReason.value = ''
   errorMessage.value = ''
 }
 
-// 點擊「確認關閉此檔期月曆」按鈕 -> 打開確認彈窗
+// 點擊「確認關閉所選日期月曆」按鈕 -> 打開確認彈窗
 const handlePromptClose = () => {
   errorMessage.value = ''
   statusMessage.value = ''
 
-  if (!checkInDate.value || !checkOutDate.value) {
-    errorMessage.value = '請在左側月曆點選開始日期與結束日期！'
+  if (!selectedDates.value || selectedDates.value.length === 0) {
+    errorMessage.value = '請在左側月曆點選要關閉的日期（可多選）！'
     return
   }
   isCloseConfirmModalOpen.value = true
 }
 
-// 彈窗內確認真正執行關閉
+// 彈窗內確認真正執行關閉所選日期 (單選或多選)
 const handleExecuteClose = async () => {
   isSubmitting.value = true
   errorMessage.value = ''
   try {
+    const datesToClose = [...selectedDates.value]
     await createAdminBlock({
       roomId: 'villa-full',
-      startDate: checkInDate.value,
-      endDate: checkOutDate.value,
+      dates: datesToClose,
       summary: closeReason.value.trim() || '自主保留 / 閉館維護'
     })
 
-    statusMessage.value = `成功關閉【${checkInDate.value} 至 ${checkOutDate.value}】月曆！前台已即刻反灰。`
+    const summaryText = datesToClose.length > 2
+      ? `${datesToClose.slice(0, 2).join('、')} 等共 ${datesToClose.length} 天`
+      : datesToClose.join('、')
+
+    statusMessage.value = `成功關閉【${summaryText}】月曆！前台所選日期已即刻反灰。`
     isCloseConfirmModalOpen.value = false
     handleClearAll()
     await fetchData()
@@ -296,9 +302,7 @@ const handleReopenBooking = async (b) => {
             :month-index="mIdx"
             :total-months="displayedMonths.length"
             :is-prev-disabled="isPrevDisabled"
-            :check-in-date="checkInDate"
-            :check-out-date="checkOutDate"
-            :is-check-out-selectable="isCheckOutSelectable"
+            :selected-dates="selectedDates"
             @select-date="handleSelectDate"
             @prev-month="prevMonth"
             @next-month="nextMonth"
@@ -308,16 +312,15 @@ const handleReopenBooking = async (b) => {
         </div>
       </div>
 
-      <!-- 右側：使用者自填理由與確認關閉卡片 -->
+      <!-- 右側：使用者自填理由與確認關閉卡片 (支援多選與移除) -->
       <div class="control-panel-col">
         <AdminCloseActionPanel
           v-model="closeReason"
-          :check-in-date="checkInDate"
-          :check-out-date="checkOutDate"
-          :selected-nights="selectedNights"
+          :selected-dates="selectedDates"
           :is-submitting="isSubmitting"
           @confirm="handlePromptClose"
           @clear="handleClearAll"
+          @remove-date="handleRemoveDate"
         />
       </div>
     </div>
@@ -332,12 +335,10 @@ const handleReopenBooking = async (b) => {
       @open-external-block="handleOpenBooking"
     />
 
-    <!-- 彈窗 1：確認關閉月曆彈窗 -->
+    <!-- 彈窗 1：確認關閉月曆彈窗 (支援單選或多選) -->
     <AdminCloseConfirmModal
       v-model="isCloseConfirmModalOpen"
-      :start-date="checkInDate"
-      :end-date="checkOutDate"
-      :nights="selectedNights"
+      :dates="selectedDates"
       :reason="closeReason"
       :is-submitting="isSubmitting"
       @confirm="handleExecuteClose"
