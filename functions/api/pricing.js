@@ -97,6 +97,7 @@ export async function onRequestGet(context) {
     return Response.json({
       success: true,
       settings,
+      pricing: settings,
       holidays
     }, {
       headers: {
@@ -108,6 +109,7 @@ export async function onRequestGet(context) {
     return Response.json({
       success: true,
       settings: DEFAULT_SETTINGS,
+      pricing: DEFAULT_SETTINGS,
       holidays: DEFAULT_HOLIDAYS
     });
   }

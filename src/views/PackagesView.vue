@@ -111,17 +111,17 @@ const pkg = computed(() => pricingData.value.exclusivePackage)
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="(h, hIdx) in pricingData.holidays" :key="hIdx" :class="{ 'cny-row': h.price >= 50000 }">
+                  <tr v-for="(h, hIdx) in pricingData.holidays" :key="hIdx" :class="{ 'cny-row': h.price >= 50000 || (h.nameZh && h.nameZh.includes('春節')) }">
                     <td class="h-name">
-                      <strong>{{ isEn ? h.nameEn : h.nameZh }}</strong>
+                      <strong>{{ isEn ? (h.nameEn || h.nameZh || h.name) : (h.nameZh || h.name) }}</strong>
                       <div v-if="h.noteZh" class="h-subnote-text">
-                        {{ isEn ? h.noteEn : h.noteZh }}
+                        {{ isEn ? (h.noteEn || h.noteZh) : h.noteZh }}
                       </div>
                     </td>
-                    <td class="h-dates">{{ h.dates }}</td>
-                    <td class="h-price">NT$ {{ h.price.toLocaleString() }}</td>
+                    <td class="h-dates">{{ h.dates || (h.startDate && h.endDate ? `${h.startDate} ~ ${h.endDate}` : (h.startDate || '')) }}</td>
+                    <td class="h-price">NT$ {{ (h.price || 0).toLocaleString() }}</td>
                     <td class="h-breakfast">
-                      <span v-if="h.breakfast" class="badge-included">{{ isEn ? 'Included' : '含早餐' }}</span>
+                      <span v-if="h.breakfast !== undefined ? h.breakfast : (h.hasBreakfast !== undefined ? Boolean(h.hasBreakfast) : (h.price < 50000 && !(h.nameZh || h.name || '').includes('春節')))" class="badge-included">{{ isEn ? 'Included' : '含早餐' }}</span>
                       <span v-else class="badge-excluded">{{ isEn ? 'Not Included' : '不含早餐' }}</span>
                     </td>
                   </tr>

@@ -51,13 +51,13 @@ export const DEFAULT_PRICING = {
     }
   ],
   holidays: [
-    { name: '元旦跨年假期', startDate: '2026-12-31', endDate: '2027-01-03', price: 42000 },
-    { name: '農曆春節連假', startDate: '2027-02-05', endDate: '2027-02-14', price: 60000 },
-    { name: '228和平紀念日連假', startDate: '2027-02-26', endDate: '2027-03-01', price: 42000 },
-    { name: '清明兒童連假', startDate: '2027-04-02', endDate: '2027-04-06', price: 42000 },
-    { name: '端午節連假', startDate: '2027-06-18', endDate: '2027-06-21', price: 42000 },
-    { name: '中秋節連假', startDate: '2027-09-24', endDate: '2027-09-27', price: 42000 },
-    { name: '國慶日連假', startDate: '2027-10-08', endDate: '2027-10-11', price: 42000 }
+    { id: 'h-2026-nye', name: '元旦跨年假期', nameZh: '元旦跨年假期', nameEn: 'New Year Holiday', startDate: '2026-12-31', endDate: '2027-01-03', price: 42000, breakfast: true, noteZh: '假日前一天起算含早餐' },
+    { id: 'h-2027-cny', name: '農曆春節連假', nameZh: '農曆春節連假', nameEn: 'Lunar New Year Holiday', startDate: '2027-02-05', endDate: '2027-02-14', price: 60000, breakfast: false, noteZh: '春節期間不提供早餐' },
+    { id: 'h-2027-228', name: '228和平紀念日連假', nameZh: '228和平紀念日連假', nameEn: 'Peace Memorial Day Holiday', startDate: '2027-02-26', endDate: '2027-03-01', price: 42000, breakfast: true, noteZh: '假日前一天起算含早餐' },
+    { id: 'h-2027-tomb', name: '清明兒童連假', nameZh: '清明兒童連假', nameEn: "Children's & Tomb Sweeping Day", startDate: '2027-04-02', endDate: '2027-04-06', price: 42000, breakfast: true, noteZh: '假日前一天起算含早餐' },
+    { id: 'h-2027-dragon', name: '端午節連假', nameZh: '端午節連假', nameEn: 'Dragon Boat Festival Holiday', startDate: '2027-06-18', endDate: '2027-06-21', price: 42000, breakfast: true, noteZh: '假日前一天起算含早餐' },
+    { id: 'h-2027-moon', name: '中秋節連假', nameZh: '中秋節連假', nameEn: 'Mid-Autumn Festival Holiday', startDate: '2027-09-24', endDate: '2027-09-27', price: 42000, breakfast: true, noteZh: '假日前一天起算含早餐' },
+    { id: 'h-2027-national', name: '國慶日連假', nameZh: '國慶日連假', nameEn: 'National Day Holiday', startDate: '2027-10-08', endDate: '2027-10-11', price: 42000, breakfast: true, noteZh: '假日前一天起算含早餐' }
   ]
 }
 
@@ -70,13 +70,17 @@ export async function fetchPricingSettings() {
     const res = await fetch('/api/pricing')
     if (res.ok) {
       const data = await res.json()
-      if (data && data.success && data.pricing) {
+      if (data && data.success) {
+        const p = data.pricing || data.settings || {}
         activePricing.value = {
+          ...activePricing.value,
           exclusivePackage: {
             ...activePricing.value.exclusivePackage,
-            weekend: data.pricing.weekend || 35000,
-            deposit: data.pricing.deposit || 3000,
-            maxCapacity: data.pricing.maxCapacity || 18
+            weekend: p.weekend || activePricing.value.exclusivePackage.weekend,
+            deposit: p.deposit || activePricing.value.exclusivePackage.deposit,
+            maxCapacity: p.maxCapacity || activePricing.value.exclusivePackage.maxCapacity,
+            checkInTime: p.checkInTime || activePricing.value.exclusivePackage.checkInTime,
+            checkOutTime: p.checkOutTime || activePricing.value.exclusivePackage.checkOutTime
           },
           holidays: Array.isArray(data.holidays) && data.holidays.length > 0 ? data.holidays : activePricing.value.holidays
         }
