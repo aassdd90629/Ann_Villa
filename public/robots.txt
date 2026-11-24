@@ -18,6 +18,29 @@ Allow: /llms.txt
 Allow: /sitemap.xml
 
 # --------------------------------------------------------
+# 社交平台分享預覽爬蟲 (Facebook, LINE, Twitter, Telegram 等)
+# --------------------------------------------------------
+User-agent: facebookexternalhit
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+
+User-agent: Facebot
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+
+User-agent: Twitterbot
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+
+User-agent: LinkedInBot
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+
+# --------------------------------------------------------
 # 針對主流 AI 檢索模型與搜尋代理的宣告 (LLM & AI Search)
 # --------------------------------------------------------
 User-agent: GPTBot
@@ -45,5 +68,5 @@ Allow: /
 Disallow: /admin/
 Disallow: /api/
 
-# 網站地圖 (正式上線配置 sitemap.xml 後生效)
+# 網站地圖
 Sitemap: https://ann-villa.pages.dev/sitemap.xml
