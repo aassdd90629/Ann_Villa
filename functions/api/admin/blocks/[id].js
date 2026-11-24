@@ -11,12 +11,24 @@ export async function onRequestDelete(context) {
   }
 
   try {
-    // 檢查該筆鎖房或佔用記錄是否存在 (比對 id 或 external_uid)
-    const existing = await env.DB.prepare(`
-      SELECT id, start_date, end_date, summary, source, external_uid 
-      FROM availability_blocks 
-      WHERE id = ? OR external_uid = ?
-    `).bind(blockId, blockId).first();
+    // 檢查該筆鎖房或佔用記錄是否存在 (比對 id 或 external_uid，防範 SQLite 型態不匹配)
+    const isNumeric = /^\d+$/.test(String(blockId).trim());
+    const numId = isNumeric ? parseInt(blockId, 10) : -1;
+
+    let existing;
+    if (isNumeric) {
+      existing = await env.DB.prepare(`
+        SELECT id, start_date, end_date, summary, source, external_uid 
+        FROM availability_blocks 
+        WHERE id = ? OR external_uid = ?
+      `).bind(numId, String(blockId)).first();
+    } else {
+      existing = await env.DB.prepare(`
+        SELECT id, start_date, end_date, summary, source, external_uid 
+        FROM availability_blocks 
+        WHERE external_uid = ?
+      `).bind(String(blockId)).first();
+    }
 
     if (!existing) {
       return Response.json(
@@ -26,10 +38,17 @@ export async function onRequestDelete(context) {
     }
 
     // 執行刪除
-    await env.DB.prepare(`
-      DELETE FROM availability_blocks 
-      WHERE id = ? OR external_uid = ?
-    `).bind(blockId, blockId).run();
+    if (isNumeric) {
+      await env.DB.prepare(`
+        DELETE FROM availability_blocks 
+        WHERE id = ? OR external_uid = ?
+      `).bind(numId, String(blockId)).run();
+    } else {
+      await env.DB.prepare(`
+        DELETE FROM availability_blocks 
+        WHERE external_uid = ?
+      `).bind(String(blockId)).run();
+    }
 
     // 寫入審計日誌
     try {

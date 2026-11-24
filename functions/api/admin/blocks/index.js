@@ -43,15 +43,13 @@ export async function onRequestPost(context) {
         const curDate = dates[i];
         const nextDay = getNextDay(curDate);
         const randSuffix = Math.random().toString(36).substring(2, 7);
-        const blockId = `block-${Date.now()}-${i}-${randSuffix}`;
         const externalUid = `manual-lock-${Date.now()}-${i}-${randSuffix}@shanyu-villa`;
 
-        await env.DB.prepare(`
+        const insertRes = await env.DB.prepare(`
           INSERT INTO availability_blocks (
-            id, room_id, start_date, end_date, summary, source, external_uid
-          ) VALUES (?, ?, ?, ?, ?, 'MANUAL_LOCK', ?)
+            room_id, start_date, end_date, summary, source, external_uid
+          ) VALUES (?, ?, ?, ?, 'MANUAL_LOCK', ?)
         `).bind(
-          blockId,
           roomId,
           curDate,
           nextDay,
@@ -59,8 +57,11 @@ export async function onRequestPost(context) {
           externalUid
         ).run();
 
+        const rowId = insertRes?.meta?.last_row_id;
+
         createdBlocks.push({
-          id: blockId,
+          id: rowId || externalUid,
+          uid: externalUid,
           startDate: curDate,
           endDate: nextDay
         });
@@ -72,7 +73,7 @@ export async function onRequestPost(context) {
           INSERT INTO admin_audit_logs (category, action, target_id, summary, details_json, operator)
           VALUES ('calendar', 'MANUAL_LOCK', ?, ?, ?, ?)
         `).bind(
-          createdBlocks[0]?.id || 'batch-blocks',
+          String(createdBlocks[0]?.id || 'batch-blocks'),
           `管家手動多選關房：共 ${dates.length} 天（${dates.join(', ')}）`,
           JSON.stringify({ dates, roomId, summary: summary.trim(), createdBlocks }),
           operatorTag
@@ -104,15 +105,13 @@ export async function onRequestPost(context) {
     }
 
     const randSuffix = Math.random().toString(36).substring(2, 7);
-    const blockId = `block-${Date.now()}-${randSuffix}`;
     const externalUid = `manual-lock-${Date.now()}-${randSuffix}@shanyu-villa`;
 
-    await env.DB.prepare(`
+    const insertRes = await env.DB.prepare(`
       INSERT INTO availability_blocks (
-        id, room_id, start_date, end_date, summary, source, external_uid
-      ) VALUES (?, ?, ?, ?, ?, 'MANUAL_LOCK', ?)
+        room_id, start_date, end_date, summary, source, external_uid
+      ) VALUES (?, ?, ?, ?, 'MANUAL_LOCK', ?)
     `).bind(
-      blockId,
       roomId,
       startDate,
       endDate,
@@ -120,15 +119,18 @@ export async function onRequestPost(context) {
       externalUid
     ).run();
 
+    const rowId = insertRes?.meta?.last_row_id;
+    const targetId = rowId ? String(rowId) : externalUid;
+
     // 寫入審計日誌
     try {
       await env.DB.prepare(`
         INSERT INTO admin_audit_logs (category, action, target_id, summary, details_json, operator)
         VALUES ('calendar', 'MANUAL_LOCK', ?, ?, ?, ?)
       `).bind(
-        blockId,
+        targetId,
         `管家手動自訂關房：${startDate} ~ ${endDate}（${summary.trim()}）`,
-        JSON.stringify({ startDate, endDate, roomId, summary: summary.trim(), blockId }),
+        JSON.stringify({ startDate, endDate, roomId, summary: summary.trim(), externalUid, id: rowId }),
         operatorTag
       ).run();
     } catch (logErr) {
@@ -139,7 +141,8 @@ export async function onRequestPost(context) {
       success: true,
       message: '檔期鎖定成功，官網日曆已即刻反灰',
       block: {
-        id: blockId,
+        id: rowId || externalUid,
+        uid: externalUid,
         roomId,
         startDate,
         endDate,

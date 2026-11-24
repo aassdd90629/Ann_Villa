@@ -60,6 +60,7 @@ export async function onRequestGet(context) {
     // 查詢今天 (含) 以後所有已佔用的區間
     const query = `
       SELECT 
+        id,
         start_date AS startDate, 
         end_date AS endDate, 
         source, 
@@ -76,6 +77,7 @@ export async function onRequestGet(context) {
       UNION ALL
       
       SELECT 
+        id,
         check_in AS startDate, 
         check_out AS endDate, 
         'DIRECT_BOOKING' AS source, 
