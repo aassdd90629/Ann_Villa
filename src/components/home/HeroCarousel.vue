@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
-import { ChevronLeft, ChevronRight, Play, Pause, Info } from 'lucide-vue-next'
+import { ChevronLeft, ChevronRight, Play, Pause, Eye, EyeOff } from 'lucide-vue-next'
 import { useI18n } from '../../composables/useI18n'
 
 const props = defineProps({
@@ -11,10 +11,6 @@ const props = defineProps({
   interval: {
     type: Number,
     default: 6000
-  },
-  introDuration: {
-    type: Number,
-    default: 12000 // 首屏民宿介紹停留時間（預設 12 秒供訪客充分閱讀與了解）
   },
   autoplay: {
     type: Boolean,
@@ -45,104 +41,21 @@ const prevIndex = ref(0)
 const isPlaying = ref(props.autoplay)
 let autoplayTimer = null
 
-// 方案 A：純時間觸發型（首屏文字停留較長時間供訪客閱讀了解民宿，隨後淡出並啟動全屏純景自動輪播）
+// 文字常駐顯示，絕不自主消失；僅供使用者手動點擊切換純景/簡介
 const showContent = ref(true)
-const isIntroActive = ref(true)
 const isHovered = ref(false)
-let introTimer = null
-let transitionTimer = null
 
-let introStartTime = 0
-let introRemaining = props.introDuration
-
-const startIntroCountdown = (duration) => {
-  if (introTimer) clearTimeout(introTimer)
-  introStartTime = Date.now()
-  introRemaining = duration
-  introTimer = setTimeout(() => {
-    dismissIntro(false)
-  }, duration)
-}
-
-const pauseIntroCountdown = () => {
-  if (introTimer) {
-    clearTimeout(introTimer)
-    introTimer = null
-    const elapsed = Date.now() - introStartTime
-    introRemaining = Math.max(introRemaining - elapsed, 2000)
-  }
-}
-
-const resumeIntroCountdown = () => {
-  if (isIntroActive.value && showContent.value && isPlaying.value) {
-    startIntroCountdown(introRemaining)
-  }
-}
-
-const dismissIntro = (immediate = false) => {
-  if (!isIntroActive.value && !showContent.value) return
-  if (introTimer) {
-    clearTimeout(introTimer)
-    introTimer = null
-  }
-  if (transitionTimer) {
-    clearTimeout(transitionTimer)
-    transitionTimer = null
-  }
-  showContent.value = false
-  isIntroActive.value = false
-
-  // 文字隱退後，啟動背景自動輪播播放圖片
-  if (props.autoplay) {
-    if (immediate) {
-      startAutoplay()
-    } else {
-      // 文字淡出後 (約 850ms 動畫完成)，平滑切換至下一張風景圖並正式啟動常規輪播
-      transitionTimer = setTimeout(() => {
-        transitionTimer = null
-        if (currentIndex.value === 0 && !showContent.value) {
-          nextSlide()
-        } else {
-          startAutoplay()
-        }
-      }, 900)
-    }
-  }
-}
-
-// 支援手動點擊切換文字顯示/純景模式
+// 支援手動點擊切換文字顯示/沉浸純景模式
 const toggleContent = () => {
   showContent.value = !showContent.value
-  if (showContent.value) {
-    if (introTimer) {
-      clearTimeout(introTimer)
-      introTimer = null
-    }
-    stopAutoplay()
-  } else {
-    if (props.autoplay) {
-      startAutoplay()
-    }
-  }
 }
 
 const currentSlide = computed(() => {
   return props.slides[currentIndex.value] || props.slides[0]
 })
 
-// 當前輪播張數之進度條倒數週期 (首屏展示介紹時採用較長的 introDuration，純景輪播採用常規 interval)
-const currentSlideDuration = computed(() => {
-  if (isIntroActive.value && currentIndex.value === 0) {
-    return props.introDuration
-  }
-  return props.interval
-})
-
 // 下一張
 const nextSlide = () => {
-  if (isIntroActive.value) {
-    dismissIntro(true)
-  }
   prevIndex.value = currentIndex.value
   currentIndex.value = (currentIndex.value + 1) % props.slides.length
   resetAutoplay()
@@ -150,9 +63,6 @@ const nextSlide = () => {
 
 // 上一張
 const prevSlide = () => {
-  if (isIntroActive.value) {
-    dismissIntro(true)
-  }
   prevIndex.value = currentIndex.value
   currentIndex.value = (currentIndex.value - 1 + props.slides.length) % props.slides.length
   resetAutoplay()
@@ -161,9 +71,6 @@ const prevSlide = () => {
 // 指定跳轉
 const goToSlide = (index) => {
   if (index === currentIndex.value) return
-  if (isIntroActive.value) {
-    dismissIntro(true)
-  }
   prevIndex.value = currentIndex.value
   currentIndex.value = index
   resetAutoplay()
@@ -173,15 +80,8 @@ const goToSlide = (index) => {
 const togglePlay = () => {
   isPlaying.value = !isPlaying.value
   if (isPlaying.value) {
-    if (isIntroActive.value && showContent.value) {
-      resumeIntroCountdown()
-    } else {
-      startAutoplay()
-    }
+    startAutoplay()
   } else {
-    if (isIntroActive.value && showContent.value) {
-      pauseIntroCountdown()
-    }
     stopAutoplay()
   }
 }
@@ -212,9 +112,6 @@ const resetAutoplay = () => {
 const handleMouseEnter = () => {
   if (props.pauseOnHover) {
     isHovered.value = true
-    if (isIntroActive.value && showContent.value) {
-      pauseIntroCountdown()
-    }
     if (isPlaying.value) {
       stopAutoplay()
     }
@@ -224,9 +121,7 @@ const handleMouseEnter = () => {
 const handleMouseLeave = () => {
   if (props.pauseOnHover) {
     isHovered.value = false
-    if (isIntroActive.value && showContent.value) {
-      resumeIntroCountdown()
-    } else if (isPlaying.value) {
+    if (isPlaying.value) {
       startAutoplay()
     }
   }
@@ -258,21 +153,13 @@ const handleTouchEnd = (e) => {
 }
 
 onMounted(() => {
-  // 方案 A 初始階段：先不輪播換圖，讓首張大圖與中央文字平穩停留，供訪客細讀了解山莊
-  stopAutoplay()
-  startIntroCountdown(props.introDuration)
+  if (props.autoplay) {
+    startAutoplay()
+  }
 })
 
 onUnmounted(() => {
   stopAutoplay()
-  if (introTimer) {
-    clearTimeout(introTimer)
-    introTimer = null
-  }
-  if (transitionTimer) {
-    clearTimeout(transitionTimer)
-    transitionTimer = null
-  }
 })
 
 watch(() => props.autoplay, (val) => {
@@ -318,10 +205,26 @@ watch(() => props.autoplay, (val) => {
     <div class="carousel-overlay" :class="{ 'is-clear': !showContent }"></div>
     <div class="carousel-bottom-fade"></div>
 
-    <!-- 內容插槽：首屏文字、標題、按鈕與統計資訊 (方案 A：5 秒後優雅淡出留白，開啟純景輪播) -->
+    <!-- 內容插槽：首屏文字、標題、按鈕與統計資訊 (文字常駐，僅在使用者點擊後才消失) -->
     <transition name="hero-content-fade">
       <div v-if="showContent" class="carousel-content-slot">
         <slot></slot>
+      </div>
+    </transition>
+
+    <!-- 純景模式下的喚回提示膠囊 (點擊可恢復顯示山莊文字) -->
+    <transition name="hero-content-fade">
+      <div v-if="!showContent" class="pure-view-hint">
+        <button 
+          type="button" 
+          class="pure-view-restore-pill"
+          @click="toggleContent"
+          :title="isEn ? 'Show estate introduction' : '點擊恢復顯示山莊簡介'"
+          :aria-label="isEn ? 'Show estate intro' : '顯示山莊簡介'"
+        >
+          <Eye :size="14" />
+          <span>{{ isEn ? 'Show Villa Introduction' : '點擊顯示山莊簡介' }}</span>
+        </button>
       </div>
     </transition>
 
@@ -367,10 +270,10 @@ watch(() => props.autoplay, (val) => {
           <span class="indicator-bar">
             <span 
               v-if="index === currentIndex" 
-              :key="'progress-' + currentIndex + '-' + (isIntroActive && index === 0 ? 'intro' : 'norm')"
+              :key="'progress-' + currentIndex"
               class="indicator-progress"
               :class="{ 'is-paused': !isPlaying || (props.pauseOnHover && isHovered) }"
-              :style="{ animationDuration: `${currentSlideDuration}ms` }"
+              :style="{ animationDuration: `${interval}ms` }"
             ></span>
           </span>
         </button>
@@ -378,16 +281,17 @@ watch(() => props.autoplay, (val) => {
 
       <!-- 序號計數器、播放控制與資訊切換按鈕 -->
       <div class="carousel-meta-box">
-        <!-- 喚回/隱藏首屏資訊按鈕 -->
+        <!-- 喚回/隱藏首屏資訊按鈕 (使用者手動點擊切換文字消失/顯示) -->
         <button 
           type="button" 
           class="info-toggle-btn"
           @click="toggleContent"
-          :title="showContent ? (isEn ? 'Hide text for panoramic view' : '隱藏文字沉浸賞景') : (isEn ? 'Show estate intro' : '顯示山莊簡介')"
+          :title="showContent ? (isEn ? 'Hide text for panoramic view' : '點擊隱藏文字・沉浸賞景') : (isEn ? 'Show estate intro' : '點擊顯示山莊簡介')"
           :aria-label="showContent ? 'Hide estate info' : 'Show estate info'"
         >
-          <Info :size="13" />
-          <span class="info-toggle-text">{{ showContent ? (isEn ? 'Pure View' : '沉浸純景') : (isEn ? 'Villa Info' : '山莊簡介') }}</span>
+          <EyeOff v-if="showContent" :size="13" />
+          <Eye v-else :size="13" />
+          <span class="info-toggle-text">{{ showContent ? (isEn ? 'Hide Text' : '隱藏文字') : (isEn ? 'Show Info' : '顯示簡介') }}</span>
         </button>
 
         <span class="carousel-counter">
@@ -815,7 +719,42 @@ watch(() => props.autoplay, (val) => {
   }
 }
 
-// 方案 A：首屏文字平滑退場與進場過渡動畫 (如山嵐微風般輕盈)
+// 純景賞圖模式提示與恢復簡介膠囊按鈕
+.pure-view-hint {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 4;
+  pointer-events: auto;
+}
+
+.pure-view-restore-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(26, 30, 31, 0.72);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 50px;
+  padding: 0.65rem 1.5rem;
+  color: #FFFFFF;
+  font-size: 0.92rem;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: all 0.35s ease;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+
+  &:hover {
+    background: rgba(26, 30, 31, 0.92);
+    border-color: $color-gold-light-primary;
+    color: $color-gold-light-highlight;
+    box-shadow: 0 6px 26px rgba(0, 0, 0, 0.55);
+  }
+}
+
+// 首屏文字平滑退場與進場過渡動畫 (如山嵐微風般輕盈)
 .hero-content-fade-enter-active,
 .hero-content-fade-leave-active {
   transition: opacity 0.85s cubic-bezier(0.4, 0, 0.2, 1), transform 0.85s cubic-bezier(0.4, 0, 0.2, 1);
