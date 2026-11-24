@@ -53,10 +53,10 @@ const emit = defineEmits(['update:modelValue', 'confirm', 'clear'])
       </div>
     </div>
 
-    <!-- 理由完全由使用者自己填寫 -->
+    <!-- 關閉理由為選填 -->
     <div class="form-group">
       <label class="form-label" for="custom-reason">
-        關閉理由 (請自訂填寫)
+        關閉理由說明 (選填)
       </label>
       <textarea
         id="custom-reason"
@@ -64,8 +64,7 @@ const emit = defineEmits(['update:modelValue', 'confirm', 'clear'])
         @input="emit('update:modelValue', $event.target.value)"
         class="form-textarea"
         rows="3"
-        placeholder="請輸入本次關閉月曆的理由，例如：私人包場、全區年度保養、親友留宿等..."
-        required
+        placeholder="請輸入本次關閉月曆的理由（選填，若未填寫預設為『自主保留 / 閉館維護』）"
       ></textarea>
     </div>
 
@@ -73,7 +72,7 @@ const emit = defineEmits(['update:modelValue', 'confirm', 'clear'])
       <button
         type="button"
         class="btn-confirm-close"
-        :disabled="!checkInDate || !checkOutDate || !modelValue.trim() || isSubmitting"
+        :disabled="!checkInDate || !checkOutDate || isSubmitting"
         @click="emit('confirm')"
       >
         <Lock :size="15" />

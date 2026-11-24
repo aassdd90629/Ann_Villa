@@ -1,37 +1,62 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import { getBookedRanges } from '../../services/availabilityService'
-import { createAdminBlock, deleteAdminBlock } from '../../services/adminService'
-import { usePagination } from '../../composables/usePagination'
+import {
+  getAdminBookings,
+  createAdminBlock,
+  deleteAdminBlock,
+  updateAdminBooking
+} from '../../services/adminService'
 import { useAdminCloseCalendar } from '../../composables/useAdminCloseCalendar'
-import { Trash2, CheckCircle2, AlertCircle, RefreshCw, Lock } from 'lucide-vue-next'
+import { CheckCircle2, AlertCircle, RefreshCw } from 'lucide-vue-next'
 import AdminMonthView from '../../components/admin/AdminMonthView.vue'
 import AdminCloseActionPanel from '../../components/admin/AdminCloseActionPanel.vue'
-import Pagination from '../../components/common/Pagination.vue'
+import AdminCloseOccupiedTable from '../../components/admin/AdminCloseOccupiedTable.vue'
+import AdminCloseConfirmModal from '../../components/admin/AdminCloseConfirmModal.vue'
+import AdminUnlockConfirmModal from '../../components/admin/AdminUnlockConfirmModal.vue'
+import AdminOrderDetailModal from '../../components/admin/AdminOrderDetailModal.vue'
+import AdminExternalBlockModal from '../../components/admin/AdminExternalBlockModal.vue'
 
 const bookedRanges = ref([])
+const bookings = ref([])
 const isLoading = ref(false)
 const isSubmitting = ref(false)
 const statusMessage = ref('')
 const errorMessage = ref('')
 const closeReason = ref('')
 
-const fetchRanges = async () => {
+// 彈窗控制
+const isCloseConfirmModalOpen = ref(false)
+const isUnlockConfirmModalOpen = ref(false)
+const selectedUnlockBlock = ref(null)
+const isDetailModalOpen = ref(false)
+const selectedBooking = ref(null)
+const isExternalModalOpen = ref(false)
+const selectedExternalBlock = ref(null)
+
+const fetchData = async () => {
   isLoading.value = true
+  errorMessage.value = ''
   try {
-    bookedRanges.value = await getBookedRanges()
+    const [rangesRes, bookingsRes] = await Promise.all([
+      getBookedRanges(true),
+      getAdminBookings()
+    ])
+    bookedRanges.value = rangesRes || []
+    bookings.value = bookingsRes?.bookings || []
   } catch (err) {
-    console.error('取得檔期失敗:', err)
+    console.error('取得檔期與訂單資料失敗:', err)
+    errorMessage.value = '載入檔期失敗: ' + err.message
   } finally {
     isLoading.value = false
   }
 }
 
 onMounted(() => {
-  fetchRanges()
+  fetchData()
 })
 
-// 使用前台相同的點選月曆與日曆計算 Composable
+// 月曆互動 Composable
 const {
   checkInDate,
   checkOutDate,
@@ -56,8 +81,8 @@ const handleClearAll = () => {
   errorMessage.value = ''
 }
 
-// 提交關閉月曆
-const handleConfirmClose = async () => {
+// 點擊「確認關閉此檔期月曆」按鈕 -> 打開確認彈窗
+const handlePromptClose = () => {
   errorMessage.value = ''
   statusMessage.value = ''
 
@@ -65,24 +90,25 @@ const handleConfirmClose = async () => {
     errorMessage.value = '請在左側月曆點選開始日期與結束日期！'
     return
   }
+  isCloseConfirmModalOpen.value = true
+}
 
-  if (!closeReason.value.trim()) {
-    errorMessage.value = '請填寫關閉理由！'
-    return
-  }
-
+// 彈窗內確認真正執行關閉
+const handleExecuteClose = async () => {
   isSubmitting.value = true
+  errorMessage.value = ''
   try {
     await createAdminBlock({
       roomId: 'villa-full',
       startDate: checkInDate.value,
       endDate: checkOutDate.value,
-      summary: closeReason.value.trim()
+      summary: closeReason.value.trim() || '自主保留 / 閉館維護'
     })
 
     statusMessage.value = `成功關閉【${checkInDate.value} 至 ${checkOutDate.value}】月曆！前台已即刻反灰。`
+    isCloseConfirmModalOpen.value = false
     handleClearAll()
-    await fetchRanges()
+    await fetchData()
   } catch (err) {
     errorMessage.value = err.message || '關閉月曆失敗'
   } finally {
@@ -90,38 +116,146 @@ const handleConfirmClose = async () => {
   }
 }
 
-// 點擊解鎖手動關閉檔期
-const handleUnlockBlock = async (block) => {
+// 點擊解除手動關閉 -> 打開確認解除彈窗
+const handlePromptUnlock = (block) => {
+  selectedUnlockBlock.value = block
+  isUnlockConfirmModalOpen.value = true
+}
+
+// 彈窗內確認真正執行解除手動鎖房
+const handleExecuteUnlock = async (block) => {
   const blockId = block.id || block.uid
   const s = block.startDate || block.start_date
   const e = block.endDate || block.end_date
-  
-  if (!confirm(`確定要解除【${s} 至 ${e}】的關閉狀態嗎？解除後前台將重新開放預訂。`)) {
-    return
-  }
 
+  isSubmitting.value = true
+  errorMessage.value = ''
   try {
     await deleteAdminBlock(blockId)
-    statusMessage.value = `已成功解除【${s} 至 ${e}】之鎖定，前台月曆已重新開放！`
-    await fetchRanges()
+    statusMessage.value = `已成功解除【${s} 至 ${e}】之鎖定，前台月曆已重新開放預訂！`
+    isUnlockConfirmModalOpen.value = false
+    selectedUnlockBlock.value = null
+    await fetchData()
   } catch (err) {
-    alert('解除失敗: ' + err.message)
+    errorMessage.value = '解除失敗: ' + err.message
+  } finally {
+    isSubmitting.value = false
   }
 }
 
-const manualClosedRanges = computed(() => {
-  return bookedRanges.value.filter(r => r.source === 'MANUAL_LOCK')
-})
+// 點擊「已訂單 / Airbnb」格子或下方列表「查看」 -> 打開訂單彈窗或外部檔期彈窗
+const handleOpenBooking = (blockInfo) => {
+  errorMessage.value = ''
+  const uid = blockInfo?.id || blockInfo?.uid
+  let target = bookings.value.find(b => b.id === uid)
 
-const {
-  currentPage,
-  pageSize,
-  totalItems,
-  totalPages,
-  paginatedItems,
-  startIndex,
-  endIndex
-} = usePagination(manualClosedRanges, 10)
+  if (!target && blockInfo?.startDate && blockInfo?.endDate) {
+    target = bookings.value.find(b => b.check_in === blockInfo.startDate && b.check_out === blockInfo.endDate)
+  }
+
+  if (target) {
+    // 官網直訂單 -> 開啟直訂單管理彈窗
+    selectedBooking.value = target
+    isDetailModalOpen.value = true
+  } else {
+    // 外部匯入檔期 (如 Airbnb) 或無直訂單之佔用 -> 開啟專屬彈窗 (絕不使用 alert)
+    selectedExternalBlock.value = blockInfo
+    isExternalModalOpen.value = true
+  }
+}
+
+// 解除外部匯入檔期 (如 Airbnb)
+const handleUnlockExternalBlock = async (block) => {
+  const blockId = block.id || block.uid
+  const s = block.startDate || block.start_date
+  const e = block.endDate || block.end_date
+
+  isSubmitting.value = true
+  errorMessage.value = ''
+  try {
+    await deleteAdminBlock(blockId)
+    statusMessage.value = `已成功解除【${s} 至 ${e}】之佔用檔期，前台月曆已重新開放預訂！`
+    isExternalModalOpen.value = false
+    selectedExternalBlock.value = null
+    await fetchData()
+  } catch (err) {
+    errorMessage.value = '解除失敗: ' + err.message
+  } finally {
+    isSubmitting.value = false
+  }
+}
+
+// 訂單彈窗內取消整筆訂單
+const handleCancelBooking = async (b) => {
+  isSubmitting.value = true
+  errorMessage.value = ''
+  try {
+    await updateAdminBooking(b.id, {
+      status: 'CANCELLED'
+    })
+    statusMessage.value = `已成功取消【${b.guest_name} 貴賓】之預訂，【${b.check_in} 至 ${b.check_out}】檔期已即刻釋放為空房！`
+    isDetailModalOpen.value = false
+    await fetchData()
+  } catch (err) {
+    errorMessage.value = '取消訂單失敗: ' + err.message
+  } finally {
+    isSubmitting.value = false
+  }
+}
+
+// 訂單彈窗內儲存修改
+const handleSaveBooking = async ({ id, data }) => {
+  isSubmitting.value = true
+  errorMessage.value = ''
+  try {
+    await updateAdminBooking(id, data)
+    const guestLabel = data.guestName ? `${data.guestName} 貴賓` : '旅客'
+    statusMessage.value = `【${guestLabel}】之預訂資料與狀態已更新成功！`
+    isDetailModalOpen.value = false
+    await fetchData()
+  } catch (err) {
+    errorMessage.value = '儲存修改失敗: ' + err.message
+  } finally {
+    isSubmitting.value = false
+  }
+}
+
+// 訂單彈窗內確認定金
+const handleMarkDepositPaid = async (b) => {
+  isSubmitting.value = true
+  errorMessage.value = ''
+  try {
+    await updateAdminBooking(b.id, {
+      depositStatus: 'PAID',
+      status: 'CONFIRMED'
+    })
+    statusMessage.value = `【${b.guest_name} 貴賓】之訂單定金已成功核銷，狀態變更為正式已確認！`
+    isDetailModalOpen.value = false
+    await fetchData()
+  } catch (err) {
+    errorMessage.value = '核銷定金失敗: ' + err.message
+  } finally {
+    isSubmitting.value = false
+  }
+}
+
+// 訂單彈窗內恢復訂單
+const handleReopenBooking = async (b) => {
+  isSubmitting.value = true
+  errorMessage.value = ''
+  try {
+    await updateAdminBooking(b.id, {
+      status: 'CONFIRMED'
+    })
+    statusMessage.value = `【${b.guest_name} 貴賓】之預訂已成功恢復為已確認訂單！`
+    isDetailModalOpen.value = false
+    await fetchData()
+  } catch (err) {
+    errorMessage.value = '恢復訂單失敗: ' + err.message
+  } finally {
+    isSubmitting.value = false
+  }
+}
 </script>
 
 <template>
@@ -130,16 +264,16 @@ const {
     <div class="view-header">
       <div>
         <h1 class="view-title">自主關閉月曆管理</h1>
-        <p class="view-desc">與前台完全相同的互動模式：直接點選月曆選擇開始日與結束日，輸入自訂理由即可立即關閉檔期</p>
+        <p class="view-desc">直接點選月曆選擇關閉區間，點擊佔用檔期可彈窗查看明細、一鍵取消或解除檔期</p>
       </div>
 
-      <button class="btn-refresh" @click="fetchRanges" :disabled="isLoading">
+      <button class="btn-refresh" @click="fetchData" :disabled="isLoading">
         <RefreshCw :size="14" :class="{ 'spin-anim': isLoading }" />
-        <span>重新整理檔期</span>
+        <span>重新整理檔期與訂單</span>
       </button>
     </div>
 
-    <!-- 訊息提示 -->
+    <!-- 訊息提示 (取代 browser alert) -->
     <div v-if="statusMessage" class="alert-box alert-success">
       <CheckCircle2 :size="16" />
       <span>{{ statusMessage }}</span>
@@ -152,7 +286,7 @@ const {
 
     <!-- 月曆選取與關閉操作主控區 -->
     <div class="calendar-workspace">
-      <!-- 雙月份月曆 (如同前台直接點選) -->
+      <!-- 雙月份月曆 -->
       <div class="calendar-main-col">
         <div class="two-months-grid">
           <AdminMonthView
@@ -168,7 +302,8 @@ const {
             @select-date="handleSelectDate"
             @prev-month="prevMonth"
             @next-month="nextMonth"
-            @unlock-block="handleUnlockBlock"
+            @unlock-block="handlePromptUnlock"
+            @open-booking="handleOpenBooking"
           />
         </div>
       </div>
@@ -181,64 +316,59 @@ const {
           :check-out-date="checkOutDate"
           :selected-nights="selectedNights"
           :is-submitting="isSubmitting"
-          @confirm="handleConfirmClose"
+          @confirm="handlePromptClose"
           @clear="handleClearAll"
         />
       </div>
     </div>
 
-    <!-- 下方：目前已手動關閉清單 -->
-    <div class="table-container">
-      <div class="table-bar">
-        <div class="bar-title">
-          <Lock :size="17" class="text-gold" />
-          <span>目前已手動關閉之月曆檔期 (共 {{ manualClosedRanges.length }} 筆)</span>
-          <span class="scroll-hint-text">↔ 可左右滑動</span>
-        </div>
-      </div>
+    <!-- 下方：佔用檔期清單 (支援手動關閉、官網直訂與 Airbnb 匯入切換) -->
+    <AdminCloseOccupiedTable
+      :booked-ranges="bookedRanges"
+      :bookings="bookings"
+      :is-loading="isLoading"
+      @unlock-block="handlePromptUnlock"
+      @open-booking="handleOpenBooking"
+      @open-external-block="handleOpenBooking"
+    />
 
-      <div class="table-responsive-wrapper">
-        <table class="admin-table">
-          <thead>
-            <tr>
-              <th>關閉起始日</th>
-              <th>關閉結束日</th>
-              <th>晚數</th>
-              <th>自訂關閉理由說明</th>
-              <th>操作</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-if="manualClosedRanges.length === 0">
-              <td colspan="5" class="text-center py-4 text-muted">目前沒有任何手動關閉的月曆檔期，前台全部開放預訂</td>
-            </tr>
-            <tr v-for="item in paginatedItems" :key="item.id || item.uid">
-              <td class="font-mono text-gold-light">{{ item.startDate || item.start_date }}</td>
-              <td class="font-mono text-gold-light">{{ item.endDate || item.end_date }}</td>
-              <td>
-                {{ Math.max(1, Math.round((new Date(item.endDate || item.end_date) - new Date(item.startDate || item.start_date)) / (1000 * 60 * 60 * 24))) }} 晚
-              </td>
-              <td class="text-muted">{{ item.summary || '手動保留' }}</td>
-              <td>
-                <button class="btn-delete" @click="handleUnlockBlock(item)" title="解除關閉重新開放">
-                  <Trash2 :size="14" />
-                  <span>解除關閉 (開放)</span>
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+    <!-- 彈窗 1：確認關閉月曆彈窗 -->
+    <AdminCloseConfirmModal
+      v-model="isCloseConfirmModalOpen"
+      :start-date="checkInDate"
+      :end-date="checkOutDate"
+      :nights="selectedNights"
+      :reason="closeReason"
+      :is-submitting="isSubmitting"
+      @confirm="handleExecuteClose"
+    />
 
-      <Pagination
-        v-model:current-page="currentPage"
-        :total-pages="totalPages"
-        :total-items="totalItems"
-        :page-size="pageSize"
-        :start-index="startIndex"
-        :end-index="endIndex"
-      />
-    </div>
+    <!-- 彈窗 2：確認解除手動關閉彈窗 -->
+    <AdminUnlockConfirmModal
+      v-model="isUnlockConfirmModalOpen"
+      :block="selectedUnlockBlock"
+      :is-submitting="isSubmitting"
+      @confirm="handleExecuteUnlock"
+    />
+
+    <!-- 彈窗 3：官網直訂單詳細與取消/修改管理彈窗 -->
+    <AdminOrderDetailModal
+      v-model="isDetailModalOpen"
+      :booking="selectedBooking"
+      :is-submitting="isSubmitting"
+      @cancel-booking="handleCancelBooking"
+      @save-booking="handleSaveBooking"
+      @confirm-paid="handleMarkDepositPaid"
+      @reopen-booking="handleReopenBooking"
+    />
+
+    <!-- 彈窗 4：外部匯入或歷史佔用檔期管理彈窗 (取代 alert) -->
+    <AdminExternalBlockModal
+      v-model="isExternalModalOpen"
+      :block="selectedExternalBlock"
+      :is-submitting="isSubmitting"
+      @unlock="handleUnlockExternalBlock"
+    />
   </div>
 </template>
 
@@ -265,13 +395,11 @@ const {
     margin: 0 0 0.35rem 0;
     letter-spacing: 1px;
   }
-
   .view-desc {
     font-size: 0.85rem;
     color: var(--admin-text-sub, #475569);
     margin: 0;
   }
-
   .btn-refresh {
     display: inline-flex;
     align-items: center;
@@ -284,10 +412,7 @@ const {
     font-size: 0.82rem;
     cursor: pointer;
     transition: all 0.2s;
-    &:hover {
-      border-color: var(--gold-primary, #C5A880);
-      color: var(--gold-dark, #91754F);
-    }
+    &:hover { border-color: var(--gold-primary, #C5A880); color: var(--gold-dark, #91754F); }
     &:disabled { opacity: 0.6; cursor: not-allowed; }
   }
 }
@@ -298,18 +423,17 @@ const {
   gap: 0.6rem;
   padding: 0.75rem 1rem;
   border-radius: 6px;
-  font-size: 0.85rem;
+  font-size: 0.88rem;
+
   &.alert-success {
-    background: rgba(34, 197, 94, 0.12);
-    border: 1px solid rgba(34, 197, 94, 0.3);
+    background: rgba(34, 197, 94, 0.1);
+    border: 1px solid rgba(34, 197, 94, 0.25);
     color: #16a34a;
-    font-weight: 500;
   }
   &.alert-error {
-    background: rgba(239, 68, 68, 0.12);
-    border: 1px solid rgba(239, 68, 68, 0.3);
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.25);
     color: #dc2626;
-    font-weight: 500;
   }
 }
 
@@ -317,135 +441,23 @@ const {
   display: grid;
   grid-template-columns: 1fr 340px;
   gap: 1.5rem;
-  align-items: start;
-
-  @media (max-width: 1024px) {
-    grid-template-columns: 1fr;
-  }
+  align-items: flex-start;
+  @media (max-width: 1024px) { grid-template-columns: 1fr; }
 }
 
 .two-months-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(2, 1fr);
   gap: 1.25rem;
+  @media (max-width: 768px) { grid-template-columns: 1fr; }
 }
 
-.table-container {
-  background: var(--admin-bg-card, #FFFFFF);
-  border: 1px solid var(--admin-border, rgba(197, 168, 128, 0.28));
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
-
-  .table-bar {
-    padding: 1rem 1.25rem;
-    border-bottom: 1px solid var(--admin-border, rgba(197, 168, 128, 0.2));
-    .bar-title {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-weight: 600;
-      color: var(--admin-text-main, #1A1E1F);
-      font-size: 0.95rem;
-
-      .scroll-hint-text {
-        display: none;
-        font-size: 0.72rem;
-        color: var(--gold-dark, #91754F);
-        background: rgba(197, 168, 128, 0.2);
-        padding: 0.15rem 0.4rem;
-        border-radius: 4px;
-        font-weight: 500;
-      }
-    }
-  }
-
-  .table-responsive-wrapper {
-    width: 100%;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-
-    &::-webkit-scrollbar {
-      height: 6px;
-    }
-    &::-webkit-scrollbar-thumb {
-      background: var(--admin-border, rgba(197, 168, 128, 0.4));
-      border-radius: 3px;
-    }
-  }
-
-  .admin-table {
-    width: 100%;
-    min-width: 580px;
-    border-collapse: collapse;
-    font-size: 0.85rem;
-
-    th {
-      text-align: left;
-      padding: 0.75rem 1.25rem;
-      color: var(--admin-text-sub, #475569);
-      background: var(--admin-th-bg, #EAE6DC);
-      font-weight: 600;
-      border-bottom: 1px solid var(--admin-border, rgba(197, 168, 128, 0.2));
-      white-space: nowrap;
-    }
-
-    td {
-      padding: 0.85rem 1.25rem;
-      color: var(--admin-text-main, #1A1E1F);
-      border-bottom: 1px solid var(--admin-border-subtle, rgba(0, 0, 0, 0.06));
-    }
-  }
-
-  .btn-delete {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    padding: 0.35rem 0.65rem;
-    background: rgba(239, 68, 68, 0.08);
-    border: 1px solid rgba(239, 68, 68, 0.28);
-    color: #dc2626;
-    border-radius: 4px;
-    font-size: 0.75rem;
-    font-weight: 500;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: all 0.2s;
-    &:hover {
-      background: #dc2626;
-      color: #fff;
-    }
-  }
+.spin-anim {
+  animation: spin 1s linear infinite;
 }
 
-.text-gold { color: var(--gold-dark, #91754F); }
-.text-gold-light { color: var(--gold-dark, #91754F); font-weight: 600; }
-.text-muted { color: var(--admin-text-muted, #64748b); }
-.text-center { text-align: center; }
-.py-4 { padding-top: 1.5rem; padding-bottom: 1.5rem; }
-.font-mono { font-family: monospace; }
-
-@media (max-width: 768px) {
-  .view-header {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0.85rem;
-
-    .view-title {
-      font-size: 1.25rem;
-    }
-  }
-
-  .two-months-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .table-container .table-bar {
-    padding: 0.75rem 1rem;
-
-    .bar-title .scroll-hint-text {
-      display: inline-block;
-    }
-  }
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 </style>

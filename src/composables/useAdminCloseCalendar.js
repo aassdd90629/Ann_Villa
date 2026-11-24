@@ -60,6 +60,8 @@ export function useAdminCloseCalendar(bookedRanges) {
       const dateStr = formatDate(d)
       const block = findBlockForDate(dateStr)
       const isManualLock = block && block.source === 'MANUAL_LOCK'
+      const isAirbnb = block && block.source === 'AIRBNB'
+      const isDirectBooking = block && block.source === 'DIRECT_BOOKING'
       const isBooked = !!block
       
       days.push({
@@ -68,6 +70,8 @@ export function useAdminCloseCalendar(bookedRanges) {
         isEmpty: false,
         isBooked,
         isManualLock,
+        isAirbnb,
+        isDirectBooking,
         blockInfo: block,
         isPast: d < minBookingDate
       })
@@ -149,7 +153,7 @@ export function useAdminCloseCalendar(bookedRanges) {
           return `中間有正式訂單無法跨越，已重設為開始日期：${day.dateStr}。`
         } else {
           checkOutDate.value = day.dateStr
-          return `已選擇區間：${checkInDate.value} 至 ${checkOutDate.value}，請填寫關閉理由後送出。`
+          return `已選擇區間：${checkInDate.value} 至 ${checkOutDate.value}，請確認後送出關閉。`
         }
       }
     }

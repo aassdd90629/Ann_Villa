@@ -80,7 +80,7 @@ const emit = defineEmits(['openDetail', 'confirmPaid'])
             </td>
             <td class="actions-cell">
               <button 
-                v-if="b.deposit_status !== 'PAID'"
+                v-if="b.deposit_status !== 'PAID' && b.status !== 'CANCELLED'"
                 class="btn-pay-sm" 
                 @click="emit('confirmPaid', b)"
                 title="確認定金入帳"

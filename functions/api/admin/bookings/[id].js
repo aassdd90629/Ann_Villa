@@ -1,8 +1,8 @@
 /**
  * PATCH /api/admin/bookings/:id
  * 
- * 修改訂單狀態 (例如定金核銷 PAID、訂單確認 CONFIRMED 或 CANCELLED)
- * 遵守後端規範：嚴格使用 env.DB.prepare(...).bind(...)
+ * 修改訂單狀態與資料 (例如取消訂單 CANCELLED、恢復訂單 CONFIRMED、定金核銷 PAID、修改備註與旅客資訊)
+ * 遵守後端規範：嚴格使用 env.DB.prepare(...).bind(...) 參數化綁定
  */
 export async function onRequestPatch(context) {
   const { params, request, env } = context;
@@ -14,11 +14,22 @@ export async function onRequestPatch(context) {
 
   try {
     const body = await request.json();
-    const { depositStatus, status } = body;
+    const {
+      depositStatus,
+      status,
+      guestName,
+      guestPhone,
+      guestEmail,
+      lineId,
+      guestCount,
+      specialRequests
+    } = body;
 
     // 檢查訂單是否存在
     const existing = await env.DB.prepare(
-      'SELECT id, deposit_status, status FROM bookings WHERE id = ?'
+      `SELECT 
+        id, deposit_status, status, guest_name, guest_phone, guest_email, line_id, guest_count, special_requests, check_in, check_out 
+       FROM bookings WHERE id = ?`
     ).bind(bookingId).first();
 
     if (!existing) {
@@ -28,14 +39,39 @@ export async function onRequestPatch(context) {
       );
     }
 
-    const newDepositStatus = depositStatus || existing.deposit_status;
-    const newStatus = status || existing.status;
+    const newDepositStatus = depositStatus !== undefined ? depositStatus : existing.deposit_status;
+    const newStatus = status !== undefined ? status : existing.status;
+    const newGuestName = guestName !== undefined ? String(guestName).trim() : existing.guest_name;
+    const newGuestPhone = guestPhone !== undefined ? String(guestPhone).trim() : existing.guest_phone;
+    const newGuestEmail = guestEmail !== undefined ? String(guestEmail).trim() : existing.guest_email;
+    const newLineId = lineId !== undefined ? String(lineId).trim() : existing.line_id;
+    const newGuestCount = guestCount !== undefined ? Number(guestCount) : existing.guest_count;
+    const newSpecialRequests = specialRequests !== undefined ? String(specialRequests).trim() : existing.special_requests;
 
     await env.DB.prepare(`
       UPDATE bookings 
-      SET deposit_status = ?, status = ?, updated_at = CURRENT_TIMESTAMP
+      SET 
+        deposit_status = ?, 
+        status = ?, 
+        guest_name = ?,
+        guest_phone = ?,
+        guest_email = ?,
+        line_id = ?,
+        guest_count = ?,
+        special_requests = ?,
+        updated_at = CURRENT_TIMESTAMP
       WHERE id = ?
-    `).bind(newDepositStatus, newStatus, bookingId).run();
+    `).bind(
+      newDepositStatus,
+      newStatus,
+      newGuestName,
+      newGuestPhone,
+      newGuestEmail,
+      newLineId,
+      newGuestCount,
+      newSpecialRequests,
+      bookingId
+    ).run();
 
     // 寫入審計日誌
     try {
@@ -44,11 +80,19 @@ export async function onRequestPatch(context) {
         ? `${currentAdmin.displayName} (${currentAdmin.username})` 
         : 'admin';
 
-      const isDepositPaid = depositStatus === 'PAID' && existing.deposit_status !== 'PAID';
-      const actionName = isDepositPaid ? 'CONFIRM_DEPOSIT' : 'UPDATE_BOOKING';
-      const summaryText = isDepositPaid
-        ? `核銷直訂單「${bookingId}」50% 定金入帳，定金狀態變更為【已付定金 (PAID)】`
-        : `更新直訂單「${bookingId}」狀態：定金狀態【${newDepositStatus}】、訂單狀態【${newStatus}】`;
+      let actionName = 'UPDATE_BOOKING';
+      let summaryText = `更新直訂單「${bookingId}」資料`;
+
+      if (newStatus === 'CANCELLED' && existing.status !== 'CANCELLED') {
+        actionName = 'CANCEL_BOOKING';
+        summaryText = `管家取消直訂單「${bookingId}」（旅客：${newGuestName}，檔期：${existing.check_in} ~ ${existing.check_out}），房態已釋放為空房`;
+      } else if (newStatus === 'CONFIRMED' && existing.status === 'CANCELLED') {
+        actionName = 'RESTORE_BOOKING';
+        summaryText = `管家重新恢復直訂單「${bookingId}」（旅客：${newGuestName}）為已確認狀態`;
+      } else if (depositStatus === 'PAID' && existing.deposit_status !== 'PAID') {
+        actionName = 'CONFIRM_DEPOSIT';
+        summaryText = `核銷直訂單「${bookingId}」50% 定金入帳，定金狀態變更為【已付定金 (PAID)】`;
+      }
 
       await env.DB.prepare(`
         INSERT INTO admin_audit_logs (category, action, target_id, summary, details_json, operator)
@@ -57,7 +101,14 @@ export async function onRequestPatch(context) {
         actionName,
         bookingId,
         summaryText,
-        JSON.stringify({ oldDepositStatus: existing.deposit_status, newDepositStatus, oldStatus: existing.status, newStatus }),
+        JSON.stringify({
+          oldStatus: existing.status,
+          newStatus,
+          oldDepositStatus: existing.deposit_status,
+          newDepositStatus,
+          guestName: newGuestName,
+          guestPhone: newGuestPhone
+        }),
         operatorTag
       ).run();
     } catch (logErr) {
@@ -66,7 +117,7 @@ export async function onRequestPatch(context) {
 
     return Response.json({
       success: true,
-      message: '訂單狀態更新成功',
+      message: newStatus === 'CANCELLED' ? '訂單已成功取消，房態檔期已即刻釋放！' : '訂單資料與狀態更新成功',
       bookingId,
       depositStatus: newDepositStatus,
       status: newStatus
@@ -79,4 +130,3 @@ export async function onRequestPatch(context) {
     );
   }
 }
-

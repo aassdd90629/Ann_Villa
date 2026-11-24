@@ -32,7 +32,7 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['select-date', 'prev-month', 'next-month', 'unlock-block'])
+const emit = defineEmits(['select-date', 'prev-month', 'next-month', 'unlock-block', 'open-booking'])
 
 const weekDays = ['日', '一', '二', '三', '四', '五', '六']
 
@@ -45,10 +45,28 @@ const isInRange = (dateStr) => {
   return dateStr > props.checkInDate && dateStr < props.checkOutDate
 }
 
+const getCellTitle = (day) => {
+  if (day.isManualLock) {
+    const reason = day.blockInfo?.summary ? `（理由：${day.blockInfo.summary}）` : ''
+    return `${day.dateStr} 【已自主關閉${reason}】點擊可解除`
+  }
+  if (day.isAirbnb) {
+    return `${day.dateStr} 【Airbnb 外部預訂】點擊可查看或解除檔期`
+  }
+  if (day.isDirectBooking) {
+    return `${day.dateStr} 【官網直訂單】點擊查看、修改或取消`
+  }
+  return `${day.dateStr} (點擊選擇)`
+}
+
 const handleDayClick = (day) => {
   if (day.isEmpty || day.isPast) return
   if (day.isManualLock) {
     emit('unlock-block', day.blockInfo)
+    return
+  }
+  if (day.isBooked) {
+    emit('open-booking', day.blockInfo)
     return
   }
   emit('select-date', day)
@@ -104,22 +122,26 @@ const handleDayClick = (day) => {
           class="day-cell"
           :class="{
             'is-past': day.isPast,
-            'is-booked': day.isBooked && !day.isManualLock,
+            'is-booked': day.isDirectBooking,
+            'is-airbnb': day.isAirbnb,
             'is-manual-lock': day.isManualLock,
             'is-selected': isSelected(day.dateStr),
             'is-in-range': isInRange(day.dateStr),
             'is-check-in': day.dateStr === checkInDate,
             'is-check-out': day.dateStr === checkOutDate
           }"
-          :disabled="day.isPast || (day.isBooked && !day.isManualLock && !isCheckOutSelectable(day.dateStr))"
+          :disabled="day.isPast"
           @click="handleDayClick(day)"
-          :title="day.isManualLock ? `${day.dateStr} 【已手動關閉: ${day.blockInfo?.summary || '鎖房'}】點擊可解除` : (day.isBooked ? `${day.dateStr} 【官網直訂單】` : `${day.dateStr} (點擊選擇)`)"
+          :title="getCellTitle(day)"
         >
           <span class="day-number">{{ day.dayNum }}</span>
           <span v-if="day.isManualLock" class="cell-tag manual-tag">
             已關閉
           </span>
-          <span v-else-if="day.isBooked" class="cell-tag booked-tag">
+          <span v-else-if="day.isAirbnb" class="cell-tag airbnb-tag">
+            Airbnb
+          </span>
+          <span v-else-if="day.isDirectBooking || day.isBooked" class="cell-tag booked-tag">
             已訂單
           </span>
           <span v-else-if="day.dateStr === checkInDate" class="cell-tag in-tag">
@@ -246,7 +268,24 @@ const handleDayClick = (day) => {
     color: #1d4ed8;
     background: rgba(59, 130, 246, 0.08);
     border-color: rgba(59, 130, 246, 0.25);
-    cursor: not-allowed;
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+      border-color: rgba(59, 130, 246, 0.6);
+      background: rgba(59, 130, 246, 0.18);
+    }
+  }
+
+  &.is-airbnb {
+    color: #7e22ce;
+    background: rgba(168, 85, 247, 0.08);
+    border-color: rgba(168, 85, 247, 0.3);
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+      border-color: rgba(168, 85, 247, 0.6);
+      background: rgba(168, 85, 247, 0.16);
+    }
   }
 
   &.is-manual-lock {
@@ -255,8 +294,8 @@ const handleDayClick = (day) => {
     border-color: rgba(239, 68, 68, 0.35);
     cursor: pointer;
     &:hover {
-      background: rgba(239, 68, 68, 0.25);
-      transform: scale(1.04);
+      background: rgba(239, 68, 68, 0.22);
+      border-color: rgba(239, 68, 68, 0.5);
     }
   }
 
@@ -297,6 +336,11 @@ const handleDayClick = (day) => {
     &.manual-tag {
       background: rgba(239, 68, 68, 0.2);
       color: #dc2626;
+      font-weight: 600;
+    }
+    &.airbnb-tag {
+      background: rgba(168, 85, 247, 0.18);
+      color: #7e22ce;
       font-weight: 600;
     }
     &.booked-tag {

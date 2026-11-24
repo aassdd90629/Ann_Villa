@@ -70,6 +70,43 @@ const handleMarkDepositPaid = async (b) => {
   }
 }
 
+const handleCancelBooking = async (b) => {
+  try {
+    await updateAdminBooking(b.id, {
+      status: 'CANCELLED'
+    })
+    statusMessage.value = `已成功取消訂單【${b.id}】（旅客：${b.guest_name} 貴賓），【${b.check_in} 至 ${b.check_out}】檔期已即刻釋放為空房！`
+    isDetailModalOpen.value = false
+    await fetchBookings()
+  } catch (err) {
+    alert('取消訂單失敗: ' + err.message)
+  }
+}
+
+const handleSaveBooking = async ({ id, data }) => {
+  try {
+    await updateAdminBooking(id, data)
+    statusMessage.value = `訂單【${id}】之資料與狀態已更新成功！`
+    isDetailModalOpen.value = false
+    await fetchBookings()
+  } catch (err) {
+    alert('儲存修改失敗: ' + err.message)
+  }
+}
+
+const handleReopenBooking = async (b) => {
+  try {
+    await updateAdminBooking(b.id, {
+      status: 'CONFIRMED'
+    })
+    statusMessage.value = `訂單【${b.id}】已成功恢復為正式已確認訂單！`
+    isDetailModalOpen.value = false
+    await fetchBookings()
+  } catch (err) {
+    alert('恢復訂單失敗: ' + err.message)
+  }
+}
+
 const handleClearTestBookings = async () => {
   if (!confirm('⚠️ 警告：這將會清除「所有直訂測試單」並將檔期恢復為空房！\n通常用於 Demo 驗收完畢後還原乾淨日曆，確定要清除嗎？')) {
     return
@@ -137,7 +174,10 @@ const handleClearTestBookings = async () => {
     <AdminOrderDetailModal 
       v-model="isDetailModalOpen" 
       :booking="selectedBooking" 
-      @confirm-paid="handleMarkDepositPaid" 
+      @confirm-paid="handleMarkDepositPaid"
+      @cancel-booking="handleCancelBooking"
+      @save-booking="handleSaveBooking"
+      @reopen-booking="handleReopenBooking"
     />
   </div>
 </template>
