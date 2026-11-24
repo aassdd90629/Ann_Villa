@@ -43,6 +43,18 @@ export async function getAdminBookings(params = {}) {
 }
 
 /**
+ * 管家手動直接新增 / 代客下訂單
+ */
+export async function createAdminBooking(bookingData) {
+  const res = await fetch('/api/admin/bookings', {
+    method: 'POST',
+    headers: getAuthHeaders(),
+    body: JSON.stringify(bookingData)
+  })
+  return handleResponse(res)
+}
+
+/**
  * 更新訂單狀態 (核銷定金、確認訂單、取消訂單)
  */
 export async function updateAdminBooking(id, updateData) {

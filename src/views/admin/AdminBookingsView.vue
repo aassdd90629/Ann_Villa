@@ -5,16 +5,19 @@ import { usePagination } from '../../composables/usePagination'
 import { 
   RefreshCw, 
   Trash2,
-  CheckCircle2
+  CheckCircle2,
+  PlusCircle
 } from 'lucide-vue-next'
 import AdminBookingsTable from '../../components/admin/AdminBookingsTable.vue'
 import AdminOrderDetailModal from '../../components/admin/AdminOrderDetailModal.vue'
+import AdminCreateBookingModal from '../../components/admin/AdminCreateBookingModal.vue'
 import Pagination from '../../components/common/Pagination.vue'
 
 const bookings = ref([])
 const isLoading = ref(false)
 const selectedBooking = ref(null)
 const isDetailModalOpen = ref(false)
+const isCreateModalOpen = ref(false)
 const statusMessage = ref('')
 
 // 通用 10 筆分頁邏輯
@@ -43,6 +46,12 @@ const fetchBookings = async () => {
 onMounted(() => {
   fetchBookings()
 })
+
+const handleCreateSuccess = async (newBooking) => {
+  const name = newBooking.guest_name || newBooking.guestName || '旅客'
+  statusMessage.value = `成功建立【${name} 貴賓】之預訂，月曆房態已即刻更新！`
+  await fetchBookings()
+}
 
 const openDetail = (b) => {
   selectedBooking.value = b
@@ -131,6 +140,12 @@ const handleClearTestBookings = async () => {
       </div>
 
       <div class="header-actions">
+        <!-- 手動新增訂單按鈕 -->
+        <button class="btn-create-booking" @click="isCreateModalOpen = true">
+          <PlusCircle :size="15" />
+          <span>＋ 手動新增訂單 (代客預訂)</span>
+        </button>
+
         <!-- 專屬 Demo 驗收清理按鈕 -->
         <button class="btn-clear-test" @click="handleClearTestBookings" title="Demo 結束後一鍵清空測試預約">
           <Trash2 :size="15" />
@@ -179,6 +194,12 @@ const handleClearTestBookings = async () => {
       @save-booking="handleSaveBooking"
       @reopen-booking="handleReopenBooking"
     />
+
+    <!-- 手動建立訂單彈窗 -->
+    <AdminCreateBookingModal
+      v-model="isCreateModalOpen"
+      @success="handleCreateSuccess"
+    />
   </div>
 </template>
 
@@ -214,6 +235,25 @@ const handleClearTestBookings = async () => {
     display: flex;
     align-items: center;
     gap: 0.75rem;
+
+    .btn-create-booking {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.6rem 1.05rem;
+      background: var(--gold-dark, #91754F);
+      border: 1px solid var(--gold-dark, #91754F);
+      color: #FFFFFF;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      &:hover {
+        background: var(--gold-primary, #C5A880);
+        border-color: var(--gold-primary, #C5A880);
+      }
+    }
 
     .btn-clear-test {
       display: inline-flex;
@@ -286,6 +326,7 @@ const handleClearTestBookings = async () => {
       grid-template-columns: 1fr;
       gap: 0.5rem;
 
+      .btn-create-booking,
       .btn-clear-test,
       .btn-refresh {
         justify-content: center;
