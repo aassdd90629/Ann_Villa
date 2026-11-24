@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite --host",
     "sync:ical": "node scripts/parse-ical.js",
-    "build": "vite build",
+    "build": "vite build && node scripts/prerender.js",
     "preview": "vite preview",
     "d1:init:local": "wrangler d1 execute DB --local --file=./migrations/0000_init_schema.sql",
     "d1:seed:local": "wrangler d1 execute DB --local --file=./migrations/seed_data.sql",
