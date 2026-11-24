@@ -1,15 +1,13 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import { getAdminBookings, updateAdminBooking, clearTestBookings } from '../../services/adminService'
+import { getAdminBookings, updateAdminBooking } from '../../services/adminService'
 import { usePagination } from '../../composables/usePagination'
 import { 
   RefreshCw, 
-  Trash2,
   CheckCircle2,
   PlusCircle
 } from 'lucide-vue-next'
 import AdminBookingsTable from '../../components/admin/AdminBookingsTable.vue'
-import AdminScheduleNavTabs from '../../components/admin/AdminScheduleNavTabs.vue'
 import AdminOrderDetailModal from '../../components/admin/AdminOrderDetailModal.vue'
 import AdminCreateBookingModal from '../../components/admin/AdminCreateBookingModal.vue'
 import Pagination from '../../components/common/Pagination.vue'
@@ -116,27 +114,10 @@ const handleReopenBooking = async (b) => {
     alert('恢復訂單失敗: ' + err.message)
   }
 }
-
-const handleClearTestBookings = async () => {
-  if (!confirm('⚠️ 警告：這將會清除「所有直訂測試單」並將檔期恢復為空房！\n通常用於 Demo 驗收完畢後還原乾淨日曆，確定要清除嗎？')) {
-    return
-  }
-
-  try {
-    const res = await clearTestBookings()
-    statusMessage.value = `測試資料清理成功！已清除 ${res.deletedCount || 0} 筆測試訂單，日曆已全面還原純淨！`
-    await fetchBookings()
-  } catch (err) {
-    alert('清理失敗: ' + err.message)
-  }
-}
 </script>
 
 <template>
   <div class="admin-bookings-view">
-    <!-- 1. 頂部核心動線導航標籤 -->
-    <AdminScheduleNavTabs />
-
     <div class="view-header">
       <div>
         <h1 class="view-title">直訂單管理與定金核銷</h1>
@@ -148,12 +129,6 @@ const handleClearTestBookings = async () => {
         <button class="btn-create-booking" @click="isCreateModalOpen = true">
           <PlusCircle :size="15" />
           <span>＋ 手動新增訂單 (代客預訂)</span>
-        </button>
-
-        <!-- 專屬 Demo 驗收清理按鈕 -->
-        <button class="btn-clear-test" @click="handleClearTestBookings" title="Demo 結束後一鍵清空測試預約">
-          <Trash2 :size="15" />
-          <span>Demo 結束一鍵清空測試單</span>
         </button>
 
         <button class="btn-refresh" @click="fetchBookings" :disabled="isLoading">
@@ -259,21 +234,6 @@ const handleClearTestBookings = async () => {
       }
     }
 
-    .btn-clear-test {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      padding: 0.6rem 0.95rem;
-      background: rgba(239, 68, 68, 0.12);
-      border: 1px solid rgba(239, 68, 68, 0.3);
-      color: #f87171;
-      border-radius: 6px;
-      font-size: 0.85rem;
-      cursor: pointer;
-      transition: all 0.2s;
-      &:hover { background: rgba(239, 68, 68, 0.25); }
-    }
-
     .btn-refresh {
       display: inline-flex;
       align-items: center;
@@ -331,7 +291,6 @@ const handleClearTestBookings = async () => {
       gap: 0.5rem;
 
       .btn-create-booking,
-      .btn-clear-test,
       .btn-refresh {
         justify-content: center;
         padding: 0.6rem 0.5rem;

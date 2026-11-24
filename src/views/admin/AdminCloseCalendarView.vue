@@ -9,10 +9,8 @@ import {
 } from '../../services/adminService'
 import { useAdminCloseCalendar } from '../../composables/useAdminCloseCalendar'
 import { CheckCircle2, AlertCircle, RefreshCw } from 'lucide-vue-next'
-import AdminScheduleNavTabs from '../../components/admin/AdminScheduleNavTabs.vue'
 import AdminMonthView from '../../components/admin/AdminMonthView.vue'
 import AdminCloseActionPanel from '../../components/admin/AdminCloseActionPanel.vue'
-import AdminCloseOccupiedTable from '../../components/admin/AdminCloseOccupiedTable.vue'
 import AdminCloseConfirmModal from '../../components/admin/AdminCloseConfirmModal.vue'
 import AdminUnlockConfirmModal from '../../components/admin/AdminUnlockConfirmModal.vue'
 import AdminOrderDetailModal from '../../components/admin/AdminOrderDetailModal.vue'
@@ -267,9 +265,6 @@ const handleReopenBooking = async (b) => {
 
 <template>
   <div class="admin-close-calendar-view">
-    <!-- 1. 頂部核心動線導航標籤 -->
-    <AdminScheduleNavTabs />
-
     <!-- 頂部標頭 -->
     <div class="view-header">
       <div>
@@ -328,16 +323,6 @@ const handleReopenBooking = async (b) => {
         />
       </div>
     </div>
-
-    <!-- 下方：佔用檔期清單 (支援手動關閉、官網直訂與 Airbnb 匯入切換) -->
-    <AdminCloseOccupiedTable
-      :booked-ranges="bookedRanges"
-      :bookings="bookings"
-      :is-loading="isLoading"
-      @unlock-block="handlePromptUnlock"
-      @open-booking="handleOpenBooking"
-      @open-external-block="handleOpenBooking"
-    />
 
     <!-- 彈窗 1：確認關閉月曆彈窗 (支援單選或多選) -->
     <AdminCloseConfirmModal
