@@ -12,6 +12,10 @@ const props = defineProps({
     type: Number,
     default: 6000
   },
+  introDuration: {
+    type: Number,
+    default: 12000 // 首屏民宿介紹停留時間（預設 12 秒供訪客充分閱讀與了解）
+  },
   autoplay: {
     type: Boolean,
     default: true
@@ -41,24 +45,68 @@ const prevIndex = ref(0)
 const isPlaying = ref(props.autoplay)
 let autoplayTimer = null
 
-// 方案 A：純時間觸發型（字只出現一次，5秒後淡出，隨後開始自動播放後續圖片）
+// 方案 A：純時間觸發型（首屏文字停留較長時間供訪客閱讀了解民宿，隨後淡出並啟動全屏純景自動輪播）
 const showContent = ref(true)
 const isIntroActive = ref(true)
+const isHovered = ref(false)
 let introTimer = null
-const introDuration = 5000 // 首屏字停留 5 秒供訪客閱讀
+let transitionTimer = null
 
-const dismissIntro = () => {
+let introStartTime = 0
+let introRemaining = props.introDuration
+
+const startIntroCountdown = (duration) => {
+  if (introTimer) clearTimeout(introTimer)
+  introStartTime = Date.now()
+  introRemaining = duration
+  introTimer = setTimeout(() => {
+    dismissIntro(false)
+  }, duration)
+}
+
+const pauseIntroCountdown = () => {
+  if (introTimer) {
+    clearTimeout(introTimer)
+    introTimer = null
+    const elapsed = Date.now() - introStartTime
+    introRemaining = Math.max(introRemaining - elapsed, 2000)
+  }
+}
+
+const resumeIntroCountdown = () => {
+  if (isIntroActive.value && showContent.value && isPlaying.value) {
+    startIntroCountdown(introRemaining)
+  }
+}
+
+const dismissIntro = (immediate = false) => {
   if (!isIntroActive.value && !showContent.value) return
   if (introTimer) {
     clearTimeout(introTimer)
     introTimer = null
+  }
+  if (transitionTimer) {
+    clearTimeout(transitionTimer)
+    transitionTimer = null
   }
   showContent.value = false
   isIntroActive.value = false
 
   // 文字隱退後，啟動背景自動輪播播放圖片
   if (props.autoplay) {
-    startAutoplay()
+    if (immediate) {
+      startAutoplay()
+    } else {
+      // 文字淡出後 (約 850ms 動畫完成)，平滑切換至下一張風景圖並正式啟動常規輪播
+      transitionTimer = setTimeout(() => {
+        transitionTimer = null
+        if (currentIndex.value === 0 && !showContent.value) {
+          nextSlide()
+        } else {
+          startAutoplay()
+        }
+      }, 900)
+    }
   }
 }
 
@@ -66,6 +114,10 @@ const dismissIntro = () => {
 const toggleContent = () => {
   showContent.value = !showContent.value
   if (showContent.value) {
+    if (introTimer) {
+      clearTimeout(introTimer)
+      introTimer = null
+    }
     stopAutoplay()
   } else {
     if (props.autoplay) {
@@ -78,8 +130,19 @@ const currentSlide = computed(() => {
   return props.slides[currentIndex.value] || props.slides[0]
 })
 
+// 當前輪播張數之進度條倒數週期 (首屏展示介紹時採用較長的 introDuration，純景輪播採用常規 interval)
+const currentSlideDuration = computed(() => {
+  if (isIntroActive.value && currentIndex.value === 0) {
+    return props.introDuration
+  }
+  return props.interval
+})
+
 // 下一張
 const nextSlide = () => {
+  if (isIntroActive.value) {
+    dismissIntro(true)
+  }
   prevIndex.value = currentIndex.value
   currentIndex.value = (currentIndex.value + 1) % props.slides.length
   resetAutoplay()
@@ -87,6 +150,9 @@ const nextSlide = () => {
 
 // 上一張
 const prevSlide = () => {
+  if (isIntroActive.value) {
+    dismissIntro(true)
+  }
   prevIndex.value = currentIndex.value
   currentIndex.value = (currentIndex.value - 1 + props.slides.length) % props.slides.length
   resetAutoplay()
@@ -95,6 +161,9 @@ const prevSlide = () => {
 // 指定跳轉
 const goToSlide = (index) => {
   if (index === currentIndex.value) return
+  if (isIntroActive.value) {
+    dismissIntro(true)
+  }
   prevIndex.value = currentIndex.value
   currentIndex.value = index
   resetAutoplay()
@@ -104,8 +173,15 @@ const goToSlide = (index) => {
 const togglePlay = () => {
   isPlaying.value = !isPlaying.value
   if (isPlaying.value) {
-    startAutoplay()
+    if (isIntroActive.value && showContent.value) {
+      resumeIntroCountdown()
+    } else {
+      startAutoplay()
+    }
   } else {
+    if (isIntroActive.value && showContent.value) {
+      pauseIntroCountdown()
+    }
     stopAutoplay()
   }
 }
@@ -134,14 +210,25 @@ const resetAutoplay = () => {
 
 // 滑鼠懸停暫停
 const handleMouseEnter = () => {
-  if (props.pauseOnHover && isPlaying.value) {
-    stopAutoplay()
+  if (props.pauseOnHover) {
+    isHovered.value = true
+    if (isIntroActive.value && showContent.value) {
+      pauseIntroCountdown()
+    }
+    if (isPlaying.value) {
+      stopAutoplay()
+    }
   }
 }
 
 const handleMouseLeave = () => {
-  if (props.pauseOnHover && isPlaying.value) {
-    startAutoplay()
+  if (props.pauseOnHover) {
+    isHovered.value = false
+    if (isIntroActive.value && showContent.value) {
+      resumeIntroCountdown()
+    } else if (isPlaying.value) {
+      startAutoplay()
+    }
   }
 }
 
@@ -171,13 +258,9 @@ const handleTouchEnd = (e) => {
 }
 
 onMounted(() => {
-  // 方案 A 初始階段：先不輪播換圖，讓首張大圖與中央文字平穩停留 5 秒
+  // 方案 A 初始階段：先不輪播換圖，讓首張大圖與中央文字平穩停留，供訪客細讀了解山莊
   stopAutoplay()
-
-  // 5 秒一到，文字優雅淡出留白，並正式啟動圖片自動輪播
-  introTimer = setTimeout(() => {
-    dismissIntro()
-  }, introDuration)
+  startIntroCountdown(props.introDuration)
 })
 
 onUnmounted(() => {
@@ -185,6 +268,10 @@ onUnmounted(() => {
   if (introTimer) {
     clearTimeout(introTimer)
     introTimer = null
+  }
+  if (transitionTimer) {
+    clearTimeout(transitionTimer)
+    transitionTimer = null
   }
 })
 
@@ -279,13 +366,11 @@ watch(() => props.autoplay, (val) => {
         >
           <span class="indicator-bar">
             <span 
-              v-if="index === currentIndex && isPlaying" 
+              v-if="index === currentIndex" 
+              :key="'progress-' + currentIndex + '-' + (isIntroActive && index === 0 ? 'intro' : 'norm')"
               class="indicator-progress"
-              :style="{ animationDuration: `${interval}ms` }"
-            ></span>
-            <span 
-              v-else-if="index === currentIndex && !isPlaying" 
-              class="indicator-progress is-paused"
+              :class="{ 'is-paused': !isPlaying || (props.pauseOnHover && isHovered) }"
+              :style="{ animationDuration: `${currentSlideDuration}ms` }"
             ></span>
           </span>
         </button>
@@ -621,8 +706,7 @@ watch(() => props.autoplay, (val) => {
       animation: progressFill linear forwards;
 
       &.is-paused {
-        width: 100%;
-        animation: none;
+        animation-play-state: paused;
       }
     }
   }
