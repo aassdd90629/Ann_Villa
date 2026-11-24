@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import { getBookedRanges } from '../../services/availabilityService'
+import { getBookedRanges, clearBookedRangesCache } from '../../services/availabilityService'
 import {
   getAdminBookings,
   createAdminBlock,
@@ -100,11 +100,26 @@ const handleExecuteClose = async () => {
   errorMessage.value = ''
   try {
     const datesToClose = [...selectedDates.value]
-    await createAdminBlock({
+    const res = await createAdminBlock({
       roomId: 'villa-full',
       dates: datesToClose,
       summary: closeReason.value.trim() || '自主保留 / 閉館維護'
     })
+
+    // 即時樂觀更新 (Optimistic UI Update)：立即將新建檔期反映於畫面，無縫零延遲
+    if (res?.blocks?.length) {
+      const newItems = res.blocks.map(b => ({
+        id: b.id,
+        uid: b.uid,
+        startDate: b.startDate,
+        endDate: b.endDate,
+        summary: b.summary || closeReason.value.trim() || '自主保留 / 閉館維護',
+        source: 'MANUAL_LOCK',
+        type: 'blocked',
+        status: 'confirmed'
+      }))
+      bookedRanges.value = [...bookedRanges.value, ...newItems]
+    }
 
     const summaryText = datesToClose.length > 2
       ? `${datesToClose.slice(0, 2).join('、')} 等共 ${datesToClose.length} 天`
@@ -113,6 +128,7 @@ const handleExecuteClose = async () => {
     statusMessage.value = `成功關閉【${summaryText}】月曆！前台所選日期已即刻反灰。`
     isCloseConfirmModalOpen.value = false
     handleClearAll()
+    clearBookedRangesCache()
     await fetchData()
   } catch (err) {
     errorMessage.value = err.message || '關閉月曆失敗'
@@ -137,9 +153,21 @@ const handleExecuteUnlock = async (block) => {
   errorMessage.value = ''
   try {
     await deleteAdminBlock(blockId)
+
+    // 即時樂觀更新：立即將被解除之鎖房檔期剔除
+    const targetId = block.id
+    const targetUid = block.uid || block.external_uid
+    bookedRanges.value = bookedRanges.value.filter(b => {
+      if (targetId != null && b.id == targetId) return false
+      if (targetUid && (b.uid === targetUid || b.external_uid === targetUid)) return false
+      if (blockId && (b.id == blockId || b.uid === blockId)) return false
+      return true
+    })
+
     statusMessage.value = `已成功解除【${s} 至 ${e}】之鎖定，前台月曆已重新開放預訂！`
     isUnlockConfirmModalOpen.value = false
     selectedUnlockBlock.value = null
+    clearBookedRangesCache()
     await fetchData()
   } catch (err) {
     errorMessage.value = '解除失敗: ' + err.message
@@ -179,9 +207,21 @@ const handleUnlockExternalBlock = async (block) => {
   errorMessage.value = ''
   try {
     await deleteAdminBlock(blockId)
+
+    // 即時樂觀更新：立即將被解除之外部檔期剔除
+    const targetId = block.id
+    const targetUid = block.uid || block.external_uid
+    bookedRanges.value = bookedRanges.value.filter(b => {
+      if (targetId != null && b.id == targetId) return false
+      if (targetUid && (b.uid === targetUid || b.external_uid === targetUid)) return false
+      if (blockId && (b.id == blockId || b.uid === blockId)) return false
+      return true
+    })
+
     statusMessage.value = `已成功解除【${s} 至 ${e}】之佔用檔期，前台月曆已重新開放預訂！`
     isExternalModalOpen.value = false
     selectedExternalBlock.value = null
+    clearBookedRangesCache()
     await fetchData()
   } catch (err) {
     errorMessage.value = '解除失敗: ' + err.message
@@ -198,8 +238,16 @@ const handleCancelBooking = async (b) => {
     await updateAdminBooking(b.id, {
       status: 'CANCELLED'
     })
+    // 即時樂觀更新：釋放直訂單佔用
+    bookedRanges.value = bookedRanges.value.filter(item => item.id !== b.id && item.uid !== b.id)
+    const idx = bookings.value.findIndex(item => item.id === b.id)
+    if (idx !== -1) {
+      bookings.value[idx].status = 'CANCELLED'
+    }
+
     statusMessage.value = `已成功取消【${b.guest_name} 貴賓】之預訂，【${b.check_in} 至 ${b.check_out}】檔期已即刻釋放為空房！`
     isDetailModalOpen.value = false
+    clearBookedRangesCache()
     await fetchData()
   } catch (err) {
     errorMessage.value = '取消訂單失敗: ' + err.message
@@ -415,16 +463,8 @@ const handleReopenBooking = async (b) => {
   border-radius: 6px;
   font-size: 0.88rem;
 
-  &.alert-success {
-    background: rgba(34, 197, 94, 0.1);
-    border: 1px solid rgba(34, 197, 94, 0.25);
-    color: #16a34a;
-  }
-  &.alert-error {
-    background: rgba(239, 68, 68, 0.1);
-    border: 1px solid rgba(239, 68, 68, 0.25);
-    color: #dc2626;
-  }
+  &.alert-success { background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.25); color: #16a34a; }
+  &.alert-error { background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.25); color: #dc2626; }
 }
 
 .calendar-workspace {

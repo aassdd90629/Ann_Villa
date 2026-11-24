@@ -101,7 +101,9 @@ export async function onRequestGet(context) {
     }, {
       headers: {
         'Content-Type': 'application/json; charset=utf-8',
-        'Cache-Control': 'public, max-age=60' // 邊緣節點快取 60 秒
+        'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
+        'Pragma': 'no-cache',
+        'Expires': '0'
       }
     });
   } catch (err) {

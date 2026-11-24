@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import { getBookedRanges } from '../../services/availabilityService'
+import { getBookedRanges, clearBookedRangesCache } from '../../services/availabilityService'
 import {
   getAdminBookings,
   deleteAdminBlock,
@@ -65,9 +65,21 @@ const handleExecuteUnlock = async (block) => {
   errorMessage.value = ''
   try {
     await deleteAdminBlock(blockId)
+
+    // 即時樂觀更新：立即將被解除之檔期剔除
+    const targetId = block.id
+    const targetUid = block.uid || block.external_uid
+    bookedRanges.value = bookedRanges.value.filter(b => {
+      if (targetId != null && b.id == targetId) return false
+      if (targetUid && (b.uid === targetUid || b.external_uid === targetUid)) return false
+      if (blockId && (b.id == blockId || b.uid === blockId)) return false
+      return true
+    })
+
     statusMessage.value = `已成功解除【${s} 至 ${e}】之鎖定，前台月曆已重新開放預訂！`
     isUnlockConfirmModalOpen.value = false
     selectedUnlockBlock.value = null
+    clearBookedRangesCache()
     await fetchData()
   } catch (err) {
     errorMessage.value = '解除失敗: ' + err.message
@@ -105,9 +117,21 @@ const handleUnlockExternalBlock = async (block) => {
   errorMessage.value = ''
   try {
     await deleteAdminBlock(blockId)
+
+    // 即時樂觀更新
+    const targetId = block.id
+    const targetUid = block.uid || block.external_uid
+    bookedRanges.value = bookedRanges.value.filter(b => {
+      if (targetId != null && b.id == targetId) return false
+      if (targetUid && (b.uid === targetUid || b.external_uid === targetUid)) return false
+      if (blockId && (b.id == blockId || b.uid === blockId)) return false
+      return true
+    })
+
     statusMessage.value = `已成功解除【${s} 至 ${e}】之佔用檔期，前台月曆已重新開放預訂！`
     isExternalModalOpen.value = false
     selectedExternalBlock.value = null
+    clearBookedRangesCache()
     await fetchData()
   } catch (err) {
     errorMessage.value = '解除失敗: ' + err.message
@@ -122,8 +146,17 @@ const handleCancelBooking = async (b) => {
   errorMessage.value = ''
   try {
     await updateAdminBooking(b.id, { status: 'CANCELLED' })
+
+    // 即時樂觀更新
+    bookedRanges.value = bookedRanges.value.filter(item => item.id !== b.id && item.uid !== b.id)
+    const idx = bookings.value.findIndex(item => item.id === b.id)
+    if (idx !== -1) {
+      bookings.value[idx].status = 'CANCELLED'
+    }
+
     statusMessage.value = `已成功取消【${b.guest_name} 貴賓】之預訂，【${b.check_in} 至 ${b.check_out}】檔期已即刻釋放為空房！`
     isDetailModalOpen.value = false
+    clearBookedRangesCache()
     await fetchData()
   } catch (err) {
     errorMessage.value = '取消訂單失敗: ' + err.message

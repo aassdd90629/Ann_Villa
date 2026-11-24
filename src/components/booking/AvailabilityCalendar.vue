@@ -46,7 +46,7 @@ const handleApplyWeekdayTier = (count) => {
 const refreshAvailability = async () => {
   isSyncing.value = true
   try {
-    bookedRanges.value = await getBookedRanges()
+    bookedRanges.value = await getBookedRanges(true)
   } catch (err) {
     console.error('更新房態失敗:', err)
   } finally {

@@ -8,7 +8,15 @@
 let cachedBookedRanges = null;
 
 /**
+ * 清除本地房態快取，確保下次查詢取得最新 D1 狀態
+ */
+export function clearBookedRangesCache() {
+  cachedBookedRanges = null;
+}
+
+/**
  * 取得已被預約的日期區間清單
+ * @param {boolean} force 是否強制跳過快取並發送新請求 (預設 false)
  * @returns {Promise<Array<{startDate: string, endDate: string, source: string, type: string, status: string}>>}
  */
 export async function getBookedRanges(force = false) {
@@ -17,7 +25,14 @@ export async function getBookedRanges(force = false) {
   }
 
   try {
-    const res = await fetch('/api/availability');
+    const url = force ? `/api/availability?_t=${Date.now()}` : '/api/availability';
+    const res = await fetch(url, {
+      cache: 'no-store',
+      headers: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache'
+      }
+    });
     if (res.ok) {
       const data = await res.json();
       if (data && data.success && Array.isArray(data.bookedRanges)) {

@@ -29,6 +29,14 @@ export async function onRequestPost(context) {
     // 模式 A：傳入多選日期陣列
     if (Array.isArray(dates) && dates.length > 0) {
       const getNextDay = (dateStr) => {
+        const parts = String(dateStr).split('-').map(Number);
+        if (parts.length === 3) {
+          const d = new Date(Date.UTC(parts[0], parts[1] - 1, parts[2] + 1));
+          const y = d.getUTCFullYear();
+          const m = String(d.getUTCMonth() + 1).padStart(2, '0');
+          const day = String(d.getUTCDate()).padStart(2, '0');
+          return `${y}-${m}-${day}`;
+        }
         const d = new Date(dateStr);
         d.setDate(d.getDate() + 1);
         const y = d.getFullYear();
@@ -63,7 +71,11 @@ export async function onRequestPost(context) {
           id: rowId || externalUid,
           uid: externalUid,
           startDate: curDate,
-          endDate: nextDay
+          endDate: nextDay,
+          summary: summary.trim(),
+          source: 'MANUAL_LOCK',
+          type: 'blocked',
+          status: 'confirmed'
         });
       }
 
