@@ -60,7 +60,7 @@ const handleCreateBlock = async () => {
         <div class="modal-header">
           <div class="header-title">
             <Lock :size="18" class="text-gold" />
-            <h3>手動檔期鎖定 (反灰保留)</h3>
+            <h3>手動新增鎖房 (指定區間保留)</h3>
           </div>
           <button class="btn-close" @click="closeModal" aria-label="Close">
             <X :size="18" />
@@ -74,14 +74,11 @@ const handleCreateBlock = async () => {
 
         <form @submit.prevent="handleCreateBlock" class="modal-form">
           <div class="form-group">
-            <label class="form-label">鎖定方案</label>
-            <select v-model="roomId" class="form-select">
-              <option value="villa-full">山語・全區尊榮包棟 (全區鎖定)</option>
-              <option value="room-01">1樓 綠意四人景觀套房</option>
-              <option value="room-02">2樓 晨光雙人陽台套房</option>
-              <option value="room-03">2樓 星空雙人山景套房</option>
-              <option value="room-04">2樓 雲霧四人家庭套房</option>
-            </select>
+            <label class="form-label">鎖定目標</label>
+            <div class="target-badge">
+              <span class="badge-dot">●</span>
+              <span>山語 Villa 全包棟別墅（純包棟）</span>
+            </div>
           </div>
 
           <div class="grid-dates">
@@ -101,7 +98,7 @@ const handleCreateBlock = async () => {
               v-model="summary" 
               type="text" 
               class="form-input" 
-              placeholder="例如：泳池例行消毒 / 屋主親友保留" 
+              placeholder="例如：全區定期水電保養 / 屋主親友留宿" 
               required 
             />
           </div>
@@ -210,6 +207,24 @@ const handleCreateBlock = async () => {
       font-size: 0.8rem;
       color: var(--admin-text-sub, #cbd5e1);
       font-weight: 500;
+    }
+
+    .target-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.65rem 0.85rem;
+      background: rgba(197, 168, 128, 0.12);
+      border: 1px solid var(--gold-primary, #C5A880);
+      border-radius: 6px;
+      font-size: 0.88rem;
+      color: var(--gold-light, #E6D5BE);
+      font-weight: 500;
+
+      .badge-dot {
+        color: var(--gold-primary, #C5A880);
+        font-size: 0.75rem;
+      }
     }
 
     .form-input, .form-select {

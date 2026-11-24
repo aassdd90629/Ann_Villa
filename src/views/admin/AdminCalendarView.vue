@@ -4,6 +4,7 @@ import { getBookedRanges } from '../../services/availabilityService'
 import { deleteAdminBlock } from '../../services/adminService'
 import { usePagination } from '../../composables/usePagination'
 import { Calendar, Plus, CheckCircle2 } from 'lucide-vue-next'
+import AdminScheduleNavTabs from '../../components/admin/AdminScheduleNavTabs.vue'
 import AdminBookedRangesTable from '../../components/admin/AdminBookedRangesTable.vue'
 import AdminLockModal from '../../components/admin/AdminLockModal.vue'
 import Pagination from '../../components/common/Pagination.vue'
@@ -61,19 +62,17 @@ const handleBlockCreated = async () => {
 
 <template>
   <div class="admin-calendar-view">
+    <!-- 1. 頂部核心動線導航標籤 -->
+    <AdminScheduleNavTabs />
+
     <!-- 頂部標題與快捷動作列 -->
     <div class="view-header">
       <div>
-        <h1 class="view-title">房態檔期與即時鎖房</h1>
-        <p class="view-desc">檢視當前已佔用之檔期，支援管家手動保留與月曆關閉管理</p>
+        <h1 class="view-title">檔期佔用與鎖房清單</h1>
+        <p class="view-desc">全館佔用檔期清單總覽（官網直訂、管家自主保留與 Airbnb 外部同步），支援手動指定區間鎖房</p>
       </div>
 
       <div class="header-actions">
-        <router-link to="/admin/close-calendar" class="btn-action-outline">
-          <Calendar :size="15" />
-          <span>自主關閉月曆管理</span>
-        </router-link>
-
         <button class="btn-action-gold" @click="isLockModalOpen = true">
           <Plus :size="16" />
           <span>手動新增鎖房</span>

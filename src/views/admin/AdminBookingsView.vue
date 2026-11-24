@@ -9,6 +9,7 @@ import {
   PlusCircle
 } from 'lucide-vue-next'
 import AdminBookingsTable from '../../components/admin/AdminBookingsTable.vue'
+import AdminScheduleNavTabs from '../../components/admin/AdminScheduleNavTabs.vue'
 import AdminOrderDetailModal from '../../components/admin/AdminOrderDetailModal.vue'
 import AdminCreateBookingModal from '../../components/admin/AdminCreateBookingModal.vue'
 import Pagination from '../../components/common/Pagination.vue'
@@ -133,10 +134,13 @@ const handleClearTestBookings = async () => {
 
 <template>
   <div class="admin-bookings-view">
+    <!-- 1. 頂部核心動線導航標籤 -->
+    <AdminScheduleNavTabs />
+
     <div class="view-header">
       <div>
         <h1 class="view-title">直訂單管理與定金核銷</h1>
-        <p class="view-desc">審核線上預約直訂單、核對匯款後五碼並確認 50% 定金到帳</p>
+        <p class="view-desc">審核官網旅客直訂單、核對定金款項，並支援現場與電話代客手動立單</p>
       </div>
 
       <div class="header-actions">

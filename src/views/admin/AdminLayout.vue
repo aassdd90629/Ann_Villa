@@ -38,9 +38,9 @@ watch(() => route.path, () => {
 })
 
 const allNavItems = [
-  { path: '/admin/calendar', name: '房態日曆與鎖房', icon: Calendar },
-  { path: '/admin/close-calendar', name: '自主關閉月曆', icon: CalendarX },
+  { path: '/admin/close-calendar', name: '房態月曆與自主關閉', icon: Calendar },
   { path: '/admin/bookings', name: '直訂單與定金核銷', icon: FileText },
+  { path: '/admin/calendar', name: '檔期佔用與鎖房清單', icon: CalendarX },
   { path: '/admin/pricing', name: '房價政策與連假', icon: DollarSign, superAdminOnly: true },
   { path: '/admin/content', name: '全站文案與內容', icon: FileEdit },
   { path: '/admin/media', name: '圖片與媒體庫', icon: ImageIcon },

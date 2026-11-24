@@ -61,25 +61,25 @@ const routes = [
     children: [
       {
         path: '',
-        redirect: '/admin/calendar'
-      },
-      {
-        path: 'calendar',
-        name: 'admin-calendar',
-        component: () => import('../views/admin/AdminCalendarView.vue'),
-        meta: { title: '房態日曆與即時鎖房 ｜ 山語 Villa 後台', requiresAuth: true }
+        redirect: '/admin/close-calendar'
       },
       {
         path: 'close-calendar',
         name: 'admin-close-calendar',
         component: () => import('../views/admin/AdminCloseCalendarView.vue'),
-        meta: { title: '自主關閉月曆 ｜ 山語 Villa 後台', requiresAuth: true }
+        meta: { title: '房態月曆與自主關閉 ｜ 山語 Villa 後台', requiresAuth: true }
       },
       {
         path: 'bookings',
         name: 'admin-bookings',
         component: () => import('../views/admin/AdminBookingsView.vue'),
-        meta: { title: '直訂單管理與定金核銷 ｜ 山語 Villa 後台', requiresAuth: true }
+        meta: { title: '直訂單與定金核銷 ｜ 山語 Villa 後台', requiresAuth: true }
+      },
+      {
+        path: 'calendar',
+        name: 'admin-calendar',
+        component: () => import('../views/admin/AdminCalendarView.vue'),
+        meta: { title: '檔期佔用與鎖房清單 ｜ 山語 Villa 後台', requiresAuth: true }
       },
       {
         path: 'pricing',

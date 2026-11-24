@@ -58,7 +58,7 @@ const handleClose = () => {
           :key="item.path" 
           :to="item.path"
           class="nav-link"
-          :class="{ active: currentPath === item.path || (item.path === '/admin/calendar' && currentPath === '/admin') }"
+          :class="{ active: currentPath === item.path || (item.path === '/admin/close-calendar' && currentPath === '/admin') }"
           @click="handleClose"
         >
           <component :is="item.icon" :size="18" class="nav-icon" />

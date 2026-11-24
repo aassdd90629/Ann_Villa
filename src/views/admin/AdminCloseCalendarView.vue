@@ -9,6 +9,7 @@ import {
 } from '../../services/adminService'
 import { useAdminCloseCalendar } from '../../composables/useAdminCloseCalendar'
 import { CheckCircle2, AlertCircle, RefreshCw } from 'lucide-vue-next'
+import AdminScheduleNavTabs from '../../components/admin/AdminScheduleNavTabs.vue'
 import AdminMonthView from '../../components/admin/AdminMonthView.vue'
 import AdminCloseActionPanel from '../../components/admin/AdminCloseActionPanel.vue'
 import AdminCloseOccupiedTable from '../../components/admin/AdminCloseOccupiedTable.vue'
@@ -266,11 +267,14 @@ const handleReopenBooking = async (b) => {
 
 <template>
   <div class="admin-close-calendar-view">
+    <!-- 1. 頂部核心動線導航標籤 -->
+    <AdminScheduleNavTabs />
+
     <!-- 頂部標頭 -->
     <div class="view-header">
       <div>
-        <h1 class="view-title">自主關閉月曆管理</h1>
-        <p class="view-desc">直接點選月曆選擇關閉區間，點擊佔用檔期可彈窗查看明細、一鍵取消或解除檔期</p>
+        <h1 class="view-title">房態月曆與自主關閉</h1>
+        <p class="view-desc">視覺化雙月曆房態：點選日期（支援單選與多選）即可自主關閉或重新開放；點擊已佔用格子可查看客資明細、一鍵取消或解除檔期</p>
       </div>
 
       <button class="btn-refresh" @click="fetchData" :disabled="isLoading">
