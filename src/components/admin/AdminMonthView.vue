@@ -21,15 +21,43 @@ const props = defineProps({
   selectedDates: {
     type: Array,
     default: () => []
+  },
+  selectionMode: {
+    type: String,
+    default: 'individual'
+  },
+  rangeStart: {
+    type: String,
+    default: null
+  },
+  hoverDate: {
+    type: String,
+    default: null
   }
 })
 
-const emit = defineEmits(['select-date', 'prev-month', 'next-month', 'unlock-block', 'open-booking'])
+const emit = defineEmits([
+  'select-date',
+  'hover-date',
+  'clear-hover',
+  'prev-month',
+  'next-month',
+  'unlock-block',
+  'open-booking'
+])
 
 const weekDays = ['日', '一', '二', '三', '四', '五', '六']
 
 const isSelected = (dateStr) => {
   return props.selectedDates && props.selectedDates.includes(dateStr)
+}
+
+const isInRangePreview = (dateStr) => {
+  if (props.selectionMode !== 'range' || !props.rangeStart || !props.hoverDate) return false
+  const [s, e] = props.rangeStart <= props.hoverDate 
+    ? [props.rangeStart, props.hoverDate] 
+    : [props.hoverDate, props.rangeStart]
+  return dateStr >= s && dateStr <= e
 }
 
 const getCellTitle = (day) => {
@@ -43,12 +71,15 @@ const getCellTitle = (day) => {
   if (day.isDirectBooking) {
     return `${day.dateStr} 【官網直訂單】點擊查看、修改或取消`
   }
+  if (props.rangeStart === day.dateStr) {
+    return `${day.dateStr} 【區間起始日】請點選結束日`
+  }
   return isSelected(day.dateStr)
     ? `${day.dateStr} 【已選取】點擊可取消選取`
     : `${day.dateStr} (點擊選取加入關閉清單)`
 }
 
-const handleDayClick = (day) => {
+const handleDayClick = (day, event) => {
   if (day.isEmpty || day.isPast) return
   if (day.isManualLock) {
     emit('unlock-block', day.blockInfo)
@@ -58,13 +89,13 @@ const handleDayClick = (day) => {
     emit('open-booking', day.blockInfo)
     return
   }
-  emit('select-date', day)
+  emit('select-date', day, event?.shiftKey)
 }
 </script>
 
 <template>
-  <div class="month-panel">
-    <!-- 各月份標題列 (如同前台與 Airbnb 左側 < 、右側 >) -->
+  <div class="month-panel" @mouseleave="emit('clear-hover')">
+    <!-- 各月份標題列 -->
     <div class="month-panel-header">
       <button 
         v-if="monthIndex === 0"
@@ -114,10 +145,13 @@ const handleDayClick = (day) => {
             'is-booked': day.isDirectBooking,
             'is-airbnb': day.isAirbnb,
             'is-manual-lock': day.isManualLock,
-            'is-selected': isSelected(day.dateStr)
+            'is-selected': isSelected(day.dateStr),
+            'is-range-start': rangeStart === day.dateStr,
+            'is-range-preview': isInRangePreview(day.dateStr) && !isSelected(day.dateStr)
           }"
           :disabled="day.isPast"
-          @click="handleDayClick(day)"
+          @click="handleDayClick(day, $event)"
+          @mouseenter="emit('hover-date', day.dateStr)"
           :title="getCellTitle(day)"
         >
           <span class="day-number">{{ day.dayNum }}</span>
@@ -130,8 +164,14 @@ const handleDayClick = (day) => {
           <span v-else-if="day.isDirectBooking || day.isBooked" class="cell-tag booked-tag">
             已訂單
           </span>
+          <span v-else-if="rangeStart === day.dateStr" class="cell-tag range-tag">
+            起始日
+          </span>
           <span v-else-if="isSelected(day.dateStr)" class="cell-tag selected-tag">
             已選取
+          </span>
+          <span v-else-if="isInRangePreview(day.dateStr)" class="cell-tag preview-tag">
+            預覽
           </span>
         </button>
       </template>
@@ -148,7 +188,7 @@ const handleDayClick = (day) => {
   background: var(--admin-bg-card, #FFFFFF);
   border: 1px solid var(--admin-border, rgba(197, 168, 128, 0.28));
   border-radius: 8px;
-  padding: 1.25rem;
+  padding: 1.1rem;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
   transition: background-color 0.3s ease, border-color 0.3s ease;
 }
@@ -157,42 +197,39 @@ const handleDayClick = (day) => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 1.2rem;
-  height: 36px;
+  margin-bottom: 0.85rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--admin-border, rgba(197, 168, 128, 0.15));
 
   .month-panel-title {
     font-size: 1.05rem;
     font-weight: 600;
     color: var(--admin-text-main, #1A1E1F);
     margin: 0;
-    letter-spacing: 0.5px;
   }
-
   .nav-btn {
+    background: transparent;
+    border: 1px solid var(--admin-border, rgba(197, 168, 128, 0.3));
+    color: var(--admin-text-main, #1A1E1F);
+    width: 28px;
+    height: 28px;
+    border-radius: 4px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
-    background: var(--admin-bg-base, #F5F3EC);
-    border: 1px solid var(--admin-border, rgba(197, 168, 128, 0.3));
-    border-radius: 6px;
-    color: var(--admin-text-main, #1A1E1F);
     cursor: pointer;
     transition: all 0.2s;
     &:hover:not(:disabled) {
       border-color: var(--gold-primary, #C5A880);
       color: var(--gold-dark, #91754F);
+      background: var(--admin-bg-base, #F5F3EC);
     }
     &:disabled {
       opacity: 0.3;
       cursor: not-allowed;
     }
   }
-
-  .header-placeholder {
-    width: 32px;
-  }
+  .header-placeholder { width: 28px; height: 28px; }
 }
 
 .weekdays-row {
@@ -229,11 +266,7 @@ const handleDayClick = (day) => {
   position: relative;
   user-select: none;
 
-  &.is-empty {
-    background: transparent;
-    cursor: default;
-    border: none;
-  }
+  &.is-empty { background: transparent; cursor: default; border: none; }
 
   &:hover:not(:disabled):not(.is-empty):not(.is-past) {
     border-color: var(--gold-primary, #C5A880);
@@ -252,7 +285,6 @@ const handleDayClick = (day) => {
     background: rgba(59, 130, 246, 0.08);
     border-color: rgba(59, 130, 246, 0.25);
     cursor: pointer;
-
     &:hover:not(:disabled) {
       border-color: rgba(59, 130, 246, 0.6);
       background: rgba(59, 130, 246, 0.18);
@@ -264,7 +296,6 @@ const handleDayClick = (day) => {
     background: rgba(168, 85, 247, 0.08);
     border-color: rgba(168, 85, 247, 0.3);
     cursor: pointer;
-
     &:hover:not(:disabled) {
       border-color: rgba(168, 85, 247, 0.6);
       background: rgba(168, 85, 247, 0.16);
@@ -282,6 +313,16 @@ const handleDayClick = (day) => {
     }
   }
 
+  &.is-range-preview {
+    background: rgba(197, 168, 128, 0.22) !important;
+    border-color: var(--gold-primary, #C5A880) !important;
+  }
+
+  &.is-range-start {
+    border-color: var(--gold-dark, #91754F) !important;
+    box-shadow: 0 0 0 2px var(--gold-primary, #C5A880);
+  }
+
   &.is-selected {
     background: var(--gold-primary, #C5A880) !important;
     color: #121415 !important;
@@ -290,9 +331,7 @@ const handleDayClick = (day) => {
     box-shadow: 0 0 0 2px var(--gold-dark, #91754F);
   }
 
-  .day-number {
-    line-height: 1;
-  }
+  .day-number { line-height: 1; }
 
   .cell-tag {
     font-size: 0.6rem;
@@ -301,26 +340,12 @@ const handleDayClick = (day) => {
     border-radius: 2px;
     line-height: 1;
 
-    &.manual-tag {
-      background: rgba(239, 68, 68, 0.2);
-      color: #dc2626;
-      font-weight: 600;
-    }
-    &.airbnb-tag {
-      background: rgba(168, 85, 247, 0.18);
-      color: #7e22ce;
-      font-weight: 600;
-    }
-    &.booked-tag {
-      background: rgba(37, 99, 235, 0.15);
-      color: #1d4ed8;
-      font-weight: 600;
-    }
-    &.selected-tag {
-      background: rgba(0, 0, 0, 0.25);
-      color: #121415;
-      font-weight: 700;
-    }
+    &.manual-tag { background: rgba(239, 68, 68, 0.2); color: #dc2626; font-weight: 600; }
+    &.airbnb-tag { background: rgba(168, 85, 247, 0.18); color: #7e22ce; font-weight: 600; }
+    &.booked-tag { background: rgba(37, 99, 235, 0.15); color: #1d4ed8; font-weight: 600; }
+    &.selected-tag { background: rgba(0, 0, 0, 0.25); color: #121415; font-weight: 700; }
+    &.range-tag { background: var(--gold-dark, #91754F); color: #FFFFFF; font-weight: 700; }
+    &.preview-tag { background: rgba(197, 168, 128, 0.4); color: var(--gold-dark, #91754F); font-weight: 600; }
   }
 }
 </style>

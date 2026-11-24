@@ -55,20 +55,25 @@ onMounted(() => {
   fetchData()
 })
 
-// 月曆互動 Composable (支援單選與多選，不分開始結束)
+// 月曆互動 Composable (支援單選一天、多選多天與連續區間包日)
 const {
   selectedDates,
+  selectionMode,
+  rangeStart,
+  hoverDate,
   isPrevDisabled,
   displayedMonths,
   prevMonth,
   nextMonth,
   selectDate,
+  setHoverDate,
+  clearHoverDate,
   removeDate,
   clearSelection: resetCalendarSelection
 } = useAdminCloseCalendar(bookedRanges)
 
-const handleSelectDate = (day) => {
-  const msg = selectDate(day)
+const handleSelectDate = (day, isShiftKey) => {
+  const msg = selectDate(day, isShiftKey)
   if (msg) statusMessage.value = msg
 }
 
@@ -143,6 +148,18 @@ const handlePromptUnlock = (block) => {
   isUnlockConfirmModalOpen.value = true
 }
 
+// 本地樂觀移除檔期共用方法
+const removeBlockLocally = (block, blockId) => {
+  const targetId = block?.id
+  const targetUid = block?.uid || block?.external_uid
+  bookedRanges.value = bookedRanges.value.filter(b => {
+    if (targetId != null && b.id == targetId) return false
+    if (targetUid && (b.uid === targetUid || b.external_uid === targetUid)) return false
+    if (blockId && (b.id == blockId || b.uid === blockId)) return false
+    return true
+  })
+}
+
 // 彈窗內確認真正執行解除手動鎖房
 const handleExecuteUnlock = async (block) => {
   const blockId = block.id || block.uid
@@ -153,17 +170,7 @@ const handleExecuteUnlock = async (block) => {
   errorMessage.value = ''
   try {
     await deleteAdminBlock(blockId)
-
-    // 即時樂觀更新：立即將被解除之鎖房檔期剔除
-    const targetId = block.id
-    const targetUid = block.uid || block.external_uid
-    bookedRanges.value = bookedRanges.value.filter(b => {
-      if (targetId != null && b.id == targetId) return false
-      if (targetUid && (b.uid === targetUid || b.external_uid === targetUid)) return false
-      if (blockId && (b.id == blockId || b.uid === blockId)) return false
-      return true
-    })
-
+    removeBlockLocally(block, blockId)
     statusMessage.value = `已成功解除【${s} 至 ${e}】之鎖定，前台月曆已重新開放預訂！`
     isUnlockConfirmModalOpen.value = false
     selectedUnlockBlock.value = null
@@ -187,11 +194,9 @@ const handleOpenBooking = (blockInfo) => {
   }
 
   if (target) {
-    // 官網直訂單 -> 開啟直訂單管理彈窗
     selectedBooking.value = target
     isDetailModalOpen.value = true
   } else {
-    // 外部匯入檔期 (如 Airbnb) 或無直訂單之佔用 -> 開啟專屬彈窗 (絕不使用 alert)
     selectedExternalBlock.value = blockInfo
     isExternalModalOpen.value = true
   }
@@ -207,17 +212,7 @@ const handleUnlockExternalBlock = async (block) => {
   errorMessage.value = ''
   try {
     await deleteAdminBlock(blockId)
-
-    // 即時樂觀更新：立即將被解除之外部檔期剔除
-    const targetId = block.id
-    const targetUid = block.uid || block.external_uid
-    bookedRanges.value = bookedRanges.value.filter(b => {
-      if (targetId != null && b.id == targetId) return false
-      if (targetUid && (b.uid === targetUid || b.external_uid === targetUid)) return false
-      if (blockId && (b.id == blockId || b.uid === blockId)) return false
-      return true
-    })
-
+    removeBlockLocally(block, blockId)
     statusMessage.value = `已成功解除【${s} 至 ${e}】之佔用檔期，前台月曆已重新開放預訂！`
     isExternalModalOpen.value = false
     selectedExternalBlock.value = null
@@ -350,7 +345,12 @@ const handleReopenBooking = async (b) => {
             :total-months="displayedMonths.length"
             :is-prev-disabled="isPrevDisabled"
             :selected-dates="selectedDates"
+            :selection-mode="selectionMode"
+            :range-start="rangeStart"
+            :hover-date="hoverDate"
             @select-date="handleSelectDate"
+            @hover-date="setHoverDate"
+            @clear-hover="clearHoverDate"
             @prev-month="prevMonth"
             @next-month="nextMonth"
             @unlock-block="handlePromptUnlock"
@@ -359,11 +359,13 @@ const handleReopenBooking = async (b) => {
         </div>
       </div>
 
-      <!-- 右側：使用者自填理由與確認關閉卡片 (支援多選與移除) -->
+      <!-- 右側：使用者自填理由與確認關閉卡片 (支援個別多選與連續區間) -->
       <div class="control-panel-col">
         <AdminCloseActionPanel
           v-model="closeReason"
+          v-model:selection-mode="selectionMode"
           :selected-dates="selectedDates"
+          :range-start="rangeStart"
           :is-submitting="isSubmitting"
           @confirm="handlePromptClose"
           @clear="handleClearAll"
