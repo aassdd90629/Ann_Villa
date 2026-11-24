@@ -1,3 +1,7 @@
 # Cloudflare Pages 標頭設定
-/*
+# 僅管家後台與內部 API 禁止搜尋引擎索引與檢索
+/admin/*
+  X-Robots-Tag: noindex, nofollow, noarchive
+
+/api/*
   X-Robots-Tag: noindex, nofollow, noarchive
