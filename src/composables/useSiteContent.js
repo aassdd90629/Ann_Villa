@@ -12,7 +12,7 @@ const basicInfo = ref({
   introEn: 'Brand-new Shan Yu Villa luxury estate is nestled amid tranquil mountain forests with expansive panoramic views. Perfect for families, friends, and travelers seeking slow mountain living.',
   bankName: '台灣銀行',
   bankCode: '004',
-  bankAccount: '123-456-789012 (展示模擬帳號，請勿真實匯款)',
+  bankAccount: '123-456-789012',
   bankHolder: '山語 Villa',
   phone: '0909-557-400',
   lineId: '@209yrich',

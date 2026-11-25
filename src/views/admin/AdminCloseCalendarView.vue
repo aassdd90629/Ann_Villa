@@ -130,7 +130,7 @@ const handleExecuteClose = async () => {
       ? `${datesToClose.slice(0, 2).join('、')} 等共 ${datesToClose.length} 天`
       : datesToClose.join('、')
 
-    statusMessage.value = `成功關閉【${summaryText}】月曆！前台所選日期已即刻反灰。`
+    statusMessage.value = `成功關閉【${summaryText}】月曆！前台所選日期已即刻關閉保留。`
     isCloseConfirmModalOpen.value = false
     handleClearAll()
     clearBookedRangesCache()

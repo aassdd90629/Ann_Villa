@@ -3,7 +3,6 @@ import { ref, computed, onMounted } from 'vue'
 import { useI18n } from '../../composables/useI18n'
 import { useBookingPricing } from '../../composables/useBookingPricing'
 import { getBookedRanges } from '../../services/availabilityService'
-import { Info } from 'lucide-vue-next'
 import BookingSummarySidebar from './BookingSummarySidebar.vue'
 import DirectBookingModal from './DirectBookingModal.vue'
 import WeekdayPricingModal from './WeekdayPricingModal.vue'
@@ -240,15 +239,6 @@ const isInRange = (dateStr) => {
 
 <template>
   <div class="availability-calendar-card">
-    <!-- 頂部檔期說明列 -->
-    <div class="sync-banner">
-      <div class="sync-status">
-        <span class="demo-badge-tag">⚠️ 展示預覽環境</span>
-        <Info :size="15" class="info-icon" />
-        <span class="sync-text">{{ isEn ? t('calendar.syncNotice') : '房態由 Cloudflare D1 邊緣資料庫即時同步反灰' }}</span>
-      </div>
-    </div>
-
     <div class="calendar-layout-grid">
       <!-- 左側：月曆主體 (雙月份呈現) -->
       <div class="calendar-main-col">
@@ -345,69 +335,6 @@ const isInRange = (dateStr) => {
 
   @media (min-width: $bp-md) {
     padding: 2.25rem 2.5rem;
-  }
-}
-
-// 頂部同步狀態列
-.sync-banner {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  padding-bottom: 1.5rem;
-  margin-bottom: 1.75rem;
-  border-bottom: 1px solid var(--border-color);
-
-  .sync-status {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-
-    .demo-badge-tag {
-      font-size: 0.72rem;
-      padding: 0.2rem 0.5rem;
-      background: rgba(212, 175, 55, 0.15);
-      border: 1px solid rgba(212, 175, 55, 0.35);
-      color: var(--gold-primary);
-      border-radius: 4px;
-      font-weight: 600;
-      letter-spacing: 0.5px;
-    }
-
-    .info-icon {
-      color: var(--gold-primary);
-      flex-shrink: 0;
-    }
-
-    .sync-text {
-      font-size: 0.85rem;
-      color: var(--text-sub);
-      font-weight: 500;
-    }
-  }
-}
-
-.btn-refresh-sync {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  background: transparent;
-  border: 1px solid var(--border-color);
-  color: var(--text-sub);
-  padding: 0.25rem 0.65rem;
-  font-size: 0.78rem;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: $transition-base;
-
-  &:hover {
-    border-color: var(--gold-primary);
-    color: var(--gold-primary);
-  }
-
-  &.is-spinning svg {
-    animation: spin 1s linear infinite;
   }
 }
 

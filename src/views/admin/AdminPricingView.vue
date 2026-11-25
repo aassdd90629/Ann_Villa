@@ -112,7 +112,7 @@ const handleSaveAll = async () => {
     <div class="admin-page-header">
       <div class="header-left">
         <h1 class="page-title">房價政策與連續假期管理</h1>
-        <p class="page-subtitle">設定即時寫入 Cloudflare D1，前台預約日曆、直訂試算與後端防竄改計價同步生效。</p>
+        <p class="page-subtitle">設定即時寫入系統資料庫，前台預約日曆、直訂試算與後端防竄改計價同步生效。</p>
       </div>
 
       <div class="header-actions">

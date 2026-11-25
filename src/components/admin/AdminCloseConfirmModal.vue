@@ -48,7 +48,7 @@ const closeModal = () => {
             <AlertTriangle :size="18" class="text-warning" />
             <div class="notice-text">
               <strong>即將手動關閉以下 {{ dates.length }} 個日期</strong>
-              <p>關閉送出後，前台預訂月曆此時段將即刻反灰，訪客將無法線上預約。</p>
+              <p>關閉送出後，前台預訂月曆此時段將即刻關閉，訪客將無法線上預約。</p>
             </div>
           </div>
 
