@@ -235,8 +235,8 @@ const isInRange = (dateStr) => {
 
 .days-grid {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 5px;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 4px;
   margin-bottom: 0.75rem;
 
   @media (min-width: $bp-md) {
@@ -246,6 +246,8 @@ const isInRange = (dateStr) => {
 
 .day-cell {
   position: relative;
+  width: 100%;
+  min-width: 0;
   height: 52px;
   background: var(--bg-primary);
   border: 1px solid transparent;
@@ -257,10 +259,12 @@ const isInRange = (dateStr) => {
   cursor: pointer;
   transition: $transition-base;
   color: var(--text-primary);
+  padding: 2px 1px;
 
   @media (min-width: $bp-md) {
     height: 58px;
     border-radius: 6px;
+    padding: 3px 2px;
   }
 
   @media (min-width: 1200px) {
@@ -286,14 +290,24 @@ const isInRange = (dateStr) => {
   }
 
   .cell-tag {
-    font-size: 0.65rem;
+    font-size: 0.62rem;
     line-height: 1.1;
-    margin-top: 3px;
-    padding: 1.5px 4px;
+    margin-top: 2px;
+    padding: 1px 3px;
     border-radius: 2px;
+    white-space: nowrap;
+    display: inline-block;
+    max-width: 100%;
+    letter-spacing: -0.02em;
+
+    @media (min-width: 400px) {
+      font-size: 0.66rem;
+      padding: 1.5px 4px;
+      letter-spacing: 0;
+    }
 
     @media (min-width: $bp-md) {
-      font-size: 0.7rem;
+      font-size: 0.72rem;
       padding: 2px 5px;
     }
 
@@ -301,6 +315,7 @@ const isInRange = (dateStr) => {
       background: var(--badge-bg);
       color: var(--gold-primary);
       font-weight: 500;
+      white-space: nowrap;
     }
 
     &.weekday-tag {
@@ -308,6 +323,13 @@ const isInRange = (dateStr) => {
       color: var(--gold-primary);
       font-weight: 600;
       border: 1px solid rgba(200, 169, 110, 0.28);
+      white-space: nowrap;
+    }
+
+    &.booked-tag,
+    &.in-tag,
+    &.out-tag {
+      white-space: nowrap;
     }
   }
 

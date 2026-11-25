@@ -319,7 +319,7 @@ const isInRange = (dateStr) => {
 @use '../../assets/styles/variables' as *;
 
 .availability-calendar-card {
-  padding: 1.5rem 1.25rem;
+  padding: 1.25rem 1rem;
   margin: 3rem 0;
   border: 1px solid var(--border-color);
   background: var(--bg-card);
@@ -333,8 +333,16 @@ const isInRange = (dateStr) => {
     box-shadow: var(--shadow-card) !important;
   }
 
+  @media (min-width: $bp-sm) {
+    padding: 1.5rem 1.25rem;
+  }
+
   @media (min-width: $bp-md) {
-    padding: 2.25rem 2.5rem;
+    padding: 2rem 1.75rem;
+  }
+
+  @media (min-width: 1200px) {
+    padding: 2.25rem 2rem;
   }
 }
 
@@ -342,11 +350,16 @@ const isInRange = (dateStr) => {
 .calendar-layout-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 2.5rem;
+  gap: 2rem;
 
-  @media (min-width: 1200px) {
-    grid-template-columns: 1.75fr 1fr;
-    gap: 2.25rem;
+  @media (min-width: 1100px) {
+    grid-template-columns: 1fr 340px;
+    gap: 2rem;
+  }
+
+  @media (min-width: 1300px) {
+    grid-template-columns: 1fr 360px;
+    gap: 2.5rem;
   }
 }
 
@@ -354,17 +367,22 @@ const isInRange = (dateStr) => {
 .calendar-main-col {
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
 // 雙月份並排呈現網格
 .two-months-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 2rem;
+  gap: 1.75rem;
   margin-bottom: 1.5rem;
 
-  @media (min-width: $bp-md) {
+  @media (min-width: 860px) {
     grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+
+  @media (min-width: 1200px) {
     gap: 1.75rem;
   }
 }
