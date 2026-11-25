@@ -259,7 +259,8 @@ const isInRange = (dateStr) => {
   cursor: pointer;
   transition: $transition-base;
   color: var(--text-primary);
-  padding: 2px 1px;
+  padding: 2px 2px;
+  overflow: hidden;
 
   @media (min-width: $bp-md) {
     height: 58px;
@@ -291,25 +292,16 @@ const isInRange = (dateStr) => {
 
   .cell-tag {
     font-size: 0.62rem;
-    line-height: 1.1;
-    margin-top: 2px;
+    line-height: 1;
+    margin-top: 3px;
     padding: 1px 3px;
     border-radius: 2px;
     white-space: nowrap;
-    display: inline-block;
-    max-width: 100%;
-    letter-spacing: -0.02em;
-
-    @media (min-width: 400px) {
-      font-size: 0.66rem;
-      padding: 1.5px 4px;
-      letter-spacing: 0;
-    }
-
-    @media (min-width: $bp-md) {
-      font-size: 0.72rem;
-      padding: 2px 5px;
-    }
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 98%;
+    box-sizing: border-box;
 
     &.holiday-tag {
       background: var(--badge-bg);
@@ -323,7 +315,25 @@ const isInRange = (dateStr) => {
       color: var(--gold-primary);
       font-weight: 600;
       border: 1px solid rgba(200, 169, 110, 0.28);
-      white-space: nowrap;
+      font-size: 0.6rem;
+      letter-spacing: -0.05em;
+      padding: 1px 2px;
+      transform: scale(0.85);
+      transform-origin: center center;
+
+      @media (min-width: $bp-md) {
+        transform: scale(0.92);
+      }
+
+      @media (min-width: 1200px) {
+        transform: scale(0.95);
+      }
+
+      @media (min-width: 1400px) {
+        transform: scale(1);
+        letter-spacing: -0.02em;
+        padding: 1.5px 3px;
+      }
     }
 
     &.booked-tag,

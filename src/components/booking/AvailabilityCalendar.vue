@@ -352,12 +352,12 @@ const isInRange = (dateStr) => {
   grid-template-columns: 1fr;
   gap: 2rem;
 
-  @media (min-width: 1100px) {
+  @media (min-width: 1250px) {
     grid-template-columns: 1fr 340px;
-    gap: 2rem;
+    gap: 2.25rem;
   }
 
-  @media (min-width: 1300px) {
+  @media (min-width: 1400px) {
     grid-template-columns: 1fr 360px;
     gap: 2.5rem;
   }
