@@ -611,20 +611,20 @@ watch(effectiveTextDuration, () => {
     .indicator-bar {
       position: relative;
       width: 100%;
-      height: 3px;
-      background: rgba(255, 255, 255, 0.25);
+      height: 3.5px;
+      background: rgba(85, 80, 71, 0.22); // 淺色（白色）模式：深色暖茶褐底色，清晰可見
       border-radius: 3px;
       overflow: hidden;
       transition: background 0.3s ease, height 0.3s ease;
     }
 
     &:hover .indicator-bar {
-      background: rgba(255, 255, 255, 0.45);
+      background: rgba(85, 80, 71, 0.42);
       height: 4px;
     }
 
     &.is-active .indicator-bar {
-      background: rgba(255, 255, 255, 0.35);
+      background: rgba(85, 80, 71, 0.18);
       height: 4px;
     }
 
@@ -633,7 +633,8 @@ watch(effectiveTextDuration, () => {
       top: 0;
       left: 0;
       height: 100%;
-      background: linear-gradient(90deg, $color-gold-light-primary, $color-gold-light-highlight);
+      background: linear-gradient(90deg, #91754F, #C5A880); // 淺色模式：古銅深金至原創流金
+      box-shadow: 0 0 6px rgba(197, 168, 128, 0.4);
       border-radius: 3px;
       animation: progressFill linear forwards;
 
@@ -641,6 +642,26 @@ watch(effectiveTextDuration, () => {
         animation-play-state: paused;
       }
     }
+  }
+}
+
+// 深色模式下維持晶透亮白與柔金光澤
+:root[data-theme="dark"] .hero-carousel {
+  .indicator-bar {
+    background: rgba(255, 255, 255, 0.25);
+  }
+
+  .indicator-item:hover .indicator-bar {
+    background: rgba(255, 255, 255, 0.45);
+  }
+
+  .indicator-item.is-active .indicator-bar {
+    background: rgba(255, 255, 255, 0.35);
+  }
+
+  .indicator-progress {
+    background: linear-gradient(90deg, $color-gold-light-primary, $color-gold-light-highlight);
+    box-shadow: 0 0 8px rgba(230, 213, 190, 0.45);
   }
 }
 
