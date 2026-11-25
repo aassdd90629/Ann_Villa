@@ -57,8 +57,8 @@ onMounted(async () => {
           </p>
           <p class="hero-desc">
             {{ isEn 
-              ? 'Nestled amid rolling mountain mist, offering 5 private bedrooms, living lounge with KTV, auto-mahjong, smart kitchen, and BBQ patio for up to 18 guests.' 
-              : '坐落於山林之間，獨享 5 間獨立客房、客廳KTV、電動麻將桌、智能廚房與庭園烤肉區，為最多 18 位貴賓打造專屬的慢活包棟時光。' 
+              ? 'Nestled amid rolling mountain mist, offering 5 private bedrooms, living lounge with KTV, auto-mahjong, smart kitchen, and BBQ patio, crafted for exclusive private retreats of 10, 14, or 18 guests.' 
+              : '坐落於山林之間，獨享 5 間獨立客房、客廳KTV、電動麻將桌、智能廚房與庭園烤肉區，專為10人、14人、18人的貴賓打造專屬的慢活包棟時光。' 
             }}
           </p>
 
