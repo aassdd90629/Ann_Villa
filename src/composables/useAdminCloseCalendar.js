@@ -1,6 +1,6 @@
 import { ref, computed } from 'vue'
 
-export function useAdminCloseCalendar(bookedRanges) {
+export function useAdminCloseCalendar(bookedRanges, bookings = ref([])) {
   const selectedDates = ref([]) // 多選日期陣列 ['YYYY-MM-DD', ...]
   const selectionMode = ref('individual') // 'individual' | 'range'
   const rangeStart = ref(null) // 'YYYY-MM-DD' 連續區間起始日
@@ -65,6 +65,25 @@ export function useAdminCloseCalendar(bookedRanges) {
       const isManualLock = block && block.source === 'MANUAL_LOCK'
       const isDirectBooking = block && block.source === 'DIRECT_BOOKING'
       const isBooked = !!block
+
+      // 取得定金與對帳狀態
+      let booking = null
+      if (block) {
+        const uid = block.id || block.uid
+        booking = bookings?.value?.find(b => b.id === uid)
+        if (!booking && block.source === 'DIRECT_BOOKING') {
+          const s = block.startDate || block.start_date
+          const e = block.endDate || block.end_date
+          booking = bookings?.value?.find(b => b.check_in === s && b.check_out === e)
+        }
+      }
+
+      const depositStatus = booking?.deposit_status || block?.deposit_status || (isManualLock ? null : 'UNPAID')
+      const bankLast5 = booking?.bank_last_5 || block?.bank_last_5 || null
+      
+      const isDepositPaid = isBooked && !isManualLock && depositStatus === 'PAID'
+      const isVerifyingPayment = isBooked && !isManualLock && depositStatus !== 'PAID' && !!bankLast5
+      const isDepositUnpaid = isBooked && !isManualLock && depositStatus !== 'PAID' && !bankLast5
       
       days.push({
         dateStr,
@@ -73,6 +92,11 @@ export function useAdminCloseCalendar(bookedRanges) {
         isBooked,
         isManualLock,
         isDirectBooking,
+        isDepositPaid,
+        isVerifyingPayment,
+        isDepositUnpaid,
+        depositStatus,
+        bankLast5,
         blockInfo: block,
         isPast: d < minBookingDate
       })

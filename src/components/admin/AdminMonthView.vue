@@ -65,11 +65,14 @@ const getCellTitle = (day) => {
     const reason = day.blockInfo?.summary ? `（理由：${day.blockInfo.summary}）` : ''
     return `${day.dateStr} 【已自主關閉${reason}】點擊可解除`
   }
-  if (day.isDirectBooking) {
-    return `${day.dateStr} 【官網直訂單】點擊查看、修改或取消`
-  }
-  if (day.isBooked) {
-    return `${day.dateStr} 【外部佔用檔期】點擊可查看或解除檔期`
+  if (day.isDirectBooking || day.isBooked) {
+    if (day.isDepositPaid) {
+      return `${day.dateStr} 【已收定金・正式鎖房】點擊查看、修改或取消`
+    }
+    if (day.isVerifyingPayment) {
+      return `${day.dateStr} 【待對帳・已報末五碼 ${day.bankLast5}】點擊查看與核銷`
+    }
+    return `${day.dateStr} 【待付定金・24h 保留中】點擊查看、修改或取消`
   }
   if (props.rangeStart === day.dateStr) {
     return `${day.dateStr} 【區間起始日】請點選結束日`
@@ -125,6 +128,14 @@ const handleDayClick = (day, event) => {
       <span v-else class="header-placeholder desktop-only"></span>
     </div>
 
+    <!-- 月曆狀態圖例看板 (首個月份頂部呈現) -->
+    <div v-if="monthIndex === 0" class="calendar-legend-bar">
+      <span class="legend-chip"><span class="badge-dot dot-paid"></span> 已收定金</span>
+      <span class="legend-chip"><span class="badge-dot dot-unpaid"></span> 待付定金</span>
+      <span class="legend-chip"><span class="badge-dot dot-verifying"></span> 待核對帳</span>
+      <span class="legend-chip"><span class="badge-dot dot-manual"></span> 自主關閉</span>
+    </div>
+
     <!-- 星期標題 -->
     <div class="weekdays-row">
       <span v-for="(day, idx) in weekDays" :key="idx" class="weekday-cell" :class="{ weekend: idx === 0 || idx === 6 }">
@@ -142,8 +153,11 @@ const handleDayClick = (day, event) => {
           class="day-cell"
           :class="{
             'is-past': day.isPast,
-            'is-booked': day.isDirectBooking || day.isBooked,
             'is-manual-lock': day.isManualLock,
+            'is-deposit-paid': day.isDepositPaid,
+            'is-verifying': day.isVerifyingPayment,
+            'is-deposit-unpaid': day.isDepositUnpaid,
+            'is-booked': (day.isDirectBooking || day.isBooked) && !day.isDepositPaid && !day.isVerifyingPayment && !day.isDepositUnpaid,
             'is-selected': isSelected(day.dateStr),
             'is-range-start': rangeStart === day.dateStr,
             'is-range-preview': isInRangePreview(day.dateStr) && !isSelected(day.dateStr)
@@ -156,6 +170,15 @@ const handleDayClick = (day, event) => {
           <span class="day-number">{{ day.dayNum }}</span>
           <span v-if="day.isManualLock" class="cell-tag manual-tag">
             已關閉
+          </span>
+          <span v-else-if="day.isDepositPaid" class="cell-tag paid-tag">
+            已收定
+          </span>
+          <span v-else-if="day.isVerifyingPayment" class="cell-tag verifying-tag">
+            待對帳
+          </span>
+          <span v-else-if="day.isDepositUnpaid" class="cell-tag unpaid-tag">
+            待付定
           </span>
           <span v-else-if="day.isDirectBooking || day.isBooked" class="cell-tag booked-tag">
             已訂單
@@ -228,6 +251,39 @@ const handleDayClick = (day, event) => {
   .header-placeholder { width: 28px; height: 28px; }
 }
 
+.calendar-legend-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  padding: 0.35rem 0.6rem;
+  background: var(--admin-bg-base, rgba(0, 0, 0, 0.03));
+  border: 1px solid var(--admin-border, rgba(197, 168, 128, 0.2));
+  border-radius: 6px;
+  margin-bottom: 0.75rem;
+
+  .legend-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.72rem;
+    color: var(--admin-text-sub, #475569);
+    font-weight: 500;
+
+    .badge-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+
+      &.dot-paid { background: #16a34a; }
+      &.dot-unpaid { background: #f59e0b; }
+      &.dot-verifying { background: #0284c7; }
+      &.dot-manual { background: #dc2626; }
+    }
+  }
+}
+
 .weekdays-row {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -287,6 +343,39 @@ const handleDayClick = (day, event) => {
     }
   }
 
+  &.is-deposit-paid {
+    color: #15803d;
+    background: rgba(34, 197, 94, 0.12);
+    border-color: rgba(34, 197, 94, 0.35);
+    cursor: pointer;
+    &:hover:not(:disabled) {
+      border-color: rgba(34, 197, 94, 0.6);
+      background: rgba(34, 197, 94, 0.22);
+    }
+  }
+
+  &.is-verifying {
+    color: #0284c7;
+    background: rgba(14, 165, 233, 0.12);
+    border-color: rgba(14, 165, 233, 0.35);
+    cursor: pointer;
+    &:hover:not(:disabled) {
+      border-color: rgba(14, 165, 233, 0.6);
+      background: rgba(14, 165, 233, 0.22);
+    }
+  }
+
+  &.is-deposit-unpaid {
+    color: #b45309;
+    background: rgba(245, 158, 11, 0.12);
+    border-color: rgba(245, 158, 11, 0.35);
+    cursor: pointer;
+    &:hover:not(:disabled) {
+      border-color: rgba(245, 158, 11, 0.6);
+      background: rgba(245, 158, 11, 0.22);
+    }
+  }
+
   &.is-manual-lock {
     color: #dc2626;
     background: rgba(239, 68, 68, 0.12);
@@ -326,6 +415,9 @@ const handleDayClick = (day, event) => {
     line-height: 1;
 
     &.manual-tag { background: rgba(239, 68, 68, 0.2); color: #dc2626; font-weight: 600; }
+    &.paid-tag { background: rgba(34, 197, 94, 0.2); color: #15803d; font-weight: 700; }
+    &.verifying-tag { background: rgba(14, 165, 233, 0.2); color: #0284c7; font-weight: 700; }
+    &.unpaid-tag { background: rgba(245, 158, 11, 0.2); color: #b45309; font-weight: 700; }
     &.booked-tag { background: rgba(37, 99, 235, 0.15); color: #1d4ed8; font-weight: 600; }
     &.selected-tag { background: rgba(0, 0, 0, 0.25); color: #121415; font-weight: 700; }
     &.range-tag { background: var(--gold-dark, #91754F); color: #FFFFFF; font-weight: 700; }

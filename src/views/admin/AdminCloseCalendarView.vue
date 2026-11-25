@@ -70,7 +70,7 @@ const {
   clearHoverDate,
   removeDate,
   clearSelection: resetCalendarSelection
-} = useAdminCloseCalendar(bookedRanges)
+} = useAdminCloseCalendar(bookedRanges, bookings)
 
 const handleSelectDate = (day, isShiftKey) => {
   const msg = selectDate(day, isShiftKey)

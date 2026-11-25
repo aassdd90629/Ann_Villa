@@ -29,7 +29,9 @@ export async function onRequestGet(context) {
           ELSE 'blocked' 
         END AS type,
         'confirmed' AS status,
-        external_uid AS uid
+        external_uid AS uid,
+        NULL AS deposit_status,
+        NULL AS bank_last_5
       FROM availability_blocks
       WHERE end_date >= DATE('now')
       
@@ -43,7 +45,9 @@ export async function onRequestGet(context) {
         '官網直訂單' AS summary,
         'reserved' AS type,
         status,
-        id AS uid
+        id AS uid,
+        deposit_status,
+        bank_last_5
       FROM bookings
       WHERE check_out >= DATE('now') AND status != 'CANCELLED'
       
