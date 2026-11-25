@@ -53,7 +53,6 @@ const bookingError = ref('')
 const formGuestName = ref('')
 const formGuestPhone = ref('')
 const formGuestEmail = ref('')
-const formLineId = ref('')
 const formSpecialRequests = ref('')
 
 const closeModal = () => {
@@ -79,7 +78,6 @@ const submitBookingForm = async () => {
       guestName: formGuestName.value.trim(),
       guestPhone: formGuestPhone.value.trim(),
       guestEmail: formGuestEmail.value.trim(),
-      lineId: formLineId.value.trim(),
       guestCount: props.guestCount,
       checkIn: props.checkInDate,
       checkOut: props.checkOutDate,
@@ -218,7 +216,7 @@ const submitBookingForm = async () => {
             </div>
 
             <!-- Email -->
-            <div class="form-group">
+            <div class="form-group full-width">
               <label for="guestEmail">
                 {{ isEn ? 'Email Address' : '電子信箱 (接收訂單確認)' }} <span class="required">*</span>
               </label>
@@ -229,20 +227,6 @@ const submitBookingForm = async () => {
                 class="form-input" 
                 :placeholder="isEn ? 'e.g. guest@example.com' : '請輸入正確 Email'" 
                 required 
-              />
-            </div>
-
-            <!-- LINE ID -->
-            <div class="form-group">
-              <label for="lineId">
-                {{ isEn ? 'LINE ID (Optional)' : 'LINE ID (選填，方便管家聯繫)' }}
-              </label>
-              <input 
-                id="lineId" 
-                v-model="formLineId" 
-                type="text" 
-                class="form-input" 
-                :placeholder="isEn ? 'Your LINE ID' : '方便管家第一時間聯繫確認'" 
               />
             </div>
 
