@@ -345,8 +345,8 @@ const isInRange = (dateStr) => {
   gap: 2.5rem;
 
   @media (min-width: 1200px) {
-    grid-template-columns: 1.6fr 1fr;
-    gap: 2.5rem;
+    grid-template-columns: 1.75fr 1fr;
+    gap: 2.25rem;
   }
 }
 
@@ -365,7 +365,7 @@ const isInRange = (dateStr) => {
 
   @media (min-width: $bp-md) {
     grid-template-columns: 1fr 1fr;
-    gap: 2.25rem;
+    gap: 1.75rem;
   }
 }
 

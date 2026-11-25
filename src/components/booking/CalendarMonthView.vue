@@ -153,7 +153,7 @@ const isInRange = (dateStr) => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 40px;
+  height: 42px;
   margin-bottom: 1.25rem;
 
   .month-panel-title {
@@ -164,11 +164,15 @@ const isInRange = (dateStr) => {
     letter-spacing: 0.05em;
     text-align: center;
     flex: 1;
+
+    @media (min-width: $bp-md) {
+      font-size: 1.25rem;
+    }
   }
 
   .nav-btn {
-    width: 34px;
-    height: 34px;
+    width: 36px;
+    height: 36px;
     border-radius: 4px;
     border: 1px solid var(--border-color);
     background: var(--bg-primary);
@@ -201,8 +205,8 @@ const isInRange = (dateStr) => {
   }
 
   .header-placeholder {
-    width: 34px;
-    height: 34px;
+    width: 36px;
+    height: 36px;
     visibility: hidden;
     flex-shrink: 0;
 
@@ -219,10 +223,10 @@ const isInRange = (dateStr) => {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   text-align: center;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.85rem;
 
   .weekday-cell {
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     color: var(--text-muted);
     font-weight: 600;
     text-transform: uppercase;
@@ -232,16 +236,20 @@ const isInRange = (dateStr) => {
 .days-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 4px;
+  gap: 5px;
   margin-bottom: 0.75rem;
+
+  @media (min-width: $bp-md) {
+    gap: 6px;
+  }
 }
 
 .day-cell {
   position: relative;
-  height: 48px;
+  height: 52px;
   background: var(--bg-primary);
   border: 1px solid transparent;
-  border-radius: 4px;
+  border-radius: 5px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -249,6 +257,15 @@ const isInRange = (dateStr) => {
   cursor: pointer;
   transition: $transition-base;
   color: var(--text-primary);
+
+  @media (min-width: $bp-md) {
+    height: 58px;
+    border-radius: 6px;
+  }
+
+  @media (min-width: 1200px) {
+    height: 62px;
+  }
 
   &.is-empty {
     background: transparent !important;
@@ -260,16 +277,25 @@ const isInRange = (dateStr) => {
 
   .day-number {
     font-family: $font-display;
-    font-size: 0.95rem;
+    font-size: 1.05rem;
     font-weight: 600;
+
+    @media (min-width: $bp-md) {
+      font-size: 1.1rem;
+    }
   }
 
   .cell-tag {
-    font-size: 0.62rem;
-    line-height: 1;
-    margin-top: 2px;
-    padding: 1px 3px;
+    font-size: 0.65rem;
+    line-height: 1.1;
+    margin-top: 3px;
+    padding: 1.5px 4px;
     border-radius: 2px;
+
+    @media (min-width: $bp-md) {
+      font-size: 0.7rem;
+      padding: 2px 5px;
+    }
 
     &.holiday-tag {
       background: var(--badge-bg);
