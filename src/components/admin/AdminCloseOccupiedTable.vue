@@ -267,7 +267,7 @@ const formatOccupiedSummary = (item) => {
 .admin-table {
   width: 100%;
   border-collapse: collapse;
-  text-align: left;
+  text-align: center;
   font-size: 0.88rem;
 
   th {
@@ -279,6 +279,8 @@ const formatOccupiedSummary = (item) => {
     letter-spacing: 0.5px;
     border-bottom: 1px solid var(--admin-border, rgba(197, 168, 128, 0.25));
     white-space: nowrap;
+    text-align: center;
+    vertical-align: middle;
   }
 
   td {
@@ -286,6 +288,7 @@ const formatOccupiedSummary = (item) => {
     border-bottom: 1px solid var(--admin-border, rgba(197, 168, 128, 0.15));
     color: var(--admin-text-main, #1A1E1F);
     vertical-align: middle;
+    text-align: center;
   }
 
   tr:last-child td {
@@ -295,6 +298,15 @@ const formatOccupiedSummary = (item) => {
   tr:hover td {
     background: rgba(197, 168, 128, 0.04);
   }
+}
+
+.guest-info-inline {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 0.15rem;
 }
 
 .badge-type {

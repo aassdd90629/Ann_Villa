@@ -69,11 +69,13 @@ const emit = defineEmits(['openDetail', 'confirmPaid'])
               </div>
             </td>
             <td>
-              <span class="tag-deposit" :class="b.deposit_status === 'PAID' ? 'paid' : 'unpaid'">
-                {{ b.deposit_status === 'PAID' ? '定金已付' : '待付定金' }}
-              </span>
-              <div v-if="b.bank_last_5" class="last5-report-tag" title="旅客線上回報末五碼">
-                末五碼: <span class="font-mono text-gold-light font-bold">{{ b.bank_last_5 }}</span>
+              <div class="deposit-cell">
+                <span class="tag-deposit" :class="b.deposit_status === 'PAID' ? 'paid' : 'unpaid'">
+                  {{ b.deposit_status === 'PAID' ? '定金已付' : '待付定金' }}
+                </span>
+                <div v-if="b.bank_last_5" class="last5-report-tag" title="旅客線上回報末五碼">
+                  末五碼: <span class="font-mono text-gold-light font-bold">{{ b.bank_last_5 }}</span>
+                </div>
               </div>
             </td>
             <td>
@@ -202,8 +204,20 @@ const emit = defineEmits(['openDetail', 'confirmPaid'])
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    text-align: center;
+    margin: 0 auto;
     .total { font-weight: 600; color: var(--admin-text-main); white-space: nowrap; }
     .deposit { font-size: 0.75rem; color: var(--gold-primary, #d4af37); white-space: nowrap; }
+  }
+
+  .deposit-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    margin: 0 auto;
   }
 
   .tag-deposit {

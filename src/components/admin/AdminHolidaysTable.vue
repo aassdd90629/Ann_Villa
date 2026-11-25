@@ -302,11 +302,12 @@ const handleTriggerImport = () => {
 
   th {
     padding: 0.75rem 0.85rem;
-    text-align: left;
+    text-align: center;
     background: var(--bg-primary);
     color: var(--gold-primary);
     font-weight: 600;
     border-bottom: 1px solid var(--border-color);
+    vertical-align: middle;
   }
 
   td {
@@ -314,6 +315,7 @@ const handleTriggerImport = () => {
     border-bottom: 1px solid var(--border-color);
     color: var(--text-primary);
     vertical-align: middle;
+    text-align: center;
   }
 
   tr.is-cny td {
@@ -350,6 +352,7 @@ const handleTriggerImport = () => {
   .table-price-wrap {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 0.25rem;
 
     .p-sign {
@@ -362,6 +365,7 @@ const handleTriggerImport = () => {
   .breakfast-toggle-label {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     cursor: pointer;
 
     .toggle-checkbox {

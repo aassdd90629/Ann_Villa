@@ -235,7 +235,8 @@ defineExpose({ refresh: fetchSyncLogs })
 
   th, td {
     padding: 0.85rem 1rem;
-    text-align: left;
+    text-align: center;
+    vertical-align: middle;
     border-bottom: 1px solid var(--border-color);
   }
 

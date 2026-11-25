@@ -57,7 +57,7 @@ const formatDateTime = (val) => {
             <th>帳號狀態</th>
             <th>最後登入時間</th>
             <th>建立日期</th>
-            <th class="text-right">操作管理</th>
+            <th>操作管理</th>
           </tr>
         </thead>
         <tbody>
@@ -97,7 +97,7 @@ const formatDateTime = (val) => {
             <td>
               <span class="date-cell">{{ formatDateTime(u.createdAt).split(' ')[0] }}</span>
             </td>
-            <td class="text-right">
+            <td>
               <div class="table-actions">
                 <button 
                   type="button" 
@@ -165,7 +165,7 @@ const formatDateTime = (val) => {
   width: 100%;
   min-width: 680px;
   border-collapse: collapse;
-  text-align: left;
+  text-align: center;
   font-size: 0.85rem;
 
   thead tr {
@@ -178,6 +178,8 @@ const formatDateTime = (val) => {
       color: var(--gold-primary, #d4af37);
       letter-spacing: 0.5px;
       white-space: nowrap;
+      text-align: center;
+      vertical-align: middle;
     }
   }
 
@@ -197,6 +199,7 @@ const formatDateTime = (val) => {
       padding: 0.9rem 1.1rem;
       color: var(--admin-text-main, #e2e8f0);
       vertical-align: middle;
+      text-align: center;
     }
   }
 }
@@ -204,11 +207,16 @@ const formatDateTime = (val) => {
 .user-identity {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  margin: 0 auto;
   gap: 0.2rem;
 
   .user-name-row {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 0.4rem;
 
     .user-display-name {
@@ -293,6 +301,7 @@ const formatDateTime = (val) => {
 .time-cell {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.4rem;
   font-size: 0.8rem;
   color: var(--admin-text-sub, #cbd5e1);
@@ -308,7 +317,7 @@ const formatDateTime = (val) => {
 .table-actions {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: center;
   gap: 0.45rem;
 
   .action-btn {
