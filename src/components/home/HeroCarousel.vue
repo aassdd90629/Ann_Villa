@@ -10,11 +10,7 @@ const props = defineProps({
   },
   interval: {
     type: Number,
-    default: 1000
-  },
-  introDuration: {
-    type: Number,
-    default: 1000 // 首屏民宿介紹停留時間（預設 20 秒供訪客充分閱讀與了解）
+    default: 6000
   },
   autoplay: {
     type: Boolean,
@@ -43,148 +39,13 @@ const { isEn } = useI18n()
 const currentIndex = ref(0)
 const prevIndex = ref(0)
 const isPlaying = ref(props.autoplay)
-let autoplayTimer = null
-
-// 方案 A：純時間觸發型（首屏文字停留較長時間供訪客閱讀了解民宿，隨後淡出並啟動全屏純景自動輪播）
-const showContent = ref(true)
-const isIntroActive = ref(true)
 const isHovered = ref(false)
-let introTimer = null
-let transitionTimer = null
-
-let introStartTime = 0
-let introRemaining = props.introDuration
-
-const startIntroCountdown = (duration) => {
-  if (introTimer) clearTimeout(introTimer)
-  introStartTime = Date.now()
-  introRemaining = duration
-  introTimer = setTimeout(() => {
-    dismissIntro(false)
-  }, duration)
-}
-
-const pauseIntroCountdown = () => {
-  if (introTimer) {
-    clearTimeout(introTimer)
-    introTimer = null
-    const elapsed = Date.now() - introStartTime
-    introRemaining = Math.max(introRemaining - elapsed, 2000)
-  }
-}
-
-const resumeIntroCountdown = () => {
-  if (isIntroActive.value && showContent.value && isPlaying.value) {
-    startIntroCountdown(introRemaining)
-  }
-}
-
-const dismissIntro = (immediate = false) => {
-  if (!isIntroActive.value && !showContent.value) return
-  if (introTimer) {
-    clearTimeout(introTimer)
-    introTimer = null
-  }
-  if (transitionTimer) {
-    clearTimeout(transitionTimer)
-    transitionTimer = null
-  }
-  showContent.value = false
-  isIntroActive.value = false
-
-  // 文字隱退後，啟動背景自動輪播播放圖片
-  if (props.autoplay) {
-    if (immediate) {
-      startAutoplay()
-    } else {
-      // 文字淡出後 (約 850ms 動畫完成)，平滑切換至下一張風景圖並正式啟動常規輪播
-      transitionTimer = setTimeout(() => {
-        transitionTimer = null
-        if (currentIndex.value === 0 && !showContent.value) {
-          nextSlide()
-        } else {
-          startAutoplay()
-        }
-      }, 900)
-    }
-  }
-}
-
-// 支援手動點擊切換文字顯示/純景模式
-const toggleContent = () => {
-  showContent.value = !showContent.value
-  if (showContent.value) {
-    if (introTimer) {
-      clearTimeout(introTimer)
-      introTimer = null
-    }
-    stopAutoplay()
-  } else {
-    if (props.autoplay) {
-      startAutoplay()
-    }
-  }
-}
+const showContent = ref(true)
+let autoplayTimer = null
 
 const currentSlide = computed(() => {
   return props.slides[currentIndex.value] || props.slides[0]
 })
-
-// 當前輪播張數之進度條倒數週期 (首屏展示介紹時採用較長的 introDuration，純景輪播採用常規 interval)
-const currentSlideDuration = computed(() => {
-  if (isIntroActive.value && currentIndex.value === 0) {
-    return props.introDuration
-  }
-  return props.interval
-})
-
-// 下一張
-const nextSlide = () => {
-  if (isIntroActive.value) {
-    dismissIntro(true)
-  }
-  prevIndex.value = currentIndex.value
-  currentIndex.value = (currentIndex.value + 1) % props.slides.length
-  resetAutoplay()
-}
-
-// 上一張
-const prevSlide = () => {
-  if (isIntroActive.value) {
-    dismissIntro(true)
-  }
-  prevIndex.value = currentIndex.value
-  currentIndex.value = (currentIndex.value - 1 + props.slides.length) % props.slides.length
-  resetAutoplay()
-}
-
-// 指定跳轉
-const goToSlide = (index) => {
-  if (index === currentIndex.value) return
-  if (isIntroActive.value) {
-    dismissIntro(true)
-  }
-  prevIndex.value = currentIndex.value
-  currentIndex.value = index
-  resetAutoplay()
-}
-
-// 播放/暫停切換
-const togglePlay = () => {
-  isPlaying.value = !isPlaying.value
-  if (isPlaying.value) {
-    if (isIntroActive.value && showContent.value) {
-      resumeIntroCountdown()
-    } else {
-      startAutoplay()
-    }
-  } else {
-    if (isIntroActive.value && showContent.value) {
-      pauseIntroCountdown()
-    }
-    stopAutoplay()
-  }
-}
 
 // 自動播放定時器
 const startAutoplay = () => {
@@ -208,25 +69,55 @@ const resetAutoplay = () => {
   }
 }
 
+// 切換下一張
+const nextSlide = () => {
+  prevIndex.value = currentIndex.value
+  currentIndex.value = (currentIndex.value + 1) % props.slides.length
+  resetAutoplay()
+}
+
+// 切換上一張
+const prevSlide = () => {
+  prevIndex.value = currentIndex.value
+  currentIndex.value = (currentIndex.value - 1 + props.slides.length) % props.slides.length
+  resetAutoplay()
+}
+
+// 指定跳轉
+const goToSlide = (index) => {
+  if (index === currentIndex.value) return
+  prevIndex.value = currentIndex.value
+  currentIndex.value = index
+  resetAutoplay()
+}
+
+// 播放/暫停切換
+const togglePlay = () => {
+  isPlaying.value = !isPlaying.value
+  if (isPlaying.value) {
+    startAutoplay()
+  } else {
+    stopAutoplay()
+  }
+}
+
+// 支援手動點擊隱藏/喚回文字（純賞景模式，不影響背景輪播）
+const toggleContent = () => {
+  showContent.value = !showContent.value
+}
+
 // 滑鼠懸停暫停
 const handleMouseEnter = () => {
   if (props.pauseOnHover) {
     isHovered.value = true
-    if (isIntroActive.value && showContent.value) {
-      pauseIntroCountdown()
-    }
-    if (isPlaying.value) {
-      stopAutoplay()
-    }
+    stopAutoplay()
   }
 }
 
 const handleMouseLeave = () => {
   if (props.pauseOnHover) {
     isHovered.value = false
-    if (isIntroActive.value && showContent.value) {
-      resumeIntroCountdown()
-    } else if (isPlaying.value) {
+    if (isPlaying.value) {
       startAutoplay()
     }
   }
@@ -247,7 +138,6 @@ const handleTouchEnd = (e) => {
   const deltaX = e.changedTouches[0].clientX - touchStartX.value
   const deltaY = e.changedTouches[0].clientY - touchStartY.value
 
-  // 確保水平滑動幅度大於垂直滾動，避免干擾頁面滑動
   if (Math.abs(deltaX) > 45 && Math.abs(deltaX) > Math.abs(deltaY)) {
     if (deltaX < 0) {
       nextSlide()
@@ -258,20 +148,19 @@ const handleTouchEnd = (e) => {
 }
 
 onMounted(() => {
-  // 方案 A 初始階段：先不輪播換圖，讓首張大圖與中央文字平穩停留，供訪客細讀了解山莊
-  stopAutoplay()
-  startIntroCountdown(props.introDuration)
+  if (props.autoplay) {
+    startAutoplay()
+  }
 })
 
 onUnmounted(() => {
   stopAutoplay()
-  if (introTimer) {
-    clearTimeout(introTimer)
-    introTimer = null
-  }
-  if (transitionTimer) {
-    clearTimeout(transitionTimer)
-    transitionTimer = null
+})
+
+// 響應 interval 與 autoplay 外部動態變更
+watch(() => props.interval, () => {
+  if (isPlaying.value) {
+    startAutoplay()
   }
 })
 
@@ -367,10 +256,10 @@ watch(() => props.autoplay, (val) => {
           <span class="indicator-bar">
             <span 
               v-if="index === currentIndex" 
-              :key="'progress-' + currentIndex + '-' + (isIntroActive && index === 0 ? 'intro' : 'norm')"
+              :key="'progress-' + currentIndex"
               class="indicator-progress"
               :class="{ 'is-paused': !isPlaying || (props.pauseOnHover && isHovered) }"
-              :style="{ animationDuration: `${currentSlideDuration}ms` }"
+              :style="{ animationDuration: `${props.interval}ms` }"
             ></span>
           </span>
         </button>
