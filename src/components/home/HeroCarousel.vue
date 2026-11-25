@@ -12,6 +12,14 @@ const props = defineProps({
     type: Number,
     default: 6000
   },
+  textDuration: {
+    type: Number,
+    default: 15000 // 首屏文字停留時間（毫秒，例如 15000 代表 15 秒後淡出留白賞景；設為 0 代表不自動消失）
+  },
+  introDuration: {
+    type: Number,
+    default: null // 向下相容別名
+  },
   autoplay: {
     type: Boolean,
     default: true
@@ -42,6 +50,31 @@ const isPlaying = ref(props.autoplay)
 const isHovered = ref(false)
 const showContent = ref(true)
 let autoplayTimer = null
+let textTimer = null
+
+const effectiveTextDuration = computed(() => {
+  if (props.introDuration !== null && props.introDuration !== undefined) {
+    return props.introDuration
+  }
+  return props.textDuration
+})
+
+const startTextTimer = () => {
+  stopTextTimer()
+  const duration = effectiveTextDuration.value
+  if (duration && duration > 0) {
+    textTimer = setTimeout(() => {
+      showContent.value = false
+    }, duration)
+  }
+}
+
+const stopTextTimer = () => {
+  if (textTimer) {
+    clearTimeout(textTimer)
+    textTimer = null
+  }
+}
 
 const currentSlide = computed(() => {
   return props.slides[currentIndex.value] || props.slides[0]
@@ -104,6 +137,7 @@ const togglePlay = () => {
 // 支援手動點擊隱藏/喚回文字（純賞景模式，不影響背景輪播）
 const toggleContent = () => {
   showContent.value = !showContent.value
+  stopTextTimer() // 訪客手動切換後停止自動倒數，由訪客自主控制
 }
 
 // 滑鼠懸停暫停
@@ -151,10 +185,12 @@ onMounted(() => {
   if (props.autoplay) {
     startAutoplay()
   }
+  startTextTimer()
 })
 
 onUnmounted(() => {
   stopAutoplay()
+  stopTextTimer()
 })
 
 // 響應 interval 與 autoplay 外部動態變更
@@ -168,6 +204,13 @@ watch(() => props.autoplay, (val) => {
   isPlaying.value = val
   if (val) startAutoplay()
   else stopAutoplay()
+})
+
+// 響應文字消失時間外部動態變更
+watch(effectiveTextDuration, () => {
+  if (showContent.value) {
+    startTextTimer()
+  }
 })
 </script>
 
