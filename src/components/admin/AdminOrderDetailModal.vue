@@ -189,6 +189,17 @@ const handleExecuteCancel = () => {
                   {{ booking.deposit_status === 'PAID' ? '定金已付 (PAID)' : '待付定金 (UNPAID)' }}
                 </span>
               </div>
+              <div v-if="booking.bank_last_5" class="s-item">
+                <span class="s-label">旅客回報末五碼：</span>
+                <span class="font-mono text-gold-light font-bold">{{ booking.bank_last_5 }}</span>
+                <span v-if="booking.payment_reported_at" class="text-xs text-muted" style="margin-left: 0.35rem;">
+                  ({{ booking.payment_reported_at }})
+                </span>
+              </div>
+              <div v-if="booking.payment_note" class="s-item full-width">
+                <span class="s-label">匯款附言備註：</span>
+                <span class="text-sub">{{ booking.payment_note }}</span>
+              </div>
             </div>
 
             <div class="info-sections">

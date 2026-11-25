@@ -239,6 +239,21 @@ const routes = [
         </article>
       </section>
     `
+  },
+  {
+    path: '/booking-lookup',
+    dir: 'booking-lookup',
+    title: '訂單查詢與線上對帳 ｜ 山語 Villa 豪宅山莊包棟別墅',
+    description: '山語 Villa 官方直訂貴賓訂單查詢系統。輸入手機號碼與電子信箱，即刻掌握最新檔期保留進度、定金匯款資訊與線上回報。',
+    image: `${SITE_URL}/img/og-cover.jpg`,
+    h1: '貴賓訂單查詢與線上對帳 ｜ 山語 Villa',
+    tagline: '輸入預約時填寫的手機號碼與電子信箱，即刻掌握最新檔期保留進度、定金匯款資訊與線上回報。',
+    contentHtml: `
+      <section class="lookup-summary">
+        <h2>官方直訂貴賓訂單查詢</h2>
+        <p>山語 Villa 提供貴賓即時查詢線上預約狀態與對帳進度服務。請備妥當初預約之聯絡手機電話與電子信箱，即可隨時核對定金款項與掌握入住行前資訊。</p>
+      </section>
+    `
   }
 ];
 

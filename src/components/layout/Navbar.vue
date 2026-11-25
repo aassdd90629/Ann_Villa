@@ -31,7 +31,8 @@ const navLinks = [
   { path: '/packages', labelKey: 'nav.packages' },
   { path: '/rules', labelKey: 'nav.rules' },
   { path: '/guide', labelKey: 'nav.guide' },
-  { path: '/news', labelKey: 'nav.news' }
+  { path: '/news', labelKey: 'nav.news' },
+  { path: '/booking-lookup', labelKey: 'nav.lookup' }
 ]
 
 const handleScroll = () => {

@@ -46,6 +46,12 @@ const routes = [
     component: () => import('../views/NewsView.vue'),
     meta: { title: '最新消息與優惠 ｜ 山語 Villa' }
   },
+  {
+    path: '/booking-lookup',
+    name: 'booking-lookup',
+    component: () => import('../views/BookingLookupView.vue'),
+    meta: { title: '訂單查詢與線上對帳 ｜ 山語 Villa' }
+  },
 
   // 後台專屬獨立路由 (前台零連結，需輸入網址進入)
   {

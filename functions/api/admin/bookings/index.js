@@ -30,6 +30,9 @@ export async function onRequestGet(context) {
         b.deposit_status,
         b.status,
         b.special_requests,
+        b.bank_last_5,
+        b.payment_reported_at,
+        b.payment_note,
         b.created_at,
         b.updated_at
       FROM bookings b

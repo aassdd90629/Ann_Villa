@@ -72,6 +72,9 @@ const emit = defineEmits(['openDetail', 'confirmPaid'])
               <span class="tag-deposit" :class="b.deposit_status === 'PAID' ? 'paid' : 'unpaid'">
                 {{ b.deposit_status === 'PAID' ? '定金已付' : '待付定金' }}
               </span>
+              <div v-if="b.bank_last_5" class="last5-report-tag" title="旅客線上回報末五碼">
+                末五碼: <span class="font-mono text-gold-light font-bold">{{ b.bank_last_5 }}</span>
+              </div>
             </td>
             <td>
               <span class="tag-status" :class="b.status?.toLowerCase()">
@@ -211,6 +214,18 @@ const emit = defineEmits(['openDetail', 'confirmPaid'])
     white-space: nowrap;
     &.paid { background: rgba(34, 197, 94, 0.15); color: #16a34a; border: 1px solid rgba(34, 197, 94, 0.3); }
     &.unpaid { background: rgba(239, 68, 68, 0.15); color: #dc2626; border: 1px solid rgba(239, 68, 68, 0.3); }
+  }
+
+  .last5-report-tag {
+    margin-top: 0.35rem;
+    font-size: 0.72rem;
+    color: var(--gold-primary, #d4af37);
+    white-space: nowrap;
+    background: rgba(212, 175, 55, 0.1);
+    border: 1px solid rgba(212, 175, 55, 0.25);
+    padding: 0.15rem 0.35rem;
+    border-radius: 4px;
+    display: inline-block;
   }
 
   .tag-status {

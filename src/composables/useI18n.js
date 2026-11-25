@@ -18,6 +18,7 @@ const messages = {
       rules: '入住須知',
       guide: '周邊景點',
       news: '最新消息',
+      lookup: '訂單查詢',
       reserve: '預約諮詢'
     },
     action: {
@@ -88,6 +89,7 @@ const messages = {
       rules: 'Guidelines & FAQ',
       guide: 'Travel Guide',
       news: 'News',
+      lookup: 'Booking Lookup',
       reserve: 'Inquiry'
     },
     action: {

@@ -1,9 +1,11 @@
 <script setup>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { useI18n } from '../../composables/useI18n'
 import { useSiteContent } from '../../composables/useSiteContent'
 import { submitOnlineBooking } from '../../services/bookingService'
 
+const router = useRouter()
 const { basicInfo, formattedBankInfo, fetchContent } = useSiteContent()
 fetchContent()
 import { 
@@ -13,7 +15,10 @@ import {
   Send, 
   AlertCircle, 
   Sparkles, 
-  RefreshCw 
+  RefreshCw,
+  Copy,
+  Check,
+  Search
 } from 'lucide-vue-next'
 
 const props = defineProps({
@@ -54,6 +59,27 @@ const formGuestName = ref('')
 const formGuestPhone = ref('')
 const formGuestEmail = ref('')
 const formSpecialRequests = ref('')
+const copiedOrderId = ref(false)
+
+const copyOrderId = async () => {
+  if (!bookingSuccess.value?.id) return
+  try {
+    await navigator.clipboard.writeText(bookingSuccess.value.id)
+    copiedOrderId.value = true
+    setTimeout(() => { copiedOrderId.value = false }, 2000)
+  } catch (err) {}
+}
+
+const goToOrderLookup = () => {
+  const b = bookingSuccess.value
+  const q = {
+    phone: formGuestPhone.value.trim(),
+    email: formGuestEmail.value.trim(),
+    orderId: b?.id || ''
+  }
+  closeModal()
+  router.push({ path: '/booking-lookup', query: q })
+}
 
 const closeModal = () => {
   emit('update:modelValue', false)
@@ -121,7 +147,14 @@ const submitBookingForm = async () => {
           <div class="order-summary-ticket">
             <div class="ticket-row">
               <span class="t-label">{{ isEn ? 'Order Number' : '訂單編號' }}</span>
-              <span class="t-value order-id">{{ bookingSuccess.id }}</span>
+              <div class="order-id-action">
+                <span class="t-value order-id font-mono">{{ bookingSuccess.id }}</span>
+                <button type="button" class="btn-copy-mini" @click="copyOrderId" :title="isEn ? 'Copy' : '複製單號'">
+                  <Check v-if="copiedOrderId" :size="13" class="text-green" />
+                  <Copy v-else :size="13" />
+                  <span class="hint">{{ copiedOrderId ? (isEn ? 'Copied' : '已複製') : (isEn ? 'Copy' : '複製') }}</span>
+                </button>
+              </div>
             </div>
             <div class="ticket-row">
               <span class="t-label">{{ isEn ? 'Selected Plan' : '預訂項目' }}</span>
@@ -148,20 +181,32 @@ const submitBookingForm = async () => {
               <span>{{ isEn ? 'Payment Instructions' : '定金匯款說明' }}</span>
             </h5>
             <p class="pay-desc">
-              請於 <strong>24 小時內</strong> 將定金匯款至民宿帳戶：<strong>{{ formattedBankInfo }}</strong>。匯款完成後請點擊下方按鈕加入官方 LINE (<strong>{{ basicInfo.lineId }}</strong>) 回報您的<strong>帳號末五碼</strong>以完成正式鎖房確認！
+              請於 <strong>24 小時內</strong> 將定金匯款至民宿帳戶：<strong>{{ formattedBankInfo }}</strong>。匯款完成後可點擊下方按鈕直接<strong>線上回報末五碼</strong>或加入官方 LINE (<strong>{{ basicInfo.lineId }}</strong>) 由管家核對確認！
             </p>
           </div>
 
           <div class="modal-actions-col">
+            <!-- 核心導引：立即前往訂單查詢頁面查看與線上回報 -->
+            <button 
+              type="button" 
+              class="btn btn-gold btn-block"
+              @click="goToOrderLookup"
+            >
+              <Search :size="18" />
+              <span>{{ isEn ? 'View Reservation & Report Transfer' : '查看訂單詳細資料 / 線上回報末五碼' }}</span>
+            </button>
+
+            <!-- 官方 LINE 聯繫 -->
             <a 
               :href="`${basicInfo.lineUrl || 'https://line.me/R/ti/p/@209yrich'}?text=${encodeURIComponent(`您好，我已送出線上直訂！\n【訂單編號】：${bookingSuccess.id}\n【訂房人】：${bookingSuccess.guestName}\n【入住日期】：${bookingSuccess.checkIn} 至 ${bookingSuccess.checkOut}\n【應付定金】：NT$ ${Number(bookingSuccess.depositAmount).toLocaleString()}\n【匯款後五碼】：`)}`"
               target="_blank" 
               rel="noopener noreferrer" 
-              class="btn btn-gold btn-block"
+              class="btn btn-outline-gold btn-block mt-2"
             >
-              <Send :size="18" />
+              <Send :size="16" />
               <span>{{ isEn ? 'Report Transfer via LINE' : '加入官方 LINE 回報後五碼' }}</span>
             </a>
+
             <button class="btn btn-outline btn-block mt-2" @click="closeModal">
               {{ isEn ? 'Close & Return' : '確認並返回網站' }}
             </button>
@@ -570,6 +615,45 @@ const submitBookingForm = async () => {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+
+    .btn-outline-gold {
+      background: transparent;
+      border: 1px solid var(--gold-primary);
+      color: var(--gold-primary);
+
+      &:hover {
+        background: rgba(212, 175, 55, 0.1);
+      }
+    }
+  }
+
+  .order-id-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+
+    .btn-copy-mini {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      padding: 0.2rem 0.45rem;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &:hover {
+        border-color: var(--gold-primary);
+        color: var(--gold-primary);
+      }
+
+      .text-green {
+        color: #10b981;
+      }
+    }
   }
 }
 
