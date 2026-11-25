@@ -10,11 +10,11 @@ const props = defineProps({
   },
   interval: {
     type: Number,
-    default: 6000
+    default: 1000
   },
   introDuration: {
     type: Number,
-    default: 20000 // 首屏民宿介紹停留時間（預設 20 秒供訪客充分閱讀與了解）
+    default: 1000 // 首屏民宿介紹停留時間（預設 20 秒供訪客充分閱讀與了解）
   },
   autoplay: {
     type: Boolean,
@@ -22,7 +22,7 @@ const props = defineProps({
   },
   pauseOnHover: {
     type: Boolean,
-    default: true
+    default: false
   },
   showArrows: {
     type: Boolean,
