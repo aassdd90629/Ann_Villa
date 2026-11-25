@@ -12,12 +12,12 @@ import {
   Waves, 
   Maximize2, 
   ArrowRight, 
-  CheckCircle2, 
   Flame, 
   Calendar,
   Compass
 } from 'lucide-vue-next'
 import HeroCarousel from '../components/home/HeroCarousel.vue'
+import PhilosophySection from '../components/home/PhilosophySection.vue'
 import RoomCarousel from '../components/home/RoomCarousel.vue'
 import BookingButton from '../components/common/BookingButton.vue'
 import { useMediaAssets } from '../composables/useMediaAssets'
@@ -43,7 +43,7 @@ onMounted(async () => {
   <div class="home-page">
     <!-- 1. Hero 首屏沉浸橫幅 (動態輪播動畫) -->
     <section class="hero-section">
-      <HeroCarousel :slides="heroSlides" :introDuration="20000">
+      <HeroCarousel :slides="heroSlides" :introDuration="15000">
         <div class="container hero-content">
           <span class="hero-badge">
             <Sparkles :size="14" />
@@ -95,62 +95,8 @@ onMounted(async () => {
       </HeroCarousel>
     </section>
 
-    <!-- 2. 品牌哲思簡介 (Philosophy) -->
-    <section class="section-py philosophy-section">
-      <div class="container">
-        <div class="philosophy-grid">
-          <div class="philosophy-text">
-            <span class="section-tag">{{ isEn ? 'PHILOSOPHY' : '東方隱逸美學' }}</span>
-            <h2 class="section-title">
-              {{ isEn ? 'A Serene Sanctuary Floating Above the Clouds' : '於山林雲海深處，尋得片刻心靈留白' }}
-            </h2>
-            <p class="lead">
-              {{ isEn 
-                ? 'Embracing nature with minimalist architectural design and tactile natural materials, Shan Yu Villa crafts an authentic sense of timeless luxury.' 
-                : '山語 Villa 融合東方建築的內斂留白與山林綠意，以天然石材、溫潤黑胡桃木與通透採光，營造出遠離塵囂的頂級私密假期。' 
-              }}
-            </p>
-            <p>
-              {{ isEn
-                ? 'Whether gathering with beloved family or hosting closed-door executive meetings, our private estate ensures uncompromising tranquility and bespoke hospitality.'
-                : '無論是三五好友家族團聚、婚紗攝影采風，亦或是企業高階閉門閉關，整座山莊皆為您一人專屬。'
-              }}
-            </p>
-            <div class="philosophy-features">
-              <div class="p-feat">
-                <CheckCircle2 :size="18" class="feat-icon" />
-                <span>{{ isEn ? '5 Private Bedrooms (Up to 18 Guests)' : '全棟5間獨立客房・專屬容納最多18位' }}</span>
-              </div>
-              <div class="p-feat">
-                <CheckCircle2 :size="18" class="feat-icon" />
-                <span>{{ isEn ? 'Auto-Mahjong & KTV Karaoke Lounge' : '電動麻將桌與客廳卡拉OK歡唱空間' }}</span>
-              </div>
-              <div class="p-feat">
-                <CheckCircle2 :size="18" class="feat-icon" />
-                <span>{{ isEn ? 'Smart Kitchen, Outdoor Tea Patio & BBQ' : '智能廚房、戶外品茗茶席與庭園烤肉BBQ' }}</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="philosophy-media">
-            <div class="img-frame-main img-zoom-container">
-              <img 
-                src="/img/house/house-01.webp" 
-                :alt="isEn ? 'Shan Yu Villa Estate Exterior & Lawn' : '山語 Villa 莊園建築外觀與青翠草坪'" 
-                loading="lazy"
-              />
-            </div>
-            <div class="img-frame-sub img-zoom-container">
-              <img 
-                src="/img/cloud-sea/cloud-sea-02.webp" 
-                :alt="isEn ? 'Mountain Mist and Cloud Sea Horizon' : '山語莊園遠眺層巒雲霧仙境'" 
-                loading="lazy"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+    <!-- 2. 品牌哲思簡介與包棟方案 (Philosophy) -->
+    <PhilosophySection />
 
     <!-- 3. 精選 5 大房型導覽 (Suites Preview - 直式卡片輪播) -->
     <section class="section-py rooms-preview-section">
@@ -386,73 +332,6 @@ onMounted(async () => {
     width: 1px;
     height: 28px;
     background: rgba(255, 255, 255, 0.2);
-  }
-}
-
-// Philosophy Section
-.philosophy-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 3.5rem;
-  align-items: center;
-
-  @media (min-width: $bp-lg) {
-    grid-template-columns: 1.1fr 1fr;
-    gap: 5rem;
-  }
-}
-
-.philosophy-features {
-  display: flex;
-  flex-direction: column;
-  gap: 0.85rem;
-  margin-top: 1.75rem;
-
-  .p-feat {
-    display: flex;
-    align-items: center;
-    gap: 0.65rem;
-    font-size: 0.95rem;
-    font-weight: 500;
-    color: var(--text-primary);
-
-    .feat-icon {
-      color: var(--gold-primary);
-    }
-  }
-}
-
-.philosophy-media {
-  position: relative;
-
-  .img-frame-main {
-    width: 85%;
-    height: 380px;
-    border-radius: 4px;
-    box-shadow: var(--shadow-card);
-
-    @media (max-width: $bp-sm) {
-      width: 88%;
-      height: 250px;
-    }
-  }
-
-  .img-frame-sub {
-    position: absolute;
-    right: 0;
-    bottom: -30px;
-    width: 55%;
-    height: 240px;
-    border-radius: 4px;
-    border: 6px solid var(--bg-primary);
-    box-shadow: var(--shadow-card);
-
-    @media (max-width: $bp-sm) {
-      width: 55%;
-      height: 150px;
-      bottom: -15px;
-      border-width: 4px;
-    }
   }
 }
 
