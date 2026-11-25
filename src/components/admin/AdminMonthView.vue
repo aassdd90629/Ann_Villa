@@ -128,13 +128,6 @@ const handleDayClick = (day, event) => {
       <span v-else class="header-placeholder desktop-only"></span>
     </div>
 
-    <!-- 月曆狀態圖例看板 (首個月份頂部呈現) -->
-    <div v-if="monthIndex === 0" class="calendar-legend-bar">
-      <span class="legend-chip"><span class="badge-dot dot-paid"></span> 已收定金</span>
-      <span class="legend-chip"><span class="badge-dot dot-unpaid"></span> 待付定金</span>
-      <span class="legend-chip"><span class="badge-dot dot-verifying"></span> 待核對帳</span>
-      <span class="legend-chip"><span class="badge-dot dot-manual"></span> 自主關閉</span>
-    </div>
 
     <!-- 星期標題 -->
     <div class="weekdays-row">
@@ -251,38 +244,6 @@ const handleDayClick = (day, event) => {
   .header-placeholder { width: 28px; height: 28px; }
 }
 
-.calendar-legend-bar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 0.65rem;
-  padding: 0.35rem 0.6rem;
-  background: var(--admin-bg-base, rgba(0, 0, 0, 0.03));
-  border: 1px solid var(--admin-border, rgba(197, 168, 128, 0.2));
-  border-radius: 6px;
-  margin-bottom: 0.75rem;
-
-  .legend-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.3rem;
-    font-size: 0.72rem;
-    color: var(--admin-text-sub, #475569);
-    font-weight: 500;
-
-    .badge-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-
-      &.dot-paid { background: #16a34a; }
-      &.dot-unpaid { background: #f59e0b; }
-      &.dot-verifying { background: #0284c7; }
-      &.dot-manual { background: #dc2626; }
-    }
-  }
-}
 
 .weekdays-row {
   display: grid;

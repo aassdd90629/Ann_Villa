@@ -315,10 +315,20 @@ const handleReopenBooking = async (b) => {
         <p class="view-desc">視覺化雙月曆房態：點選日期（支援單選與多選）即可自主關閉或重新開放；點擊已佔用格子可查看客資明細、一鍵取消或解除檔期</p>
       </div>
 
-      <button class="btn-refresh" @click="fetchData" :disabled="isLoading">
-        <RefreshCw :size="14" :class="{ 'spin-anim': isLoading }" />
-        <span>重新整理檔期與訂單</span>
-      </button>
+      <div class="header-actions">
+        <!-- 顏色對照圖例看板 -->
+        <div class="calendar-legend-bar">
+          <span class="legend-chip"><span class="badge-dot dot-paid"></span> 已收定金</span>
+          <span class="legend-chip"><span class="badge-dot dot-unpaid"></span> 待付定金</span>
+          <span class="legend-chip"><span class="badge-dot dot-verifying"></span> 待核對帳</span>
+          <span class="legend-chip"><span class="badge-dot dot-manual"></span> 自主關閉</span>
+        </div>
+
+        <button class="btn-refresh" @click="fetchData" :disabled="isLoading">
+          <RefreshCw :size="14" :class="{ 'spin-anim': isLoading }" />
+          <span>重新整理檔期與訂單</span>
+        </button>
+      </div>
     </div>
 
     <!-- 訊息提示 (取代 browser alert) -->
@@ -440,6 +450,44 @@ const handleReopenBooking = async (b) => {
     color: var(--admin-text-sub, #475569);
     margin: 0;
   }
+  .header-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .calendar-legend-bar {
+    display: inline-flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    padding: 0.45rem 0.85rem;
+    background: var(--admin-bg-base, #F5F3EC);
+    border: 1px solid var(--admin-border, rgba(197, 168, 128, 0.3));
+    border-radius: 6px;
+
+    .legend-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.78rem;
+      color: var(--admin-text-sub, #475569);
+      font-weight: 500;
+
+      .badge-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+
+        &.dot-paid { background: #16a34a; }
+        &.dot-unpaid { background: #f59e0b; }
+        &.dot-verifying { background: #0284c7; }
+        &.dot-manual { background: #dc2626; }
+      }
+    }
+  }
+
   .btn-refresh {
     display: inline-flex;
     align-items: center;
