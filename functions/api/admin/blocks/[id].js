@@ -64,7 +64,7 @@ export async function onRequestDelete(context) {
         ? `${currentAdmin.displayName} (${currentAdmin.username})` 
         : 'admin';
 
-      const sourceDesc = existing.source === 'AIRBNB' ? 'Airbnb 外部匯入' : '管家自主鎖房';
+      const sourceDesc = existing.source === 'MANUAL_LOCK' ? '管家自主鎖房' : '外部保留檔期';
       const summaryText = `管家解除【${existing.start_date} ~ ${existing.end_date}】之${sourceDesc}檔期（${existing.summary || '保留'}），前台月曆已重新開放預訂`;
 
       await env.DB.prepare(`

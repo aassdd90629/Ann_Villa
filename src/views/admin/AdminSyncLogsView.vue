@@ -48,7 +48,7 @@ const handleTriggerSync = async () => {
   try {
     const res = await triggerAdminSync()
     const count = res.eventsCount || res.count || 0
-    message.value = `Airbnb 檔期同步成功！更新了 ${count} 筆預約。`
+    message.value = `房態排程同步完成！共更新 ${count} 筆記錄。`
     await fetchSyncLogs()
   } catch (err) {
     alert('同步失敗: ' + err.message)
@@ -62,16 +62,16 @@ const handleTriggerSync = async () => {
   <div class="admin-sync-view">
     <div class="view-header">
       <div>
-        <h1 class="view-title">Airbnb 檔期排程同步日誌</h1>
-        <p class="view-desc">追蹤山語 Villa 官方網站與 Airbnb 外部行事曆之自動與手動同步記錄（目前匯入已暫停）</p>
+        <h1 class="view-title">外部檔期排程同步日誌</h1>
+        <p class="view-desc">追蹤山語 Villa 官方網站排程記錄（目前外部匯入已暫停）</p>
       </div>
 
-      <!-- Airbnb 同步按鈕依需求暫時隱藏 -->
+      <!-- 同步按鈕依需求暫時隱藏 -->
       <span class="badge-paused">匯入同步功能暫停中</span>
     </div>
 
     <div class="alert-paused">
-      <span>⚠️ 系統提醒：目前已暫停 Airbnb 外部匯入月曆，避免覆蓋本地房態。若需調整檔期，請前往【自主關閉月曆】頁面設定。</span>
+      <span>⚠️ 系統提醒：目前已暫停外部日曆自動同步，房態以自營直訂與管家自主關閉為主。若需調整檔期，請前往【自主關閉月曆】頁面設定。</span>
     </div>
 
     <div v-if="message" class="alert-success">
@@ -112,7 +112,7 @@ const handleTriggerSync = async () => {
           <tr v-for="log in paginatedItems" :key="log.id">
             <td class="font-mono text-xs text-muted">#{{ log.id }}</td>
             <td>
-              <span class="channel-badge">{{ log.channel || 'AIRBNB' }}</span>
+              <span class="channel-badge">{{ log.channel || '外部排程' }}</span>
             </td>
             <td>
               <span class="status-badge" :class="log.status?.toLowerCase()">

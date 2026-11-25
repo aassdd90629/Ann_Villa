@@ -107,7 +107,7 @@ const handleOpenBooking = (blockInfo) => {
   }
 }
 
-// 解除外部匯入檔期 (如 Airbnb)
+// 解除外部佔用檔期
 const handleUnlockExternalBlock = async (block) => {
   const blockId = block.id || block.uid
   const s = block.startDate || block.start_date
@@ -218,7 +218,7 @@ const handleReopenBooking = async (b) => {
     <div class="view-header">
       <div>
         <h1 class="view-title">檔期佔用與鎖房清單</h1>
-        <p class="view-desc">全館佔用檔期清單總覽（官網直訂、管家自主保留與 Airbnb 外部同步）</p>
+        <p class="view-desc">全館佔用檔期清單總覽（官網直訂與管家自主保留）</p>
       </div>
 
       <div class="header-actions">
@@ -240,7 +240,7 @@ const handleReopenBooking = async (b) => {
       <span>{{ errorMessage }}</span>
     </div>
 
-    <!-- 檔期佔用清單組件 (支援全部、手動關閉、官網直訂與 Airbnb 匯入切換) -->
+    <!-- 檔期佔用清單組件 (支援全部、手動關閉與官網直訂切換) -->
     <AdminCloseOccupiedTable
       :booked-ranges="bookedRanges"
       :bookings="bookings"

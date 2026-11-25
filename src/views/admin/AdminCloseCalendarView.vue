@@ -183,7 +183,7 @@ const handleExecuteUnlock = async (block) => {
   }
 }
 
-// 點擊「已訂單 / Airbnb」格子或下方列表「查看」 -> 打開訂單彈窗或外部檔期彈窗
+// 點擊「已訂單 / 外部佔用」格子或下方列表「查看」 -> 打開訂單彈窗或外部檔期彈窗
 const handleOpenBooking = (blockInfo) => {
   errorMessage.value = ''
   const uid = blockInfo?.id || blockInfo?.uid
@@ -202,7 +202,7 @@ const handleOpenBooking = (blockInfo) => {
   }
 }
 
-// 解除外部匯入檔期 (如 Airbnb)
+// 解除外部佔用檔期
 const handleUnlockExternalBlock = async (block) => {
   const blockId = block.id || block.uid
   const s = block.startDate || block.start_date

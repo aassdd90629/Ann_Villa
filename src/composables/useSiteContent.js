@@ -20,7 +20,6 @@ const basicInfo = ref({
   lineTemplateMsg: '您好，我想洽詢山語Villa全棟包棟預約：【預計入住日期：】【人數：位（最多18人）】',
   instagram: 'villa_forfun001',
   instagramUrl: 'https://www.instagram.com/villa_forfun001/',
-  airbnbUrl: 'https://www.airbnb.com.tw/rooms/1785941296784004528?source_impression_id=p3_1792732762_P3vdCM0bn-RsnLPh',
   addressZh: '369苗栗縣卓蘭鎮景山里8鄰127-10號',
   addressEn: 'No. 127-10, Neighborhood 8, Jingshan Vil., Zhuolan Township, Miaoli County 369, Taiwan',
   googleMapUrl: 'https://maps.app.goo.gl/VhxGV5h3uJwU14mG9',
@@ -108,18 +107,7 @@ const channelsInfo = ref({
       '24-Hour dedicated concierge & butler support'
     ]
   },
-  otaPlatforms: [
-    {
-      id: 'airbnb',
-      name: 'Airbnb',
-      badgeZh: '超讚房東嚴選房源',
-      badgeEn: 'Superhost Selection',
-      taglineZh: '山語 Villa 官方 Airbnb 認證預約頁面',
-      taglineEn: 'Official Airbnb Listing for Shan Yu Villa',
-      url: 'https://www.airbnb.com.tw/rooms/1785941296784004528?source_impression_id=p3_1792732762_P3vdCM0bn-RsnLPh',
-      status: 'active'
-    }
-  ]
+  otaPlatforms: []
 })
 
 const faqList = ref([])

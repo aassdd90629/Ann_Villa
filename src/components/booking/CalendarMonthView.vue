@@ -53,7 +53,7 @@ const isInRange = (dateStr) => {
 
 <template>
   <div class="month-panel">
-    <!-- 各月份標題列 (如同 Airbnb 左側 < 、右側 >) -->
+    <!-- 各月份標題列 -->
     <div class="month-panel-header">
       <button 
         v-if="monthIndex === 0"

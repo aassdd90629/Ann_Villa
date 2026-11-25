@@ -63,7 +63,6 @@ export function useAdminCloseCalendar(bookedRanges) {
       const dateStr = formatDate(d)
       const block = findBlockForDate(dateStr)
       const isManualLock = block && block.source === 'MANUAL_LOCK'
-      const isAirbnb = block && block.source === 'AIRBNB'
       const isDirectBooking = block && block.source === 'DIRECT_BOOKING'
       const isBooked = !!block
       
@@ -73,7 +72,6 @@ export function useAdminCloseCalendar(bookedRanges) {
         isEmpty: false,
         isBooked,
         isManualLock,
-        isAirbnb,
         isDirectBooking,
         blockInfo: block,
         isPast: d < minBookingDate

@@ -17,7 +17,7 @@ const router = useRouter()
 
 // 5 大頁籤定義
 const tabs = [
-  { id: 'sync', name: '房態同步 LOG', icon: RefreshCw, desc: 'Airbnb iCal 外部行事曆同步紀錄' },
+  { id: 'sync', name: '房態同步 LOG', icon: RefreshCw, desc: '外部行事曆同步與系統排程紀錄' },
   { id: 'booking', name: '訂單與金流 LOG', icon: FileText, desc: '直訂單建立、50% 定金入帳核銷、狀態異動' },
   { id: 'calendar', name: '關房與檔期 LOG', icon: Calendar, desc: '管家自主鎖房維護、解除關房開放' },
   { id: 'pricing', name: '房價政策 LOG', icon: DollarSign, desc: '平日三階梯改價、國定連假調整、政府行事曆匯入' },
@@ -83,7 +83,7 @@ const activeTabInfo = computed(() => {
 
     <!-- 頁籤內容區塊 -->
     <div class="tab-content-area">
-      <!-- 1. Airbnb 外部房態同步專用頁籤 -->
+      <!-- 1. 外部房態排程同步專用頁籤 -->
       <AdminSyncLogsTab v-if="currentTab === 'sync'" />
 
       <!-- 2. 通用業務審計日誌頁籤 (訂單、關房、房價、安全) -->

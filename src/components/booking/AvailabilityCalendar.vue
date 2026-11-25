@@ -111,14 +111,14 @@ function isDateBooked(dateStr) {
   return bookedRanges.value.some(range => dateStr >= range.startDate && dateStr < range.endDate)
 }
 
-// 產生單月日曆網格資料 (如同 Airbnb 留白)
+// 產生單月日曆網格資料
 function generateMonthDays(year, month) {
   const firstDayIndex = new Date(year, month, 1).getDay()
   const daysInMonth = new Date(year, month + 1, 0).getDate()
   
   const days = []
   
-  // 空白補位 (只留空，不顯示上個月日期，如同 Airbnb 原汁原味)
+  // 空白補位 (只留空，不顯示上個月日期)
   for (let i = 0; i < firstDayIndex; i++) {
     days.push({
       dateStr: `empty-${year}-${month}-${i}`,
@@ -147,7 +147,7 @@ function generateMonthDays(year, month) {
   return days
 }
 
-// 雙月份呈現資料 (如同 Airbnb 一次呈現兩個月)
+// 雙月份呈現資料 (一次呈現兩個月)
 const displayedMonths = computed(() => {
   const m1Date = currentDate.value
   const m1Year = m1Date.getFullYear()
@@ -240,18 +240,17 @@ const isInRange = (dateStr) => {
 
 <template>
   <div class="availability-calendar-card">
-    <!-- 頂部檔期說明列 (Airbnb 匯入與即時同步按鈕依需求暫時隱藏) -->
+    <!-- 頂部檔期說明列 -->
     <div class="sync-banner">
       <div class="sync-status">
         <span class="demo-badge-tag">⚠️ 展示預覽環境</span>
         <Info :size="15" class="info-icon" />
         <span class="sync-text">{{ isEn ? t('calendar.syncNotice') : '房態由 Cloudflare D1 邊緣資料庫即時同步反灰' }}</span>
       </div>
-      <!-- 暫停 Airbnb 匯入，即時同步按鈕先隱藏 -->
     </div>
 
     <div class="calendar-layout-grid">
-      <!-- 左側：月曆主體 (如同 Airbnb 雙月份呈現) -->
+      <!-- 左側：月曆主體 (雙月份呈現) -->
       <div class="calendar-main-col">
         <div class="two-months-grid">
           <CalendarMonthView
@@ -430,7 +429,7 @@ const isInRange = (dateStr) => {
   flex-direction: column;
 }
 
-// 雙月份並排呈現網格 (Airbnb 風格)
+// 雙月份並排呈現網格
 .two-months-grid {
   display: grid;
   grid-template-columns: 1fr;

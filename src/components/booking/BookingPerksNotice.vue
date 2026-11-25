@@ -6,8 +6,7 @@ import {
   CheckCircle2, 
   Clock, 
   Coffee, 
-  Sparkles,
-  ExternalLink 
+  Sparkles 
 } from 'lucide-vue-next'
 
 const { isEn } = useI18n()
@@ -68,25 +67,6 @@ const { channelsInfo } = useSiteContent()
             </div>
           </li>
         </ul>
-      </div>
-    </div>
-
-    <!-- 下方：合作 OTA 渠道 (全寬通欄) -->
-    <div class="ota-bar">
-      <span class="ota-title">{{ isEn ? 'Official OTA Partner' : '亦可在官方 Airbnb 預約：' }}</span>
-      <div class="ota-links">
-        <a 
-          v-for="ota in channelsInfo.otaPlatforms" 
-          :key="ota.id" 
-          :href="ota.url" 
-          target="_blank" 
-          rel="noopener noreferrer"
-          class="ota-pill"
-          :title="ota.name"
-        >
-          <span>{{ ota.name }}</span>
-          <ExternalLink :size="12" />
-        </a>
       </div>
     </div>
   </div>
@@ -198,49 +178,6 @@ const { channelsInfo } = useSiteContent()
     strong {
       color: var(--text-primary);
       font-weight: 600;
-    }
-  }
-}
-
-.ota-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  background: var(--bg-primary);
-  border: 1px solid var(--border-color);
-  border-radius: 6px;
-  padding: 0.75rem 1.25rem;
-  width: 100%;
-
-  .ota-title {
-    font-size: 0.8rem;
-    color: var(--text-muted);
-  }
-
-  .ota-links {
-    display: flex;
-    gap: 0.5rem;
-  }
-
-  .ota-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    padding: 0.25rem 0.65rem;
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    color: var(--text-primary);
-    font-size: 0.75rem;
-    font-weight: 500;
-    text-decoration: none;
-    transition: $transition-base;
-
-    &:hover {
-      border-color: #ff5a5f;
-      color: #ff5a5f;
     }
   }
 }

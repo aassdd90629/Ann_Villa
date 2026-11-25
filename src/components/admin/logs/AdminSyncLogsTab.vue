@@ -47,7 +47,7 @@ const handleTriggerSync = async () => {
   try {
     const res = await triggerAdminSync()
     const count = res.eventsCount || res.count || 0
-    message.value = `Airbnb 檔期同步成功！更新了 ${count} 筆預約。`
+    message.value = `房態排程同步完成！共更新 ${count} 筆記錄。`
     await fetchSyncLogs()
   } catch (err) {
     alert('同步失敗: ' + err.message)
@@ -62,7 +62,7 @@ defineExpose({ refresh: fetchSyncLogs })
 <template>
   <div class="sync-logs-tab">
     <div class="alert-paused">
-      <span>⚠️ 系統提醒：目前已暫停 Airbnb 外部匯入月曆，避免覆蓋本地房態。若需調整檔期，請前往【自主關閉月曆】頁面設定。</span>
+      <span>⚠️ 系統提醒：目前已暫停外部日曆自動同步，房態以自營直訂與管家自主關閉為主。若需調整檔期，請前往【自主關閉月曆】頁面設定。</span>
     </div>
 
     <div v-if="message" class="alert-success">
@@ -74,7 +74,7 @@ defineExpose({ refresh: fetchSyncLogs })
       <div class="table-bar">
         <div class="bar-title">
           <Clock :size="18" class="text-gold" />
-          <span>近期 Airbnb 檔期排程同步日誌 (共 {{ logs.length }} 筆)</span>
+          <span>近期外部排程同步日誌 (共 {{ logs.length }} 筆)</span>
           <span class="scroll-hint-text">↔ 可左右滑動</span>
         </div>
         <button class="btn-refresh-sm" @click="fetchSyncLogs" :disabled="isLoading">
@@ -105,7 +105,7 @@ defineExpose({ refresh: fetchSyncLogs })
           <tr v-for="log in paginatedItems" :key="log.id">
             <td>#{{ log.id }}</td>
             <td>
-              <span class="badge-channel">{{ log.channel || 'Airbnb iCal' }}</span>
+              <span class="badge-channel">{{ log.channel || '外部排程' }}</span>
             </td>
             <td>
               <span :class="['badge-status', log.status === 'SUCCESS' ? 'status-success' : 'status-fail']">

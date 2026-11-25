@@ -101,7 +101,7 @@ export async function deleteAdminBlock(id) {
 }
 
 /**
- * 手動強制觸發 Airbnb iCal 同步
+ * 手動觸發外部行事曆同步
  */
 export async function triggerAdminSync() {
   const res = await fetch('/api/admin/sync', {

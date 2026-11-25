@@ -2,7 +2,7 @@
  * 房態與預約檔期資料存取層 (100% 資料庫驅動，已移除 availability.json 依賴)
  * 
  * Vue 組件一律透過此 Service 異步取得即時房態。
- * 呼叫 Cloudflare Pages Functions 邊緣 API (/api/availability) 讀取 D1 即時房態 (含 Airbnb iCal 同步檔期)。
+ * 呼叫 Cloudflare Pages Functions 邊緣 API (/api/availability) 讀取 D1 即時房態。
  */
 
 let cachedBookedRanges = null;

@@ -46,7 +46,7 @@ const formatBlockSummary = (summary) => {
   if (!summary) return '外部平台佔用保留'
   const s = String(summary).trim()
   if (s.toLowerCase() === 'reserved') return '外部旅客已預約'
-  if (s.includes('Airbnb') || s.includes('Not available')) return 'Airbnb 外部保留'
+  if (s.includes('Not available')) return '外部系統保留'
   return s
 }
 
@@ -61,8 +61,8 @@ const handleConfirmUnlock = () => {
       <div class="modal-card">
         <div class="modal-header">
           <div class="header-info">
-            <span class="badge-source" :class="block.source?.toLowerCase()">
-              {{ block.source === 'AIRBNB' ? 'Airbnb 外部匯入' : '外部佔用檔期' }}
+            <span class="badge-source">
+              外部佔用檔期
             </span>
             <h3>外部佔用檔期管理</h3>
           </div>
@@ -75,8 +75,8 @@ const handleConfirmUnlock = () => {
           <!-- 核心提示橫幅：清楚向管家說明為何沒有官網訂單 -->
           <div class="source-notice-banner">
             <div class="banner-title">
-              <AlertCircle :size="18" class="text-purple" />
-              <span>此檔期來自 <strong>{{ block.source === 'AIRBNB' ? 'Airbnb 外部平台' : '歷史/外部保留檔期' }}</strong></span>
+              <AlertCircle :size="18" class="text-gold" />
+              <span>此檔期來自 <strong>外部保留檔期</strong></span>
             </div>
             <p class="banner-desc">
               此時段由外部管道同步鎖定，<strong>非官網線上直訂單</strong>，因此系統無本站旅客聯絡明細。
@@ -117,8 +117,8 @@ const handleConfirmUnlock = () => {
           <div class="details-card">
             <div class="card-row">
               <span class="lbl">來源管道：</span>
-              <span class="val font-bold text-purple">
-                {{ block.source === 'AIRBNB' ? 'Airbnb 外部月曆' : '外部系統保留' }}
+              <span class="val font-bold text-gold">
+                {{ block.source === 'MANUAL_LOCK' ? '管家自主鎖房' : '外部系統保留' }}
               </span>
             </div>
             <div class="card-row">
@@ -337,7 +337,6 @@ const handleConfirmUnlock = () => {
 
     .lbl { color: var(--admin-text-sub, #475569); }
     .val { color: var(--admin-text-main, #1A1E1F); }
-    .text-purple { color: #7e22ce; }
     .text-gold { color: var(--gold-dark, #91754F); }
   }
 }

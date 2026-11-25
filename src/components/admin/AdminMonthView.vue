@@ -65,11 +65,11 @@ const getCellTitle = (day) => {
     const reason = day.blockInfo?.summary ? `（理由：${day.blockInfo.summary}）` : ''
     return `${day.dateStr} 【已自主關閉${reason}】點擊可解除`
   }
-  if (day.isAirbnb) {
-    return `${day.dateStr} 【Airbnb 外部預訂】點擊可查看或解除檔期`
-  }
   if (day.isDirectBooking) {
     return `${day.dateStr} 【官網直訂單】點擊查看、修改或取消`
+  }
+  if (day.isBooked) {
+    return `${day.dateStr} 【外部佔用檔期】點擊可查看或解除檔期`
   }
   if (props.rangeStart === day.dateStr) {
     return `${day.dateStr} 【區間起始日】請點選結束日`
@@ -142,8 +142,7 @@ const handleDayClick = (day, event) => {
           class="day-cell"
           :class="{
             'is-past': day.isPast,
-            'is-booked': day.isDirectBooking,
-            'is-airbnb': day.isAirbnb,
+            'is-booked': day.isDirectBooking || day.isBooked,
             'is-manual-lock': day.isManualLock,
             'is-selected': isSelected(day.dateStr),
             'is-range-start': rangeStart === day.dateStr,
@@ -157,9 +156,6 @@ const handleDayClick = (day, event) => {
           <span class="day-number">{{ day.dayNum }}</span>
           <span v-if="day.isManualLock" class="cell-tag manual-tag">
             已關閉
-          </span>
-          <span v-else-if="day.isAirbnb" class="cell-tag airbnb-tag">
-            Airbnb
           </span>
           <span v-else-if="day.isDirectBooking || day.isBooked" class="cell-tag booked-tag">
             已訂單
@@ -291,17 +287,6 @@ const handleDayClick = (day, event) => {
     }
   }
 
-  &.is-airbnb {
-    color: #7e22ce;
-    background: rgba(168, 85, 247, 0.08);
-    border-color: rgba(168, 85, 247, 0.3);
-    cursor: pointer;
-    &:hover:not(:disabled) {
-      border-color: rgba(168, 85, 247, 0.6);
-      background: rgba(168, 85, 247, 0.16);
-    }
-  }
-
   &.is-manual-lock {
     color: #dc2626;
     background: rgba(239, 68, 68, 0.12);
@@ -341,7 +326,6 @@ const handleDayClick = (day, event) => {
     line-height: 1;
 
     &.manual-tag { background: rgba(239, 68, 68, 0.2); color: #dc2626; font-weight: 600; }
-    &.airbnb-tag { background: rgba(168, 85, 247, 0.18); color: #7e22ce; font-weight: 600; }
     &.booked-tag { background: rgba(37, 99, 235, 0.15); color: #1d4ed8; font-weight: 600; }
     &.selected-tag { background: rgba(0, 0, 0, 0.25); color: #121415; font-weight: 700; }
     &.range-tag { background: var(--gold-dark, #91754F); color: #FFFFFF; font-weight: 700; }

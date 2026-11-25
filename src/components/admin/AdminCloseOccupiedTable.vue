@@ -19,7 +19,7 @@ const props = defineProps({
 
 const emit = defineEmits(['unlock-block', 'open-booking', 'open-external-block'])
 
-const currentFilter = ref('all') // 'all' | 'manual' | 'direct' | 'airbnb'
+const currentFilter = ref('all') // 'all' | 'manual' | 'direct'
 
 const manualRanges = computed(() => {
   return props.bookedRanges.filter(r => r.source === 'MANUAL_LOCK')
@@ -29,14 +29,9 @@ const directRanges = computed(() => {
   return props.bookedRanges.filter(r => r.source === 'DIRECT_BOOKING')
 })
 
-const airbnbRanges = computed(() => {
-  return props.bookedRanges.filter(r => r.source === 'AIRBNB')
-})
-
 const filteredList = computed(() => {
   if (currentFilter.value === 'manual') return manualRanges.value
   if (currentFilter.value === 'direct') return directRanges.value
-  if (currentFilter.value === 'airbnb') return airbnbRanges.value
   return props.bookedRanges
 })
 
@@ -54,18 +49,14 @@ const formatOccupiedSummary = (item) => {
   if (item.source === 'MANUAL_LOCK') {
     return item.summary || '管家自主保留'
   }
-  if (item.source === 'AIRBNB') {
-    const s = String(item.summary || '').trim()
-    if (!s || s.toLowerCase() === 'reserved') return '外部旅客預約'
-    if (s.includes('Airbnb') || s.includes('Not available')) return 'Airbnb 外部保留'
-    return s
+  if (item.source === 'DIRECT_BOOKING') {
+    const booking = findBookingForRange(item)
+    if (booking?.guest_name) {
+      return `${booking.guest_name} 貴賓`
+    }
+    return '官網直訂預約'
   }
-  // DIRECT_BOOKING
-  const booking = findBookingForRange(item)
-  if (booking?.guest_name) {
-    return `${booking.guest_name} 貴賓`
-  }
-  return '官網直訂預約'
+  return item.summary || '外部保留檔期'
 }
 </script>
 
@@ -105,15 +96,6 @@ const formatOccupiedSummary = (item) => {
           <FileText :size="13" />
           <span>官網直訂 ({{ directRanges.length }})</span>
         </button>
-        <button
-          type="button"
-          class="tab-btn"
-          :class="{ active: currentFilter === 'airbnb' }"
-          @click="currentFilter = 'airbnb'"
-        >
-          <span class="dot-purple">●</span>
-          <span>Airbnb 匯入 ({{ airbnbRanges.length }})</span>
-        </button>
       </div>
     </div>
 
@@ -142,10 +124,10 @@ const formatOccupiedSummary = (item) => {
                 :class="{
                   'manual': item.source === 'MANUAL_LOCK',
                   'direct': item.source === 'DIRECT_BOOKING',
-                  'airbnb': item.source === 'AIRBNB'
+                  'external': item.source !== 'MANUAL_LOCK' && item.source !== 'DIRECT_BOOKING'
                 }"
               >
-                {{ item.source === 'MANUAL_LOCK' ? '自主關閉' : (item.source === 'AIRBNB' ? 'Airbnb 匯入' : '官網直訂單') }}
+                {{ item.source === 'MANUAL_LOCK' ? '自主關閉' : (item.source === 'DIRECT_BOOKING' ? '官網直訂單' : '外部保留') }}
               </span>
             </td>
             <td class="font-mono text-gold-light">{{ item.startDate || item.start_date }}</td>
@@ -157,19 +139,16 @@ const formatOccupiedSummary = (item) => {
               <template v-if="item.source === 'MANUAL_LOCK'">
                 <span class="text-muted">{{ formatOccupiedSummary(item) }}</span>
               </template>
-              <template v-else-if="item.source === 'AIRBNB'">
-                <div class="airbnb-info-inline">
-                  <span class="font-bold text-purple">{{ formatOccupiedSummary(item) }}</span>
-                  <span class="channel-hint text-xs text-muted">（Airbnb 外部同步）</span>
-                </div>
-              </template>
-              <template v-else>
+              <template v-else-if="item.source === 'DIRECT_BOOKING'">
                 <div class="guest-info-inline">
                   <span class="guest-name font-bold">{{ formatOccupiedSummary(item) }}</span>
                   <span v-if="findBookingForRange(item)?.guest_phone" class="guest-phone text-xs text-muted">
                     {{ findBookingForRange(item).guest_phone }}
                   </span>
                 </div>
+              </template>
+              <template v-else>
+                <span class="text-muted">{{ formatOccupiedSummary(item) }}</span>
               </template>
             </td>
             <td>
@@ -183,22 +162,22 @@ const formatOccupiedSummary = (item) => {
                 <span>解除關閉 (開放)</span>
               </button>
               <button
-                v-else-if="item.source === 'AIRBNB'"
-                class="btn-action-airbnb"
-                @click="emit('open-external-block', item)"
-                title="點擊查看或解除此外部佔用檔期"
-              >
-                <Eye :size="14" />
-                <span>查看 / 解除開放</span>
-              </button>
-              <button
-                v-else
+                v-else-if="item.source === 'DIRECT_BOOKING'"
                 class="btn-action-booking"
                 @click="emit('open-booking', item)"
                 title="點擊查看、修改或取消此訂單"
               >
                 <Eye :size="14" />
                 <span>查看 / 取消修改</span>
+              </button>
+              <button
+                v-else
+                class="btn-action-external"
+                @click="emit('open-external-block', item)"
+                title="點擊查看或解除此外部佔用檔期"
+              >
+                <Eye :size="14" />
+                <span>查看 / 解除開放</span>
               </button>
             </td>
           </tr>
@@ -337,32 +316,15 @@ const formatOccupiedSummary = (item) => {
     border: 1px solid rgba(59, 130, 246, 0.25);
   }
 
-  &.airbnb {
-    background: rgba(168, 85, 247, 0.12);
-    color: #7e22ce;
-    border: 1px solid rgba(168, 85, 247, 0.3);
+  &.external {
+    background: rgba(100, 116, 139, 0.12);
+    color: var(--admin-text-muted, #64748b);
+    border: 1px solid rgba(100, 116, 139, 0.25);
   }
 }
 
-.text-purple {
-  color: #7e22ce;
-}
-
-.dot-purple {
-  color: #7e22ce;
-  font-size: 0.75rem;
-}
-
-.airbnb-info-inline {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-  .channel-hint { color: var(--admin-text-muted, #64748b); }
-}
-
 .btn-action-unlock,
-.btn-action-airbnb,
+.btn-action-external,
 .btn-action-booking {
   display: inline-flex;
   align-items: center;
@@ -381,11 +343,11 @@ const formatOccupiedSummary = (item) => {
   &:hover { background: #b91c1c; color: #FFFFFF; }
 }
 
-.btn-action-airbnb {
-  background: rgba(168, 85, 247, 0.1);
-  border: 1px solid rgba(168, 85, 247, 0.3);
-  color: #7e22ce;
-  &:hover { background: #7e22ce; color: #FFFFFF; }
+.btn-action-external {
+  background: rgba(100, 116, 139, 0.1);
+  border: 1px solid rgba(100, 116, 139, 0.3);
+  color: var(--admin-text-muted, #64748b);
+  &:hover { background: rgba(100, 116, 139, 0.2); color: var(--admin-text-main, #0f172a); }
 }
 
 .btn-action-booking {
