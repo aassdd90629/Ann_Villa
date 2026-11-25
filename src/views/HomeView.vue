@@ -43,7 +43,7 @@ onMounted(async () => {
   <div class="home-page">
     <!-- 1. Hero 首屏沉浸橫幅 (動態輪播動畫) -->
     <section class="hero-section">
-      <HeroCarousel :slides="heroSlides" :interval="6000" :textDuration="15000" :pauseOnHover="false">
+      <HeroCarousel :slides="heroSlides" :interval="12000" :textDuration="8000" :pauseOnHover="false">
         <div class="container hero-content">
           <span class="hero-badge">
             <Sparkles :size="14" />
