@@ -163,7 +163,7 @@ export async function onRequestPost(context) {
       } else {
         const dayOfWeek = curr.getDay(); // 0 = Sun, 5 = Fri, 6 = Sat
         if (dayOfWeek === 5 || dayOfWeek === 6 || dayOfWeek === 0) {
-          totalAmount += (room.holiday_price || weekendPrice);
+          totalAmount += (weekendPrice || room.holiday_price || 35000);
         } else {
           totalAmount += getWeekdayTierPrice(guestCount);
         }

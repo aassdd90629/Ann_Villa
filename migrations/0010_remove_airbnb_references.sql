@@ -6,11 +6,11 @@
 -- 1. 清理 availability_blocks 中舊有 Airbnb 來源的檔期佔用
 DELETE FROM availability_blocks WHERE source = 'AIRBNB';
 
--- 2. 清理 system_settings 中 Airbnb 專屬設定與連結
-DELETE FROM system_settings WHERE key = 'airbnb_url';
+-- 2. 清理 site_content 中 Airbnb 專屬設定與連結
+DELETE FROM site_content WHERE key = 'airbnb_url';
 
 -- 3. 更新 channels_ota_platforms 為空陣列（全站聚焦自營官網直訂，無第三方 OTA 抽成）
-UPDATE system_settings 
+UPDATE site_content 
 SET content_zh = '[]', content_en = '[]', updated_at = datetime('now')
 WHERE key = 'channels_ota_platforms';
 
