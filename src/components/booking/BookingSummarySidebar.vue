@@ -4,40 +4,19 @@ import { WEEKDAY_TIERS } from '../../composables/useBookingPricing'
 import { 
   Sparkles, 
   Users, 
-  Info, 
+  CalendarDays, 
   Send 
 } from 'lucide-vue-next'
 
 const props = defineProps({
-  checkInDate: {
-    type: String,
-    default: null
-  },
-  checkOutDate: {
-    type: String,
-    default: null
-  },
-  guestCount: {
-    type: Number,
-    default: 18
-  },
+  checkInDate: { type: String, default: null },
+  checkOutDate: { type: String, default: null },
+  guestCount: { type: Number, default: 18 },
   calculation: {
     type: Object,
-    default: () => ({
-      nights: 0,
-      weekdayNights: 0,
-      weekendNights: 0,
-      holidayNights: 0,
-      holidayTotal: 0,
-      baseTotal: 0,
-      extraPersonFee: 0,
-      grandTotal: 0
-    })
+    default: () => ({ nights: 0, weekdayNights: 0, weekendNights: 0, holidayNights: 0, holidayTotal: 0, baseTotal: 0, extraPersonFee: 0, grandTotal: 0 })
   },
-  lineBookingUrl: {
-    type: String,
-    default: ''
-  }
+  lineBookingUrl: { type: String, default: '' }
 })
 
 const emit = defineEmits(['update:guestCount', 'open-booking'])
@@ -152,8 +131,13 @@ const handleIncrement = () => {
       </div>
 
       <div v-else class="calc-placeholder">
-        <Info :size="16" />
-        <span>{{ t('calendar.selectDates') }}</span>
+        <div class="placeholder-icon">
+          <CalendarDays :size="24" class="text-gold" />
+        </div>
+        <div class="placeholder-content">
+          <p class="placeholder-title">{{ t('calendar.selectDates') }}</p>
+          <p class="placeholder-desc">{{ isEn ? 'Pick check-in & check-out dates on the calendar to get instant pricing.' : '請於日曆上選擇入住與退房日期，系統將自動即時為您試算包棟總價。' }}</p>
+        </div>
       </div>
 
       <!-- 直訂雙軌 CTA -->
@@ -187,21 +171,30 @@ const handleIncrement = () => {
 .booking-summary-col {
   display: flex;
   flex-direction: column;
+  height: 100%;
 }
 
 .summary-box {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 520px;
   background: var(--bg-primary);
   border: 1px solid var(--border-color);
   border-radius: 6px;
   padding: 1.5rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0;
+
+  @media (min-width: 1250px) {
+    padding: 2rem 1.75rem;
+  }
 
   .summary-heading {
     display: flex;
     align-items: center;
     gap: 0.5rem;
     font-size: 1.15rem;
-    margin-bottom: 1.25rem;
+    margin-bottom: 1.5rem;
 
     .text-gold {
       color: var(--gold-primary);
@@ -215,10 +208,10 @@ const handleIncrement = () => {
   justify-content: space-between;
   gap: 0.5rem;
   background: var(--bg-card);
-  padding: 0.75rem 1rem;
+  padding: 0.95rem 1.15rem;
   border-radius: 4px;
   border: 1px solid var(--border-color);
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.35rem;
 
   .date-slot {
     display: flex;
@@ -252,11 +245,11 @@ const handleIncrement = () => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.75rem 1rem;
+  padding: 0.85rem 1.15rem;
   background: var(--bg-card);
   border-radius: 4px;
   border: 1px solid var(--border-color);
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.35rem;
 
   .g-label {
     display: flex;
@@ -308,10 +301,10 @@ const handleIncrement = () => {
 
 .weekday-quick-tiers {
   background: var(--bg-card);
-  border: 1px dashed var(--border-gold-subtle, rgba(200, 169, 110, 0.3));
+  border: 1px dashed var(--border-color);
   border-radius: 6px;
-  padding: 0.65rem 0.75rem;
-  margin-bottom: 1.25rem;
+  padding: 0.75rem 0.85rem;
+  margin-bottom: 1.35rem;
 
   .quick-title {
     display: block;
@@ -331,7 +324,7 @@ const handleIncrement = () => {
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 0.35rem 0.2rem;
+      padding: 0.45rem 0.25rem;
       border-radius: 4px;
       border: 1px solid var(--border-color);
       background: var(--bg-primary);
@@ -339,27 +332,17 @@ const handleIncrement = () => {
       cursor: pointer;
       transition: $transition-base;
 
-      .p-text {
-        font-size: 0.72rem;
-        font-weight: 500;
-      }
-
-      .p-price {
-        font-size: 0.74rem;
-        font-weight: 700;
-        color: var(--gold-primary);
-      }
+      .p-text { font-size: 0.72rem; font-weight: 500; }
+      .p-price { font-size: 0.74rem; font-weight: 700; color: var(--gold-primary); }
 
       &.active {
         border-color: var(--gold-primary);
         background: var(--badge-bg);
         color: var(--gold-primary);
-        box-shadow: 0 0 6px rgba(200, 169, 110, 0.2);
+        box-shadow: 0 0 6px rgba(197, 168, 128, 0.2);
       }
 
-      &:hover:not(.active) {
-        border-color: var(--border-gold-subtle, rgba(200, 169, 110, 0.5));
-      }
+      &:hover:not(.active) { border-color: var(--gold-primary); }
     }
   }
 }
@@ -368,7 +351,7 @@ const handleIncrement = () => {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: 4px;
-  padding: 1rem;
+  padding: 1.15rem;
   margin-bottom: 1.5rem;
 
   .calc-row {
@@ -382,11 +365,7 @@ const handleIncrement = () => {
       font-size: 0.82rem;
       color: var(--text-muted);
 
-      &.highlight-holiday {
-        color: var(--gold-primary);
-        font-weight: 500;
-      }
-
+      &.highlight-holiday,
       &.highlight-weekday {
         color: var(--gold-primary);
         font-weight: 500;
@@ -422,24 +401,55 @@ const handleIncrement = () => {
 
 .calc-placeholder {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
-  padding: 1rem;
+  justify-content: center;
+  text-align: center;
+  gap: 0.65rem;
+  padding: 2.25rem 1.25rem;
   background: var(--bg-card);
-  border-radius: 4px;
-  font-size: 0.85rem;
-  color: var(--text-muted);
+  border-radius: 6px;
+  border: 1px dashed var(--border-color);
   margin-bottom: 1.5rem;
+  flex-grow: 1;
+
+  .placeholder-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--badge-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .text-gold { color: var(--gold-primary); }
+  }
+
+  .placeholder-title {
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+  }
+
+  .placeholder-desc {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    line-height: 1.45;
+    margin: 0;
+    max-width: 250px;
+  }
 }
 
 .cta-actions-group {
   display: flex;
   flex-direction: column;
-  gap: 0.65rem;
-  margin-bottom: 1.5rem;
+  gap: 0.75rem;
+  margin-top: auto;
+  padding-top: 1.25rem;
 
   .btn-reserve {
-    padding: 0.9rem 1.5rem;
+    padding: 0.95rem 1.5rem;
     font-size: 1rem;
     box-shadow: 0 4px 16px var(--badge-bg);
   }
@@ -449,7 +459,7 @@ const handleIncrement = () => {
     align-items: center;
     justify-content: center;
     gap: 0.4rem;
-    padding: 0.75rem 1.25rem;
+    padding: 0.85rem 1.25rem;
     background: transparent;
     border: 1px solid var(--border-color);
     color: var(--text-primary);
@@ -465,11 +475,6 @@ const handleIncrement = () => {
       background: var(--color-line-bg);
     }
   }
-}
-
-.direct-perks-box {
-  border-top: 1px solid var(--border-color);
-  padding-top: 1.25rem;
 }
 </style>
 

@@ -5,7 +5,7 @@ import { useBookingPricing } from '../../composables/useBookingPricing'
 import { getBookedRanges } from '../../services/availabilityService'
 import BookingSummarySidebar from './BookingSummarySidebar.vue'
 import DirectBookingModal from './DirectBookingModal.vue'
-import WeekdayPricingModal from './WeekdayPricingModal.vue'
+import WeekdayPricingSection from './WeekdayPricingSection.vue'
 import CalendarMonthView from './CalendarMonthView.vue'
 import BookingPerksNotice from './BookingPerksNotice.vue'
 
@@ -33,10 +33,6 @@ const { getHolidayForDate, isWeekdayDate, bookingCalculation, lineBookingUrl } =
 
 // 線上預約填單 Modal 狀態
 const isModalOpen = ref(false)
-
-// 平日階梯價格 Modal 狀態
-const isWeekdayModalOpen = ref(false)
-const weekdayModalDate = ref('')
 
 const handleApplyWeekdayTier = (count) => {
   guestCount.value = count
@@ -191,12 +187,6 @@ const selectDate = (day) => {
   if (day.isPast) return
   if (day.isBooked && !isCheckOutSelectable(day.dateStr)) return
 
-  // 若點選的日期為平日 (週一至週四)，自動彈出平日優惠價格與階梯選擇
-  if (day.isWeekday && !day.isPast) {
-    weekdayModalDate.value = day.dateStr
-    isWeekdayModalOpen.value = true
-  }
-  
   if (!checkInDate.value || (checkInDate.value && checkOutDate.value)) {
     checkInDate.value = day.dateStr
     checkOutDate.value = null
@@ -278,6 +268,13 @@ const isInRange = (dateStr) => {
             <span>{{ isEn ? 'Consecutive Holiday Rate' : '國定連續假期專案價' }}</span>
           </div>
         </div>
+
+        <!-- 平日特惠價格與人數階梯區塊 (常態固定顯示於月曆下方，長度固定無跳動) -->
+        <WeekdayPricingSection
+          :selected-date="checkInDate"
+          :current-guests="guestCount"
+          @apply-tier="handleApplyWeekdayTier"
+        />
       </div>
 
       <!-- 右側：日期試算與直訂優惠側欄 (獨立組件) -->
@@ -303,14 +300,6 @@ const isInRange = (dateStr) => {
       :guest-count="guestCount"
       :calculation="bookingCalculation"
       @booking-success="handleBookingSuccess"
-    />
-
-    <!-- 平日價格彈窗 (獨立組件) -->
-    <WeekdayPricingModal
-      v-model="isWeekdayModalOpen"
-      :selected-date="weekdayModalDate"
-      :current-guests="guestCount"
-      @apply-tier="handleApplyWeekdayTier"
     />
   </div>
 </template>
@@ -351,14 +340,15 @@ const isInRange = (dateStr) => {
   display: grid;
   grid-template-columns: 1fr;
   gap: 2rem;
+  align-items: stretch;
 
   @media (min-width: 1250px) {
-    grid-template-columns: 1fr 340px;
+    grid-template-columns: 1fr 360px;
     gap: 2.25rem;
   }
 
   @media (min-width: 1400px) {
-    grid-template-columns: 1fr 360px;
+    grid-template-columns: 1fr 380px;
     gap: 2.5rem;
   }
 }
@@ -368,6 +358,7 @@ const isInRange = (dateStr) => {
   display: flex;
   flex-direction: column;
   min-width: 0;
+  justify-content: flex-start;
 }
 
 // 雙月份並排呈現網格
@@ -375,7 +366,7 @@ const isInRange = (dateStr) => {
   display: grid;
   grid-template-columns: 1fr;
   gap: 1.75rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.75rem;
 
   @media (min-width: 860px) {
     grid-template-columns: 1fr 1fr;
@@ -390,8 +381,9 @@ const isInRange = (dateStr) => {
 .calendar-legend {
   display: flex;
   flex-wrap: wrap;
-  gap: 1.25rem;
-  padding-top: 1rem;
+  gap: 1.5rem;
+  padding-top: 1.5rem;
+  padding-bottom: 0.75rem;
   border-top: 1px dashed var(--border-color);
 
   .legend-item {
