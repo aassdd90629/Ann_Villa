@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useAdminAuth } from '../../composables/useAdminAuth'
 import { useTheme } from '../../composables/useTheme'
-import { Lock, User, AlertCircle, ArrowRight, ShieldCheck, Sun, Moon } from 'lucide-vue-next'
+import { Lock, User, AlertCircle, ArrowRight, ShieldCheck, Sun, Moon, Eye, EyeOff } from 'lucide-vue-next'
 
 const router = useRouter()
 const route = useRoute()
@@ -12,6 +12,7 @@ const { theme, toggleTheme } = useTheme()
 
 const username = ref('admin')
 const password = ref('')
+const showPassword = ref(false)
 const localError = ref('')
 
 const handleLogin = async () => {
@@ -82,12 +83,22 @@ const handleLogin = async () => {
             <Lock :size="18" class="input-icon" />
             <input 
               v-model="password" 
-              type="password" 
-              class="form-input" 
+              :type="showPassword ? 'text' : 'password'" 
+              class="form-input has-toggle" 
               placeholder="請輸入密碼" 
               required 
               autocomplete="current-password"
             />
+            <button 
+              type="button" 
+              class="password-toggle-btn" 
+              @click="showPassword = !showPassword" 
+              :title="showPassword ? '隱藏密碼' : '顯示密碼'"
+              :aria-label="showPassword ? '隱藏密碼' : '顯示密碼'"
+            >
+              <EyeOff v-if="showPassword" :size="18" />
+              <Eye v-else :size="18" />
+            </button>
           </div>
         </div>
 
@@ -256,9 +267,37 @@ const handleLogin = async () => {
         outline: none;
         transition: all 0.25s ease;
 
+        &.has-toggle {
+          padding-right: 2.75rem;
+        }
+
         &:focus {
           border-color: var(--gold-primary, #d4af37);
           box-shadow: 0 0 10px rgba(212, 175, 55, 0.25);
+        }
+      }
+
+      .password-toggle-btn {
+        position: absolute;
+        right: 0.75rem;
+        background: transparent;
+        border: none;
+        padding: 0.35rem;
+        color: var(--admin-text-muted, #64748b);
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 4px;
+        transition: color 0.2s ease, background-color 0.2s ease;
+
+        &:hover {
+          color: var(--gold-primary, #d4af37);
+          background: rgba(212, 175, 55, 0.1);
+        }
+
+        &:focus-visible {
+          outline: 1px solid var(--gold-primary, #d4af37);
         }
       }
     }
