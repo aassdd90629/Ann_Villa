@@ -81,9 +81,14 @@ const handleMarkDepositPaid = async (b) => {
 const handleCancelBooking = async (b) => {
   try {
     await updateAdminBooking(b.id, {
-      status: 'CANCELLED'
+      status: 'CANCELLED',
+      cancelReasonCategory: b.cancelReasonCategory,
+      cancelReasonNote: b.cancelReasonNote
     })
-    statusMessage.value = `已成功取消訂單【${b.id}】（旅客：${b.guest_name} 貴賓），【${b.check_in} 至 ${b.check_out}】檔期已即刻釋放為空房！`
+    const reasonText = b.cancelReasonCategory === 'FORCE_MAJEURE' 
+      ? '（天災不可抗力停班停課，全額退定）' 
+      : (b.cancelReasonCategory === 'RESCHEDULE_HOLD' ? '（協商延期保留）' : '')
+    statusMessage.value = `已成功取消訂單【${b.id}】${reasonText}，【${b.check_in} 至 ${b.check_out}】檔期已即刻釋放為空房！`
     isDetailModalOpen.value = false
     await fetchBookings()
   } catch (err) {

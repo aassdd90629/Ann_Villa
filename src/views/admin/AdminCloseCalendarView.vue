@@ -231,7 +231,9 @@ const handleCancelBooking = async (b) => {
   errorMessage.value = ''
   try {
     await updateAdminBooking(b.id, {
-      status: 'CANCELLED'
+      status: 'CANCELLED',
+      cancelReasonCategory: b.cancelReasonCategory,
+      cancelReasonNote: b.cancelReasonNote
     })
     // 即時樂觀更新：釋放直訂單佔用
     bookedRanges.value = bookedRanges.value.filter(item => item.id !== b.id && item.uid !== b.id)

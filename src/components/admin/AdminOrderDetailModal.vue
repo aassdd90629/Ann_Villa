@@ -2,8 +2,10 @@
 import { ref, watch } from 'vue'
 import {
   X, User, Calendar, MessageSquare, CheckCircle2,
-  AlertTriangle, Edit3, RotateCcw, Trash2, Save
+  AlertTriangle, Edit3, RotateCcw, Trash2, Save, ShieldAlert, Clock
 } from 'lucide-vue-next'
+import AdminCancelBookingModal from './AdminCancelBookingModal.vue'
+import AdminBookingAdjustments from './AdminBookingAdjustments.vue'
 
 const props = defineProps({
   modelValue: { type: Boolean, default: false },
@@ -20,7 +22,8 @@ const emit = defineEmits([
 ])
 
 const isEditing = ref(false)
-const isConfirmingCancel = ref(false)
+const isCancelModalOpen = ref(false)
+
 const editForm = ref({
   guestName: '',
   guestPhone: '',
@@ -36,7 +39,7 @@ watch(
   () => props.booking,
   (b) => {
     isEditing.value = false
-    isConfirmingCancel.value = false
+    isCancelModalOpen.value = false
     if (b) {
       editForm.value = {
         guestName: b.guest_name || '',
@@ -56,13 +59,12 @@ watch(
 const closeModal = () => {
   if (!props.isSubmitting) {
     isEditing.value = false
-    isConfirmingCancel.value = false
+    isCancelModalOpen.value = false
     emit('update:modelValue', false)
   }
 }
 
 const handleStartEdit = () => {
-  isConfirmingCancel.value = false
   isEditing.value = true
 }
 
@@ -77,8 +79,15 @@ const handleSaveEdit = () => {
   })
 }
 
-const handleExecuteCancel = () => {
-  emit('cancel-booking', props.booking)
+const handleConfirmCancel = (payload) => {
+  isCancelModalOpen.value = false
+  emit('cancel-booking', {
+    ...props.booking,
+    id: props.booking.id,
+    bookingId: props.booking.id,
+    cancelReasonCategory: payload.cancelReasonCategory,
+    cancelReasonNote: payload.cancelReasonNote
+  })
 }
 </script>
 
@@ -111,24 +120,23 @@ const handleExecuteCancel = () => {
             </p>
           </div>
 
-          <!-- 取消確認防呆區塊 -->
-          <div v-if="isConfirmingCancel" class="cancel-confirm-alert">
-            <div class="alert-head">
-              <AlertTriangle :size="18" class="text-danger" />
-              <strong>確定要取消【{{ booking.guest_name }} 貴賓】的這筆訂單嗎？</strong>
+          <!-- 取消/延期原因分類提示卡片 (P3 級別) -->
+          <div v-if="booking.status === 'CANCELLED' && booking.cancel_reason_category" class="cancelled-reason-card">
+            <div class="c-header">
+              <ShieldAlert v-if="booking.cancel_reason_category === 'FORCE_MAJEURE'" :size="16" class="text-danger" />
+              <Clock v-else-if="booking.cancel_reason_category === 'RESCHEDULE_HOLD'" :size="16" class="text-gold" />
+              <AlertTriangle v-else :size="16" class="text-muted" />
+              <strong>
+                取消原因分類：
+                <span v-if="booking.cancel_reason_category === 'FORCE_MAJEURE'">天災不可抗力（停班停課全額退定）</span>
+                <span v-else-if="booking.cancel_reason_category === 'RESCHEDULE_HOLD'">協商延期保留（保留定金權益）</span>
+                <span v-else-if="booking.cancel_reason_category === 'GUEST_PERSONAL'">旅客個人因素取消（依約扣定）</span>
+                <span v-else>{{ booking.cancel_reason_category }}</span>
+              </strong>
             </div>
-            <p class="alert-desc">
-              取消後，【{{ booking.check_in }} 至 {{ booking.check_out }}】將立即變更為空房，前台月曆將開放其他旅客預約！
+            <p v-if="booking.cancel_reason_note" class="c-note">
+              協商備註：{{ booking.cancel_reason_note }}
             </p>
-            <div class="alert-actions">
-              <button type="button" class="btn-danger-confirm" :disabled="isSubmitting" @click="handleExecuteCancel">
-                <Trash2 :size="14" />
-                <span>{{ isSubmitting ? '正在取消中...' : '確認取消並釋放檔期' }}</span>
-              </button>
-              <button type="button" class="btn-abort-confirm" :disabled="isSubmitting" @click="isConfirmingCancel = false">
-                <span>暫不取消</span>
-              </button>
-            </div>
           </div>
 
           <!-- 模式切換：編輯表單 vs 檢視模式 -->
@@ -214,11 +222,11 @@ const handleExecuteCancel = () => {
               </div>
 
               <div class="section-card">
-                <h4 class="sec-title"><Calendar :size="16" class="text-gold" /><span>預訂入住細節與金額</span></h4>
+                <h4 class="sec-title"><Calendar :size="16" class="text-gold" /><span>預訂入住細節與基本總額</span></h4>
                 <div class="info-grid">
                   <div class="info-row"><span class="lbl">入住 / 退房日期</span><span class="val font-mono">{{ booking.check_in }} ~ {{ booking.check_out }}</span></div>
                   <div class="info-row"><span class="lbl">晚數與人數</span><span class="val">{{ booking.nights }} 晚・{{ booking.guest_count }} 位</span></div>
-                  <div class="info-row"><span class="lbl">預估總金額</span><span class="val font-bold">NT$ {{ Number(booking.total_amount).toLocaleString() }}</span></div>
+                  <div class="info-row"><span class="lbl">合約原總額</span><span class="val font-bold">NT$ {{ Number(booking.total_amount).toLocaleString() }}</span></div>
                   <div class="info-row"><span class="lbl">50% 應付定金</span><span class="val text-gold font-bold">NT$ {{ Number(booking.deposit_amount).toLocaleString() }}</span></div>
                 </div>
               </div>
@@ -227,6 +235,9 @@ const handleExecuteCancel = () => {
                 <h4 class="sec-title"><MessageSquare :size="16" class="text-gold" /><span>旅客特殊需求與備註</span></h4>
                 <p class="requests-text">{{ booking.special_requests }}</p>
               </div>
+
+              <!-- P3 級別：現場費用調整與尾款核銷子組件 -->
+              <AdminBookingAdjustments :bookingId="booking.id" :booking="booking" />
             </div>
           </div>
         </div>
@@ -240,7 +251,7 @@ const handleExecuteCancel = () => {
             <button v-if="booking.deposit_status !== 'PAID' && booking.status !== 'CANCELLED'" type="button" class="btn-action btn-paid" @click="emit('confirm-paid', booking)">
               <CheckCircle2 :size="15" /><span>確認收定 (PAID)</span>
             </button>
-            <button v-if="booking.status !== 'CANCELLED'" type="button" class="btn-action btn-cancel-order" @click="isConfirmingCancel = true">
+            <button v-if="booking.status !== 'CANCELLED'" type="button" class="btn-action btn-cancel-order" @click="isCancelModalOpen = true">
               <Trash2 :size="15" /><span>取消整筆訂單 (釋放檔期)</span>
             </button>
             <button v-else type="button" class="btn-action btn-reopen" @click="emit('reopen-booking', booking)">
@@ -251,6 +262,14 @@ const handleExecuteCancel = () => {
         </div>
       </div>
     </div>
+
+    <!-- P3 級別：獨立取消/延期原因分類彈窗 -->
+    <AdminCancelBookingModal
+      v-model="isCancelModalOpen"
+      :booking="booking"
+      :is-submitting="isSubmitting"
+      @confirm-cancel="handleConfirmCancel"
+    />
   </Teleport>
 </template>
 
@@ -263,7 +282,7 @@ const handleExecuteCancel = () => {
   display: flex; align-items: center; justify-content: center; padding: 1.5rem;
 }
 .modal-card {
-  width: 100%; max-width: 600px; background: var(--admin-bg-card, #FFFFFF);
+  width: 100%; max-width: 640px; background: var(--admin-bg-card, #FFFFFF);
   border: 1px solid var(--admin-border, rgba(197, 168, 128, 0.35));
   border-radius: 10px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
   display: flex; flex-direction: column; max-height: 90vh; overflow: hidden;
@@ -300,107 +319,119 @@ const handleExecuteCancel = () => {
     border: 1px solid var(--admin-border, rgba(197, 168, 128, 0.25));
   }
 }
-.cancel-confirm-alert {
-  background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.35);
-  border-radius: 8px; padding: 1rem 1.15rem; display: flex; flex-direction: column; gap: 0.6rem;
-  .alert-head { display: flex; align-items: center; gap: 0.5rem; strong { color: #b91c1c; font-size: 0.92rem; } }
-  .alert-desc { margin: 0; font-size: 0.85rem; color: var(--admin-text-sub, #475569); line-height: 1.4; }
-  .alert-actions {
-    display: flex; gap: 0.65rem; margin-top: 0.2rem;
-    .btn-danger-confirm {
-      display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.45rem 0.9rem;
-      background: #dc2626; color: #FFFFFF; border: none; border-radius: 5px;
-      font-size: 0.82rem; font-weight: 600; cursor: pointer; &:hover:not(:disabled) { background: #b91c1c; }
-    }
-    .btn-abort-confirm {
-      padding: 0.45rem 0.8rem; background: var(--admin-bg-base, #F5F3EC);
-      border: 1px solid var(--admin-border, rgba(197, 168, 128, 0.3)); color: var(--admin-text-sub, #475569);
-      border-radius: 5px; font-size: 0.82rem; cursor: pointer;
-    }
+
+.cancelled-reason-card {
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+
+  .c-header {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.88rem;
+    color: var(--admin-text-main, #1A1E1F);
+
+    .text-danger { color: #dc2626; }
+    .text-gold { color: var(--gold-dark, #91754F); }
+    .text-muted { color: var(--admin-text-sub, #64748b); }
+  }
+
+  .c-note {
+    margin: 0;
+    font-size: 0.82rem;
+    color: var(--admin-text-sub, #64748b);
   }
 }
-.status-summary-bar {
-  display: flex; gap: 1.25rem; padding: 0.75rem 1rem; background: var(--admin-bg-base, #F5F3EC);
-  border-radius: 6px; border: 1px solid var(--admin-border, rgba(197, 168, 128, 0.2));
-  .s-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; .s-label { color: var(--admin-text-sub, #475569); } }
-}
-.status-tag, .deposit-tag {
-  padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600;
-  &.confirmed, &.paid { background: rgba(34, 197, 94, 0.15); color: #16a34a; }
-  &.cancelled, &.unpaid { background: rgba(239, 68, 68, 0.15); color: #dc2626; }
-  &.pending { background: rgba(234, 179, 8, 0.15); color: #ca8a04; }
-}
-.info-sections { display: flex; flex-direction: column; gap: 0.85rem; }
-.section-card {
-  background: var(--admin-bg-card, #FFFFFF); border: 1px solid var(--admin-border, rgba(197, 168, 128, 0.25));
-  border-radius: 6px; padding: 0.85rem 1rem;
-  .sec-title {
-    display: flex; align-items: center; gap: 0.45rem; margin: 0 0 0.65rem 0; font-size: 0.88rem;
-    color: var(--admin-text-main, #1A1E1F); .text-gold { color: var(--gold-dark, #91754F); }
-  }
-  .info-grid {
-    display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.6rem 1rem;
-    @media (max-width: 600px) { grid-template-columns: 1fr; }
-  }
-  .info-row {
-    display: flex; justify-content: space-between; font-size: 0.85rem;
-    .lbl { color: var(--admin-text-sub, #475569); } .val { color: var(--admin-text-main, #1A1E1F); }
-  }
-  .requests-text {
-    margin: 0; font-size: 0.85rem; color: var(--admin-text-main, #1A1E1F);
-    background: var(--admin-bg-base, #F5F3EC); padding: 0.6rem; border-radius: 4px; line-height: 1.4;
-  }
-}
+
 .edit-form-wrapper {
-  background: var(--admin-bg-base, #F5F3EC); border: 1px solid var(--admin-border, rgba(197, 168, 128, 0.35));
-  border-radius: 8px; padding: 1.15rem; display: flex; flex-direction: column; gap: 1rem;
-  .form-title {
-    display: flex; align-items: center; gap: 0.45rem; font-weight: 600; font-size: 0.92rem;
-    color: var(--admin-text-main, #1A1E1F); .text-gold { color: var(--gold-dark, #91754F); }
-  }
+  background: var(--admin-bg-card, #FFFFFF); border: 1px solid var(--admin-border, rgba(197, 168, 128, 0.35));
+  border-radius: 8px; padding: 1.15rem; display: flex; flex-direction: column; gap: 0.85rem;
+  .form-title { display: flex; align-items: center; gap: 0.45rem; font-size: 0.92rem; font-weight: 600; }
   .form-grid {
-    display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem;
-    @media (max-width: 600px) { grid-template-columns: 1fr; }
-    .full-width { grid-column: 1 / -1; }
-  }
-  .form-item {
-    display: flex; flex-direction: column; gap: 0.25rem;
-    label { font-size: 0.78rem; font-weight: 500; color: var(--admin-text-sub, #475569); }
-    .form-input, .form-select, .form-textarea {
-      padding: 0.45rem 0.65rem; border: 1px solid var(--admin-border, rgba(197, 168, 128, 0.3));
-      border-radius: 5px; background: var(--admin-bg-card, #FFFFFF); color: var(--admin-text-main, #1A1E1F);
-      font-size: 0.85rem; outline: none; &:focus { border-color: var(--gold-dark, #91754F); }
+    display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;
+    .form-item {
+      display: flex; flex-direction: column; gap: 0.25rem;
+      label { font-size: 0.76rem; font-weight: 600; color: var(--admin-text-sub, #64748b); }
+      .form-input, .form-select, .form-textarea {
+        padding: 0.45rem 0.65rem; border: 1px solid var(--admin-border, rgba(197, 168, 128, 0.3));
+        border-radius: 4px; font-size: 0.85rem; color: var(--admin-text-main, #1A1E1F);
+        background: var(--admin-bg-card, #FFFFFF);
+      }
+      &.full-width { grid-column: span 2; }
     }
   }
   .edit-form-actions {
-    display: flex; gap: 0.65rem; justify-content: flex-end;
+    display: flex; justify-content: flex-end; gap: 0.65rem; margin-top: 0.5rem;
     .btn-save-edit {
-      display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.5rem 1rem;
-      background: var(--gold-dark, #91754F); color: #FFFFFF; border: none; border-radius: 5px;
-      font-size: 0.85rem; font-weight: 600; cursor: pointer; &:hover:not(:disabled) { background: var(--gold-primary, #C5A880); }
+      display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.45rem 0.95rem;
+      background: var(--gold-primary, #C5A880); color: #fff; border: none; border-radius: 4px;
+      font-size: 0.82rem; cursor: pointer; &:hover { background: var(--gold-dark, #91754F); }
     }
     .btn-cancel-edit {
-      display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.5rem 0.9rem;
-      background: var(--admin-bg-card, #FFFFFF); border: 1px solid var(--admin-border, rgba(197, 168, 128, 0.3));
-      color: var(--admin-text-sub, #475569); border-radius: 5px; font-size: 0.85rem; cursor: pointer;
+      display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.45rem 0.75rem;
+      background: transparent; border: 1px solid var(--admin-border, rgba(197, 168, 128, 0.3));
+      border-radius: 4px; font-size: 0.82rem; color: var(--admin-text-sub, #64748b); cursor: pointer;
     }
   }
 }
+
+.view-content-wrapper { display: flex; flex-direction: column; gap: 1.15rem; }
+.status-summary-bar {
+  display: flex; flex-wrap: wrap; gap: 0.75rem; padding: 0.75rem 1rem;
+  background: var(--admin-bg-base, #F5F3EC); border: 1px solid var(--admin-border, rgba(197, 168, 128, 0.25));
+  border-radius: 6px; font-size: 0.84rem;
+  .s-item {
+    display: flex; align-items: center; gap: 0.35rem;
+    &.full-width { width: 100%; }
+    .s-label { color: var(--admin-text-sub, #64748b); }
+  }
+  .status-tag {
+    padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 600; font-size: 0.76rem;
+    &.confirmed { background: rgba(34, 197, 94, 0.15); color: #16a34a; }
+    &.cancelled { background: rgba(239, 68, 68, 0.15); color: #dc2626; }
+    &.pending { background: rgba(234, 179, 8, 0.15); color: #b45309; }
+  }
+  .deposit-tag {
+    padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 600; font-size: 0.76rem;
+    &.paid { background: rgba(34, 197, 94, 0.15); color: #16a34a; }
+    &.unpaid { background: rgba(239, 68, 68, 0.15); color: #dc2626; }
+  }
+}
+.info-sections { display: flex; flex-direction: column; gap: 0.85rem; }
+.section-card {
+  background: var(--admin-bg-card, #FFFFFF); border: 1px solid var(--admin-border, rgba(197, 168, 128, 0.3));
+  border-radius: 8px; padding: 0.95rem 1.15rem;
+  .sec-title { display: flex; align-items: center; gap: 0.45rem; font-size: 0.88rem; margin: 0 0 0.65rem 0; color: var(--admin-text-main, #1A1E1F); }
+  .info-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 0.55rem;
+    .info-row {
+      display: flex; flex-direction: column; gap: 0.15rem; font-size: 0.82rem;
+      .lbl { color: var(--admin-text-sub, #64748b); font-size: 0.74rem; }
+      .val { color: var(--admin-text-main, #1A1E1F); }
+    }
+  }
+  .requests-text { margin: 0; font-size: 0.82rem; color: var(--admin-text-sub, #475569); line-height: 1.45; }
+}
+
 .modal-footer {
-  padding: 1.1rem 1.5rem; border-top: 1px solid var(--admin-border, rgba(197, 168, 128, 0.2));
-  display: flex; gap: 0.65rem; justify-content: flex-end; flex-wrap: wrap;
+  padding: 1rem 1.5rem; border-top: 1px solid var(--admin-border, rgba(197, 168, 128, 0.2));
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;
   .btn-action {
-    display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.55rem 0.95rem;
-    border-radius: 6px; font-size: 0.82rem; font-weight: 600; cursor: pointer;
-    &.btn-edit { background: var(--admin-bg-base, #F5F3EC); border: 1px solid var(--admin-border, rgba(197, 168, 128, 0.35)); color: var(--admin-text-main, #1A1E1F); font-weight: 500; }
-    &.btn-paid { background: rgba(34, 197, 94, 0.12); border: 1px solid rgba(34, 197, 94, 0.35); color: #16a34a; }
-    &.btn-cancel-order { background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.35); color: #dc2626; }
-    &.btn-reopen { background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.35); color: #2563eb; }
+    display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.45rem 0.85rem;
+    border-radius: 5px; font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: background-color 0.2s;
+    &.btn-edit { background: var(--admin-bg-base, #F5F3EC); border: 1px solid var(--admin-border, rgba(197, 168, 128, 0.4)); color: var(--admin-text-main, #1A1E1F); }
+    &.btn-paid { background: #16a34a; color: #fff; border: none; }
+    &.btn-cancel-order { background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: #dc2626; }
+    &.btn-reopen { background: rgba(34, 197, 94, 0.15); border: 1px solid rgba(34, 197, 94, 0.3); color: #16a34a; }
   }
   .btn-close-modal {
-    padding: 0.55rem 0.95rem; background: var(--admin-bg-base, #F5F3EC);
-    border: 1px solid var(--admin-border, rgba(197, 168, 128, 0.3)); color: var(--admin-text-sub, #475569);
-    border-radius: 6px; font-size: 0.82rem; cursor: pointer;
+    padding: 0.45rem 0.85rem; background: transparent; border: 1px solid var(--admin-border, rgba(197, 168, 128, 0.3));
+    border-radius: 5px; font-size: 0.82rem; color: var(--admin-text-sub, #64748b); cursor: pointer;
   }
 }
 </style>

@@ -27,13 +27,15 @@ export async function onRequestPatch(context) {
       guestEmail,
       lineId,
       guestCount,
-      specialRequests
+      specialRequests,
+      cancelReasonCategory,
+      cancelReasonNote
     } = body;
 
     // 檢查訂單是否存在
     const existing = await env.DB.prepare(
       `SELECT 
-        id, room_id, deposit_status, status, guest_name, guest_phone, guest_email, line_id, guest_count, special_requests, check_in, check_out 
+        id, room_id, deposit_status, status, guest_name, guest_phone, guest_email, line_id, guest_count, special_requests, check_in, check_out, cancel_reason_category, cancel_reason_note 
        FROM bookings WHERE id = ?`
     ).bind(bookingId).first();
 
@@ -52,6 +54,19 @@ export async function onRequestPatch(context) {
     const newLineId = lineId !== undefined ? String(lineId).trim() : existing.line_id;
     const newGuestCount = guestCount !== undefined ? Number(guestCount) : existing.guest_count;
     const newSpecialRequests = specialRequests !== undefined ? String(specialRequests).trim() : existing.special_requests;
+
+    // 取消原因分類處理 (P3 級別)
+    let newCancelReasonCategory = existing.cancel_reason_category;
+    let newCancelReasonNote = existing.cancel_reason_note;
+
+    if (newStatus === 'CANCELLED') {
+      if (cancelReasonCategory !== undefined) newCancelReasonCategory = String(cancelReasonCategory).trim();
+      if (cancelReasonNote !== undefined) newCancelReasonNote = String(cancelReasonNote).trim().slice(0, 500);
+    } else if (existing.status === 'CANCELLED' && newStatus !== 'CANCELLED') {
+      // 恢復訂單時清空取消原因
+      newCancelReasonCategory = null;
+      newCancelReasonNote = null;
+    }
 
     const roomId = existing.room_id || 'villa-full';
 
@@ -96,6 +111,8 @@ export async function onRequestPatch(context) {
           line_id = ?,
           guest_count = ?,
           special_requests = ?,
+          cancel_reason_category = ?,
+          cancel_reason_note = ?,
           updated_at = CURRENT_TIMESTAMP
         WHERE id = ?
       `).bind(
@@ -107,6 +124,8 @@ export async function onRequestPatch(context) {
         newLineId,
         newGuestCount,
         newSpecialRequests,
+        newCancelReasonCategory,
+        newCancelReasonNote,
         bookingId
       )
     ];
@@ -149,7 +168,13 @@ export async function onRequestPatch(context) {
 
       if (newStatus === 'CANCELLED' && existing.status !== 'CANCELLED') {
         actionName = 'CANCEL_BOOKING';
-        summaryText = `管家取消直訂單「${bookingId}」（旅客：${newGuestName}，檔期：${existing.check_in} ~ ${existing.check_out}），房態已釋放為空房`;
+        let reasonLabel = '未指定原因';
+        if (newCancelReasonCategory === 'FORCE_MAJEURE') reasonLabel = '天災因素（停班停課全額退定）';
+        else if (newCancelReasonCategory === 'GUEST_PERSONAL') reasonLabel = '旅客個人因素（依約扣除定金）';
+        else if (newCancelReasonCategory === 'RESCHEDULE_HOLD') reasonLabel = '協商延期保留（保留定金權益）';
+        else if (newCancelReasonCategory) reasonLabel = newCancelReasonCategory;
+
+        summaryText = `管家取消直訂單「${bookingId}」（旅客：${newGuestName}，檔期：${existing.check_in} ~ ${existing.check_out}），原因：【${reasonLabel}】${newCancelReasonNote ? '，備註：' + newCancelReasonNote : ''}，房態檔期已即時釋放`;
       } else if (newStatus !== 'CANCELLED' && existing.status === 'CANCELLED') {
         actionName = 'RESTORE_BOOKING';
         summaryText = `管家重新恢復直訂單「${bookingId}」（旅客：${newGuestName}，檔期：${existing.check_in} ~ ${existing.check_out}）為已確認狀態`;
@@ -171,7 +196,9 @@ export async function onRequestPatch(context) {
           oldDepositStatus: existing.deposit_status,
           newDepositStatus,
           guestName: newGuestName,
-          guestPhone: newGuestPhone
+          guestPhone: newGuestPhone,
+          cancelReasonCategory: newCancelReasonCategory,
+          cancelReasonNote: newCancelReasonNote
         }),
         operatorTag
       ).run();
@@ -184,7 +211,9 @@ export async function onRequestPatch(context) {
       message: newStatus === 'CANCELLED' ? '訂單已成功取消，房態檔期已即刻釋放！' : '訂單資料與狀態更新成功',
       bookingId,
       depositStatus: newDepositStatus,
-      status: newStatus
+      status: newStatus,
+      cancelReasonCategory: newCancelReasonCategory,
+      cancelReasonNote: newCancelReasonNote
     });
 
   } catch (err) {
