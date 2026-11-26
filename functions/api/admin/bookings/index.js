@@ -35,6 +35,17 @@ export async function onRequestGet(context) {
         b.payment_note,
         b.cancel_reason_category,
         b.cancel_reason_note,
+        b.cancelled_by,
+        b.cancelled_at,
+        b.refund_status,
+        b.refund_amount,
+        b.refund_bank_code,
+        b.refund_bank_name,
+        b.refund_account,
+        b.refund_account_name,
+        b.refund_completed_at,
+        b.refund_reference_no,
+        b.refund_admin_note,
         b.created_at,
         b.updated_at
       FROM bookings b

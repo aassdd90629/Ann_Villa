@@ -40,7 +40,7 @@ const handleSearch = () => {
 </script>
 
 <template>
-  <div class="lookup-form-card card-luxury">
+  <div class="lookup-form-card">
     <div class="card-header">
       <div class="badge-gold">
         <Sparkles :size="14" />
@@ -134,6 +134,12 @@ const handleSearch = () => {
   border-radius: 12px;
   padding: 2.25rem 2rem;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  transition: border-color 0.2s ease;
+
+  &:hover {
+    transform: none;
+    border-color: var(--border-gold-subtle);
+  }
 }
 
 .card-header {

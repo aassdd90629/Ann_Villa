@@ -85,6 +85,12 @@ const emit = defineEmits(['openDetail', 'confirmPaid'])
               <span class="tag-status" :class="b.status?.toLowerCase()">
                 {{ b.status === 'CONFIRMED' ? '已確認' : (b.status === 'CANCELLED' ? '已取消' : '待確認') }}
               </span>
+              <div v-if="b.refund_status === 'PENDING'" class="tag-refund-sm pending" title="旅客申請退訂，待匯款退費">
+                待退 NT${{ Number(b.refund_amount || 0).toLocaleString() }}
+              </div>
+              <div v-else-if="b.refund_status === 'COMPLETED'" class="tag-refund-sm completed">
+                已退款
+              </div>
             </td>
             <td class="actions-cell">
               <button 
@@ -267,6 +273,24 @@ const emit = defineEmits(['openDetail', 'confirmPaid'])
     &.confirmed { background: rgba(34, 197, 94, 0.15); color: #16a34a; }
     &.cancelled { background: rgba(239, 68, 68, 0.15); color: #dc2626; }
     &.pending { background: rgba(234, 179, 8, 0.15); color: #ca8a04; }
+  }
+
+  .tag-refund-sm {
+    margin-top: 0.25rem;
+    padding: 0.15rem 0.35rem;
+    border-radius: 3px;
+    font-size: 0.68rem;
+    font-weight: 600;
+    white-space: nowrap;
+    &.pending {
+      background: rgba(234, 179, 8, 0.18);
+      color: #ca8a04;
+      border: 1px solid rgba(234, 179, 8, 0.35);
+    }
+    &.completed {
+      background: rgba(34, 197, 94, 0.18);
+      color: #16a34a;
+    }
   }
 
   .actions-cell {

@@ -351,6 +351,37 @@ img {
 }
 
 // ==========================================================================
+// 彈窗與訂單查詢介面靜態穩定規範 (Static Stability Rule for Modals & Query)
+// 嚴格禁止任何彈窗、對話框、以及訂單查詢頁面中任何表單、卡片或按鈕在 hover 時產生 translateY 上下位移
+// 保證操作精準與視覺穩定，杜絕介面跳動
+// ==========================================================================
+.modal-card,
+.report-modal-card,
+.booking-modal-card,
+[role="dialog"] {
+  &:hover {
+    transform: none !important;
+  }
+  .btn:hover,
+  button:hover,
+  .card-luxury:hover {
+    transform: none !important;
+  }
+}
+
+.booking-lookup-page {
+  .card-luxury:hover,
+  .lookup-form-card:hover,
+  .booking-order-card:hover,
+  .empty-guidance:hover,
+  .card:hover,
+  .btn:hover,
+  button:hover {
+    transform: none !important;
+  }
+}
+
+// ==========================================================================
 // 後台管理介面規範 (Admin Static Stability Rule)
 // 嚴格禁止後台管理介面中任何區塊、卡片、按鈕或表格行在 hover 時產生 translateY 上下位移
 // 保證後台視覺純靜態穩定，避免操作與點擊目標跳動

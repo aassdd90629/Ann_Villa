@@ -78,6 +78,17 @@ export async function onRequestPost(context) {
         b.bank_last_5,
         b.payment_reported_at,
         b.payment_note,
+        b.cancelled_by,
+        b.cancelled_at,
+        b.cancel_reason_category,
+        b.cancel_reason_note,
+        b.refund_status,
+        b.refund_amount,
+        b.refund_bank_code,
+        b.refund_bank_name,
+        b.refund_account,
+        b.refund_account_name,
+        b.refund_completed_at,
         b.created_at
       FROM bookings b
       LEFT JOIN rooms r ON b.room_id = r.id

@@ -69,7 +69,7 @@ const handleSubmit = () => {
 <template>
   <Teleport to="body">
     <div v-if="modelValue" class="report-modal-overlay" @click.self="handleClose">
-      <div class="report-modal-card card-luxury" role="dialog" aria-modal="true">
+      <div class="report-modal-card" role="dialog" aria-modal="true">
         <button class="modal-close-btn" @click="handleClose" aria-label="Close">
           <X :size="20" />
         </button>
@@ -185,6 +185,10 @@ const handleSubmit = () => {
   border-radius: 12px;
   padding: 2.25rem 2rem;
   box-shadow: 0 20px 48px rgba(0, 0, 0, 0.4);
+
+  &:hover {
+    transform: none;
+  }
 }
 
 .modal-close-btn {

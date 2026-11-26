@@ -142,7 +142,7 @@ const submitBookingForm = async () => {
 <template>
   <Teleport to="body">
     <div v-if="modelValue" class="booking-modal-overlay" @click.self="closeModal">
-      <div class="booking-modal-card card-luxury" role="dialog" aria-modal="true">
+      <div class="booking-modal-card" role="dialog" aria-modal="true">
         <!-- 關閉按鈕 -->
         <button class="modal-close-btn" @click="closeModal" aria-label="Close modal">
           <X :size="20" />
@@ -363,6 +363,10 @@ const submitBookingForm = async () => {
   padding: 2rem 1.5rem;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
   animation: modalScaleUp 0.3s $ease-oriental;
+
+  &:hover {
+    transform: none;
+  }
 
   @media (min-width: $bp-md) {
     padding: 2.5rem 2.25rem;

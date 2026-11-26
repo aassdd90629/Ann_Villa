@@ -9,7 +9,8 @@ import {
   Copy, 
   Check, 
   MapPin, 
-  FileText
+  FileText,
+  CalendarX
 } from 'lucide-vue-next'
 import { useI18n } from '../../composables/useI18n'
 import { useSiteContent } from '../../composables/useSiteContent'
@@ -22,7 +23,7 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['open-report'])
+const emit = defineEmits(['open-report', 'open-cancel'])
 
 const { isEn } = useI18n()
 const { basicInfo } = useSiteContent()
@@ -57,7 +58,7 @@ const remainingBalance = (b) => {
 </script>
 
 <template>
-  <div class="booking-order-card card-luxury" :class="{ 'is-cancelled': booking.status === 'CANCELLED' }">
+  <div class="booking-order-card" :class="{ 'is-cancelled': booking.status === 'CANCELLED' }">
     <!-- 1. 卡片頂部：單號與狀態徽章 -->
     <div class="order-card-header">
       <div class="order-id-group">
@@ -137,10 +138,16 @@ const remainingBalance = (b) => {
         :booking="booking"
         @open-report="emit('open-report', booking)"
       />
+      <div class="card-cancel-row">
+        <button type="button" class="btn-cancel-ghost" @click="emit('open-cancel', booking)">
+          <CalendarX :size="13" />
+          <span>{{ isEn ? 'Cancel This Reservation' : '取消此筆預訂' }}</span>
+        </button>
+      </div>
     </div>
 
     <!-- (B) 已付定金 / 已確認狀態 -->
-    <div v-else-if="booking.deposit_status === 'PAID'" class="action-section confirmed-section">
+    <div v-else-if="booking.deposit_status === 'PAID' && booking.status !== 'CANCELLED'" class="action-section confirmed-section">
       <div class="confirmed-card">
         <CheckCircle2 :size="24" class="text-green" />
         <div class="c-info">
@@ -162,14 +169,29 @@ const remainingBalance = (b) => {
           <MapPin :size="15" />
           <span>{{ isEn ? 'Google Maps Navigation' : 'Google 地圖導航路線' }}</span>
         </a>
+        <button type="button" class="btn btn-outline-danger btn-sm" @click="emit('open-cancel', booking)">
+          <CalendarX :size="14" />
+          <span>{{ isEn ? 'Cancel & Refund' : '申請取消與退費' }}</span>
+        </button>
       </div>
     </div>
 
     <!-- (C) 已取消狀態 -->
     <div v-else class="action-section cancelled-section">
-      <p class="cancelled-desc">
-        {{ isEn ? 'This reservation has been cancelled. For inquiries, please contact our butler.' : '此預訂單目前已取消。如需重新預約或了解詳情，請洽詢官方 LINE 管家。' }}
-      </p>
+      <div class="cancelled-box">
+        <p class="cancelled-desc">
+          {{ isEn ? 'This reservation has been cancelled. Available dates have been released.' : '此預訂單目前已取消，原檔期已為您釋放。' }}
+        </p>
+        <div v-if="booking.refund_status === 'PENDING'" class="refund-hint-tag pending">
+          ⏳ 定金退款核銷中：依規定退還 NT$ {{ Number(booking.refund_amount || 0).toLocaleString() }}，管家將匯入您指定之銀行帳戶。
+        </div>
+        <div v-else-if="booking.refund_status === 'COMPLETED'" class="refund-hint-tag completed">
+          ✅ 定金 NT$ {{ Number(booking.refund_amount || 0).toLocaleString() }} 已於 {{ booking.refund_completed_at?.slice(0, 10) || '近日' }} 完成退款匯出。
+        </div>
+        <div v-else-if="booking.refund_status === 'FORFEITED'" class="refund-hint-tag forfeited">
+          ⚠️ 依官方規章（入住前 7 天內取消），定金不予退還。
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -187,6 +209,7 @@ const remainingBalance = (b) => {
   transition: border-color 0.2s ease;
 
   &:hover {
+    transform: none;
     border-color: var(--border-gold-subtle);
   }
 
@@ -414,6 +437,66 @@ const remainingBalance = (b) => {
       border-color: var(--text-primary);
       color: var(--text-primary);
     }
+  }
+
+  &.btn-outline-danger {
+    background: transparent;
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    color: #ef4444;
+
+    &:hover {
+      background-color: rgba(239, 68, 68, 0.1);
+      border-color: #ef4444;
+    }
+  }
+}
+
+.card-cancel-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.75rem;
+
+  .btn-cancel-ghost {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.25rem 0.5rem;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: #ef4444;
+    }
+  }
+}
+
+.refund-hint-tag {
+  margin-top: 0.75rem;
+  padding: 0.6rem 0.85rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  line-height: 1.4;
+
+  &.pending {
+    background: rgba(234, 179, 8, 0.12);
+    border: 1px solid rgba(234, 179, 8, 0.3);
+    color: #ca8a04;
+  }
+
+  &.completed {
+    background: rgba(16, 185, 129, 0.12);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    color: #10b981;
+  }
+
+  &.forfeited {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.25);
+    color: #f87171;
   }
 }
 </style>

@@ -6,6 +6,7 @@ import { useBookingLookup } from '../composables/useBookingLookup'
 import BookingLookupForm from '../components/booking/BookingLookupForm.vue'
 import BookingLookupCard from '../components/booking/BookingLookupCard.vue'
 import BookingReportPaymentModal from '../components/booking/BookingReportPaymentModal.vue'
+import BookingCancelModal from '../components/booking/BookingCancelModal.vue'
 import { ShieldCheck, MessageCircle, AlertCircle, CheckCircle2 } from 'lucide-vue-next'
 
 const route = useRoute()
@@ -14,15 +15,18 @@ const { isEn } = useI18n()
 const {
   isLoading,
   isReporting,
+  isCancelling,
   errorMessage,
   successMessage,
   bookings,
   currentCredentials,
   lookupBookings,
-  reportPayment
+  reportPayment,
+  cancelBooking
 } = useBookingLookup()
 
 const showReportModal = ref(false)
+const showCancelModal = ref(false)
 const selectedBooking = ref(null)
 
 // 頁面載入時檢查 URL query 參數（支援直訂完成後的自動直達查詢）
@@ -57,10 +61,24 @@ const openReportModal = (booking) => {
   showReportModal.value = true
 }
 
+const openCancelModal = (booking) => {
+  selectedBooking.value = booking
+  showCancelModal.value = true
+}
+
 const handlePaymentReport = async (payload) => {
   try {
     await reportPayment(payload)
     showReportModal.value = false
+  } catch {
+    // 錯誤已在 composable 處理
+  }
+}
+
+const handleCancelBooking = async (payload) => {
+  try {
+    await cancelBooking(payload)
+    showCancelModal.value = false
   } catch {
     // 錯誤已在 composable 處理
   }
@@ -128,12 +146,13 @@ const handlePaymentReport = async (payload) => {
             :key="b.id"
             :booking="b"
             @open-report="openReportModal"
+            @open-cancel="openCancelModal"
           />
         </div>
       </section>
 
       <!-- 查無資料時之客服引導 -->
-      <section v-else-if="!isLoading && errorMessage" class="empty-guidance card-luxury">
+      <section v-else-if="!isLoading && errorMessage" class="empty-guidance">
         <div class="empty-icon-wrap">
           <MessageCircle :size="32" class="text-gold" />
         </div>
@@ -161,6 +180,16 @@ const handlePaymentReport = async (payload) => {
       :defaultEmail="currentCredentials.email"
       :isSubmitting="isReporting"
       @submit-payment="handlePaymentReport"
+    />
+
+    <!-- 取消預訂與退訂申請獨立彈窗 -->
+    <BookingCancelModal 
+      v-model="showCancelModal"
+      :booking="selectedBooking"
+      :defaultPhone="currentCredentials.phone"
+      :defaultEmail="currentCredentials.email"
+      :isSubmitting="isCancelling"
+      @confirm-cancel="handleCancelBooking"
     />
   </div>
 </template>
@@ -280,6 +309,12 @@ const handlePaymentReport = async (payload) => {
   border: 1px solid var(--border-color);
   border-radius: 12px;
   margin-top: 1.5rem;
+  transition: border-color 0.2s ease;
+
+  &:hover {
+    transform: none;
+    border-color: var(--border-gold-subtle);
+  }
 
   .empty-icon-wrap {
     display: inline-flex;

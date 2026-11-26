@@ -6,6 +6,7 @@ import {
 } from 'lucide-vue-next'
 import AdminCancelBookingModal from './AdminCancelBookingModal.vue'
 import AdminBookingAdjustments from './AdminBookingAdjustments.vue'
+import AdminBookingRefundSection from './AdminBookingRefundSection.vue'
 
 const props = defineProps({
   modelValue: { type: Boolean, default: false },
@@ -76,6 +77,13 @@ const handleSaveEdit = () => {
   emit('save-booking', {
     id: props.booking.id,
     data: { ...editForm.value }
+  })
+}
+
+const handleUpdateRefund = (payload) => {
+  emit('save-booking', {
+    id: props.booking.id,
+    data: payload
   })
 }
 
@@ -238,6 +246,13 @@ const handleConfirmCancel = (payload) => {
 
               <!-- P3 級別：現場費用調整與尾款核銷子組件 -->
               <AdminBookingAdjustments :bookingId="booking.id" :booking="booking" />
+
+              <!-- 退訂與退款核銷管理子組件 -->
+              <AdminBookingRefundSection 
+                :booking="booking" 
+                :is-submitting="isSubmitting" 
+                @update-refund="handleUpdateRefund" 
+              />
             </div>
           </div>
         </div>

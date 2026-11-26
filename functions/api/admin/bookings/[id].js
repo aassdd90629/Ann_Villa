@@ -29,13 +29,17 @@ export async function onRequestPatch(context) {
       guestCount,
       specialRequests,
       cancelReasonCategory,
-      cancelReasonNote
+      cancelReasonNote,
+      refundStatus,
+      refundAmount,
+      refundReferenceNo,
+      refundAdminNote
     } = body;
 
     // 檢查訂單是否存在
     const existing = await env.DB.prepare(
       `SELECT 
-        id, room_id, deposit_status, status, guest_name, guest_phone, guest_email, line_id, guest_count, special_requests, check_in, check_out, cancel_reason_category, cancel_reason_note 
+        id, room_id, deposit_status, status, guest_name, guest_phone, guest_email, line_id, guest_count, special_requests, check_in, check_out, cancel_reason_category, cancel_reason_note, refund_status, refund_amount, refund_reference_no, refund_admin_note 
        FROM bookings WHERE id = ?`
     ).bind(bookingId).first();
 
@@ -67,6 +71,13 @@ export async function onRequestPatch(context) {
       newCancelReasonCategory = null;
       newCancelReasonNote = null;
     }
+
+    // 退款狀態與資訊處理
+    const newRefundStatus = refundStatus !== undefined ? String(refundStatus).trim() : existing.refund_status;
+    const newRefundAmount = refundAmount !== undefined ? Number(refundAmount) : existing.refund_amount;
+    const newRefundReferenceNo = refundReferenceNo !== undefined ? String(refundReferenceNo).trim() : existing.refund_reference_no;
+    const newRefundAdminNote = refundAdminNote !== undefined ? String(refundAdminNote).trim().slice(0, 500) : existing.refund_admin_note;
+    const isNowRefundCompleted = newRefundStatus === 'COMPLETED' && existing.refund_status !== 'COMPLETED';
 
     const roomId = existing.room_id || 'villa-full';
 
@@ -113,6 +124,11 @@ export async function onRequestPatch(context) {
           special_requests = ?,
           cancel_reason_category = ?,
           cancel_reason_note = ?,
+          refund_status = ?,
+          refund_amount = ?,
+          refund_reference_no = ?,
+          refund_admin_note = ?,
+          refund_completed_at = CASE WHEN ? = 1 THEN CURRENT_TIMESTAMP ELSE refund_completed_at END,
           updated_at = CURRENT_TIMESTAMP
         WHERE id = ?
       `).bind(
@@ -126,6 +142,11 @@ export async function onRequestPatch(context) {
         newSpecialRequests,
         newCancelReasonCategory,
         newCancelReasonNote,
+        newRefundStatus,
+        newRefundAmount,
+        newRefundReferenceNo,
+        newRefundAdminNote,
+        isNowRefundCompleted ? 1 : 0,
         bookingId
       )
     ];
