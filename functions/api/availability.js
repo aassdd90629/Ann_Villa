@@ -4,6 +4,10 @@
  * 整合：
  * 1. availability_blocks (管家自主關閉與外部保留)
  * 2. bookings (官網尚未取消的正式/待確認預訂)
+ * 
+ * 核心業務防呆 (P0 等級)：
+ * - 自動偵測並釋放超過 24 小時未付定金且未回報匯款之逾期 PENDING 訂單
+ * - 即時排除逾期訂單，確保日曆不會因幽靈訂單無端永久反灰
  */
 export async function onRequestGet(context) {
   const { env } = context;
@@ -16,7 +20,29 @@ export async function onRequestGet(context) {
       }, { status: 500 });
     }
 
-    // 查詢今天 (含) 以後所有已佔用的區間
+    // 1. 自動巡檢並釋放超過 24 小時未付定金且未回報末五碼之過期 PENDING 訂單
+    try {
+      const staleBookings = await env.DB.prepare(`
+        SELECT id FROM bookings
+        WHERE status = 'PENDING'
+          AND (deposit_status IS NULL OR deposit_status = 'UNPAID')
+          AND (bank_last_5 IS NULL OR bank_last_5 = '')
+          AND created_at <= DATETIME('now', '-24 hours')
+      `).all();
+
+      if (staleBookings && staleBookings.results && staleBookings.results.length > 0) {
+        for (const stale of staleBookings.results) {
+          await env.DB.batch([
+            env.DB.prepare("UPDATE bookings SET status = 'CANCELLED', special_requests = COALESCE(special_requests, '') || ' [系統自動逾期釋放：超過24小時未付定金]', updated_at = CURRENT_TIMESTAMP WHERE id = ?").bind(stale.id),
+            env.DB.prepare("DELETE FROM room_daily_inventory WHERE booking_id = ?").bind(stale.id)
+          ]);
+        }
+      }
+    } catch (cleanupErr) {
+      console.warn('[Availability Stale Cleanup Warning]:', cleanupErr.message);
+    }
+
+    // 2. 查詢今天 (含) 以後所有有效佔用的區間 (排除 CANCELLED 及超過 24 小時之逾期未付訂單)
     const query = `
       SELECT 
         id,
@@ -49,7 +75,14 @@ export async function onRequestGet(context) {
         deposit_status,
         bank_last_5
       FROM bookings
-      WHERE check_out >= DATE('now') AND status != 'CANCELLED'
+      WHERE check_out >= DATE('now') 
+        AND status != 'CANCELLED'
+        AND NOT (
+          status = 'PENDING'
+          AND (deposit_status IS NULL OR deposit_status = 'UNPAID')
+          AND (bank_last_5 IS NULL OR bank_last_5 = '')
+          AND created_at <= DATETIME('now', '-24 hours')
+        )
       
       ORDER BY startDate ASC
     `;

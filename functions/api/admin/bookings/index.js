@@ -200,30 +200,49 @@ export async function onRequestPost(context) {
     const randSuffix = Math.floor(1000 + Math.random() * 9000);
     const bookingId = `SY-${dateCode}-${randSuffix}`;
 
-    // 6. 寫入 bookings 資料表
-    await env.DB.prepare(`
-      INSERT INTO bookings (
-        id, room_id, guest_name, guest_phone, guest_email, line_id,
-        guest_count, check_in, check_out, nights, total_amount, deposit_amount,
-        deposit_status, status, source, special_requests
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'MANUAL_ADMIN', ?)
-    `).bind(
-      bookingId,
-      roomId,
-      guestName.trim(),
-      guestPhone.trim(),
-      guestEmail.trim(),
-      lineId.trim(),
-      Number(guestCount) || 14,
-      checkIn,
-      checkOut,
-      nights,
-      totalAmount,
-      depositAmount,
-      depositStatus,
-      status,
-      specialRequests.trim()
-    ).run();
+    // 6. 寫入 bookings 資料表與每日排他庫存表
+    const batchStatements = [
+      env.DB.prepare(`
+        INSERT INTO bookings (
+          id, room_id, guest_name, guest_phone, guest_email, line_id,
+          guest_count, check_in, check_out, nights, total_amount, deposit_amount,
+          deposit_status, status, source, special_requests
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'MANUAL_ADMIN', ?)
+      `).bind(
+        bookingId,
+        roomId,
+        guestName.trim(),
+        guestPhone.trim(),
+        guestEmail.trim(),
+        lineId.trim(),
+        Number(guestCount) || 14,
+        checkIn,
+        checkOut,
+        nights,
+        totalAmount,
+        depositAmount,
+        depositStatus,
+        status,
+        specialRequests.trim()
+      )
+    ];
+
+    let cDate = new Date(checkIn);
+    const oDate = new Date(checkOut);
+    while (cDate < oDate) {
+      const y = cDate.getFullYear();
+      const m = String(cDate.getMonth() + 1).padStart(2, '0');
+      const d = String(cDate.getDate()).padStart(2, '0');
+      batchStatements.push(
+        env.DB.prepare(`
+          INSERT OR REPLACE INTO room_daily_inventory (room_id, occupy_date, booking_id, source)
+          VALUES (?, ?, ?, 'BOOKING')
+        `).bind(roomId, `${y}-${m}-${d}`, bookingId)
+      );
+      cDate.setDate(cDate.getDate() + 1);
+    }
+
+    await env.DB.batch(batchStatements);
 
     // 7. 寫入審計日誌
     try {

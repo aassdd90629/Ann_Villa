@@ -1,12 +1,18 @@
 /**
  * POST /api/bookings - 旅客線上預約送出
  * 
- * 核心業務防呆：
- * 1. 必填欄位驗證
- * 2. 入住人數上限檢查 (全區最多 14 人)
- * 3. ★ 防重疊撞期鎖房 (Overlap Check)：[checkIn, checkOut) 與現有保留/訂單互斥
- * 4. 自動計算 50% 定金
- * 5. 產生唯一訂單編號 (SY-YYYYMMDD-XXXX)
+ * 核心業務防呆與極端案例防護 (P0 等級)：
+ * 1. 必填欄位與格式校驗 (YYYY-MM-DD 嚴格格式)
+ * 2. ★ 過去日期阻擋 (不得早於今日台灣時間 UTC+8)
+ * 3. ★ 入住退房順序防呆 (至少入住 1 晚，阻擋 0 晚或退房早於入住)
+ * 4. ★ 最大晚數上限限制 (單次線上上限 14 晚，防範長租攻擊與迴圈資源耗盡)
+ * 5. ★ 預約窗口開放上限 (僅開放未來 180 天內預約，防範遠期定價未定虧損)
+ * 6. ★ 入住人數上限與數值防呆 (整數 1 至 maxGuests，阻擋 0 人、負數、小數)
+ * 7. ★ 自動釋放超過 24 小時未付未回報之幽靈過期訂單
+ * 8. ★ 防重疊撞期鎖房 (Overlap Check)：[checkIn, checkOut) 與現有保留/訂單互斥
+ * 9. ★ 高併發同毫秒物理排他鎖 (D1 Batch + room_daily_inventory 唯一鍵約束)
+ * 10. 金流防竄改計算 50% 定金
+ * 11. 產生唯一訂單編號 (SY-YYYYMMDD-XXXX)
  */
 export async function onRequestPost(context) {
   const { env, request } = context;
@@ -16,57 +22,144 @@ export async function onRequestPost(context) {
       return Response.json({ success: false, message: 'DB not bound' }, { status: 500 });
     }
 
-    const body = await request.json();
+    const body = await request.json().catch(() => ({}));
     const {
       roomId = 'villa-full',
-      guestName,
-      guestPhone,
-      guestEmail,
+      guestName = '',
+      guestPhone = '',
+      guestEmail = '',
       lineId = '',
       guestCount = 2,
-      checkIn,
-      checkOut,
+      checkIn = '',
+      checkOut = '',
       specialRequests = ''
     } = body;
 
+    const trimmedName = String(guestName).trim();
+    const trimmedPhone = String(guestPhone).trim();
+    const trimmedEmail = String(guestEmail).trim().toLowerCase();
+    const trimmedCheckIn = String(checkIn).trim();
+    const trimmedCheckOut = String(checkOut).trim();
+    const trimmedLineId = String(lineId).trim();
+    const trimmedSpecial = String(specialRequests).trim().slice(0, 500); // 截斷 500 字防惡意大文字
+
     // 1. 基本必填校驗
-    if (!guestName || !guestPhone || !guestEmail || !checkIn || !checkOut) {
+    if (!trimmedName || !trimmedPhone || !trimmedEmail || !trimmedCheckIn || !trimmedCheckOut) {
       return Response.json({
         success: false,
         message: '請完整填寫姓名、電話、電子郵件與預計入住/退房日期。'
       }, { status: 400 });
     }
 
-    // 2. 日期有效性檢查 (checkIn 必須早於 checkOut，且不得早於今日)
-    const inDate = new Date(checkIn);
-    const outDate = new Date(checkOut);
-    if (isNaN(inDate.getTime()) || isNaN(outDate.getTime()) || inDate >= outDate) {
+    // 2. 日期格式校驗 (標準 YYYY-MM-DD)
+    const DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
+    if (!DATE_REGEX.test(trimmedCheckIn) || !DATE_REGEX.test(trimmedCheckOut)) {
       return Response.json({
         success: false,
-        message: '入住日期必須早於退房日期，且格式須為 YYYY-MM-DD。'
+        message: '入住與退房日期格式必須為 YYYY-MM-DD。'
+      }, { status: 400 });
+    }
+
+    const inDate = new Date(trimmedCheckIn);
+    const outDate = new Date(trimmedCheckOut);
+    if (isNaN(inDate.getTime()) || isNaN(outDate.getTime())) {
+      return Response.json({
+        success: false,
+        message: '日期無效，請確認年月日是否正確。'
+      }, { status: 400 });
+    }
+
+    // 3. 過去日期防呆 (以台灣時間 Asia/Taipei UTC+8 為基準)
+    const now = new Date();
+    const twTodayStr = new Intl.DateTimeFormat('zh-TW', {
+      timeZone: 'Asia/Taipei',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    }).format(now).replace(/\//g, '-');
+
+    if (trimmedCheckIn < twTodayStr) {
+      return Response.json({
+        success: false,
+        message: `入住日期不得早於今日（台灣時間 ${twTodayStr}）。`
+      }, { status: 400 });
+    }
+
+    // 4. 入住退房順序防呆 (checkIn 必須小於 checkOut，至少入住 1 晚)
+    if (trimmedCheckIn >= trimmedCheckOut) {
+      return Response.json({
+        success: false,
+        message: '退房日期必須晚於入住日期（至少預訂 1 晚）。'
       }, { status: 400 });
     }
 
     // 計算晚數
-    const diffTime = Math.abs(outDate - inDate);
-    const nights = Math.max(1, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
+    const diffTime = outDate.getTime() - inDate.getTime();
+    const nights = Math.round(diffTime / (1000 * 60 * 60 * 24));
 
-    // 3. 查詢房型資訊與人數上限檢查
+    // 5. 最大住宿天數防呆 (單次線上上限 14 晚)
+    if (nights > 14) {
+      return Response.json({
+        success: false,
+        message: '單次線上包棟預約上限為 14 晚，如需長期租賃請洽官方 LINE 管家專線。'
+      }, { status: 400 });
+    }
+
+    // 6. 預約開放窗口上限防呆 (僅開放未來 180 天內預訂)
+    const maxAdvanceDays = 180;
+    const maxBookingDate = new Date(now.getTime() + maxAdvanceDays * 24 * 60 * 60 * 1000);
+    const maxBookingDateStr = new Intl.DateTimeFormat('zh-TW', {
+      timeZone: 'Asia/Taipei',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    }).format(maxBookingDate).replace(/\//g, '-');
+
+    if (trimmedCheckIn > maxBookingDateStr) {
+      return Response.json({
+        success: false,
+        message: `目前僅開放未來 ${maxAdvanceDays} 天內之預約（最遠可預約至 ${maxBookingDateStr}）。`
+      }, { status: 400 });
+    }
+
+    // 7. 查詢房型資訊與人數上限防呆 (阻擋 0 人、負數、小數)
     const room = await env.DB.prepare('SELECT * FROM rooms WHERE id = ?').bind(roomId).first();
     if (!room) {
       return Response.json({ success: false, message: '所選房型不存在。' }, { status: 404 });
     }
 
+    const parsedGuests = parseInt(guestCount, 10);
     const maxGuests = Math.max(room.capacity_max || 14, 18);
-    if (guestCount > maxGuests) {
+    if (isNaN(parsedGuests) || parsedGuests < 1 || parsedGuests > maxGuests) {
       return Response.json({
         success: false,
-        message: `所選房型最多僅容納 ${maxGuests} 人，請重新調整人數。`
+        message: `所選房型容納人數為 1 至 ${maxGuests} 位，請確認預約人數。`
       }, { status: 400 });
     }
 
-    // 4. ★ 核心防呆：撞期衝突檢查 (Overlap Check)
-    // 兩區間重疊條件：NOT (A.end <= B.start OR A.start >= B.end)
+    // 8. ★ 自動巡檢並釋放超過 24 小時未付定金且未回報之幽靈過期訂單
+    try {
+      const staleBookings = await env.DB.prepare(`
+        SELECT id FROM bookings
+        WHERE status = 'PENDING'
+          AND (deposit_status IS NULL OR deposit_status = 'UNPAID')
+          AND (bank_last_5 IS NULL OR bank_last_5 = '')
+          AND created_at <= DATETIME('now', '-24 hours')
+      `).all();
+
+      if (staleBookings && staleBookings.results && staleBookings.results.length > 0) {
+        for (const stale of staleBookings.results) {
+          await env.DB.batch([
+            env.DB.prepare("UPDATE bookings SET status = 'CANCELLED', special_requests = COALESCE(special_requests, '') || ' [系統自動逾期釋放：超過24小時未付定金]', updated_at = CURRENT_TIMESTAMP WHERE id = ?").bind(stale.id),
+            env.DB.prepare("DELETE FROM room_daily_inventory WHERE booking_id = ?").bind(stale.id)
+          ]);
+        }
+      }
+    } catch (cleanupErr) {
+      console.warn('[Auto-Cleanup Stale Bookings Warning]:', cleanupErr.message);
+    }
+
+    // 9. ★ 檔期衝突排他性檢查 (Overlap Check)
     const conflictQuery = `
       SELECT COUNT(*) AS conflict_count FROM (
         SELECT 1 FROM bookings 
@@ -81,7 +174,7 @@ export async function onRequestPost(context) {
     `;
 
     const conflictResult = await env.DB.prepare(conflictQuery)
-      .bind(roomId, checkIn, checkOut, roomId, checkIn, checkOut)
+      .bind(roomId, trimmedCheckIn, trimmedCheckOut, roomId, trimmedCheckIn, trimmedCheckOut)
       .first();
 
     if (conflictResult && conflictResult.conflict_count > 0) {
@@ -91,7 +184,7 @@ export async function onRequestPost(context) {
       }, { status: 409 });
     }
 
-    // 5. 計算總金額與定金 (金流防竄改：優先讀取 D1 動態定價與連假設定，自動備援預設常數)
+    // 10. 計算總金額與定金 (金流防竄改：優先讀取 D1 動態定價與連假設定，自動備援預設常數)
     const DEFAULT_HOLIDAYS = [
       { start: '2026-12-24', end: '2026-12-27', price: 47000 },
       { start: '2026-12-31', end: '2027-01-01', price: 47000 },
@@ -116,7 +209,6 @@ export async function onRequestPost(context) {
     let weekendPrice = 35000;
 
     try {
-      // 嘗試自 pricing_settings 讀取最新價格
       const pRows = await env.DB.prepare('SELECT setting_key, setting_value FROM pricing_settings').all();
       if (pRows && pRows.results) {
         for (const row of pRows.results) {
@@ -127,7 +219,6 @@ export async function onRequestPost(context) {
         }
       }
 
-      // 嘗試自 holiday_rates 讀取連假
       const hRows = await env.DB.prepare('SELECT start_date, end_date, price FROM holiday_rates WHERE is_active = 1').all();
       if (hRows && hRows.results && hRows.results.length > 0) {
         dynamicHolidays = hRows.results.map(r => ({
@@ -136,9 +227,7 @@ export async function onRequestPost(context) {
           price: Number(r.price)
         }));
       }
-    } catch {
-      // 若尚未套用 migration 則自動採用備援預設值
-    }
+    } catch (_) {}
 
     const getWeekdayTierPrice = (count) => {
       const g = Number(count) || 18;
@@ -148,14 +237,16 @@ export async function onRequestPost(context) {
     };
 
     let totalAmount = 0;
-    let curr = new Date(checkIn);
-    const end = new Date(checkOut);
+    const occupiedDates = [];
+    let curr = new Date(trimmedCheckIn);
+    const end = new Date(trimmedCheckOut);
 
     while (curr < end) {
       const y = curr.getFullYear();
       const m = String(curr.getMonth() + 1).padStart(2, '0');
       const d = String(curr.getDate()).padStart(2, '0');
       const dateStr = `${y}-${m}-${d}`;
+      occupiedDates.push(dateStr);
 
       const holiday = dynamicHolidays.find(h => dateStr >= h.start && dateStr <= h.end);
       if (holiday) {
@@ -165,7 +256,7 @@ export async function onRequestPost(context) {
         if (dayOfWeek === 5 || dayOfWeek === 6 || dayOfWeek === 0) {
           totalAmount += (weekendPrice || room.holiday_price || 35000);
         } else {
-          totalAmount += getWeekdayTierPrice(guestCount);
+          totalAmount += getWeekdayTierPrice(parsedGuests);
         }
       }
       curr.setDate(curr.getDate() + 1);
@@ -173,34 +264,58 @@ export async function onRequestPost(context) {
 
     const depositAmount = Math.round(totalAmount * 0.5);
 
-    // 6. 產生唯一訂單編號
-    const dateStr = checkIn.replace(/-/g, '');
+    // 11. 產生唯一訂單編號
+    const dateCode = trimmedCheckIn.replace(/-/g, '');
     const randSuffix = Math.floor(1000 + Math.random() * 9000);
-    const bookingId = `SY-${dateStr}-${randSuffix}`;
+    const bookingId = `SY-${dateCode}-${randSuffix}`;
 
-    // 7. 寫入 D1 資料庫
-    await env.DB.prepare(`
-      INSERT INTO bookings (
-        id, room_id, guest_name, guest_phone, guest_email, line_id,
-        guest_count, check_in, check_out, nights, total_amount, deposit_amount,
-        deposit_status, status, source, special_requests
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'UNPAID', 'PENDING', 'OFFICIAL', ?)
-    `).bind(
-      bookingId, roomId, guestName, guestPhone, guestEmail, lineId,
-      guestCount, checkIn, checkOut, nights, totalAmount, depositAmount,
-      specialRequests
-    ).run();
+    // 12. ★ 高併發同毫秒物理排他鎖 (D1 Batch + room_daily_inventory UNIQUE 索引)
+    const batchStatements = [
+      env.DB.prepare(`
+        INSERT INTO bookings (
+          id, room_id, guest_name, guest_phone, guest_email, line_id,
+          guest_count, check_in, check_out, nights, total_amount, deposit_amount,
+          deposit_status, status, source, special_requests
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'UNPAID', 'PENDING', 'OFFICIAL', ?)
+      `).bind(
+        bookingId, roomId, trimmedName, trimmedPhone, trimmedEmail, trimmedLineId,
+        parsedGuests, trimmedCheckIn, trimmedCheckOut, nights, totalAmount, depositAmount,
+        trimmedSpecial
+      )
+    ];
+
+    for (const d of occupiedDates) {
+      batchStatements.push(
+        env.DB.prepare(`
+          INSERT INTO room_daily_inventory (room_id, occupy_date, booking_id, source)
+          VALUES (?, ?, ?, 'BOOKING')
+        `).bind(roomId, d, bookingId)
+      );
+    }
+
+    try {
+      await env.DB.batch(batchStatements);
+    } catch (insertErr) {
+      // 捕獲 UNIQUE 鍵衝突（另一併發請求搶先寫入）
+      if (insertErr.message && (insertErr.message.includes('UNIQUE constraint failed') || insertErr.message.includes('PRIMARY KEY'))) {
+        return Response.json({
+          success: false,
+          message: '非常抱歉，您所選擇的檔期剛被其他旅客搶先一步預約，請重新挑選日期。'
+        }, { status: 409 });
+      }
+      throw insertErr;
+    }
 
     return Response.json({
       success: true,
       booking: {
         id: bookingId,
         roomName: room.name,
-        guestName,
-        checkIn,
-        checkOut,
+        guestName: trimmedName,
+        checkIn: trimmedCheckIn,
+        checkOut: trimmedCheckOut,
         nights,
-        guestCount,
+        guestCount: parsedGuests,
         totalAmount,
         depositAmount,
         status: 'PENDING'
@@ -212,4 +327,3 @@ export async function onRequestPost(context) {
     return Response.json({ success: false, error: err.message }, { status: 500 });
   }
 }
-
