@@ -189,9 +189,10 @@ export async function onRequestPost(context) {
     });
 
   } catch (err) {
+    console.error('[Report Payment API Exception]:', err);
     return Response.json({
       success: false,
-      message: '回報失敗: ' + (err.message || '未知錯誤')
+      message: '系統處理匯款回報時發生異常，請稍後再試或直接洽詢官方 LINE 管家。'
     }, { status: 500 });
   }
 }

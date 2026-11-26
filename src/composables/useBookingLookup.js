@@ -1,5 +1,29 @@
 import { ref } from 'vue'
 
+/**
+ * 前端錯誤訊息防禦性過濾（遵守前端規範 2.6：嚴禁向使用者直出底層系統錯誤）
+ */
+function sanitizeErrorMessage(msg, defaultMsg = '連線異常，請稍後再試。') {
+  if (!msg) return defaultMsg
+  const raw = String(msg)
+  const sensitivePatterns = [
+    /d1_error/i,
+    /sqlite/i,
+    /no such column/i,
+    /no such table/i,
+    /syntax error/i,
+    /at offset/i,
+    /unique constraint/i,
+    /primary key/i,
+    /prepare\(/i,
+    /uncaught exception/i
+  ]
+  if (sensitivePatterns.some(regex => regex.test(raw))) {
+    return '系統連線異常或處理逾時，請稍後再試，或直接洽詢官方 LINE 管家協助。'
+  }
+  return raw
+}
+
 export function useBookingLookup() {
   const isLoading = ref(false)
   const isReporting = ref(false)
@@ -37,7 +61,7 @@ export function useBookingLookup() {
       const data = await res.json()
 
       if (!res.ok || !data.success) {
-        throw new Error(data.message || '查詢訂單失敗，請檢查資料後重試。')
+        throw new Error(sanitizeErrorMessage(data.message, '查詢訂單失敗，請檢查資料後重試。'))
       }
 
       bookings.value = data.bookings || []
@@ -46,7 +70,7 @@ export function useBookingLookup() {
       }
       return data.bookings
     } catch (err) {
-      errorMessage.value = err.message || '連線逾時，請稍後再試。'
+      errorMessage.value = sanitizeErrorMessage(err.message, '連線逾時，請稍後再試。')
       bookings.value = []
       throw err
     } finally {
@@ -78,7 +102,7 @@ export function useBookingLookup() {
       const data = await res.json()
 
       if (!res.ok || !data.success) {
-        throw new Error(data.message || '回報失敗，請確認資料後重試。')
+        throw new Error(sanitizeErrorMessage(data.message, '回報失敗，請確認資料後重試。'))
       }
 
       successMessage.value = data.message || '匯款末五碼回報成功！'
@@ -93,7 +117,7 @@ export function useBookingLookup() {
 
       return data
     } catch (err) {
-      errorMessage.value = err.message || '回報末五碼失敗'
+      errorMessage.value = sanitizeErrorMessage(err.message, '回報末五碼失敗，請稍後再試。')
       throw err
     } finally {
       isReporting.value = false
@@ -118,7 +142,7 @@ export function useBookingLookup() {
       const data = await res.json()
 
       if (!res.ok || !data.success) {
-        throw new Error(data.message || '取消預訂失敗，請確認資料後重試。')
+        throw new Error(sanitizeErrorMessage(data.message, '取消預訂失敗，請確認資料後重試。'))
       }
 
       successMessage.value = data.message || '預訂已成功取消。'
@@ -135,7 +159,7 @@ export function useBookingLookup() {
 
       return data
     } catch (err) {
-      errorMessage.value = err.message || '取消預訂失敗'
+      errorMessage.value = sanitizeErrorMessage(err.message, '取消預訂處理異常，請稍後再試。')
       throw err
     } finally {
       isCancelling.value = false

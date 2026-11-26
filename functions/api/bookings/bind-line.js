@@ -137,9 +137,10 @@ export async function onRequestPost(context) {
     });
 
   } catch (err) {
+    console.error('[Bind LINE API Exception]:', err);
     return Response.json({
       success: false,
-      message: '綁定失敗: ' + (err.message || '未知錯誤')
+      message: 'LINE 通知綁定處理逾時，請稍後重試或直接於官方 LINE 聊天室留言洽詢。'
     }, { status: 500 });
   }
 }

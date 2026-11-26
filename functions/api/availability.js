@@ -103,9 +103,10 @@ export async function onRequestGet(context) {
       }
     });
   } catch (err) {
+    console.error('[Availability API Exception]:', err);
     return Response.json({
       success: false,
-      error: err.message
+      message: '無法取得最新房態資料，請稍後再試。'
     }, { status: 500 });
   }
 }

@@ -295,9 +295,10 @@ export async function onRequestPost(context) {
     });
 
   } catch (err) {
+    console.error('[Cancel Booking API Exception]:', err);
     return Response.json({
       success: false,
-      message: '取消預訂失敗: ' + (err.message || '未知錯誤')
+      message: '系統處理取消預訂時發生異常，請稍後再試或直接致電管家協助。'
     }, { status: 500 });
   }
 }

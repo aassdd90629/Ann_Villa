@@ -422,6 +422,10 @@ export async function onRequestPost(context) {
     }, { status: 201 });
 
   } catch (err) {
-    return Response.json({ success: false, error: err.message }, { status: 500 });
+    console.error('[Create Booking API Exception]:', err);
+    return Response.json({
+      success: false,
+      message: '系統預約處理逾時或異常，請稍後重試或直接洽詢官方 LINE 管家協助。'
+    }, { status: 500 });
   }
 }

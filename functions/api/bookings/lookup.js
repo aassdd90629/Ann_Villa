@@ -124,9 +124,10 @@ export async function onRequestPost(context) {
     });
 
   } catch (err) {
+    console.error('[Lookup API Exception]:', err);
     return Response.json({
       success: false,
-      message: '查詢訂單時發生錯誤: ' + (err.message || '未知錯誤')
+      message: '系統連線異常或處理逾時，請稍後再試或直接洽詢官方 LINE 管家協助。'
     }, { status: 500 });
   }
 }
