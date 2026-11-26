@@ -1,4 +1,11 @@
-# Cloudflare Pages 標頭設定
+# Cloudflare Pages 安全與快取標頭設定 (P2 資安防護)
+
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: SAMEORIGIN
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+
 # 僅管家後台與內部 API 禁止搜尋引擎索引與檢索
 /admin/*
   X-Robots-Tag: noindex, nofollow, noarchive

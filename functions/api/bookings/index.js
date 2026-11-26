@@ -1,8 +1,10 @@
+import { getClientIp, sanitizeText, verifyTurnstileToken } from '../_security.js';
+
 /**
  * POST /api/bookings - 旅客線上預約送出
  * 
- * 核心業務防呆與極端案例防護 (P0 等級)：
- * 1. 必填欄位與格式校驗 (YYYY-MM-DD 嚴格格式)
+ * 核心業務防呆與極端案例防護 (P0 & P1 & P2 等級)：
+ * 1. 必填欄位與格式校驗 (YYYY-MM-DD 嚴格格式、手機正則、Email 正則)
  * 2. ★ 過去日期阻擋 (不得早於今日台灣時間 UTC+8)
  * 3. ★ 入住退房順序防呆 (至少入住 1 晚，阻擋 0 晚或退房早於入住)
  * 4. ★ 最大晚數上限限制 (單次線上上限 14 晚，防範長租攻擊與迴圈資源耗盡)
@@ -11,8 +13,10 @@
  * 7. ★ 自動釋放超過 24 小時未付未回報之幽靈過期訂單
  * 8. ★ 防重疊撞期鎖房 (Overlap Check)：[checkIn, checkOut) 與現有保留/訂單互斥
  * 9. ★ 高併發同毫秒物理排他鎖 (D1 Batch + room_daily_inventory 唯一鍵約束)
- * 10. 金流防竄改計算 50% 定金
- * 11. 產生唯一訂單編號 (SY-YYYYMMDD-XXXX)
+ * 10. ★ P2 資安防護：同一電話或 IP 於 24 小時內上限 2 筆未付款預訂 (防幽靈霸房攻擊)
+ * 11. ★ P2 資安防護：XSS 特殊字元消毒與 Cloudflare Turnstile 無感人機驗證支援
+ * 12. 金流防竄改計算 50% 定金
+ * 13. 產生唯一訂單編號 (SY-YYYYMMDD-XXXX)
  */
 export async function onRequestPost(context) {
   const { env, request } = context;
@@ -32,19 +36,32 @@ export async function onRequestPost(context) {
       guestCount = 2,
       checkIn = '',
       checkOut = '',
-      specialRequests = ''
+      specialRequests = '',
+      turnstileToken = ''
     } = body;
 
-    const trimmedName = String(guestName).trim();
-    const trimmedPhone = String(guestPhone).trim();
-    const trimmedEmail = String(guestEmail).trim().toLowerCase();
-    const trimmedCheckIn = String(checkIn).trim();
-    const trimmedCheckOut = String(checkOut).trim();
-    const trimmedLineId = String(lineId).trim();
-    const trimmedSpecial = String(specialRequests).trim().slice(0, 500); // 截斷 500 字防惡意大文字
+    const clientIp = getClientIp(request);
+
+    // P2 資安防護：Cloudflare Turnstile 人機驗證 (若配置密鑰則強制校驗)
+    if (env.TURNSTILE_SECRET_KEY) {
+      const turnstileRes = await verifyTurnstileToken(env.TURNSTILE_SECRET_KEY, turnstileToken || request.headers.get('cf-turnstile-response'), clientIp);
+      if (!turnstileRes.success) {
+        return Response.json({
+          success: false,
+          message: '人機安全驗證失敗，請重整頁面重試。'
+        }, { status: 403 });
+      }
+    }
 
     // 1. 基本必填校驗與欄位格式防呆 (P1 級別)
-    if (!trimmedName || !trimmedPhone || !trimmedEmail || !trimmedCheckIn || !trimmedCheckOut) {
+    const rawName = typeof guestName === 'string' ? guestName.trim() : '';
+    const cleanPhone = String(guestPhone || '').replace(/[-\s]/g, '');
+    const trimmedEmail = String(guestEmail || '').trim().toLowerCase();
+    const trimmedCheckIn = String(checkIn || '').trim();
+    const trimmedCheckOut = String(checkOut || '').trim();
+    const rawSpecial = typeof specialRequests === 'string' ? specialRequests.trim() : '';
+
+    if (!rawName || !cleanPhone || !trimmedEmail || !trimmedCheckIn || !trimmedCheckOut) {
       return Response.json({
         success: false,
         message: '請完整填寫姓名、電話、電子郵件與預計入住/退房日期。'
@@ -52,15 +69,27 @@ export async function onRequestPost(context) {
     }
 
     // 姓名長度限制 (1 至 50 字元)
-    if (trimmedName.length < 1 || trimmedName.length > 50) {
+    if (rawName.length < 1 || rawName.length > 50) {
       return Response.json({
         success: false,
         message: '訂房旅客姓名長度須介於 1 至 50 字元。'
       }, { status: 400 });
     }
 
+    // 特殊需求備註長度限制 (上限 500 字元)
+    if (rawSpecial.length > 500) {
+      return Response.json({
+        success: false,
+        message: '特殊需求備註長度不可超過 500 字元。'
+      }, { status: 400 });
+    }
+
+    // P2 資安防護：輸入欄位消毒 (濾除 HTML 標籤與惡意字元)
+    const trimmedName = sanitizeText(rawName, 50);
+    const trimmedLineId = sanitizeText(lineId, 50);
+    const trimmedSpecial = sanitizeText(rawSpecial, 500);
+
     // 手機號碼格式防呆 (台灣手機 09 開頭 10 碼，或帶國碼之國際號碼 +...)
-    const cleanPhone = trimmedPhone.replace(/[-\s]/g, '');
     const isTwMobile = /^09\d{8}$/.test(cleanPhone);
     const isIntlPhone = /^\+[1-9]\d{7,14}$/.test(cleanPhone);
     if (!isTwMobile && !isIntlPhone) {
@@ -77,6 +106,24 @@ export async function onRequestPost(context) {
         success: false,
         message: '電子信箱格式無效，請確認填寫正確 Email 地址（例如：name@example.com）。'
       }, { status: 400 });
+    }
+
+    // P2 資安防護：同一電話或 IP 於 24 小時內限制最多建立 2 筆未付款預約 (防幽靈霸房攻擊)
+    const quotaQuery = `
+      SELECT COUNT(*) AS pending_count FROM bookings
+      WHERE status = 'PENDING'
+        AND (
+          REPLACE(REPLACE(guest_phone, '-', ''), ' ', '') = ?
+          OR (client_ip IS NOT NULL AND client_ip != '' AND client_ip = ?)
+        )
+        AND created_at >= DATETIME('now', '-24 hours')
+    `;
+    const quotaRes = await env.DB.prepare(quotaQuery).bind(cleanPhone, clientIp).first();
+    if (quotaRes && quotaRes.pending_count >= 2) {
+      return Response.json({
+        success: false,
+        message: '同一聯絡電話或 IP 於 24 小時內最多僅允許預約 2 筆待付款訂單，如需更多檔期請直接洽詢官方 LINE 管家。'
+      }, { status: 429 });
     }
 
     // 2. 日期格式校驗 (標準 YYYY-MM-DD)
@@ -303,12 +350,12 @@ export async function onRequestPost(context) {
         INSERT INTO bookings (
           id, room_id, guest_name, guest_phone, guest_email, line_id,
           guest_count, check_in, check_out, nights, total_amount, deposit_amount,
-          deposit_status, status, source, special_requests
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'UNPAID', 'PENDING', 'OFFICIAL', ?)
+          deposit_status, status, source, special_requests, client_ip
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'UNPAID', 'PENDING', 'OFFICIAL', ?, ?)
       `).bind(
-        bookingId, roomId, trimmedName, trimmedPhone, trimmedEmail, trimmedLineId,
+        bookingId, roomId, trimmedName, cleanPhone, trimmedEmail, trimmedLineId,
         parsedGuests, trimmedCheckIn, trimmedCheckOut, nights, totalAmount, depositAmount,
-        trimmedSpecial
+        trimmedSpecial, clientIp
       )
     ];
 
