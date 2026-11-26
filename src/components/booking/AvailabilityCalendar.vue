@@ -5,7 +5,7 @@ import { useBookingPricing, fetchPricingSettings } from '../../composables/useBo
 import { getBookedRanges } from '../../services/availabilityService'
 import BookingSummarySidebar from './BookingSummarySidebar.vue'
 import DirectBookingModal from './DirectBookingModal.vue'
-import WeekdayPricingSection from './WeekdayPricingSection.vue'
+import PricingOverviewSection from './PricingOverviewSection.vue'
 import CalendarMonthView from './CalendarMonthView.vue'
 import BookingPerksNotice from './BookingPerksNotice.vue'
 
@@ -248,8 +248,8 @@ const selectDate = (day) => {
           </div>
         </div>
 
-        <!-- 預選價格與方案詳情區塊 (依選取之平日、假日或國定連假動態切換) -->
-        <WeekdayPricingSection
+        <!-- 價格方案總覽 (左下：平日分級、一般假日 35k、國定假日 38k~50k) -->
+        <PricingOverviewSection
           :selected-date="checkInDate"
           :check-out-date="checkOutDate"
           :current-guests="guestCount"
