@@ -96,19 +96,21 @@ const emit = defineEmits(['openDetail', 'confirmPaid'])
               </div>
             </td>
             <td class="actions-cell">
-              <button 
-                v-if="b.deposit_status !== 'PAID' && b.status !== 'CANCELLED'"
-                class="btn-pay-sm" 
-                @click="emit('confirmPaid', b)"
-                title="確認定金入帳"
-              >
-                <CheckCircle2 :size="13" />
-                <span>收定</span>
-              </button>
-              <button class="btn-view-sm" @click="emit('openDetail', b)" title="查看詳細資料">
-                <Eye :size="13" />
-                <span>詳情</span>
-              </button>
+              <div class="actions-wrapper">
+                <button 
+                  v-if="b.deposit_status !== 'PAID' && b.status !== 'CANCELLED'"
+                  class="btn-pay-sm" 
+                  @click="emit('confirmPaid', b)"
+                  title="確認定金入帳"
+                >
+                  <CheckCircle2 :size="13" />
+                  <span>收定</span>
+                </button>
+                <button class="btn-view-sm" @click="emit('openDetail', b)" title="查看詳細資料">
+                  <Eye :size="13" />
+                  <span>詳情</span>
+                </button>
+              </div>
             </td>
           </tr>
         </tbody>
@@ -311,9 +313,17 @@ const emit = defineEmits(['openDetail', 'confirmPaid'])
   }
 
   .actions-cell {
-    display: flex;
-    justify-content: center;
-    gap: 0.4rem;
+    vertical-align: middle;
+    text-align: center;
+    white-space: nowrap;
+
+    .actions-wrapper {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      vertical-align: middle;
+    }
 
     .btn-pay-sm {
       display: inline-flex;
