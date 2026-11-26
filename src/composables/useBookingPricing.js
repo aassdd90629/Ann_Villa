@@ -1,5 +1,5 @@
 import { ref, computed } from 'vue'
-import { buildLineUrl } from '../utils/lineUrl'
+import { buildLineUrl } from '../utils/lineUrl.js'
 
 export const WEEKDAY_TIERS = [
   { min: 1, max: 10, price: 20000, labelZh: '10人以下', labelEn: '10 guests or fewer', count: 10 },

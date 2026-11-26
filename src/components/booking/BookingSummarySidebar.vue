@@ -45,6 +45,7 @@ const isCheckInWeekend = computed(() => {
         :check-in-date="checkInDate"
         :check-out-date="checkOutDate"
         :guest-count="guestCount"
+        :calculation="calculation"
         @update:guest-count="emit('update:guestCount', $event)"
       />
 
