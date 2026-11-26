@@ -1,4 +1,5 @@
 import { getClientIp, checkRateLimit, isLocked, recordFailAttempt, clearFailAttempt, sanitizeText } from '../_security.js';
+import { sendLineNotification } from '../_line.js';
 
 /**
  * POST /api/bookings/cancel - 旅客線上自主取消預訂 API
@@ -89,7 +90,8 @@ export async function onRequestPost(context) {
     const booking = await env.DB.prepare(`
       SELECT 
         id, room_id, status, deposit_status, total_amount, deposit_amount,
-        check_in, check_out, guest_name, guest_phone, guest_email, bank_last_5
+        check_in, check_out, guest_name, guest_phone, guest_email, bank_last_5,
+        line_user_id
       FROM bookings
       WHERE id = ?
         AND (REPLACE(REPLACE(guest_phone, '-', ''), ' ', '') = ? OR guest_phone = ?)
@@ -254,6 +256,26 @@ export async function onRequestPost(context) {
     ];
 
     await env.DB.batch(batchStatements);
+
+    // 9. 觸發 LINE Messaging API 推播通知 (若已綁定 line_user_id)
+    if (booking.line_user_id) {
+      const linePromise = sendLineNotification(env, {
+        bookingId: trimmedId,
+        lineUserId: booking.line_user_id,
+        eventType: 'BOOKING_CANCELLED',
+        bookingData: {
+          guestName: booking.guest_name,
+          checkIn: booking.check_in,
+          checkOut: booking.check_out,
+          depositAmount,
+          refundAmount,
+          refundStatus,
+          cancelReason: trimmedReason
+        }
+      });
+      if (context.waitUntil) context.waitUntil(linePromise);
+      else await linePromise;
+    }
 
     let userMessage = '預訂已成功取消，原保留檔期已即刻為您釋放。';
     if (refundStatus === 'PENDING') {

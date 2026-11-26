@@ -1,4 +1,5 @@
 import { getClientIp, sanitizeText, verifyTurnstileToken } from '../_security.js';
+import { sendLineNotification } from '../_line.js';
 
 /**
  * POST /api/bookings - 旅客線上預約送出
@@ -33,6 +34,7 @@ export async function onRequestPost(context) {
       guestPhone = '',
       guestEmail = '',
       lineId = '',
+      lineUserId = '',
       guestCount = 2,
       checkIn = '',
       checkOut = '',
@@ -87,6 +89,7 @@ export async function onRequestPost(context) {
     // P2 資安防護：輸入欄位消毒 (濾除 HTML 標籤與惡意字元)
     const trimmedName = sanitizeText(rawName, 50);
     const trimmedLineId = sanitizeText(lineId, 50);
+    const trimmedLineUid = sanitizeText(lineUserId, 64);
     const trimmedSpecial = sanitizeText(rawSpecial, 500);
 
     // 手機號碼格式防呆 (台灣手機 09 開頭 10 碼，或帶國碼之國際號碼 +...)
@@ -348,12 +351,12 @@ export async function onRequestPost(context) {
     const batchStatements = [
       env.DB.prepare(`
         INSERT INTO bookings (
-          id, room_id, guest_name, guest_phone, guest_email, line_id,
+          id, room_id, guest_name, guest_phone, guest_email, line_id, line_user_id,
           guest_count, check_in, check_out, nights, total_amount, deposit_amount,
           deposit_status, status, source, special_requests, client_ip
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'UNPAID', 'PENDING', 'OFFICIAL', ?, ?)
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'UNPAID', 'PENDING', 'OFFICIAL', ?, ?)
       `).bind(
-        bookingId, roomId, trimmedName, cleanPhone, trimmedEmail, trimmedLineId,
+        bookingId, roomId, trimmedName, cleanPhone, trimmedEmail, trimmedLineId, trimmedLineUid || null,
         parsedGuests, trimmedCheckIn, trimmedCheckOut, nights, totalAmount, depositAmount,
         trimmedSpecial, clientIp
       )
@@ -379,6 +382,26 @@ export async function onRequestPost(context) {
         }, { status: 409 });
       }
       throw insertErr;
+    }
+
+    // 13. 觸發 LINE Messaging API 推播通知 (若已具備 line_user_id)
+    if (trimmedLineUid && trimmedLineUid.startsWith('U')) {
+      const linePromise = sendLineNotification(env, {
+        bookingId,
+        lineUserId: trimmedLineUid,
+        eventType: 'BOOKING_PENDING',
+        bookingData: {
+          guestName: trimmedName,
+          checkIn: trimmedCheckIn,
+          checkOut: trimmedCheckOut,
+          nights,
+          guestCount: parsedGuests,
+          totalAmount,
+          depositAmount
+        }
+      });
+      if (context.waitUntil) context.waitUntil(linePromise);
+      else await linePromise;
     }
 
     return Response.json({

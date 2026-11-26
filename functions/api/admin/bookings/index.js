@@ -21,6 +21,8 @@ export async function onRequestGet(context) {
         b.guest_phone,
         b.guest_email,
         b.line_id,
+        b.line_user_id,
+        b.line_notified_at,
         b.guest_count,
         b.check_in,
         b.check_out,

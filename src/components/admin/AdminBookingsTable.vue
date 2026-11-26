@@ -54,7 +54,10 @@ const emit = defineEmits(['openDetail', 'confirmPaid'])
             <td class="font-mono text-gold-light">{{ b.id }}</td>
             <td>
               <div class="guest-info-cell">
-                <span class="guest-name">{{ b.guest_name }}</span>
+                <div class="name-line-wrap">
+                  <span class="guest-name">{{ b.guest_name }}</span>
+                  <span v-if="b.line_user_id" class="badge-line" title="已連動 LINE 官方推播">LINE</span>
+                </div>
                 <span class="guest-phone">{{ b.guest_phone }}</span>
               </div>
             </td>
@@ -205,6 +208,20 @@ const emit = defineEmits(['openDetail', 'confirmPaid'])
     display: flex;
     flex-direction: column;
     align-items: center;
+    .name-line-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      .badge-line {
+        background: #06c755;
+        color: #ffffff;
+        font-size: 0.65rem;
+        font-weight: 700;
+        padding: 0.05rem 0.3rem;
+        border-radius: 3px;
+        line-height: 1.2;
+      }
+    }
     .guest-name { font-weight: 600; color: var(--admin-text-main, #f1f5f9); }
     .guest-phone { font-size: 0.75rem; color: var(--admin-text-muted, #94a3b8); }
   }

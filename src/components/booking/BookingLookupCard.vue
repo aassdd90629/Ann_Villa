@@ -1,20 +1,10 @@
 <script setup>
 import { ref } from 'vue'
-import { 
-  Calendar, 
-  Users, 
-  CheckCircle2, 
-  Clock, 
-  XCircle, 
-  Copy, 
-  Check, 
-  MapPin, 
-  FileText,
-  CalendarX
-} from 'lucide-vue-next'
+import { Calendar, Users, CheckCircle2, Clock, XCircle, Copy, Check, MapPin, FileText, CalendarX } from 'lucide-vue-next'
 import { useI18n } from '../../composables/useI18n'
 import { useSiteContent } from '../../composables/useSiteContent'
 import BookingLookupBankCard from './BookingLookupBankCard.vue'
+import BookingLineNotificationCard from './BookingLineNotificationCard.vue'
 
 const props = defineProps({
   booking: {
@@ -29,6 +19,10 @@ const { isEn } = useI18n()
 const { basicInfo } = useSiteContent()
 const copiedOrderId = ref(false)
 
+const handleLineUpdated = (uid) => {
+  if (props.booking) props.booking.line_user_id = uid
+}
+
 const copyOrderId = async (id) => {
   try {
     await navigator.clipboard.writeText(id)
@@ -38,23 +32,13 @@ const copyOrderId = async (id) => {
 }
 
 const getStatusBadge = (b) => {
-  if (b.status === 'CANCELLED') {
-    return { text: isEn.value ? 'Cancelled' : '已取消', class: 'status-cancelled', icon: XCircle }
-  }
-  if (b.deposit_status === 'PAID') {
-    return { text: isEn.value ? 'Confirmed (Paid)' : '已確認・定金已入帳', class: 'status-paid', icon: CheckCircle2 }
-  }
-  if (b.bank_last_5) {
-    return { text: isEn.value ? 'Verifying Transfer' : '對帳中・已回報末五碼', class: 'status-verifying', icon: Clock }
-  }
+  if (b.status === 'CANCELLED') return { text: isEn.value ? 'Cancelled' : '已取消', class: 'status-cancelled', icon: XCircle }
+  if (b.deposit_status === 'PAID') return { text: isEn.value ? 'Confirmed (Paid)' : '已確認・定金已入帳', class: 'status-paid', icon: CheckCircle2 }
+  if (b.bank_last_5) return { text: isEn.value ? 'Verifying Transfer' : '對帳中・已回報末五碼', class: 'status-verifying', icon: Clock }
   return { text: isEn.value ? 'Pending Payment' : '待付款・保留 24 小時', class: 'status-pending', icon: Clock }
 }
 
-const remainingBalance = (b) => {
-  const total = Number(b.total_amount) || 0
-  const deposit = Number(b.deposit_amount) || 0
-  return Math.max(0, total - deposit)
-}
+const remainingBalance = (b) => Math.max(0, (Number(b.total_amount) || 0) - (Number(b.deposit_amount) || 0))
 </script>
 
 <template>
@@ -193,6 +177,12 @@ const remainingBalance = (b) => {
         </div>
       </div>
     </div>
+
+    <!-- 5. LINE 官方帳號通知連動卡片 -->
+    <BookingLineNotificationCard 
+      :booking="booking" 
+      @line-updated="handleLineUpdated" 
+    />
   </div>
 </template>
 

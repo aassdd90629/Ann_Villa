@@ -24,6 +24,34 @@ const emit = defineEmits([
 
 const isEditing = ref(false)
 const isCancelModalOpen = ref(false)
+const isSendingLine = ref(false)
+const linePushMsg = ref('')
+
+const handleSendLinePush = async () => {
+  if (!props.booking?.id) return
+  isSendingLine.value = true
+  linePushMsg.value = ''
+  try {
+    const res = await fetch(`/api/admin/bookings/${props.booking.id}/send-line`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('sy_admin_token') || ''}`
+      }
+    })
+    const data = await res.json()
+    if (res.ok && data.success) {
+      linePushMsg.value = '✅ ' + (data.message || '推播成功！')
+      setTimeout(() => { linePushMsg.value = '' }, 3500)
+    } else {
+      linePushMsg.value = '❌ ' + (data.message || '推播失敗')
+    }
+  } catch (e) {
+    linePushMsg.value = '❌ 連線異常'
+  } finally {
+    isSendingLine.value = false
+  }
+}
 
 const editForm = ref({
   guestName: '',
@@ -226,6 +254,23 @@ const handleConfirmCancel = (payload) => {
                   <div class="info-row"><span class="lbl">聯絡電話</span><span class="val font-mono">{{ booking.guest_phone }}</span></div>
                   <div class="info-row"><span class="lbl">電子信箱</span><span class="val">{{ booking.guest_email || '未填寫' }}</span></div>
                   <div class="info-row"><span class="lbl">LINE ID</span><span class="val">{{ booking.line_id || '未填寫' }}</span></div>
+                  <div class="info-row full-width line-row">
+                    <span class="lbl">LINE 官方通知</span>
+                    <div class="line-status-wrap">
+                      <span v-if="booking.line_user_id" class="val text-green font-mono">🟢 已連動推播</span>
+                      <span v-else class="val text-muted">⚪ 尚未綁定</span>
+                      <button 
+                        v-if="booking.line_user_id" 
+                        type="button" 
+                        class="btn-line-push" 
+                        :disabled="isSendingLine"
+                        @click="handleSendLinePush"
+                      >
+                        {{ isSendingLine ? '推播中...' : '🔔 重發 LINE 通知' }}
+                      </button>
+                      <span v-if="linePushMsg" class="line-push-msg">{{ linePushMsg }}</span>
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -336,31 +381,13 @@ const handleConfirmCancel = (payload) => {
 }
 
 .cancelled-reason-card {
-  background: rgba(239, 68, 68, 0.08);
-  border: 1px solid rgba(239, 68, 68, 0.25);
-  border-radius: 8px;
-  padding: 0.75rem 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-
+  background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.25);
+  border-radius: 8px; padding: 0.75rem 1rem; display: flex; flex-direction: column; gap: 0.35rem;
   .c-header {
-    display: flex;
-    align-items: center;
-    gap: 0.45rem;
-    font-size: 0.88rem;
-    color: var(--admin-text-main, #1A1E1F);
-
-    .text-danger { color: #dc2626; }
-    .text-gold { color: var(--gold-dark, #91754F); }
-    .text-muted { color: var(--admin-text-sub, #64748b); }
+    display: flex; align-items: center; gap: 0.45rem; font-size: 0.88rem; color: var(--admin-text-main, #1A1E1F);
+    .text-danger { color: #dc2626; } .text-gold { color: var(--gold-dark, #91754F); } .text-muted { color: var(--admin-text-sub, #64748b); }
   }
-
-  .c-note {
-    margin: 0;
-    font-size: 0.82rem;
-    color: var(--admin-text-sub, #64748b);
-  }
+  .c-note { margin: 0; font-size: 0.82rem; color: var(--admin-text-sub, #64748b); }
 }
 
 .edit-form-wrapper {
@@ -428,7 +455,19 @@ const handleConfirmCancel = (payload) => {
       display: flex; flex-direction: column; gap: 0.15rem; font-size: 0.82rem;
       .lbl { color: var(--admin-text-sub, #64748b); font-size: 0.74rem; }
       .val { color: var(--admin-text-main, #1A1E1F); }
+      &.full-width { grid-column: 1 / -1; }
     }
+  }
+  .line-status-wrap {
+    display: flex; align-items: center; gap: 0.65rem; flex-wrap: wrap;
+    .btn-line-push {
+      background: rgba(6, 199, 85, 0.12); border: 1px solid rgba(6, 199, 85, 0.35); color: #16a34a;
+      font-size: 0.75rem; padding: 0.15rem 0.5rem; border-radius: 4px; cursor: pointer;
+      transition: background-color 0.2s;
+      &:hover:not(:disabled) { background: rgba(6, 199, 85, 0.22); }
+      &:disabled { opacity: 0.5; cursor: not-allowed; }
+    }
+    .line-push-msg { font-size: 0.74rem; }
   }
   .requests-text { margin: 0; font-size: 0.82rem; color: var(--admin-text-sub, #475569); line-height: 1.45; }
 }

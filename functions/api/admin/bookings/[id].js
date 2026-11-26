@@ -1,3 +1,5 @@
+import { sendLineNotification } from '../../_line.js';
+
 /**
  * PATCH /api/admin/bookings/:id
  * 
@@ -39,7 +41,8 @@ export async function onRequestPatch(context) {
     // 檢查訂單是否存在
     const existing = await env.DB.prepare(
       `SELECT 
-        id, room_id, deposit_status, status, guest_name, guest_phone, guest_email, line_id, guest_count, special_requests, check_in, check_out, cancel_reason_category, cancel_reason_note, refund_status, refund_amount, refund_reference_no, refund_admin_note 
+        id, room_id, deposit_status, status, guest_name, guest_phone, guest_email, line_id, guest_count, special_requests, check_in, check_out, cancel_reason_category, cancel_reason_note, refund_status, refund_amount, refund_reference_no, refund_admin_note,
+        line_user_id, deposit_amount, total_amount, nights
        FROM bookings WHERE id = ?`
     ).bind(bookingId).first();
 
@@ -225,6 +228,49 @@ export async function onRequestPatch(context) {
       ).run();
     } catch (logErr) {
       console.warn('寫入 booking audit log 警告:', logErr.message);
+    }
+
+    // LINE 推播聯動 (若有綁定 line_user_id)
+    if (existing.line_user_id) {
+      let linePromise = null;
+      // 情境 A：管家核銷定金 (PAID) -> 推播定金已收・預訂確認卡
+      if (newDepositStatus === 'PAID' && existing.deposit_status !== 'PAID') {
+        linePromise = sendLineNotification(env, {
+          bookingId,
+          lineUserId: existing.line_user_id,
+          eventType: 'BOOKING_CONFIRMED',
+          bookingData: {
+            guestName: newGuestName,
+            checkIn: existing.check_in,
+            checkOut: existing.check_out,
+            nights: existing.nights || 1,
+            guestCount: newGuestCount,
+            depositAmount: existing.deposit_amount
+          }
+        });
+      } 
+      // 情境 B：管家取消訂單 (CANCELLED) -> 推播預訂取消與退款卡
+      else if (newStatus === 'CANCELLED' && existing.status !== 'CANCELLED') {
+        linePromise = sendLineNotification(env, {
+          bookingId,
+          lineUserId: existing.line_user_id,
+          eventType: 'BOOKING_CANCELLED',
+          bookingData: {
+            guestName: newGuestName,
+            checkIn: existing.check_in,
+            checkOut: existing.check_out,
+            depositAmount: existing.deposit_amount,
+            refundAmount: newRefundAmount,
+            refundStatus: newRefundStatus,
+            cancelReason: newCancelReasonNote
+          }
+        });
+      }
+
+      if (linePromise) {
+        if (context.waitUntil) context.waitUntil(linePromise);
+        else await linePromise;
+      }
     }
 
     return Response.json({

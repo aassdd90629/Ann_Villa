@@ -1,4 +1,5 @@
 import { getClientIp, checkRateLimit, isLocked, recordFailAttempt, clearFailAttempt, sanitizeText } from '../_security.js';
+import { sendLineNotification } from '../_line.js';
 
 /**
  * POST /api/bookings/report-payment - 旅客線上自主回報定金匯款末五碼
@@ -83,7 +84,7 @@ export async function onRequestPost(context) {
 
     // 3. 驗證該訂單是否存在且身分相符 (查詢現有末五碼與備註以保存歷程)
     const checkQuery = `
-      SELECT id, status, deposit_status, total_amount, deposit_amount, check_in, check_out, bank_last_5, payment_note
+      SELECT id, status, deposit_status, total_amount, deposit_amount, check_in, check_out, bank_last_5, payment_note, guest_name, line_user_id, nights, guest_count
       FROM bookings
       WHERE id = ?
         AND (REPLACE(REPLACE(guest_phone, '-', ''), ' ', '') = ? OR guest_phone = ?)
@@ -158,6 +159,26 @@ export async function onRequestPost(context) {
         updated_at = CURRENT_TIMESTAMP
       WHERE id = ?
     `).bind(trimmedLast5, finalPaymentNote, trimmedId).run();
+
+    // 6. 觸發 LINE 推播通知 (若已綁定 line_user_id)
+    if (booking.line_user_id) {
+      const linePromise = sendLineNotification(env, {
+        bookingId: trimmedId,
+        lineUserId: booking.line_user_id,
+        eventType: 'PAYMENT_REPORTED',
+        bookingData: {
+          guestName: booking.guest_name,
+          checkIn: booking.check_in,
+          checkOut: booking.check_out,
+          nights: booking.nights,
+          guestCount: booking.guest_count,
+          depositAmount: booking.deposit_amount,
+          bankLast5: trimmedLast5
+        }
+      });
+      if (context.waitUntil) context.waitUntil(linePromise);
+      else await linePromise;
+    }
 
     return Response.json({
       success: true,
