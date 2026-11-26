@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useI18n } from '../../composables/useI18n'
-import { useBookingPricing } from '../../composables/useBookingPricing'
+import { useBookingPricing, fetchPricingSettings } from '../../composables/useBookingPricing'
 import { getBookedRanges } from '../../services/availabilityService'
 import BookingSummarySidebar from './BookingSummarySidebar.vue'
 import DirectBookingModal from './DirectBookingModal.vue'
@@ -37,7 +37,6 @@ const isModalOpen = ref(false)
 const handleApplyWeekdayTier = (count) => {
   guestCount.value = count
 }
-
 const refreshAvailability = async () => {
   isSyncing.value = true
   try {
@@ -48,11 +47,10 @@ const refreshAvailability = async () => {
     setTimeout(() => { isSyncing.value = false }, 400)
   }
 }
-
 onMounted(() => {
   refreshAvailability()
+  fetchPricingSettings()
 })
-
 const openBookingModal = () => {
   if (!checkInDate.value || !checkOutDate.value) {
     alert(isEn.value ? 'Please select both Check-in and Check-out dates on the calendar first.' : '請先於日曆上挑選【入住日期】與【退房日期】。')
@@ -60,18 +58,11 @@ const openBookingModal = () => {
   }
   isModalOpen.value = true
 }
-
 const handleBookingSuccess = () => {
-  // 下單成功後重置選取日期並刷新檔期
   checkInDate.value = null
   checkOutDate.value = null
   refreshAvailability()
 }
-
-const monthNamesZh = ['1 月', '2 月', '3 月', '4 月', '5 月', '6 月', '7 月', '8 月', '9 月', '10 月', '11 月', '12 月']
-const monthNamesEn = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-const weekDaysZh = ['日', '一', '二', '三', '四', '五', '六']
-const weekDaysEn = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
 // 判斷是否不可再切換至上個月（不能切換到當前月份以前）
 const isPrevDisabled = computed(() => {
@@ -110,9 +101,7 @@ function isDateBooked(dateStr) {
 function generateMonthDays(year, month) {
   const firstDayIndex = new Date(year, month, 1).getDay()
   const daysInMonth = new Date(year, month + 1, 0).getDate()
-  
   const days = []
-  
   // 空白補位 (只留空，不顯示上個月日期)
   for (let i = 0; i < firstDayIndex; i++) {
     days.push({
@@ -123,7 +112,6 @@ function generateMonthDays(year, month) {
       isPast: true
     })
   }
-  
   // 當月天數
   for (let i = 1; i <= daysInMonth; i++) {
     const d = new Date(year, month, i)
@@ -216,15 +204,6 @@ const selectDate = (day) => {
     }
   }
 }
-
-const isSelected = (dateStr) => {
-  return dateStr === checkInDate.value || dateStr === checkOutDate.value
-}
-
-const isInRange = (dateStr) => {
-  if (!checkInDate.value || !checkOutDate.value) return false
-  return dateStr > checkInDate.value && dateStr < checkOutDate.value
-}
 </script>
 
 <template>
@@ -269,10 +248,12 @@ const isInRange = (dateStr) => {
           </div>
         </div>
 
-        <!-- 平日特惠價格與人數階梯區塊 (常態固定顯示於月曆下方，長度固定無跳動) -->
+        <!-- 預選價格與方案詳情區塊 (依選取之平日、假日或國定連假動態切換) -->
         <WeekdayPricingSection
           :selected-date="checkInDate"
+          :check-out-date="checkOutDate"
           :current-guests="guestCount"
+          :calculation="bookingCalculation"
           @apply-tier="handleApplyWeekdayTier"
         />
       </div>
@@ -414,10 +395,5 @@ const isInRange = (dateStr) => {
       }
     }
   }
-}
-
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
 }
 </style>

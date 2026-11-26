@@ -51,13 +51,20 @@ export const DEFAULT_PRICING = {
     }
   ],
   holidays: [
-    { id: 'h-2026-nye', name: '元旦跨年假期', nameZh: '元旦跨年假期', nameEn: 'New Year Holiday', startDate: '2026-12-31', endDate: '2027-01-03', price: 42000, breakfast: true, noteZh: '假日前一天起算含早餐' },
-    { id: 'h-2027-cny', name: '農曆春節連假', nameZh: '農曆春節連假', nameEn: 'Lunar New Year Holiday', startDate: '2027-02-05', endDate: '2027-02-14', price: 60000, breakfast: false, noteZh: '春節期間不提供早餐' },
-    { id: 'h-2027-228', name: '228和平紀念日連假', nameZh: '228和平紀念日連假', nameEn: 'Peace Memorial Day Holiday', startDate: '2027-02-26', endDate: '2027-03-01', price: 42000, breakfast: true, noteZh: '假日前一天起算含早餐' },
-    { id: 'h-2027-tomb', name: '清明兒童連假', nameZh: '清明兒童連假', nameEn: "Children's & Tomb Sweeping Day", startDate: '2027-04-02', endDate: '2027-04-06', price: 42000, breakfast: true, noteZh: '假日前一天起算含早餐' },
-    { id: 'h-2027-dragon', name: '端午節連假', nameZh: '端午節連假', nameEn: 'Dragon Boat Festival Holiday', startDate: '2027-06-18', endDate: '2027-06-21', price: 42000, breakfast: true, noteZh: '假日前一天起算含早餐' },
-    { id: 'h-2027-moon', name: '中秋節連假', nameZh: '中秋節連假', nameEn: 'Mid-Autumn Festival Holiday', startDate: '2027-09-24', endDate: '2027-09-27', price: 42000, breakfast: true, noteZh: '假日前一天起算含早餐' },
-    { id: 'h-2027-national', name: '國慶日連假', nameZh: '國慶日連假', nameEn: 'National Day Holiday', startDate: '2027-10-08', endDate: '2027-10-11', price: 42000, breakfast: true, noteZh: '假日前一天起算含早餐' }
+    { id: 'h-2026-xmas', name: '2026 聖誕節連假', nameZh: '2026 聖誕節連假', nameEn: '2026 Christmas Holiday', startDate: '2026-12-24', endDate: '2026-12-27', price: 47000, breakfast: true, noteZh: '含精緻手作早餐' },
+    { id: 'h-2026-nye', name: '2026 跨年假期', nameZh: '2026 跨年假期', nameEn: "2026 New Year's Eve", startDate: '2026-12-31', endDate: '2027-01-01', price: 47000, breakfast: true, noteZh: '含精緻手作早餐' },
+    { id: 'h-2027-ny', name: '2027 元旦連假', nameZh: '2027 元旦連假', nameEn: '2027 New Year Holiday', startDate: '2027-01-01', endDate: '2027-01-03', price: 47000, breakfast: true, noteZh: '含精緻手作早餐' },
+    { id: 'h-2027-cny', name: '2027 農曆春節過年連假', nameZh: '2027 農曆春節過年連假', nameEn: '2027 Lunar New Year Holiday', startDate: '2027-02-04', endDate: '2027-02-10', price: 50000, breakfast: false, noteZh: '春節期間不提供早餐' },
+    { id: 'h-2027-228', name: '2027 和平紀念日連假', nameZh: '2027 和平紀念日連假', nameEn: '2027 Peace Memorial Day Holiday', startDate: '2027-02-26', endDate: '2027-03-01', price: 38000, breakfast: true, noteZh: '含精緻手作早餐' },
+    { id: 'h-2027-tomb', name: '2027 清明與兒童連假', nameZh: '2027 清明與兒童連假', nameEn: "2027 Children's & Tomb Sweeping Day", startDate: '2027-04-02', endDate: '2027-04-06', price: 38000, breakfast: true, noteZh: '含精緻手作早餐' },
+    { id: 'h-2027-labor', name: '2027 五一勞動節連假', nameZh: '2027 五一勞動節連假', nameEn: '2027 Labor Day Holiday', startDate: '2027-04-29', endDate: '2027-05-02', price: 38000, breakfast: true, noteZh: '含精緻手作早餐' },
+    { id: 'h-2027-dragon', name: '2027 端午連假', nameZh: '2027 端午連假', nameEn: '2027 Dragon Boat Festival Holiday', startDate: '2027-06-08', endDate: '2027-06-09', price: 35000, breakfast: true, noteZh: '含精緻手作早餐' },
+    { id: 'h-2027-moon', name: '2027 中秋連假', nameZh: '2027 中秋連假', nameEn: '2027 Mid-Autumn Festival Holiday', startDate: '2027-09-14', endDate: '2027-09-15', price: 35000, breakfast: true, noteZh: '含精緻手作早餐' },
+    { id: 'h-2027-teacher', name: '2027 教師節連假', nameZh: '2027 教師節連假', nameEn: "2027 Teachers' Day Holiday", startDate: '2027-09-27', endDate: '2027-09-28', price: 35000, breakfast: true, noteZh: '含精緻手作早餐' },
+    { id: 'h-2027-national', name: '2027 雙十國慶連假', nameZh: '2027 雙十國慶連假', nameEn: '2027 National Day Holiday', startDate: '2027-10-08', endDate: '2027-10-11', price: 38000, breakfast: true, noteZh: '含精緻手作早餐' },
+    { id: 'h-2027-retro', name: '2027 光復節連假', nameZh: '2027 光復節連假', nameEn: '2027 Retrocession Day Holiday', startDate: '2027-10-22', endDate: '2027-10-25', price: 38000, breakfast: true, noteZh: '含精緻手作早餐' },
+    { id: 'h-2027-xmas', name: '2027 聖誕連假', nameZh: '2027 聖誕連假', nameEn: '2027 Christmas Holiday', startDate: '2027-12-23', endDate: '2027-12-26', price: 47000, breakfast: true, noteZh: '含精緻手作早餐' },
+    { id: 'h-2028-ny', name: '2028 跨年元旦連假', nameZh: '2028 跨年元旦連假', nameEn: "2028 New Year's Eve & New Year Holiday", startDate: '2027-12-30', endDate: '2028-01-02', price: 47000, breakfast: true, noteZh: '含精緻手作早餐' }
   ]
 }
 
@@ -112,16 +119,37 @@ export function getWeekdayTier(guests = 18) {
 
 export function useBookingPricing(checkInDate, checkOutDate, guestCount) {
   function getHolidayForDate(dateStr) {
+    if (!dateStr) return null
     const list = activePricing.value.holidays || []
-    return list.find(h => h.startDate && h.endDate && dateStr >= h.startDate && dateStr <= h.endDate) || null
+    return list.find(h => {
+      const s = h.startDate || h.start_date || h.start
+      const e = h.endDate || h.end_date || h.end
+      return s && e && dateStr >= s && dateStr <= e
+    }) || null
+  }
+
+  function parseDateToNoon(dateStr) {
+    if (!dateStr) return null
+    const [y, m, d] = dateStr.split('-').map(Number)
+    return new Date(y, m - 1, d, 12, 0, 0)
   }
 
   function isWeekdayDate(dateStr) {
     if (!dateStr) return false
     if (getHolidayForDate(dateStr)) return false
-    const d = new Date(dateStr)
+    const d = parseDateToNoon(dateStr)
+    if (!d || isNaN(d.getTime())) return false
     const day = d.getDay()
     return day >= 1 && day <= 4
+  }
+
+  function isWeekendDate(dateStr) {
+    if (!dateStr) return false
+    if (getHolidayForDate(dateStr)) return false
+    const d = parseDateToNoon(dateStr)
+    if (!d || isNaN(d.getTime())) return false
+    const day = d.getDay()
+    return day === 0 || day === 5 || day === 6
   }
 
   function formatDate(d) {
@@ -146,18 +174,40 @@ export function useBookingPricing(checkInDate, checkOutDate, guestCount) {
         weekendUnitPrice,
         holidayNights: 0,
         holidayTotal: 0,
+        holidayNames: [],
+        holidayNightsList: [],
         baseTotal: 0,
         extraPersonFee: 0,
         grandTotal: 0
       }
     }
     
-    let current = new Date(checkInDate.value)
-    const end = new Date(checkOutDate.value)
+    let current = parseDateToNoon(checkInDate.value)
+    const end = parseDateToNoon(checkOutDate.value)
+    if (!current || !end || isNaN(current.getTime()) || isNaN(end.getTime()) || current >= end) {
+      return {
+        nights: 0,
+        weekdayNights: 0,
+        weekdayUnitPrice: currentWeekdayUnitPrice,
+        weekdayTier: currentWeekdayTier,
+        weekendNights: 0,
+        weekendUnitPrice,
+        holidayNights: 0,
+        holidayTotal: 0,
+        holidayNames: [],
+        holidayNightsList: [],
+        baseTotal: 0,
+        extraPersonFee: 0,
+        grandTotal: 0
+      }
+    }
+
     let weekdayCount = 0
     let weekendCount = 0
     let holidayCount = 0
     let holidayTotal = 0
+    const holidayNames = []
+    const holidayNightsList = []
     
     while (current < end) {
       const dateStr = formatDate(current)
@@ -165,7 +215,19 @@ export function useBookingPricing(checkInDate, checkOutDate, guestCount) {
       
       if (holiday) {
         holidayCount++
-        holidayTotal += (holiday.price || holiday.rate || 42000)
+        const price = Number(holiday.price || holiday.rate || 47000)
+        holidayTotal += price
+        const name = holiday.nameZh || holiday.name || '國定連續假期'
+        if (!holidayNames.includes(name)) {
+          holidayNames.push(name)
+        }
+        holidayNightsList.push({
+          date: dateStr,
+          nameZh: name,
+          nameEn: holiday.nameEn || holiday.name || name,
+          price,
+          breakfast: Boolean(holiday.breakfast)
+        })
       } else {
         const dayOfWeek = current.getDay() // 0 = Sun, 5 = Fri, 6 = Sat
         if (dayOfWeek === 5 || dayOfWeek === 6 || dayOfWeek === 0) {
@@ -195,6 +257,8 @@ export function useBookingPricing(checkInDate, checkOutDate, guestCount) {
       weekendUnitPrice: pkg.weekend,
       holidayNights: holidayCount,
       holidayTotal,
+      holidayNames,
+      holidayNightsList,
       baseTotal,
       extraPersonFee: totalExtraFee,
       grandTotal
@@ -220,6 +284,7 @@ export function useBookingPricing(checkInDate, checkOutDate, guestCount) {
     getWeekdayTier,
     getHolidayForDate,
     isWeekdayDate,
+    isWeekendDate,
     bookingCalculation,
     lineBookingUrl,
     fetchPricingSettings

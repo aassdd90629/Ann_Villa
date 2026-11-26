@@ -1,6 +1,8 @@
 <script setup>
 import { useI18n } from '../../composables/useI18n'
 import { ChevronLeft, ChevronRight } from 'lucide-vue-next'
+import BaseTooltip from '../common/BaseTooltip.vue'
+import CalendarDayTooltip from './CalendarDayTooltip.vue'
 
 const props = defineProps({
   monthData: {
@@ -103,39 +105,49 @@ const isInRange = (dateStr) => {
     <div class="days-grid">
       <template v-for="day in monthData.days" :key="day.dateStr">
         <div v-if="day.isEmpty" class="day-cell is-empty" aria-hidden="true"></div>
-        <button
+        <BaseTooltip
           v-else
-          type="button"
-          class="day-cell"
-          :class="{
-            'is-past': day.isPast,
-            'is-booked': day.isBooked,
-            'is-selected': isSelected(day.dateStr),
-            'is-in-range': isInRange(day.dateStr),
-            'is-check-in': day.dateStr === checkInDate,
-            'is-check-out': day.dateStr === checkOutDate
-          }"
-          :disabled="day.isPast || (day.isBooked && !isCheckOutSelectable(day.dateStr))"
-          @click="emit('select-date', day)"
-          :title="day.isBooked ? `${day.dateStr} 【${isEn ? 'Reserved' : '已有旅客預訂'}】` : (day.holiday ? `${day.dateStr} 【${isEn ? day.holiday.nameEn : day.holiday.nameZh} NT$ ${day.holiday.price.toLocaleString()}${day.holiday.breakfast ? ' (含早餐)' : ' (過年不提供早餐)'}】` : (day.isWeekday ? `${day.dateStr} 【平日(含早餐)：10人以下2萬 / 11-14人2.5萬 / 15-18人3萬】` : `${day.dateStr} 【一般假日(週五~日)：NT$ 35,000 含早餐】`))"
+          :disabled="day.isEmpty"
+          placement="top"
+          :delay="60"
         >
-          <span class="day-number">{{ day.dayNum }}</span>
-          <span v-if="day.isBooked" class="cell-tag booked-tag">
-            {{ isEn ? 'Booked' : '已訂' }}
-          </span>
-          <span v-else-if="day.dateStr === checkInDate" class="cell-tag in-tag">
-            {{ isEn ? 'In' : '入住' }}
-          </span>
-          <span v-else-if="day.dateStr === checkOutDate" class="cell-tag out-tag">
-            {{ isEn ? 'Out' : '退房' }}
-          </span>
-          <span v-else-if="day.holiday && !day.isPast" class="cell-tag holiday-tag">
-            {{ isEn ? 'Holiday' : '連假' }}
-          </span>
-          <span v-else-if="day.isWeekday && !day.isPast" class="cell-tag weekday-tag">
-            {{ isEn ? '20k+' : '平日特惠' }}
-          </span>
-        </button>
+          <button
+            type="button"
+            class="day-cell"
+            :class="{
+              'is-past': day.isPast,
+              'is-booked': day.isBooked,
+              'is-selected': isSelected(day.dateStr),
+              'is-in-range': isInRange(day.dateStr),
+              'is-check-in': day.dateStr === checkInDate,
+              'is-check-out': day.dateStr === checkOutDate
+            }"
+            :disabled="day.isPast || (day.isBooked && !isCheckOutSelectable(day.dateStr))"
+            @click="emit('select-date', day)"
+          >
+            <span class="day-number">{{ day.dayNum }}</span>
+            <span v-if="day.isBooked" class="cell-tag booked-tag">
+              {{ isEn ? 'Booked' : '已訂' }}
+            </span>
+            <span v-else-if="day.dateStr === checkInDate" class="cell-tag in-tag">
+              {{ isEn ? 'In' : '入住' }}
+            </span>
+            <span v-else-if="day.dateStr === checkOutDate" class="cell-tag out-tag">
+              {{ isEn ? 'Out' : '退房' }}
+            </span>
+            <span v-else-if="day.holiday && !day.isPast" class="cell-tag holiday-tag">
+              {{ isEn ? 'Holiday' : '連假' }}
+            </span>
+          </button>
+
+          <template #content>
+            <CalendarDayTooltip
+              :day="day"
+              :check-in-date="checkInDate"
+              :check-out-date="checkOutDate"
+            />
+          </template>
+        </BaseTooltip>
       </template>
     </div>
   </div>
@@ -308,32 +320,6 @@ const isInRange = (dateStr) => {
       color: var(--gold-primary);
       font-weight: 500;
       white-space: nowrap;
-    }
-
-    &.weekday-tag {
-      background: rgba(200, 169, 110, 0.12);
-      color: var(--gold-primary);
-      font-weight: 600;
-      border: 1px solid rgba(200, 169, 110, 0.28);
-      font-size: 0.6rem;
-      letter-spacing: -0.05em;
-      padding: 1px 2px;
-      transform: scale(0.85);
-      transform-origin: center center;
-
-      @media (min-width: $bp-md) {
-        transform: scale(0.92);
-      }
-
-      @media (min-width: 1200px) {
-        transform: scale(0.95);
-      }
-
-      @media (min-width: 1400px) {
-        transform: scale(1);
-        letter-spacing: -0.02em;
-        padding: 1.5px 3px;
-      }
     }
 
     &.booked-tag,

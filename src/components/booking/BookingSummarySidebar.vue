@@ -1,12 +1,9 @@
 <script setup>
+import { computed } from 'vue'
 import { useI18n } from '../../composables/useI18n'
-import { WEEKDAY_TIERS } from '../../composables/useBookingPricing'
-import { 
-  Sparkles, 
-  Users, 
-  CalendarDays, 
-  Send 
-} from 'lucide-vue-next'
+import { useBookingPricing } from '../../composables/useBookingPricing'
+import { Sparkles, CalendarDays, Send } from 'lucide-vue-next'
+import BookingDateGuestPicker from './BookingDateGuestPicker.vue'
 
 const props = defineProps({
   checkInDate: { type: String, default: null },
@@ -14,7 +11,7 @@ const props = defineProps({
   guestCount: { type: Number, default: 18 },
   calculation: {
     type: Object,
-    default: () => ({ nights: 0, weekdayNights: 0, weekendNights: 0, holidayNights: 0, holidayTotal: 0, baseTotal: 0, extraPersonFee: 0, grandTotal: 0 })
+    default: () => ({ nights: 0, weekdayNights: 0, weekendNights: 0, holidayNights: 0, holidayTotal: 0, holidayNames: [], holidayNightsList: [], baseTotal: 0, extraPersonFee: 0, grandTotal: 0 })
   },
   lineBookingUrl: { type: String, default: '' }
 })
@@ -22,18 +19,17 @@ const props = defineProps({
 const emit = defineEmits(['update:guestCount', 'open-booking'])
 
 const { isEn, t } = useI18n()
+const { getHolidayForDate, isWeekendDate } = useBookingPricing()
 
-const handleDecrement = () => {
-  if (props.guestCount > 1) {
-    emit('update:guestCount', props.guestCount - 1)
-  }
-}
+const checkInHoliday = computed(() => {
+  if (!props.checkInDate) return null
+  return getHolidayForDate(props.checkInDate)
+})
 
-const handleIncrement = () => {
-  if (props.guestCount < 18) {
-    emit('update:guestCount', props.guestCount + 1)
-  }
-}
+const isCheckInWeekend = computed(() => {
+  if (!props.checkInDate) return false
+  return isWeekendDate(props.checkInDate)
+})
 </script>
 
 <template>
@@ -44,64 +40,15 @@ const handleIncrement = () => {
         <span>{{ isEn ? 'Selected Itinerary & Rate' : '預選檔期與費用試算' }}</span>
       </h4>
 
-      <!-- 入住與退房日期展示 -->
-      <div class="date-pick-display">
-        <div class="date-slot" :class="{ filled: checkInDate }">
-          <span class="slot-label">{{ t('calendar.checkIn') }}</span>
-          <span class="slot-val">{{ checkInDate || (isEn ? 'Select date' : '點選入住日期') }}</span>
-        </div>
-        <div class="slot-arrow">→</div>
-        <div class="date-slot" :class="{ filled: checkOutDate }">
-          <span class="slot-label">{{ t('calendar.checkOut') }}</span>
-          <span class="slot-val">{{ checkOutDate || (isEn ? 'Select date' : '點選退房日期') }}</span>
-        </div>
-      </div>
+      <!-- 日期與人數選擇器 (獨立子組件) -->
+      <BookingDateGuestPicker
+        :check-in-date="checkInDate"
+        :check-out-date="checkOutDate"
+        :guest-count="guestCount"
+        @update:guest-count="emit('update:guestCount', $event)"
+      />
 
-      <!-- 人數選擇器 -->
-      <div class="guests-selector-row">
-        <label class="g-label">
-          <Users :size="16" />
-          <span>{{ t('calendar.guests') }}</span>
-        </label>
-        <div class="g-control">
-          <button 
-            type="button"
-            class="g-btn" 
-            :disabled="guestCount <= 1" 
-            @click="handleDecrement"
-            aria-label="Decrease guests"
-          >-</button>
-          <span class="g-count">{{ guestCount }} {{ t('calendar.guestCount') }}</span>
-          <button 
-            type="button"
-            class="g-btn" 
-            :disabled="guestCount >= 18" 
-            @click="handleIncrement"
-            aria-label="Increase guests"
-          >+</button>
-        </div>
-      </div>
-
-      <!-- 平日彈性分級優惠快捷鈕 -->
-      <div class="weekday-quick-tiers">
-        <span class="quick-title">{{ isEn ? 'Weekday tiers (Mon-Thu):' : '平日分級特惠 (週一~週四)：' }}</span>
-        <div class="pills-grid">
-          <button
-            v-for="tier in WEEKDAY_TIERS"
-            :key="tier.price"
-            type="button"
-            class="pill-btn"
-            :class="{ active: guestCount <= tier.max && (tier.min === 1 || guestCount >= tier.min) }"
-            @click="emit('update:guestCount', tier.count)"
-            :title="isEn ? `Set to ${tier.labelEn}` : `點擊切換為 ${tier.labelZh}`"
-          >
-            <span class="p-text">{{ tier.labelZh }}</span>
-            <span class="p-price">NT$ {{ (tier.price / 1000) }}k</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- 價格計算明細 -->
+      <!-- 價格計算明細 (入住與退房日期皆完成選取時) -->
       <div v-if="calculation.nights > 0" class="calc-breakdown">
         <div class="calc-row">
           <span>{{ isEn ? 'Stay Duration' : '入住晚數' }}</span>
@@ -116,7 +63,15 @@ const handleIncrement = () => {
           <span>NT$ {{ (calculation.weekendNights * (calculation.weekendUnitPrice || 35000)).toLocaleString() }}</span>
         </div>
         <div v-if="calculation.holidayNights > 0" class="calc-row sub highlight-holiday">
-          <span>{{ isEn ? 'Consecutive Holidays' : '國定連續假期' }} ({{ calculation.holidayNights }} {{ t('calendar.nights') }}・含早餐除過年外)</span>
+          <span>
+            {{ isEn ? 'Consecutive Holidays' : '國定連續假期' }}
+            <template v-if="calculation.holidayNames && calculation.holidayNames.length > 0">
+              ({{ calculation.holidayNames.join('、') }}・{{ calculation.holidayNights }} {{ t('calendar.nights') }}・含早餐除過年外)
+            </template>
+            <template v-else>
+              ({{ calculation.holidayNights }} {{ t('calendar.nights') }}・含早餐除過年外)
+            </template>
+          </span>
           <span>NT$ {{ calculation.holidayTotal.toLocaleString() }}</span>
         </div>
         <div v-if="calculation.extraPersonFee > 0" class="calc-row sub">
@@ -130,6 +85,30 @@ const handleIncrement = () => {
         </div>
       </div>
 
+      <!-- 當已選入住但未選退房時的價格預覽 -->
+      <div v-else-if="checkInDate && !checkOutDate" class="calc-checkin-preview">
+        <span class="preview-badge" :class="{ 'is-holiday': checkInHoliday }">
+          {{ checkInHoliday ? (isEn ? 'Consecutive Holiday Rate' : '國定連續假期專案') : (isCheckInWeekend ? (isEn ? 'Weekend Rate' : '一般假日包棟') : (isEn ? 'Weekday Privilege' : '平日包棟特惠')) }}
+        </span>
+        <h5 class="preview-title">
+          {{ checkInHoliday ? (isEn ? (checkInHoliday.nameEn || checkInHoliday.nameZh) : (checkInHoliday.nameZh || checkInHoliday.name)) : (isCheckInWeekend ? (isEn ? 'Friday - Sunday Buyout' : '週五至週日包棟') : (isEn ? 'Weekday Buyout Privilege' : '週一至週四包棟')) }}
+        </h5>
+        <div class="preview-price-row">
+          <span class="currency">NT$</span>
+          <span class="price-val">
+            {{ checkInHoliday ? (Number(checkInHoliday.price) || 47000).toLocaleString() : (isCheckInWeekend ? '35,000' : (calculation.weekdayUnitPrice || 20000).toLocaleString()) }}
+          </span>
+          <span class="unit">{{ isEn ? '/ night' : '/ 晚' }}</span>
+        </div>
+        <p class="preview-breakfast">
+          {{ checkInHoliday ? (checkInHoliday.breakfast ? (isEn ? 'Handmade breakfast included' : '含精緻手作早餐') : (isEn ? 'No breakfast during CNY' : '春節期間不提供早餐')) : (isEn ? 'Handmade breakfast included' : '含精緻手作早餐') }}
+        </p>
+        <div class="preview-hint">
+          👉 {{ isEn ? 'Click Check-out date on calendar to finish' : '請接續點選月曆【退房日期】完成試算' }}
+        </div>
+      </div>
+
+      <!-- 未點選任何日期時之預設導引 -->
       <div v-else class="calc-placeholder">
         <div class="placeholder-icon">
           <CalendarDays :size="24" class="text-gold" />
@@ -202,151 +181,6 @@ const handleIncrement = () => {
   }
 }
 
-.date-pick-display {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-  background: var(--bg-card);
-  padding: 0.95rem 1.15rem;
-  border-radius: 4px;
-  border: 1px solid var(--border-color);
-  margin-bottom: 1.35rem;
-
-  .date-slot {
-    display: flex;
-    flex-direction: column;
-
-    .slot-label {
-      font-size: 0.72rem;
-      color: var(--text-muted);
-    }
-
-    .slot-val {
-      font-family: $font-display;
-      font-size: 1rem;
-      font-weight: 600;
-      color: var(--text-primary);
-      margin-top: 2px;
-    }
-
-    &.filled .slot-val {
-      color: var(--gold-primary);
-    }
-  }
-
-  .slot-arrow {
-    color: var(--text-muted);
-    font-size: 1.1rem;
-  }
-}
-
-.guests-selector-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.85rem 1.15rem;
-  background: var(--bg-card);
-  border-radius: 4px;
-  border: 1px solid var(--border-color);
-  margin-bottom: 1.35rem;
-
-  .g-label {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.88rem;
-    color: var(--text-sub);
-    font-weight: 500;
-  }
-
-  .g-control {
-    display: flex;
-    align-items: center;
-    gap: 0.65rem;
-
-    .g-btn {
-      width: 26px;
-      height: 26px;
-      border-radius: 50%;
-      border: 1px solid var(--border-color);
-      background: var(--bg-primary);
-      color: var(--text-primary);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      transition: $transition-base;
-
-      &:hover:not(:disabled) {
-        border-color: var(--gold-primary);
-        color: var(--gold-primary);
-      }
-
-      &:disabled {
-        opacity: 0.3;
-        cursor: not-allowed;
-      }
-    }
-
-    .g-count {
-      font-size: 0.9rem;
-      font-weight: 600;
-      min-width: 50px;
-      text-align: center;
-    }
-  }
-}
-
-.weekday-quick-tiers {
-  background: var(--bg-card);
-  border: 1px dashed var(--border-color);
-  border-radius: 6px;
-  padding: 0.75rem 0.85rem;
-  margin-bottom: 1.35rem;
-
-  .quick-title {
-    display: block;
-    font-size: 0.76rem;
-    font-weight: 600;
-    color: var(--gold-primary);
-    margin-bottom: 0.45rem;
-  }
-
-  .pills-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0.4rem;
-
-    .pill-btn {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 0.45rem 0.25rem;
-      border-radius: 4px;
-      border: 1px solid var(--border-color);
-      background: var(--bg-primary);
-      color: var(--text-sub);
-      cursor: pointer;
-      transition: $transition-base;
-
-      .p-text { font-size: 0.72rem; font-weight: 500; }
-      .p-price { font-size: 0.74rem; font-weight: 700; color: var(--gold-primary); }
-
-      &.active {
-        border-color: var(--gold-primary);
-        background: var(--badge-bg);
-        color: var(--gold-primary);
-        box-shadow: 0 0 6px rgba(197, 168, 128, 0.2);
-      }
-
-      &:hover:not(.active) { border-color: var(--gold-primary); }
-    }
-  }
-}
-
 .calc-breakdown {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
@@ -396,6 +230,80 @@ const handleIncrement = () => {
       font-weight: 700;
       color: var(--gold-primary);
     }
+  }
+}
+
+.calc-checkin-preview {
+  display: flex;
+  flex-direction: column;
+  padding: 1.25rem 1.15rem;
+  background: var(--bg-card);
+  border-radius: 6px;
+  border: 1px solid var(--gold-primary);
+  box-shadow: 0 4px 14px rgba(197, 168, 128, 0.15);
+  margin-bottom: 1.5rem;
+
+  .preview-badge {
+    align-self: flex-start;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 0.2rem 0.5rem;
+    border-radius: 3px;
+    background: var(--badge-bg);
+    color: var(--gold-primary);
+    border: 1px solid var(--gold-primary);
+    margin-bottom: 0.4rem;
+
+    &.is-holiday {
+      background: var(--gold-primary);
+      color: var(--bg-card);
+    }
+  }
+
+  .preview-title {
+    font-family: $font-display;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0 0 0.35rem;
+  }
+
+  .preview-price-row {
+    display: flex;
+    align-items: baseline;
+    gap: 0.25rem;
+    margin-bottom: 0.25rem;
+
+    .currency {
+      font-size: 0.82rem;
+      color: var(--gold-primary);
+      font-weight: 600;
+    }
+    .price-val {
+      font-family: $font-display;
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--gold-primary);
+    }
+    .unit {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+  }
+
+  .preview-breakfast {
+    font-size: 0.78rem;
+    color: var(--text-sub);
+    margin: 0 0 0.65rem;
+  }
+
+  .preview-hint {
+    padding: 0.45rem 0.65rem;
+    background: var(--bg-surface);
+    border-radius: 4px;
+    font-size: 0.76rem;
+    color: var(--gold-primary);
+    font-weight: 600;
   }
 }
 
@@ -477,4 +385,3 @@ const handleIncrement = () => {
   }
 }
 </style>
-
