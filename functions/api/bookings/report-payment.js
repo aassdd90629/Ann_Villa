@@ -47,9 +47,9 @@ export async function onRequestPost(context) {
 
     const normalizedPhone = trimmedPhone.replace(/[-\s]/g, '');
 
-    // 1. 驗證該訂單是否存在且身分相符
+    // 1. 驗證該訂單是否存在且身分相符 (查詢現有末五碼與備註以保存歷程)
     const checkQuery = `
-      SELECT id, status, deposit_status, total_amount, deposit_amount, check_in, check_out
+      SELECT id, status, deposit_status, total_amount, deposit_amount, check_in, check_out, bank_last_5, payment_note
       FROM bookings
       WHERE id = ?
         AND (REPLACE(REPLACE(guest_phone, '-', ''), ' ', '') = ? OR guest_phone = ?)
@@ -81,7 +81,31 @@ export async function onRequestPost(context) {
       }, { status: 400 });
     }
 
-    // 2. 更新資料庫
+    // 2. 歷史紀錄防呆 (P1 級別)：若曾填報過末五碼，將異動歷程自動追補，防止舊紀錄被盲目抹除
+    const nowTimeStr = new Intl.DateTimeFormat('zh-TW', {
+      timeZone: 'Asia/Taipei',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false
+    }).format(new Date());
+
+    let finalPaymentNote = trimmedNote;
+    if (booking.bank_last_5) {
+      const existingNote = booking.payment_note ? String(booking.payment_note).trim() : '';
+      const isChanged = booking.bank_last_5 !== trimmedLast5;
+      const historyTag = isChanged 
+        ? `[${nowTimeStr} 變更末五碼: 原 ${booking.bank_last_5} -> 現 ${trimmedLast5}${trimmedNote ? ' 備註: ' + trimmedNote : ''}]`
+        : `[${nowTimeStr} 再次確認末五碼: ${trimmedLast5}${trimmedNote ? ' 備註: ' + trimmedNote : ''}]`;
+      finalPaymentNote = existingNote ? `${existingNote}\n${historyTag}` : historyTag;
+    } else if (trimmedNote) {
+      finalPaymentNote = `[${nowTimeStr} 初次回報末五碼: ${trimmedLast5}] 備註: ${trimmedNote}`;
+    }
+
+    // 3. 更新資料庫
     const nowIso = new Date().toISOString();
     await env.DB.prepare(`
       UPDATE bookings
@@ -91,7 +115,7 @@ export async function onRequestPost(context) {
         payment_note = ?,
         updated_at = CURRENT_TIMESTAMP
       WHERE id = ?
-    `).bind(trimmedLast5, trimmedNote, trimmedId).run();
+    `).bind(trimmedLast5, finalPaymentNote, trimmedId).run();
 
     return Response.json({
       success: true,

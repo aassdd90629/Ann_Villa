@@ -43,11 +43,39 @@ export async function onRequestPost(context) {
     const trimmedLineId = String(lineId).trim();
     const trimmedSpecial = String(specialRequests).trim().slice(0, 500); // 截斷 500 字防惡意大文字
 
-    // 1. 基本必填校驗
+    // 1. 基本必填校驗與欄位格式防呆 (P1 級別)
     if (!trimmedName || !trimmedPhone || !trimmedEmail || !trimmedCheckIn || !trimmedCheckOut) {
       return Response.json({
         success: false,
         message: '請完整填寫姓名、電話、電子郵件與預計入住/退房日期。'
+      }, { status: 400 });
+    }
+
+    // 姓名長度限制 (1 至 50 字元)
+    if (trimmedName.length < 1 || trimmedName.length > 50) {
+      return Response.json({
+        success: false,
+        message: '訂房旅客姓名長度須介於 1 至 50 字元。'
+      }, { status: 400 });
+    }
+
+    // 手機號碼格式防呆 (台灣手機 09 開頭 10 碼，或帶國碼之國際號碼 +...)
+    const cleanPhone = trimmedPhone.replace(/[-\s]/g, '');
+    const isTwMobile = /^09\d{8}$/.test(cleanPhone);
+    const isIntlPhone = /^\+[1-9]\d{7,14}$/.test(cleanPhone);
+    if (!isTwMobile && !isIntlPhone) {
+      return Response.json({
+        success: false,
+        message: '手機號碼格式不符，請填寫有效之 10 碼行動電話（例如：0912345678）或帶國碼之國際號碼（例如：+886912345678）。'
+      }, { status: 400 });
+    }
+
+    // 電子信箱格式防呆 (標準 RFC 格式，上限 100 字元)
+    const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!EMAIL_REGEX.test(trimmedEmail) || trimmedEmail.length > 100) {
+      return Response.json({
+        success: false,
+        message: '電子信箱格式無效，請確認填寫正確 Email 地址（例如：name@example.com）。'
       }, { status: 400 });
     }
 

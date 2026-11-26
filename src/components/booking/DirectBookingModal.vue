@@ -95,6 +95,20 @@ const submitBookingForm = async () => {
     return
   }
 
+  const cleanPhone = formGuestPhone.value.trim().replace(/[-\s]/g, '')
+  const isTwMobile = /^09\d{8}$/.test(cleanPhone)
+  const isIntlPhone = /^\+[1-9]\d{7,14}$/.test(cleanPhone)
+  if (!isTwMobile && !isIntlPhone) {
+    bookingError.value = isEn.value ? 'Please enter a valid phone number (e.g. 0912345678 or +886912345678).' : '請輸入正確手機號碼（例如：0912345678 或國際號碼 +886...）。'
+    return
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  if (!emailRegex.test(formGuestEmail.value.trim())) {
+    bookingError.value = isEn.value ? 'Please enter a valid email address.' : '請輸入有效之電子信箱（例如：name@example.com）。'
+    return
+  }
+
   isSubmitting.value = true
   bookingError.value = ''
 

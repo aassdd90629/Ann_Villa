@@ -41,10 +41,28 @@ export async function onRequestGet(context) {
     `;
 
     const { results } = await env.DB.prepare(query).all();
+    const rawBookings = results || [];
+
+    // 防呆統計 (P1 級別)：計算未取消訂單中各末五碼出現次數，標記重複撞號以提醒管家比對金額
+    const last5Counts = {};
+    for (const b of rawBookings) {
+      if (b.status !== 'CANCELLED' && b.bank_last_5) {
+        const code = String(b.bank_last_5).trim().toUpperCase();
+        last5Counts[code] = (last5Counts[code] || 0) + 1;
+      }
+    }
+
+    const enhancedBookings = rawBookings.map(b => {
+      const code = b.bank_last_5 ? String(b.bank_last_5).trim().toUpperCase() : null;
+      return {
+        ...b,
+        hasDuplicateBankLast5: code ? (last5Counts[code] > 1) : false
+      };
+    });
 
     return Response.json({
       success: true,
-      bookings: results || []
+      bookings: enhancedBookings
     });
   } catch (err) {
     return Response.json(

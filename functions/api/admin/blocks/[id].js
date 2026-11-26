@@ -44,7 +44,7 @@ export async function onRequestDelete(context) {
       });
     }
 
-    // 執行刪除
+    // 執行刪除與庫存表同步清理
     if (isNumeric) {
       await env.DB.prepare(`
         DELETE FROM availability_blocks 
@@ -56,6 +56,15 @@ export async function onRequestDelete(context) {
         WHERE external_uid = ? OR external_uid = ?
       `).bind(rawId, decodedId).run();
     }
+
+    // 同步釋放每日庫存排他表記錄
+    try {
+      const blockUid = existing.external_uid || String(existing.id);
+      await env.DB.prepare(`
+        DELETE FROM room_daily_inventory 
+        WHERE booking_id = ? OR booking_id = ?
+      `).bind(blockUid, String(existing.id)).run();
+    } catch (_) {}
 
     // 寫入審計日誌
     try {

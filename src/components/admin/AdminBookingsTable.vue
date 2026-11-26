@@ -75,6 +75,9 @@ const emit = defineEmits(['openDetail', 'confirmPaid'])
                 </span>
                 <div v-if="b.bank_last_5" class="last5-report-tag" title="旅客線上回報末五碼">
                   末五碼: <span class="font-mono text-gold-light font-bold">{{ b.bank_last_5 }}</span>
+                  <span v-if="b.hasDuplicateBankLast5" class="tag-duplicate-warning" title="注意：此末五碼在其他未取消訂單中重複出現，請核對入帳金額與匯款時間">
+                    ⚠️ 撞號提示
+                  </span>
                 </div>
               </div>
             </td>
@@ -240,6 +243,19 @@ const emit = defineEmits(['openDetail', 'confirmPaid'])
     padding: 0.15rem 0.35rem;
     border-radius: 4px;
     display: inline-block;
+
+    .tag-duplicate-warning {
+      display: block;
+      margin-top: 0.25rem;
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: #dc2626;
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(239, 68, 68, 0.35);
+      padding: 0.1rem 0.35rem;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
   }
 
   .tag-status {
