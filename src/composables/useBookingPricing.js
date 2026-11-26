@@ -7,6 +7,12 @@ export const WEEKDAY_TIERS = [
   { min: 15, max: 18, price: 30000, labelZh: '15-18人', labelEn: '15-18 guests', count: 18 }
 ]
 
+export const dynamicWeekdayTiers = computed(() => [
+  { min: 1, max: 10, price: activePricing.value.weekdayTier1 || 20000, labelZh: '10人以下', labelEn: '10 guests or fewer', count: 10 },
+  { min: 11, max: 14, price: activePricing.value.weekdayTier2 || 25000, labelZh: '11-14人', labelEn: '11-14 guests', count: 14 },
+  { min: 15, max: 18, price: activePricing.value.weekdayTier3 || 30000, labelZh: '15-18人', labelEn: '15-18 guests', count: 18 }
+])
+
 export const DEFAULT_PRICING = {
   exclusivePackage: {
     nameZh: '山語・全區尊榮包棟方案',
@@ -82,11 +88,15 @@ export async function fetchPricingSettings() {
         const p = data.pricing || data.settings || {}
         activePricing.value = {
           ...activePricing.value,
+          weekdayTier1: Number(p.weekdayTier1) || 20000,
+          weekdayTier2: Number(p.weekdayTier2) || 25000,
+          weekdayTier3: Number(p.weekdayTier3) || 30000,
           exclusivePackage: {
             ...activePricing.value.exclusivePackage,
-            weekend: p.weekend || activePricing.value.exclusivePackage.weekend,
-            deposit: p.deposit || activePricing.value.exclusivePackage.deposit,
-            maxCapacity: p.maxCapacity || activePricing.value.exclusivePackage.maxCapacity,
+            weekday: Number(p.weekdayTier1) || 20000,
+            weekend: Number(p.weekend) || activePricing.value.exclusivePackage.weekend,
+            deposit: Number(p.deposit) || activePricing.value.exclusivePackage.deposit,
+            maxCapacity: Number(p.maxCapacity) || activePricing.value.exclusivePackage.maxCapacity,
             checkInTime: p.checkInTime || activePricing.value.exclusivePackage.checkInTime,
             checkOutTime: p.checkOutTime || activePricing.value.exclusivePackage.checkOutTime
           },
@@ -106,16 +116,20 @@ fetchPricingSettings()
 
 export function getWeekdayPrice(guests = 18) {
   const g = Number(guests) || 18
-  if (g <= 10) return 20000
-  if (g <= 14) return 25000
-  return 30000
+  const t1 = activePricing.value.weekdayTier1 || 20000
+  const t2 = activePricing.value.weekdayTier2 || 25000
+  const t3 = activePricing.value.weekdayTier3 || 30000
+  if (g <= 10) return t1
+  if (g <= 14) return t2
+  return t3
 }
 
 export function getWeekdayTier(guests = 18) {
   const g = Number(guests) || 18
-  if (g <= 10) return WEEKDAY_TIERS[0]
-  if (g <= 14) return WEEKDAY_TIERS[1]
-  return WEEKDAY_TIERS[2]
+  const tiers = dynamicWeekdayTiers.value
+  if (g <= 10) return tiers[0]
+  if (g <= 14) return tiers[1]
+  return tiers[2]
 }
 
 export function useBookingPricing(checkInDate, checkOutDate, guestCount) {
@@ -281,6 +295,7 @@ export function useBookingPricing(checkInDate, checkOutDate, guestCount) {
   return {
     pricingData: activePricing,
     WEEKDAY_TIERS,
+    dynamicWeekdayTiers,
     getWeekdayPrice,
     getWeekdayTier,
     getHolidayForDate,

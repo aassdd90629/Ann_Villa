@@ -14,15 +14,44 @@ const props = defineProps({
 const emit = defineEmits(['update:guestCount'])
 
 const { isEn } = useI18n()
-const { getHolidayForDate, isWeekendDate, isWeekdayDate } = useBookingPricing()
+const { getHolidayForDate, isWeekendDate, isWeekdayDate, pricingData, dynamicWeekdayTiers } = useBookingPricing()
 
-// 國定假日 4 大代表價位（38000, 40000, 47000, 50000）
-const HOLIDAY_TIERS = [
+// 國定假日基礎備援價位（若離線或 DB 未回傳時安全備援）
+const DEFAULT_HOLIDAY_TIERS = [
   { price: 38000, labelZh: '和平/清明/雙十', labelEn: 'Memorial/Tomb/Natl', tagZh: 'NT$ 38,000' },
   { price: 40000, labelZh: '聖誕節連假專案', labelEn: 'Christmas Holiday', tagZh: 'NT$ 40,000' },
   { price: 47000, labelZh: '跨年/元旦假期', labelEn: 'New Year Holiday', tagZh: 'NT$ 47,000' },
   { price: 50000, labelZh: '農曆春節過年', labelEn: 'Lunar New Year', tagZh: 'NT$ 50,000' }
 ]
+
+// 1. 動態一般假日價格 (優先讀取自 D1 資料庫，絕不寫死)
+const weekendPrice = computed(() => {
+  return props.calculation?.weekendUnitPrice || pricingData.value?.exclusivePackage?.weekend || 35000
+})
+
+// 2. 動態國定連假價位 (自動自 D1 holiday_rates 彙整即時價位，零死代碼)
+const dynamicHolidayTiers = computed(() => {
+  const list = pricingData.value?.holidays || []
+  if (!list.length) return DEFAULT_HOLIDAY_TIERS
+
+  const priceMap = new Map()
+  list.forEach(h => {
+    const p = Number(h.price)
+    if (!p) return
+    if (!priceMap.has(p)) priceMap.set(p, [])
+    const name = (h.nameZh || h.name || '').replace(/^\d{4}\s*/, '').replace(/連假|假期/, '')
+    if (name && !priceMap.get(p).includes(name)) priceMap.get(p).push(name)
+  })
+
+  const prices = Array.from(priceMap.keys()).sort((a, b) => a - b)
+  if (!prices.length) return DEFAULT_HOLIDAY_TIERS
+
+  return prices.map(price => {
+    const names = priceMap.get(price)
+    const labelZh = names.length > 2 ? `${names.slice(0, 2).join('/')}等` : names.join('/')
+    return { price, labelZh: labelZh || '連續假期專案', labelEn: 'Holiday Special', tagZh: `NT$ ${price.toLocaleString()}` }
+  })
+})
 
 const activeTab = ref('weekday') // 'weekday' | 'weekend' | 'holiday'
 
@@ -76,7 +105,7 @@ watch(
   { immediate: true }
 )
 
-// 目前適用的連假名稱與價格
+// 目前適用的連假名稱與價格 (直接依 D1 資料庫該筆連假資料呈現)
 const currentHolidayInfo = computed(() => {
   if (props.calculation?.holidayNightsList?.length > 0) {
     const first = props.calculation.holidayNightsList[0]
@@ -105,7 +134,7 @@ const selectWeekendTier = () => {
 
 <template>
   <div class="pricing-quick-card">
-    <!-- 價格分類切換 Tabs -->
+    <!-- 價格分類切換 Tabs (金額為動態綁定) -->
     <div class="tier-nav-tabs" role="tablist">
       <button
         type="button"
@@ -123,7 +152,7 @@ const selectWeekendTier = () => {
         @click="activeTab = 'weekend'"
       >
         <CalendarCheck :size="12" />
-        <span>{{ isEn ? 'Weekend 35k' : '一般假日 35k' }}</span>
+        <span>{{ isEn ? `Weekend ${Math.round(weekendPrice / 1000)}k` : `一般假日 ${Math.round(weekendPrice / 1000)}k` }}</span>
       </button>
       <button
         type="button"
@@ -141,7 +170,7 @@ const selectWeekendTier = () => {
       <span>✨ {{ isEn ? 'Selected stay includes multiple rates' : '預選檔期包含多重計價（平日/假日/連假）' }}</span>
     </div>
 
-    <!-- 1. 平日分級特惠 (週一~週四適用) -->
+    <!-- 1. 平日分級特惠 (週一~週四適用: 動態讀取自 D1) -->
     <div v-if="activeTab === 'weekday'" class="tab-content-panel">
       <div class="quick-title-row">
         <span class="quick-title">{{ isEn ? 'Weekday tiers (Mon-Thu):' : '平日分級特惠 (週一~週四適用)：' }}</span>
@@ -149,7 +178,7 @@ const selectWeekendTier = () => {
       </div>
       <div class="pills-grid weekday-grid">
         <button
-          v-for="tier in WEEKDAY_TIERS"
+          v-for="tier in (dynamicWeekdayTiers || WEEKDAY_TIERS)"
           :key="tier.price"
           type="button"
           class="pill-btn"
@@ -163,7 +192,7 @@ const selectWeekendTier = () => {
       </div>
     </div>
 
-    <!-- 2. 一般假日價格 (週五~週日適用: 35000$) -->
+    <!-- 2. 一般假日價格 (週五~週日適用: 動態讀取自 D1 weekendPrice) -->
     <div v-else-if="activeTab === 'weekend'" class="tab-content-panel">
       <div class="quick-title-row">
         <span class="quick-title">{{ isEn ? 'Regular Weekend Rate (Fri-Sun):' : '一般假日價格 (週五~週日適用)：' }}</span>
@@ -180,13 +209,13 @@ const selectWeekendTier = () => {
           <span class="wb-sub">{{ isEn ? '5 Suites · Up to 18 guests · Breakfast incl.' : '5 間獨立套房 · 最多 18 位 · 含手作早餐' }}</span>
         </div>
         <div class="wb-right">
-          <span class="wb-price">NT$ 35,000</span>
+          <span class="wb-price">NT$ {{ weekendPrice.toLocaleString() }}</span>
           <span class="wb-unit">{{ isEn ? '/ night' : '/ 晚' }}</span>
         </div>
       </button>
     </div>
 
-    <!-- 3. 國定假日價格 (連假專案: 40000$, 47000$, 38000$, 50000$) -->
+    <!-- 3. 國定假日價格 (動態讀取自 D1 dynamicHolidayTiers) -->
     <div v-else-if="activeTab === 'holiday'" class="tab-content-panel">
       <div class="quick-title-row">
         <span class="quick-title">{{ isEn ? 'National Holiday Buyout Rates:' : '國定假日價格 (依連續假期專案)：' }}</span>
@@ -196,7 +225,7 @@ const selectWeekendTier = () => {
       </div>
       <div class="pills-grid holiday-grid">
         <div
-          v-for="hTier in HOLIDAY_TIERS"
+          v-for="hTier in dynamicHolidayTiers"
           :key="hTier.price"
           class="pill-btn holiday-pill"
           :class="{ active: currentHolidayInfo && currentHolidayInfo.price === hTier.price }"
@@ -248,7 +277,6 @@ const selectWeekendTier = () => {
         border-color: var(--gold-primary);
         color: var(--gold-primary);
       }
-
       &:hover:not(.active) {
         border-color: var(--gold-primary);
         color: var(--text-primary);
@@ -279,17 +307,8 @@ const selectWeekendTier = () => {
       gap: 0.4rem;
       margin-bottom: 0.45rem;
 
-      .quick-title {
-        font-size: 0.75rem;
-        font-weight: 600;
-        color: var(--gold-primary);
-      }
-
-      .capacity-hint {
-        font-size: 0.68rem;
-        color: var(--text-muted);
-      }
-
+      .quick-title { font-size: 0.75rem; font-weight: 600; color: var(--gold-primary); }
+      .capacity-hint { font-size: 0.68rem; color: var(--text-muted); }
       .active-holiday-tag {
         font-size: 0.68rem;
         font-weight: 600;
@@ -322,21 +341,8 @@ const selectWeekendTier = () => {
       cursor: pointer;
       transition: $transition-base;
 
-      .p-text {
-        font-size: 0.7rem;
-        font-weight: 500;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-width: 100%;
-      }
-
-      .p-price {
-        font-size: 0.74rem;
-        font-weight: 700;
-        color: var(--gold-primary);
-        margin-top: 1px;
-      }
+      .p-text { font-size: 0.7rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+      .p-price { font-size: 0.74rem; font-weight: 700; color: var(--gold-primary); margin-top: 1px; }
 
       &.active {
         border-color: var(--gold-primary);
@@ -344,7 +350,6 @@ const selectWeekendTier = () => {
         color: var(--gold-primary);
         box-shadow: 0 0 6px rgba(197, 168, 128, 0.2);
       }
-
       &:hover:not(.active) { border-color: var(--gold-primary); }
       &.holiday-pill { cursor: default; }
     }
