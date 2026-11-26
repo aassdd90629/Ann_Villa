@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from '../composables/useI18n'
 import { useBookingLookup } from '../composables/useBookingLookup'
@@ -8,6 +8,7 @@ import BookingLookupCard from '../components/booking/BookingLookupCard.vue'
 import BookingReportPaymentModal from '../components/booking/BookingReportPaymentModal.vue'
 import BookingCancelModal from '../components/booking/BookingCancelModal.vue'
 import { ShieldCheck, MessageCircle, AlertCircle, CheckCircle2 } from 'lucide-vue-next'
+import { buildLineUrl } from '../utils/lineUrl'
 
 const route = useRoute()
 const { isEn } = useI18n()
@@ -28,6 +29,13 @@ const {
 const showReportModal = ref(false)
 const showCancelModal = ref(false)
 const selectedBooking = ref(null)
+
+const lineHelpUrl = computed(() => {
+  return buildLineUrl({
+    lineId: '@209yrich',
+    text: '您好，我在官網訂單查詢系統查無資料，想請管家協助查詢訂單。'
+  })
+})
 
 // 頁面載入時檢查 URL query 參數（支援直訂完成後的自動直達查詢）
 onMounted(async () => {
@@ -161,7 +169,7 @@ const handleCancelBooking = async (payload) => {
           若您確認已完成直訂但查無資料，可能為填寫時手機或信箱輸入有誤。您可直接透過官方 LINE 聯繫管家為您人工查詢核對。
         </p>
         <a 
-          href="https://line.me/R/ti/p/@209yrich" 
+          :href="lineHelpUrl" 
           target="_blank" 
           rel="noopener noreferrer" 
           class="btn btn-gold"

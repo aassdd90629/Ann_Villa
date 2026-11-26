@@ -1,9 +1,10 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from '../../composables/useI18n'
 import { useSiteContent } from '../../composables/useSiteContent'
 import { submitOnlineBooking } from '../../services/bookingService'
+import { buildLineUrl } from '../../utils/lineUrl'
 
 const router = useRouter()
 const { basicInfo, formattedBankInfo, fetchContent } = useSiteContent()
@@ -88,6 +89,13 @@ const closeModal = () => {
     bookingSuccess.value = null
   }
 }
+
+const lineReportSuccessUrl = computed(() => {
+  if (!bookingSuccess.value) return ''
+  const b = bookingSuccess.value
+  const msg = `您好，我已送出線上直訂！\n【訂單編號】：${b.id}\n【訂房人】：${b.guestName}\n【入住日期】：${b.checkIn} 至 ${b.checkOut}\n【應付定金】：NT$ ${Number(b.depositAmount).toLocaleString()}\n【匯款後五碼】：`
+  return buildLineUrl({ lineId: basicInfo.value.lineUrl || basicInfo.value.lineId, text: msg })
+})
 
 const submitBookingForm = async () => {
   if (!formGuestName.value.trim() || !formGuestPhone.value.trim() || !formGuestEmail.value.trim()) {
@@ -212,7 +220,7 @@ const submitBookingForm = async () => {
 
             <!-- 官方 LINE 聯繫 -->
             <a 
-              :href="`${basicInfo.lineUrl || 'https://line.me/R/ti/p/@209yrich'}?text=${encodeURIComponent(`您好，我已送出線上直訂！\n【訂單編號】：${bookingSuccess.id}\n【訂房人】：${bookingSuccess.guestName}\n【入住日期】：${bookingSuccess.checkIn} 至 ${bookingSuccess.checkOut}\n【應付定金】：NT$ ${Number(bookingSuccess.depositAmount).toLocaleString()}\n【匯款後五碼】：`)}`"
+              :href="lineReportSuccessUrl"
               target="_blank" 
               rel="noopener noreferrer" 
               class="btn btn-outline-gold btn-block mt-2"

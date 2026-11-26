@@ -1,7 +1,9 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { MessageSquare, CheckCircle, Bell, ExternalLink, Loader2 } from 'lucide-vue-next'
 import { useI18n } from '../../composables/useI18n'
+import { useSiteContent } from '../../composables/useSiteContent'
+import { buildLineUrl } from '../../utils/lineUrl'
 
 const props = defineProps({
   booking: {
@@ -19,8 +21,14 @@ const inputUid = ref('')
 const bindError = ref('')
 const bindSuccess = ref('')
 
-// 山語 Villa 官方 LINE 連結 (可依正式官方帳號 ID 替換)
-const officialLineUrl = 'https://line.me/R/ti/p/@ann_villa'
+// 山語 Villa 官方 LINE 連結 (自動帶入「綁定 訂單編號」以利一鍵發送)
+const { basicInfo } = useSiteContent()
+const officialLineUrl = computed(() => {
+  return buildLineUrl({
+    lineId: basicInfo.value?.lineUrl || basicInfo.value?.lineId || '@209yrich',
+    text: `綁定 ${props.booking.id}`
+  })
+})
 
 const handleDirectBind = async (uidToUse) => {
   const uid = uidToUse || inputUid.value.trim()

@@ -1,4 +1,5 @@
 import { ref, computed } from 'vue'
+import { buildLineUrl } from '../utils/lineUrl'
 
 export const WEEKDAY_TIERS = [
   { min: 1, max: 10, price: 20000, labelZh: '10人以下', labelEn: '10 guests or fewer', count: 10 },
@@ -274,7 +275,7 @@ export function useBookingPricing(checkInDate, checkOutDate, guestCount) {
     } else {
       msg = '您好，我想洽詢山語Villa全棟包棟預約：【預計入住日期：】【人數：位（最多18人）】'
     }
-    return `https://line.me/R/ti/p/@209yrich?text=${encodeURIComponent(msg)}`
+    return buildLineUrl({ lineId: '@209yrich', text: msg })
   })
 
   return {

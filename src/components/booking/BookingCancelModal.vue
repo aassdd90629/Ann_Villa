@@ -3,6 +3,7 @@ import { ref, computed, watch } from 'vue'
 import { X, AlertTriangle, CalendarX, ShieldAlert, MessageCircle, Check } from 'lucide-vue-next'
 import { useI18n } from '../../composables/useI18n'
 import { useSiteContent } from '../../composables/useSiteContent'
+import { buildLineUrl } from '../../utils/lineUrl'
 
 const props = defineProps({
   modelValue: { type: Boolean, default: false },
@@ -16,6 +17,13 @@ const emit = defineEmits(['update:modelValue', 'confirm-cancel'])
 
 const { isEn } = useI18n()
 const { channelsInfo } = useSiteContent()
+
+const rescheduleLineUrl = computed(() => {
+  const lineId = channelsInfo.value?.directBooking?.lineUrl || '@209yrich'
+  const bookingId = props.booking?.id || ''
+  const text = `您好，關於訂單【${bookingId}】，我想洽詢行程改期與定金保留事宜。`
+  return buildLineUrl({ lineId, text })
+})
 
 const confirmName = ref('')
 const cancelReason = ref('')
@@ -149,7 +157,7 @@ const handleSubmit = () => {
                   <strong>{{ isEn ? 'Flexible Rescheduling' : '💡 行程異動？可免費協商延期！' }}</strong>
                   <p>{{ isEn ? 'Contact our butler on LINE to hold your deposit with zero penalty.' : '若因突發因素無法成行，山語 Villa 支援【全額保留定金、彈性延期】，免扣任何手續費。' }}</p>
                 </div>
-                <a :href="channelsInfo.directBooking?.lineUrl || 'https://line.me/R/ti/p/@209yrich'" target="_blank" rel="noopener noreferrer" class="btn-line-mini">
+                <a :href="rescheduleLineUrl" target="_blank" rel="noopener noreferrer" class="btn-line-mini">
                   <span>{{ isEn ? 'LINE Butler' : '洽詢改期' }}</span>
                 </a>
               </div>

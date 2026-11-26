@@ -1,8 +1,9 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { CreditCard, Copy, Check, CheckCircle2, Send, MessageCircle } from 'lucide-vue-next'
 import { useI18n } from '../../composables/useI18n'
 import { useSiteContent } from '../../composables/useSiteContent'
+import { buildLineUrl } from '../../utils/lineUrl'
 
 const props = defineProps({
   booking: {
@@ -24,6 +25,11 @@ const copyBankDetails = async () => {
     setTimeout(() => { copiedAccount.value = false }, 2000)
   } catch (err) {}
 }
+
+const lineHelpUrl = computed(() => {
+  const msg = `您好，我想確認訂單狀態：\n【訂單編號】：${props.booking.id}\n【訂房人】：${props.booking.guest_name}\n【入住日期】：${props.booking.check_in} 至 ${props.booking.check_out}\n【應付定金】：NT$ ${Number(props.booking.deposit_amount).toLocaleString()}`
+  return buildLineUrl({ lineId: basicInfo.value.lineUrl || basicInfo.value.lineId, text: msg })
+})
 </script>
 
 <template>
@@ -73,7 +79,7 @@ const copyBankDetails = async () => {
     <!-- LINE 輔助按鈕 -->
     <div class="line-fallback-wrap">
       <a 
-        :href="`${basicInfo.lineUrl || 'https://line.me/R/ti/p/@209yrich'}?text=${encodeURIComponent(`您好，我想確認訂單狀態：\n【訂單編號】：${booking.id}\n【訂房人】：${booking.guest_name}\n【入住日期】：${booking.check_in} 至 ${booking.check_out}\n【應付定金】：NT$ ${Number(booking.deposit_amount).toLocaleString()}`)}`"
+        :href="lineHelpUrl"
         target="_blank"
         rel="noopener noreferrer"
         class="line-link"

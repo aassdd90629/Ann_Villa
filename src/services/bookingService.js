@@ -1,3 +1,5 @@
+import { buildLineUrl, openLineWithText } from '../utils/lineUrl';
+
 /**
  * 預約行為處理器 (100% 資料庫驅動，已移除 site.json 依賴)
  * 
@@ -17,10 +19,7 @@ export function handleBookingAction(options = {}) {
   const guests = options.guests ? `${options.guests} 位` : '依方案人數';
 
   const text = `您好，我想洽詢山語 Villa 預約諮詢：\n【諮詢項目】：${roomName}\n【預計入住日期】：${dates}\n【預計入住人數】：${guests}`;
-  const baseLineUrl = options.lineUrl || 'https://line.me/R/ti/p/@209yrich';
-  const targetUrl = `${baseLineUrl}?text=${encodeURIComponent(text)}`;
-
-  window.open(targetUrl, '_blank', 'noopener,noreferrer');
+  openLineWithText({ lineId: options.lineUrl, text });
 }
 
 /**
