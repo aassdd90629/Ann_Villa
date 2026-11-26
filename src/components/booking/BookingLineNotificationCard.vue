@@ -168,13 +168,13 @@ const handleSimulateAuth = () => {
 .line-notify-card {
   margin-top: 1.25rem;
   padding: 1.15rem 1.25rem;
-  background: rgba(30, 26, 22, 0.45);
-  border: 1px solid rgba(232, 201, 155, 0.2);
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   transition: border-color 0.25s ease;
 
   &:hover {
-    border-color: rgba(232, 201, 155, 0.35);
+    border-color: var(--gold-primary);
   }
 }
 
@@ -204,29 +204,29 @@ const handleSimulateAuth = () => {
       gap: 0.5rem;
       font-size: 0.95rem;
       font-weight: 600;
-      color: var(--text-primary, #f5f1eb);
+      color: var(--text-primary);
     }
 
     .badge-bound {
       font-size: 0.72rem;
-      background: rgba(46, 125, 50, 0.2);
-      color: #81c784;
-      border: 1px solid rgba(46, 125, 50, 0.4);
+      background: rgba(46, 125, 50, 0.12);
+      color: #2e7d32;
+      border: 1px solid rgba(46, 125, 50, 0.3);
       padding: 0.1rem 0.45rem;
       border-radius: 12px;
       font-weight: 500;
     }
 
     .status-desc {
-      font-size: 0.82rem;
-      color: var(--text-secondary, #b3a89b);
+      font-size: 0.85rem;
+      color: var(--text-sub);
       margin: 0.35rem 0 0;
       line-height: 1.5;
     }
 
     .notified-time {
       font-size: 0.75rem;
-      color: var(--gold-primary, #d4af37);
+      color: var(--gold-dark);
       margin-top: 0.35rem;
     }
   }
@@ -246,15 +246,15 @@ const handleSimulateAuth = () => {
       .title {
         font-size: 0.95rem;
         font-weight: 600;
-        color: var(--text-primary, #f5f1eb);
+        color: var(--text-primary);
         margin: 0;
       }
     }
 
     .badge-free {
       font-size: 0.72rem;
-      background: rgba(212, 175, 55, 0.15);
-      color: var(--gold-primary, #d4af37);
+      background: var(--badge-bg);
+      color: var(--badge-text);
       padding: 0.15rem 0.5rem;
       border-radius: 4px;
       font-weight: 500;
@@ -262,8 +262,8 @@ const handleSimulateAuth = () => {
   }
 
   .desc {
-    font-size: 0.82rem;
-    color: var(--text-secondary, #b3a89b);
+    font-size: 0.85rem;
+    color: var(--text-sub);
     margin: 0.5rem 0 1rem;
     line-height: 1.5;
   }
@@ -320,14 +320,14 @@ const handleSimulateAuth = () => {
   .btn-text-toggle {
     background: transparent;
     border: none;
-    color: var(--text-secondary, #b3a89b);
+    color: var(--text-muted);
     font-size: 0.78rem;
     cursor: pointer;
     text-decoration: underline;
     padding: 0.3rem 0.5rem;
 
     &:hover {
-      color: var(--text-primary, #f5f1eb);
+      color: var(--text-primary);
     }
   }
 
@@ -340,16 +340,16 @@ const handleSimulateAuth = () => {
 
       .uid-input {
         flex: 1;
-        background: rgba(0, 0, 0, 0.25);
-        border: 1px solid rgba(255, 255, 255, 0.15);
+        background: var(--bg-surface);
+        border: 1px solid var(--border-color);
         border-radius: 4px;
         padding: 0.4rem 0.65rem;
         font-size: 0.82rem;
-        color: #f1f5f9;
+        color: var(--text-primary);
         font-family: monospace;
 
         &:focus {
-          border-color: var(--gold-primary, #d4af37);
+          border-color: var(--gold-primary);
           outline: none;
         }
       }
