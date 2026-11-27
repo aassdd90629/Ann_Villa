@@ -9,7 +9,7 @@ import {
   Sparkles 
 } from 'lucide-vue-next'
 
-const { isEn } = useI18n()
+const { isEn, t } = useI18n()
 const { channelsInfo } = useSiteContent()
 </script>
 
@@ -21,7 +21,7 @@ const { channelsInfo } = useSiteContent()
       <div class="perks-card">
         <div class="card-head">
           <ShieldCheck :size="16" class="icon-gold" />
-          <h4>{{ isEn ? 'Direct Booking Privileges' : '山語 Villa 官方直訂專屬禮遇' }}</h4>
+          <h4>{{ t('calendar.perks.title') }}</h4>
         </div>
         <ul class="perks-list">
           <li v-for="(perk, idx) in (isEn ? channelsInfo.directBooking.perksEn : channelsInfo.directBooking.perksZh)" :key="idx">
@@ -35,35 +35,35 @@ const { channelsInfo } = useSiteContent()
       <div class="notice-card">
         <div class="card-head">
           <Clock :size="16" class="icon-gold" />
-          <h4>{{ isEn ? 'Stay & Check-in Details' : '包棟入住貼心叮嚀' }}</h4>
+          <h4>{{ t('calendar.perks.noticeTitle') }}</h4>
         </div>
         <ul class="notice-list">
           <li>
             <Clock :size="14" class="sub-icon" />
             <div>
-              <strong>{{ isEn ? 'Check-in / Check-out' : '進退房時間' }}：</strong>
-              <span>{{ isEn ? 'Check-in from 15:00 / Check-out by 11:00' : '入住 15:00 後 / 退房 11:00 前' }}</span>
+              <strong>{{ t('calendar.perks.checkInOutTitle') }}：</strong>
+              <span>{{ t('calendar.perks.checkInOutDesc') }}</span>
             </div>
           </li>
           <li>
             <Coffee :size="14" class="sub-icon" />
             <div>
-              <strong>{{ isEn ? 'Welcome Refreshment' : '迎賓禮遇' }}：</strong>
-              <span>{{ isEn ? 'Artisan cold-brew tea & handmade local treats' : '全預訂尊享在地精選冷泡茶與產地手工茶點' }}</span>
+              <strong>{{ t('calendar.perks.welcomeTitle') }}：</strong>
+              <span>{{ t('calendar.perks.welcomeDesc') }}</span>
             </div>
           </li>
           <li>
             <ShieldCheck :size="14" class="sub-icon" />
             <div>
-              <strong>{{ isEn ? 'Private Estate' : '獨享隱私' }}：</strong>
-              <span>{{ isEn ? 'Complete private access, no other guests on grounds' : '每日僅接待一組貴賓包棟，尊享整座私密莊園' }}</span>
+              <strong>{{ t('calendar.perks.privateTitle') }}：</strong>
+              <span>{{ t('calendar.perks.privateDesc') }}</span>
             </div>
           </li>
           <li>
             <Sparkles :size="14" class="sub-icon" />
             <div>
-              <strong>{{ isEn ? 'Eco & Amenities' : '設施無拘' }}：</strong>
-              <span>{{ isEn ? 'Natural herbal toiletries, high-fidelity acoustics & BBQ lounge' : '全館配置天然草本洗沐備品與戶外景觀休憩座' }}</span>
+              <strong>{{ t('calendar.perks.amenitiesTitle') }}：</strong>
+              <span>{{ t('calendar.perks.amenitiesDesc') }}</span>
             </div>
           </li>
         </ul>

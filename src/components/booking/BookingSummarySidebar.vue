@@ -37,7 +37,7 @@ const isCheckInWeekend = computed(() => {
     <div class="summary-box">
       <h4 class="summary-heading">
         <Sparkles :size="18" class="text-gold" />
-        <span>{{ isEn ? 'Selected Itinerary & Rate' : '預選檔期與費用試算' }}</span>
+        <span>{{ t('calendar.sidebar.summaryHeading') }}</span>
       </h4>
 
       <!-- 日期與人數選擇器 (獨立子組件) -->
@@ -53,31 +53,31 @@ const isCheckInWeekend = computed(() => {
       <!-- 價格計算明細 (入住與退房日期皆完成選取時) -->
       <div v-if="calculation.nights > 0" class="calc-breakdown">
         <div class="calc-row">
-          <span>{{ isEn ? 'Stay Duration' : '入住晚數' }}</span>
+          <span>{{ t('calendar.sidebar.stayDuration') }}</span>
           <span class="calc-val">{{ calculation.nights }} {{ t('calendar.nights') }}</span>
         </div>
         <div v-if="calculation.weekdayNights > 0" class="calc-row sub highlight-weekday">
-          <span>{{ isEn ? 'Weekday (Mon-Thu)' : '平日 (週一~週四)' }} ({{ calculation.weekdayTier?.labelZh ? calculation.weekdayTier.labelZh + '・' : '' }}{{ calculation.weekdayNights }} {{ t('calendar.nights') }} × NT$ {{ (calculation.weekdayUnitPrice || 20000).toLocaleString() }}・含早餐)</span>
+          <span>{{ t('calendar.sidebar.weekdayLabel') }} ({{ calculation.weekdayTier?.labelZh ? calculation.weekdayTier.labelZh + '・' : '' }}{{ calculation.weekdayNights }} {{ t('calendar.nights') }} × NT$ {{ (calculation.weekdayUnitPrice || 20000).toLocaleString() }}・{{ t('calendar.sidebar.breakfastIncluded') }})</span>
           <span>NT$ {{ (calculation.weekdayNights * (calculation.weekdayUnitPrice || 20000)).toLocaleString() }}</span>
         </div>
         <div v-if="calculation.weekendNights > 0" class="calc-row sub">
-          <span>{{ isEn ? 'Regular Weekend (Fri-Sun)' : '一般假日 (週五~週日)' }} ({{ calculation.weekendNights }} {{ t('calendar.nights') }} × NT$ {{ (calculation.weekendUnitPrice || 35000).toLocaleString() }}・含早餐)</span>
+          <span>{{ t('calendar.sidebar.weekendLabel') }} ({{ calculation.weekendNights }} {{ t('calendar.nights') }} × NT$ {{ (calculation.weekendUnitPrice || 35000).toLocaleString() }}・{{ t('calendar.sidebar.breakfastIncluded') }})</span>
           <span>NT$ {{ (calculation.weekendNights * (calculation.weekendUnitPrice || 35000)).toLocaleString() }}</span>
         </div>
         <div v-if="calculation.holidayNights > 0" class="calc-row sub highlight-holiday">
           <span>
-            {{ isEn ? 'Consecutive Holidays' : '國定連續假期' }}
+            {{ t('calendar.sidebar.holidayLabel') }}
             <template v-if="calculation.holidayNames && calculation.holidayNames.length > 0">
-              ({{ calculation.holidayNames.join('、') }}・{{ calculation.holidayNights }} {{ t('calendar.nights') }}・含早餐除過年外)
+              ({{ calculation.holidayNames.join('、') }}・{{ calculation.holidayNights }} {{ t('calendar.nights') }}{{ t('calendar.sidebar.holidayDesc') }})
             </template>
             <template v-else>
-              ({{ calculation.holidayNights }} {{ t('calendar.nights') }}・含早餐除過年外)
+              ({{ calculation.holidayNights }} {{ t('calendar.nights') }}{{ t('calendar.sidebar.holidayDesc') }})
             </template>
           </span>
           <span>NT$ {{ calculation.holidayTotal.toLocaleString() }}</span>
         </div>
         <div v-if="calculation.extraPersonFee > 0" class="calc-row sub">
-          <span>{{ isEn ? 'Extra Person Fee' : '加人加床費用' }}</span>
+          <span>{{ t('calendar.sidebar.extraPersonFee') }}</span>
           <span>NT$ {{ calculation.extraPersonFee.toLocaleString() }}</span>
         </div>
         <div class="calc-divider"></div>
@@ -90,23 +90,23 @@ const isCheckInWeekend = computed(() => {
       <!-- 當已選入住但未選退房時的價格預覽 -->
       <div v-else-if="checkInDate && !checkOutDate" class="calc-checkin-preview">
         <span class="preview-badge" :class="{ 'is-holiday': checkInHoliday }">
-          {{ checkInHoliday ? (isEn ? 'Consecutive Holiday Rate' : '國定連續假期專案') : (isCheckInWeekend ? (isEn ? 'Weekend Rate' : '一般假日包棟') : (isEn ? 'Weekday Privilege' : '平日包棟特惠')) }}
+          {{ checkInHoliday ? t('calendar.sidebar.holidayPreviewBadge') : (isCheckInWeekend ? t('calendar.sidebar.weekendPreviewBadge') : t('calendar.sidebar.weekdayPreviewBadge')) }}
         </span>
         <h5 class="preview-title">
-          {{ checkInHoliday ? (isEn ? (checkInHoliday.nameEn || checkInHoliday.nameZh) : (checkInHoliday.nameZh || checkInHoliday.name)) : (isCheckInWeekend ? (isEn ? 'Friday - Sunday Buyout' : '週五至週日包棟') : (isEn ? 'Weekday Buyout Privilege' : '週一至週四包棟')) }}
+          {{ checkInHoliday ? (isEn ? (checkInHoliday.nameEn || checkInHoliday.nameZh) : (checkInHoliday.nameZh || checkInHoliday.name)) : (isCheckInWeekend ? t('calendar.sidebar.weekendPreviewTitle') : t('calendar.sidebar.weekdayPreviewTitle')) }}
         </h5>
         <div class="preview-price-row">
           <span class="currency">NT$</span>
           <span class="price-val">
             {{ checkInHoliday ? (Number(checkInHoliday.price) || 47000).toLocaleString() : (isCheckInWeekend ? '35,000' : (calculation.weekdayUnitPrice || 20000).toLocaleString()) }}
           </span>
-          <span class="unit">{{ isEn ? '/ night' : '/ 晚' }}</span>
+          <span class="unit">{{ t('calendar.sidebar.perNight') }}</span>
         </div>
         <p class="preview-breakfast">
-          {{ checkInHoliday ? (checkInHoliday.breakfast ? (isEn ? 'Handmade breakfast included' : '含精緻手作早餐') : (isEn ? 'No breakfast during CNY' : '春節期間不提供早餐')) : (isEn ? 'Handmade breakfast included' : '含精緻手作早餐') }}
+          {{ checkInHoliday ? (checkInHoliday.breakfast ? t('calendar.sidebar.breakfastIncluded') : t('calendar.sidebar.cnyNoBreakfast')) : t('calendar.sidebar.breakfastIncluded') }}
         </p>
         <div class="preview-hint">
-          👉 {{ isEn ? 'Click Check-out date on calendar to finish' : '請接續點選月曆【退房日期】完成試算' }}
+          {{ t('calendar.sidebar.previewHint') }}
         </div>
       </div>
 
@@ -117,7 +117,7 @@ const isCheckInWeekend = computed(() => {
         </div>
         <div class="placeholder-content">
           <p class="placeholder-title">{{ t('calendar.selectDates') }}</p>
-          <p class="placeholder-desc">{{ isEn ? 'Pick check-in & check-out dates on the calendar to get instant pricing.' : '請於日曆上選擇入住與退房日期，系統將自動即時為您試算包棟總價。' }}</p>
+          <p class="placeholder-desc">{{ t('calendar.sidebar.placeholderDesc') }}</p>
         </div>
       </div>
 
@@ -129,7 +129,7 @@ const isCheckInWeekend = computed(() => {
           @click="emit('open-booking')"
         >
           <Sparkles :size="18" />
-          <span>{{ isEn ? 'Book Directly Online' : '填單直訂（即時預留）' }}</span>
+          <span>{{ t('calendar.sidebar.bookDirect') }}</span>
         </button>
 
         <a 

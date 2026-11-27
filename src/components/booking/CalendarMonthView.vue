@@ -37,7 +37,7 @@ const props = defineProps({
 
 const emit = defineEmits(['select-date', 'prev-month', 'next-month'])
 
-const { isEn } = useI18n()
+const { isEn, t } = useI18n()
 
 const monthNamesEn = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 const weekDaysZh = ['日', '一', '二', '三', '四', '五', '六']
@@ -63,7 +63,7 @@ const isInRange = (dateStr) => {
         class="nav-btn prev-btn" 
         :disabled="isPrevDisabled" 
         @click="emit('prev-month')" 
-        :aria-label="isEn ? 'Previous month' : '上一月'"
+        :aria-label="t('calendar.prevMonth')"
       >
         <ChevronLeft :size="18" />
       </button>
@@ -78,7 +78,7 @@ const isInRange = (dateStr) => {
         type="button"
         class="nav-btn next-btn" 
         @click="emit('next-month')" 
-        :aria-label="isEn ? 'Next month' : '下一月'"
+        :aria-label="t('calendar.nextMonth')"
       >
         <ChevronRight :size="18" />
       </button>
@@ -87,7 +87,7 @@ const isInRange = (dateStr) => {
         type="button"
         class="nav-btn next-btn mobile-only-btn"
         @click="emit('next-month')"
-        :aria-label="isEn ? 'Next month' : '下一月'"
+        :aria-label="t('calendar.nextMonth')"
       >
         <ChevronRight :size="18" />
       </button>
@@ -127,16 +127,16 @@ const isInRange = (dateStr) => {
           >
             <span class="day-number">{{ day.dayNum }}</span>
             <span v-if="day.isBooked" class="cell-tag booked-tag">
-              {{ isEn ? 'Booked' : '已訂' }}
+              {{ t('calendar.tagBooked') }}
             </span>
             <span v-else-if="day.dateStr === checkInDate" class="cell-tag in-tag">
-              {{ isEn ? 'In' : '入住' }}
+              {{ t('calendar.tagIn') }}
             </span>
             <span v-else-if="day.dateStr === checkOutDate" class="cell-tag out-tag">
-              {{ isEn ? 'Out' : '退房' }}
+              {{ t('calendar.tagOut') }}
             </span>
             <span v-else-if="day.holiday && !day.isPast" class="cell-tag holiday-tag">
-              {{ isEn ? 'Holiday' : '連假' }}
+              {{ t('calendar.tagHoliday') }}
             </span>
           </button>
 

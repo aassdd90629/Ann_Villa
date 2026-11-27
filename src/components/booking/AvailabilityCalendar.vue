@@ -9,7 +9,7 @@ import PricingOverviewSection from './PricingOverviewSection.vue'
 import CalendarMonthView from './CalendarMonthView.vue'
 import BookingPerksNotice from './BookingPerksNotice.vue'
 
-const { isEn, t } = useI18n()
+const { t } = useI18n()
 
 // 民宿當前時間（以本地時間為準）
 const now = new Date()
@@ -56,7 +56,7 @@ onMounted(async () => {
 })
 const openBookingModal = () => {
   if (!checkInDate.value || !checkOutDate.value) {
-    alert(isEn.value ? 'Please select both Check-in and Check-out dates on the calendar first.' : '請先於日曆上挑選【入住日期】與【退房日期】。')
+    alert(t('calendar.alertSelectBothDates'))
     return
   }
   isModalOpen.value = true
@@ -247,7 +247,7 @@ const selectDate = (day) => {
           </div>
           <div class="legend-item">
             <span class="legend-dot holiday"></span>
-            <span>{{ isEn ? 'Consecutive Holiday Rate' : '國定連續假期專案價' }}</span>
+            <span>{{ t('calendar.holidayLegend') }}</span>
           </div>
         </div>
 

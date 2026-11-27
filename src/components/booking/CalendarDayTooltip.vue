@@ -8,52 +8,52 @@ const props = defineProps({
   checkOutDate: { type: String, default: null }
 })
 
-const { isEn } = useI18n()
+const { isEn, t } = useI18n()
 
 const tooltipData = computed(() => {
   const d = props.day
   if (d.isBooked) {
     return {
-      title: isEn.value ? 'Reserved' : '已預訂保留',
-      badge: isEn.value ? 'Booked' : '已有預約',
+      title: t('calendar.tooltip.reserved'),
+      badge: t('calendar.tooltip.bookedBadge'),
       type: 'booked',
       price: null,
-      note: isEn.value ? 'This date is already reserved.' : '此檔期已有其他貴賓預訂保留。'
+      note: t('calendar.tooltip.bookedNote')
     }
   }
   if (d.holiday) {
     return {
       title: isEn.value ? (d.holiday.nameEn || d.holiday.nameZh) : (d.holiday.nameZh || d.holiday.name),
-      badge: isEn.value ? 'Consecutive Holiday' : '國定連續假期',
+      badge: t('calendar.tooltip.holidayBadge'),
       type: 'holiday',
-      price: `NT$ ${(Number(d.holiday.price) || 47000).toLocaleString()} / 晚`,
-      note: d.holiday.breakfast ? (isEn.value ? 'Handmade breakfast included' : '含精緻手作早餐・全棟包棟') : (isEn.value ? 'No breakfast during CNY' : '春節期間不提供早餐・全棟包棟')
+      price: `NT$ ${(Number(d.holiday.price) || 47000).toLocaleString()} / ${t('calendar.nights')}`,
+      note: d.holiday.breakfast ? t('calendar.tooltip.holidayWithBreakfast') : t('calendar.tooltip.cnyNoBreakfast')
     }
   }
   if (d.isWeekday) {
     return {
-      title: isEn.value ? 'Weekday Privilege' : '平日專屬包棟特惠',
-      badge: isEn.value ? 'Mon - Thu' : '週一至週四',
+      title: t('calendar.tooltip.weekdayTitle'),
+      badge: t('calendar.tooltip.weekdayBadge'),
       type: 'weekday',
-      price: isEn.value ? 'From NT$ 20,000 / night' : 'NT$ 20,000 起 / 晚',
-      note: isEn.value ? '10 guests 20k / 14 guests 25k / 18 guests 30k' : '10人 2萬 / 11-14人 2.5萬 / 15-18人 3萬（含早餐）'
+      price: t('calendar.tooltip.weekdayPrice'),
+      note: t('calendar.tooltip.weekdayNote')
     }
   }
   return {
-    title: isEn.value ? 'Weekend Package' : '一般假日包棟方案',
-    badge: isEn.value ? 'Fri - Sun' : '週五至週日',
+    title: t('calendar.tooltip.weekendTitle'),
+    badge: t('calendar.tooltip.weekendBadge'),
     type: 'weekend',
-    price: isEn.value ? 'NT$ 35,000 / night' : 'NT$ 35,000 / 晚',
-    note: isEn.value ? 'Full buyout up to 18 guests with breakfast' : '全區 180 坪包棟・含手作早餐（最多 18 人）'
+    price: t('calendar.tooltip.weekendPrice'),
+    note: t('calendar.tooltip.weekendNote')
   }
 })
 
 const statusText = computed(() => {
   if (props.day.dateStr === props.checkInDate) {
-    return isEn.value ? '【Selected Check-in Date】' : '【目前選為入住日】'
+    return t('calendar.tooltip.statusCheckIn')
   }
   if (props.day.dateStr === props.checkOutDate) {
-    return isEn.value ? '【Selected Check-out Date】' : '【目前選為退房日】'
+    return t('calendar.tooltip.statusCheckOut')
   }
   return null
 })

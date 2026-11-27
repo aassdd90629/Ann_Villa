@@ -15,7 +15,7 @@ const props = defineProps({
 
 const emit = defineEmits(['update:guestCount'])
 
-const { isEn, t } = useI18n()
+const { t } = useI18n()
 
 const handleDecrement = () => {
   if (props.guestCount > 1) {
@@ -37,12 +37,12 @@ const handleIncrement = () => {
     <div class="date-pick-display">
       <div class="date-slot" :class="{ filled: checkInDate }">
         <span class="slot-label">{{ t('calendar.checkIn') }}</span>
-        <span class="slot-val">{{ checkInDate || (isEn ? 'Select date' : '點選入住日期') }}</span>
+        <span class="slot-val">{{ checkInDate || t('calendar.selectCheckIn') }}</span>
       </div>
       <div class="slot-arrow">→</div>
       <div class="date-slot" :class="{ filled: checkOutDate }">
         <span class="slot-label">{{ t('calendar.checkOut') }}</span>
-        <span class="slot-val">{{ checkOutDate || (isEn ? 'Select date' : '點選退房日期') }}</span>
+        <span class="slot-val">{{ checkOutDate || t('calendar.selectCheckOut') }}</span>
       </div>
     </div>
 
