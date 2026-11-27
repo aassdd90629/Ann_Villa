@@ -230,6 +230,7 @@ export function useBookingPricing(checkInDate, checkOutDate, guestCount) {
         holidayNights: 0,
         holidayTotal: 0,
         holidayNames: [],
+        holidayNamesEn: [],
         holidayNightsList: [],
         baseTotal: 0,
         extraPersonFee: 0,
@@ -242,6 +243,7 @@ export function useBookingPricing(checkInDate, checkOutDate, guestCount) {
     let holidayCount = 0
     let holidayTotal = 0
     const holidayNames = []
+    const holidayNamesEn = []
     const holidayNightsList = []
     
     while (current < end) {
@@ -253,13 +255,17 @@ export function useBookingPricing(checkInDate, checkOutDate, guestCount) {
         const price = Number(holiday.price || holiday.rate || 47000)
         holidayTotal += price
         const name = holiday.nameZh || holiday.name || '國定連續假期'
+        const nameEn = holiday.nameEn || holiday.name || name
         if (!holidayNames.includes(name)) {
           holidayNames.push(name)
+        }
+        if (!holidayNamesEn.includes(nameEn)) {
+          holidayNamesEn.push(nameEn)
         }
         holidayNightsList.push({
           date: dateStr,
           nameZh: name,
-          nameEn: holiday.nameEn || holiday.name || name,
+          nameEn,
           price,
           breakfast: Boolean(holiday.breakfast)
         })
@@ -294,6 +300,7 @@ export function useBookingPricing(checkInDate, checkOutDate, guestCount) {
       holidayNights: holidayCount,
       holidayTotal,
       holidayNames,
+      holidayNamesEn,
       holidayNightsList,
       baseTotal,
       extraPersonFee: totalExtraFee,

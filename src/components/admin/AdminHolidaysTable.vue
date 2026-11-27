@@ -95,12 +95,12 @@ const handleTriggerImport = () => {
       <table class="admin-pricing-table">
         <thead>
           <tr>
-            <th style="width: 22%;">連假名稱</th>
-            <th style="width: 16%;">開始日期 (前夕)</th>
-            <th style="width: 16%;">結束日期</th>
+            <th style="width: 26%;">連假名稱 (中 / 英)</th>
+            <th style="width: 15%;">開始日期 (前夕)</th>
+            <th style="width: 15%;">結束日期</th>
             <th style="width: 18%;">每晚專案價 (NT$)</th>
-            <th style="width: 16%;">早餐供應</th>
-            <th style="width: 12%; text-align: center;">操作</th>
+            <th style="width: 15%;">早餐供應</th>
+            <th style="width: 11%; text-align: center;">操作</th>
           </tr>
         </thead>
         <tbody>
@@ -109,7 +109,10 @@ const handleTriggerImport = () => {
             :key="h.id || idx"
           >
             <td>
-              <input type="text" v-model="h.nameZh" class="form-control table-input" placeholder="連假名稱" />
+              <div class="name-inputs-col">
+                <input type="text" v-model="h.nameZh" class="form-control table-input" placeholder="中文名稱 (例: 2027 春節連假)" />
+                <input type="text" v-model="h.nameEn" class="form-control table-input input-en" placeholder="English (e.g. 2027 Lunar New Year)" />
+              </div>
             </td>
             <td>
               <input type="date" v-model="h.startDate" class="form-control table-input" />
@@ -295,7 +298,7 @@ const handleTriggerImport = () => {
 
 .admin-pricing-table {
   width: 100%;
-  min-width: 700px;
+  min-width: 780px;
   border-collapse: collapse;
   font-size: 0.88rem;
 
@@ -322,6 +325,23 @@ const handleTriggerImport = () => {
     padding: 2.5rem 1rem;
     color: var(--text-muted);
     font-size: 0.9rem;
+  }
+
+  .name-inputs-col {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+
+    .input-en {
+      font-size: 0.82rem;
+      border-style: dashed;
+      color: var(--text-muted);
+
+      &:focus {
+        border-style: solid;
+        color: var(--text-primary);
+      }
+    }
   }
 
   .table-input {

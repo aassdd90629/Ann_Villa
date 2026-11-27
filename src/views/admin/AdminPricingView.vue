@@ -61,7 +61,7 @@ const handleAddHoliday = () => {
   holidays.value.push({
     id: newId,
     nameZh: '新連續假期',
-    nameEn: 'New Holiday',
+    nameEn: 'New Holiday Special',
     startDate: '2027-01-01',
     endDate: '2027-01-02',
     price: 38000,

@@ -28,20 +28,27 @@ const weekendPrice = computed(() => props.calculation?.weekendUnitPrice || prici
 const dynamicHolidayTiers = computed(() => {
   const list = pricingData.value?.holidays || []
   if (!list.length) return DEFAULT_HOLIDAY_TIERS
-  const priceMap = new Map()
+  const priceMapZh = new Map()
+  const priceMapEn = new Map()
   list.forEach(h => {
     const p = Number(h.price)
     if (!p) return
-    if (!priceMap.has(p)) priceMap.set(p, [])
-    const name = (h.nameZh || h.name || '').replace(/^\d{4}\s*/, '').replace(/連假|假期/, '')
-    if (name && !priceMap.get(p).includes(name)) priceMap.get(p).push(name)
+    if (!priceMapZh.has(p)) priceMapZh.set(p, [])
+    if (!priceMapEn.has(p)) priceMapEn.set(p, [])
+    const nameZh = (h.nameZh || h.name || '').replace(/^\d{4}\s*/, '').replace(/連假|假期/g, '').trim()
+    const rawEn = (h.nameEn || '').replace(/^\d{4}\s*/, '').trim()
+    const nameEn = rawEn ? (rawEn.replace(/\b(Holiday|Special|Package)\b/gi, '').trim() || rawEn) : ''
+    if (nameZh && !priceMapZh.get(p).includes(nameZh)) priceMapZh.get(p).push(nameZh)
+    if (nameEn && !priceMapEn.get(p).includes(nameEn)) priceMapEn.get(p).push(nameEn)
   })
-  const prices = Array.from(priceMap.keys()).sort((a, b) => a - b)
+  const prices = Array.from(priceMapZh.keys()).sort((a, b) => a - b)
   if (!prices.length) return DEFAULT_HOLIDAY_TIERS
   return prices.map(price => {
-    const names = priceMap.get(price)
-    const labelZh = names.length > 2 ? `${names.slice(0, 2).join('/')}等` : names.join('/')
-    return { price, labelZh: labelZh || '連續假期專案', labelEn: 'Holiday Special', tagZh: `NT$ ${price.toLocaleString()}` }
+    const namesZh = priceMapZh.get(price) || []
+    const namesEn = priceMapEn.get(price) || []
+    const labelZh = namesZh.length > 2 ? `${namesZh.slice(0, 2).join('/')}等` : (namesZh.join('/') || '連續假期專案')
+    const labelEn = namesEn.length > 2 ? `${namesEn.slice(0, 2).join('/')} etc.` : (namesEn.join('/') || 'Holiday Package')
+    return { price, labelZh, labelEn, tagZh: `NT$ ${price.toLocaleString()}` }
   })
 })
 
@@ -169,7 +176,7 @@ const selectTier = (tier) => emit('apply-tier', tier.count)
       <div class="holiday-overview-wrap">
         <div class="holiday-header-bar">
           <span class="h-title">{{ t('pricingOverview.holidayPackagesTitle') }}</span>
-          <span v-if="selectedHoliday" class="active-h-tag">{{ t('pricingOverview.selectedHolidayPrefix') }} {{ selectedHoliday.nameZh || selectedHoliday.name }}</span>
+          <span v-if="selectedHoliday" class="active-h-tag">{{ t('pricingOverview.selectedHolidayPrefix') }} {{ isEn ? (selectedHoliday.nameEn || selectedHoliday.nameZh) : (selectedHoliday.nameZh || selectedHoliday.name) }}</span>
         </div>
         <div class="holiday-cards-grid">
           <div v-for="hTier in dynamicHolidayTiers" :key="hTier.price" class="holiday-rate-card" :class="{ active: selectedHoliday && Number(selectedHoliday.price) === hTier.price }">

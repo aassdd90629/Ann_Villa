@@ -68,7 +68,7 @@ const isCheckInWeekend = computed(() => {
           <span>
             {{ t('calendar.sidebar.holidayLabel') }}
             <template v-if="calculation.holidayNames && calculation.holidayNames.length > 0">
-              ({{ calculation.holidayNames.join('、') }}・{{ calculation.holidayNights }} {{ t('calendar.nights') }}{{ t('calendar.sidebar.holidayDesc') }})
+              ({{ (isEn && calculation.holidayNamesEn && calculation.holidayNamesEn.length > 0 ? calculation.holidayNamesEn.join(', ') : calculation.holidayNames.join('、')) }}・{{ calculation.holidayNights }} {{ t('calendar.nights') }}{{ t('calendar.sidebar.holidayDesc') }})
             </template>
             <template v-else>
               ({{ calculation.holidayNights }} {{ t('calendar.nights') }}{{ t('calendar.sidebar.holidayDesc') }})
