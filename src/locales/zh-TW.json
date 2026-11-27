@@ -221,5 +221,11 @@
     "diningTag": "周邊在地美食",
     "diningTitle": "客家合菜・甕仔雞與在地人氣排隊名店",
     "parkingAvailable": "附停車場"
+  },
+  "news": {
+    "tag": "最新消息",
+    "title": "最新消息、節慶優惠與公告",
+    "desc": "掌握山語 Villa 最新檔期開放、早鳥限定禮遇與專案活動資訊。",
+    "inquirePromotion": "洽詢專案詳情"
   }
 }

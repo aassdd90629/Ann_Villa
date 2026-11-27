@@ -3,9 +3,9 @@ import { useI18n } from '../composables/useI18n'
 import { useSiteContent } from '../composables/useSiteContent'
 import PageHeader from '../components/common/PageHeader.vue'
 import BookingButton from '../components/common/BookingButton.vue'
-import { Calendar, Tag, ArrowRight, Sparkles } from 'lucide-vue-next'
+import { Calendar, Tag, ArrowRight } from 'lucide-vue-next'
 
-const { isEn } = useI18n()
+const { t, tField } = useI18n()
 const { newsList, fetchContent } = useSiteContent()
 fetchContent()
 </script>
@@ -13,11 +13,9 @@ fetchContent()
 <template>
   <div class="news-page">
     <PageHeader 
-      :tag="isEn ? 'NEWS & OFFERS' : '最新消息'"
-      :title="isEn ? 'Latest News & Seasonal Offers' : '最新消息、節慶優惠與公告'"
-      :desc="isEn
-        ? 'Stay informed about our exclusive seasonal packages, culinary events, and estate updates.'
-        : '掌握山語 Villa 最新檔期開放、早鳥限定禮遇與專案活動資訊。'"
+      :tag="t('news.tag')"
+      :title="t('news.title')"
+      :desc="t('news.desc')"
     />
 
     <section class="section-py news-content-section">
@@ -30,10 +28,10 @@ fetchContent()
             :class="{ 'featured': item.featured }"
           >
             <div class="news-img-box img-zoom-container">
-              <img :src="item.image" :alt="isEn ? item.titleEn : item.titleZh" loading="lazy" />
+              <img :src="item.image" :alt="tField(item, 'title')" loading="lazy" />
               <div class="category-tag">
                 <Tag :size="12" />
-                <span>{{ isEn ? item.categoryEn : item.categoryZh }}</span>
+                <span>{{ tField(item, 'category') }}</span>
               </div>
             </div>
 
@@ -43,17 +41,17 @@ fetchContent()
                 <span>{{ item.date }}</span>
               </div>
 
-              <h2 class="news-title">{{ isEn ? item.titleEn : item.titleZh }}</h2>
-              <p class="news-summary">{{ isEn ? item.summaryEn : item.summaryZh }}</p>
+              <h2 class="news-title">{{ tField(item, 'title') }}</h2>
+              <p class="news-summary">{{ tField(item, 'summary') }}</p>
 
               <div class="news-footer">
                 <BookingButton 
-                  :roomTitle="isEn ? item.titleEn : item.titleZh"
+                  :roomTitle="tField(item, 'title')"
                   variant="none"
                   customClass="news-cta"
                   :showIcon="false"
                 >
-                  <span>{{ isEn ? 'Inquire Promotion' : '洽詢專案詳情' }}</span>
+                  <span>{{ t('news.inquirePromotion') }}</span>
                   <ArrowRight :size="15" />
                 </BookingButton>
               </div>

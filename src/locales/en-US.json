@@ -221,5 +221,11 @@
     "diningTag": "LOCAL CUISINE",
     "diningTitle": "Local Gourmet & Hakka Specialties",
     "parkingAvailable": "Parking Available"
+  },
+  "news": {
+    "tag": "NEWS & OFFERS",
+    "title": "Latest News & Seasonal Offers",
+    "desc": "Stay informed about our exclusive seasonal packages, culinary events, and estate updates.",
+    "inquirePromotion": "Inquire Promotion"
   }
 }
