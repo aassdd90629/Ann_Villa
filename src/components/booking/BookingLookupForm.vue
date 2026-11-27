@@ -11,7 +11,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['search'])
-const { isEn } = useI18n()
+const { t } = useI18n()
 
 const phone = ref(props.initialPhone)
 const email = ref(props.initialEmail)
@@ -24,9 +24,7 @@ watch(() => props.initialOrderId, (v) => { if (v) orderId.value = v })
 
 const handleSearch = () => {
   if (!phone.value.trim() || !email.value.trim()) {
-    validationError.value = isEn.value 
-      ? 'Please enter both your mobile phone and email address.' 
-      : '請完整填寫當初預約時登記的手機號碼與電子信箱。'
+    validationError.value = t('lookup.form.validationError')
     return
   }
 
@@ -44,15 +42,13 @@ const handleSearch = () => {
     <div class="card-header">
       <div class="badge-gold">
         <Sparkles :size="14" />
-        <span>{{ isEn ? 'Secure Guest Verification' : '貴賓身分核驗' }}</span>
+        <span>{{ t('lookup.form.badge') }}</span>
       </div>
       <h2 class="form-title">
-        {{ isEn ? 'Search Your Villa Reservation' : '查詢您的包棟訂單' }}
+        {{ t('lookup.form.title') }}
       </h2>
       <p class="form-desc">
-        {{ isEn 
-          ? 'Enter the mobile phone and email used during reservation to view real-time booking details and report deposit transfer.' 
-          : '請輸入您送出預約單時所留下的聯絡電話與電子信箱，即可即時查看檔期確認進度與回報匯款。' }}
+        {{ t('lookup.form.desc') }}
       </p>
     </div>
 
@@ -66,14 +62,14 @@ const handleSearch = () => {
       <div class="form-group">
         <label for="lookupPhone">
           <Phone :size="15" />
-          <span>{{ isEn ? 'Mobile Phone' : '聯絡手機號碼' }} <span class="required">*</span></span>
+          <span>{{ t('lookup.form.phone') }} <span class="required">*</span></span>
         </label>
         <input 
           id="lookupPhone" 
           v-model="phone" 
           type="tel" 
           class="form-input"
-          :placeholder="isEn ? 'e.g. 0912-345-678' : '例：0912-345-678'"
+          :placeholder="t('lookup.form.phonePlaceholder')"
           required
           :disabled="isLoading"
         />
@@ -83,14 +79,14 @@ const handleSearch = () => {
       <div class="form-group">
         <label for="lookupEmail">
           <Mail :size="15" />
-          <span>{{ isEn ? 'Email Address' : '電子信箱' }} <span class="required">*</span></span>
+          <span>{{ t('lookup.form.email') }} <span class="required">*</span></span>
         </label>
         <input 
           id="lookupEmail" 
           v-model="email" 
           type="email" 
           class="form-input"
-          :placeholder="isEn ? 'e.g. guest@example.com' : '例：guest@example.com'"
+          :placeholder="t('lookup.form.emailPlaceholder')"
           required
           :disabled="isLoading"
         />
@@ -100,14 +96,14 @@ const handleSearch = () => {
       <div class="form-group full-width">
         <label for="lookupOrderId">
           <Hash :size="15" />
-          <span>{{ isEn ? 'Order Number (Optional)' : '訂單編號 (選填，可精準查詢單筆)' }}</span>
+          <span>{{ t('lookup.form.orderNo') }}</span>
         </label>
         <input 
           id="lookupOrderId" 
           v-model="orderId" 
           type="text" 
           class="form-input font-mono"
-          :placeholder="isEn ? 'e.g. SY-20261125-8821' : '例：SY-20261125-8821 (留空則列出該手機之所有訂單)'"
+          :placeholder="t('lookup.form.orderNoPlaceholder')"
           :disabled="isLoading"
         />
       </div>
@@ -116,7 +112,7 @@ const handleSearch = () => {
       <div class="form-actions full-width">
         <button type="submit" class="btn btn-gold btn-block" :disabled="isLoading">
           <Search :size="18" />
-          <span>{{ isLoading ? (isEn ? 'Searching...' : '正在查詢訂房資料...') : (isEn ? 'Search Reservations' : '即刻查詢訂房資料') }}</span>
+          <span>{{ isLoading ? t('lookup.form.searching') : t('lookup.form.searchBtn') }}</span>
         </button>
       </div>
     </form>

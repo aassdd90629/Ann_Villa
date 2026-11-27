@@ -15,7 +15,7 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue', 'confirm-cancel'])
 
-const { isEn } = useI18n()
+const { t } = useI18n()
 const { channelsInfo, basicInfo } = useSiteContent()
 
 const rescheduleLineUrl = computed(() => {
@@ -93,24 +93,24 @@ const handleSubmit = () => {
   formError.value = ''
 
   if (!confirmName.value.trim()) {
-    formError.value = '請輸入主要訂房人真實姓名以確認身分。'
+    formError.value = t('lookup.cancel.errNameRequired')
     return
   }
 
   if (confirmName.value.trim().toLowerCase() !== (props.booking?.guest_name || '').trim().toLowerCase()) {
-    formError.value = '輸入的姓名與本訂單預訂貴賓不符，請確認後再試。'
+    formError.value = t('lookup.cancel.errNameMismatch')
     return
   }
 
   if (isPaid.value && estimatedRefundAmount.value > 0) {
     if (!refundBankCode.value.trim() || !refundAccount.value.trim() || !refundAccountName.value.trim()) {
-      formError.value = '本筆訂單符合定金退費，請完整填寫退款銀行代碼、帳號與戶名。'
+      formError.value = t('lookup.cancel.errBankRequired')
       return
     }
   }
 
   if (!agreedPolicy.value) {
-    formError.value = '請詳閱並勾選同意山語 Villa 退訂政策條款。'
+    formError.value = t('lookup.cancel.errPolicyRequired')
     return
   }
 
@@ -141,7 +141,7 @@ const handleSubmit = () => {
             <CalendarX :size="22" class="text-danger" />
           </div>
           <div class="header-titles">
-            <h3 class="modal-title">{{ isEn ? 'Cancel Reservation & Refund' : '取消訂單與退訂申請' }}</h3>
+            <h3 class="modal-title">{{ t('lookup.cancel.title') }}</h3>
             <p class="modal-subtitle font-mono">{{ booking.id }}</p>
           </div>
         </div>
@@ -154,36 +154,36 @@ const handleSubmit = () => {
               <div class="retention-banner">
                 <div class="b-icon"><MessageCircle :size="18" /></div>
                 <div class="b-text">
-                  <strong>{{ isEn ? 'Flexible Rescheduling' : '💡 行程異動？可免費協商延期！' }}</strong>
-                  <p>{{ isEn ? 'Contact our butler on LINE to hold your deposit with zero penalty.' : '若因突發因素無法成行，山語 Villa 支援【全額保留定金、彈性延期】，免扣任何手續費。' }}</p>
+                  <strong>{{ t('lookup.cancel.rescheduleTitle') }}</strong>
+                  <p>{{ t('lookup.cancel.rescheduleDesc') }}</p>
                 </div>
                 <a :href="rescheduleLineUrl" target="_blank" rel="noopener noreferrer" class="btn-line-mini">
-                  <span>{{ isEn ? 'LINE Butler' : '洽詢改期' }}</span>
+                  <span>{{ t('lookup.cancel.rescheduleBtn') }}</span>
                 </a>
               </div>
 
               <!-- 訂單摘要看板 -->
               <div class="order-summary-box">
                 <div class="summary-row">
-                  <span class="label">{{ isEn ? 'Plan' : '預訂房型' }}</span>
-                  <span class="value font-semibold">{{ booking.room_name || '山語・全區尊榮包棟' }}</span>
+                  <span class="label">{{ t('lookup.cancel.plan') }}</span>
+                  <span class="value font-semibold">{{ booking.room_name || t('lookup.cancel.defaultRoomName') }}</span>
                 </div>
                 <div class="summary-row">
-                  <span class="label">{{ isEn ? 'Stay Period' : '預約檔期' }}</span>
-                  <span class="value font-mono">{{ booking.check_in }} 至 {{ booking.check_out }} ({{ booking.nights }} 晚)</span>
+                  <span class="label">{{ t('lookup.cancel.stayPeriod') }}</span>
+                  <span class="value font-mono">{{ booking.check_in }} {{ t('lookup.cancel.to') }} {{ booking.check_out }} ({{ booking.nights }} {{ t('lookup.cancel.nightsSuffix') }})</span>
                 </div>
                 <div class="summary-row">
-                  <span class="label">{{ isEn ? 'Days Ahead' : '距入住天數' }}</span>
-                  <span class="value font-bold text-gold">尚有 {{ diffDays }} 天</span>
+                  <span class="label">{{ t('lookup.cancel.daysAhead') }}</span>
+                  <span class="value font-bold text-gold">{{ t('lookup.cancel.daysLeft', { days: diffDays }) }}</span>
                 </div>
                 <div class="summary-row" :class="{ highlight: isPaid }">
-                  <span class="label">{{ isEn ? 'Deposit / Refund %' : '定金狀態 / 退款比例' }}</span>
+                  <span class="label">{{ t('lookup.cancel.depositRefundPercent') }}</span>
                   <span class="value">
-                    {{ isPaid ? `定金 NT$ ${Number(booking.deposit_amount).toLocaleString()} (退還 ${refundPercentage}%)` : '尚未付款 (無涉退款)' }}
+                    {{ isPaid ? t('lookup.cancel.depositPaidDesc', { amount: Number(booking.deposit_amount).toLocaleString(), percent: refundPercentage }) : t('lookup.cancel.unpaidNoRefund') }}
                   </span>
                 </div>
                 <div v-if="isPaid" class="summary-row refund-highlight">
-                  <span class="label font-bold">{{ isEn ? 'Est. Refund Amount' : '預計退款總額' }}</span>
+                  <span class="label font-bold">{{ t('lookup.cancel.estRefund') }}</span>
                   <span class="value font-bold font-mono">NT$ {{ estimatedRefundAmount.toLocaleString() }}</span>
                 </div>
               </div>
@@ -191,7 +191,7 @@ const handleSubmit = () => {
               <!-- 未達退款標準提示 -->
               <div v-if="isPaid && estimatedRefundAmount === 0" class="forfeited-notice">
                 <ShieldAlert :size="16" />
-                <span>依官方退訂規章，入住前 7 天內取消定金將全額沒入。</span>
+                <span>{{ t('lookup.cancel.forfeitedNotice') }}</span>
               </div>
             </div>
 
@@ -199,35 +199,35 @@ const handleSubmit = () => {
             <div class="col-inputs">
               <!-- 若有應退定金，填寫退款帳戶資訊 -->
               <div v-if="isPaid && estimatedRefundAmount > 0" class="refund-bank-section">
-                <label class="section-sublabel font-bold">退款匯入帳戶（管家於 3-5 工作天內匯退）：</label>
+                <label class="section-sublabel font-bold">{{ t('lookup.cancel.refundBankTitle') }}</label>
                 <div class="bank-inputs-grid">
-                  <input v-model="refundBankCode" type="text" maxlength="5" class="form-input" placeholder="銀行代碼 (例: 004 或 822)" required />
-                  <input v-model="refundBankName" type="text" class="form-input" placeholder="分行或金融機構名稱" />
-                  <input v-model="refundAccount" type="text" class="form-input" placeholder="退款銀行帳號" required />
-                  <input v-model="refundAccountName" type="text" class="form-input" placeholder="戶名" required />
+                  <input v-model="refundBankCode" type="text" maxlength="5" class="form-input" :placeholder="t('lookup.cancel.bankCodePlaceholder')" required />
+                  <input v-model="refundBankName" type="text" class="form-input" :placeholder="t('lookup.cancel.bankNamePlaceholder')" />
+                  <input v-model="refundAccount" type="text" class="form-input" :placeholder="t('lookup.cancel.bankAccountPlaceholder')" required />
+                  <input v-model="refundAccountName" type="text" class="form-input" :placeholder="t('lookup.cancel.bankAccountNamePlaceholder')" required />
                 </div>
               </div>
 
               <!-- 訂房人二次身分確認 -->
               <div class="form-group">
                 <label class="form-label">
-                  <span>主要訂房人真實姓名</span>
+                  <span>{{ t('lookup.cancel.guestNameLabel') }}</span>
                   <span class="required">*</span>
-                  <span class="sub-tip">(核對身分防誤按)</span>
+                  <span class="sub-tip">{{ t('lookup.cancel.guestNameTip') }}</span>
                 </label>
-                <input v-model="confirmName" type="text" class="form-input" placeholder="請輸入預訂時填寫之真實姓名" required />
+                <input v-model="confirmName" type="text" class="form-input" :placeholder="t('lookup.cancel.guestNamePlaceholder')" required />
               </div>
 
               <!-- 取消原因 (選填) -->
               <div class="form-group">
-                <label class="form-label">取消原因說明（選填）：</label>
-                <input v-model="cancelReason" type="text" class="form-input" placeholder="例：家庭行程變動、交通不便等" />
+                <label class="form-label">{{ t('lookup.cancel.reasonLabel') }}</label>
+                <input v-model="cancelReason" type="text" class="form-input" :placeholder="t('lookup.cancel.reasonPlaceholder')" />
               </div>
 
               <!-- 條款同意核取方塊 -->
               <label class="agree-label">
                 <input v-model="agreedPolicy" type="checkbox" />
-                <span>我已詳閱並同意退訂政策，確認取消後原檔期將立即釋放供他人預訂。</span>
+                <span>{{ t('lookup.cancel.agreePolicy') }}</span>
               </label>
 
               <!-- 錯誤提示 -->
@@ -240,11 +240,11 @@ const handleSubmit = () => {
 
           <div class="modal-actions">
             <button type="button" class="btn btn-outline" :disabled="isSubmitting" @click="handleClose">
-              放棄取消（保留預訂）
+              {{ t('lookup.cancel.keepBtn') }}
             </button>
             <button type="submit" class="btn btn-danger" :disabled="isSubmitting">
               <Check v-if="!isSubmitting" :size="16" />
-              <span>{{ isSubmitting ? '正在處理取消與釋放檔期...' : '確認取消預訂並釋出檔期' }}</span>
+              <span>{{ isSubmitting ? t('lookup.cancel.processingBtn') : t('lookup.cancel.confirmBtn') }}</span>
             </button>
           </div>
         </form>

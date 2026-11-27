@@ -13,7 +13,7 @@ defineProps({
 
 defineEmits(['open-cancel'])
 
-const { isEn } = useI18n()
+const { t } = useI18n()
 const { basicInfo } = useSiteContent()
 </script>
 
@@ -22,11 +22,9 @@ const { basicInfo } = useSiteContent()
     <div class="confirmed-card">
       <CheckCircle2 :size="24" class="text-green" />
       <div class="c-info">
-        <h4 class="c-title">{{ isEn ? 'Reservation Secured & Guaranteed' : '訂單已確認，檔期已為您保留！' }}</h4>
+        <h4 class="c-title">{{ t('lookup.confirmed.title') }}</h4>
         <p class="c-desc">
-          {{ isEn 
-            ? 'Check-in time is 15:00, check-out is 11:00. Remaining balance can be settled upon arrival.' 
-            : '山語 Villa 期待您的蒞臨！入住時間為當日 15:00 以後，退房時間為隔日 11:00 以前。現場尾款將於當日現場辦理入住時結清。' }}
+          {{ t('lookup.confirmed.desc') }}
         </p>
       </div>
     </div>
@@ -34,15 +32,15 @@ const { basicInfo } = useSiteContent()
     <div class="confirmed-buttons">
       <RouterLink to="/rules" class="btn btn-outline btn-sm">
         <FileText :size="15" />
-        <span>{{ isEn ? 'Check-in Guidelines' : '查看入住須知與生活公約' }}</span>
+        <span>{{ t('lookup.confirmed.guidelines') }}</span>
       </RouterLink>
       <a :href="basicInfo.googleMapUrl" target="_blank" rel="noopener noreferrer" class="btn btn-outline-gold btn-sm">
         <MapPin :size="15" />
-        <span>{{ isEn ? 'Google Maps Navigation' : 'Google 地圖導航路線' }}</span>
+        <span>{{ t('lookup.confirmed.maps') }}</span>
       </a>
       <button type="button" class="btn btn-outline-danger btn-sm" @click="$emit('open-cancel', booking)">
         <CalendarX :size="14" />
-        <span>{{ isEn ? 'Cancel & Refund' : '申請取消與退費' }}</span>
+        <span>{{ t('lookup.confirmed.cancelRefund') }}</span>
       </button>
     </div>
   </div>

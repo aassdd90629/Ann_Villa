@@ -16,7 +16,7 @@ const props = defineProps({
 
 const emit = defineEmits(['open-report', 'open-cancel'])
 
-const { isEn } = useI18n()
+const { t } = useI18n()
 const { basicInfo } = useSiteContent()
 const copiedOrderId = ref(false)
 
@@ -33,10 +33,10 @@ const copyOrderId = async (id) => {
 }
 
 const getStatusBadge = (b) => {
-  if (b.status === 'CANCELLED') return { text: isEn.value ? 'Cancelled' : '已取消', class: 'status-cancelled', icon: XCircle }
-  if (b.deposit_status === 'PAID') return { text: isEn.value ? 'Confirmed (Paid)' : '已確認・定金已入帳', class: 'status-paid', icon: CheckCircle2 }
-  if (b.bank_last_5) return { text: isEn.value ? 'Verifying Transfer' : '對帳中・已回報末五碼', class: 'status-verifying', icon: Clock }
-  return { text: isEn.value ? 'Pending Payment' : '待付款・保留 24 小時', class: 'status-pending', icon: Clock }
+  if (b.status === 'CANCELLED') return { text: t('lookup.card.statusCancelled'), class: 'status-cancelled', icon: XCircle }
+  if (b.deposit_status === 'PAID') return { text: t('lookup.card.statusPaid'), class: 'status-paid', icon: CheckCircle2 }
+  if (b.bank_last_5) return { text: t('lookup.card.statusVerifying'), class: 'status-verifying', icon: Clock }
+  return { text: t('lookup.card.statusPending'), class: 'status-pending', icon: Clock }
 }
 
 const remainingBalance = (b) => Math.max(0, (Number(b.total_amount) || 0) - (Number(b.deposit_amount) || 0))
@@ -47,12 +47,12 @@ const remainingBalance = (b) => Math.max(0, (Number(b.total_amount) || 0) - (Num
     <!-- 1. 卡片頂部：單號與狀態徽章 -->
     <div class="order-card-header">
       <div class="order-id-group">
-        <span class="label">{{ isEn ? 'Order No.' : '訂單編號' }}</span>
+        <span class="label">{{ t('lookup.card.orderNo') }}</span>
         <span class="order-id font-mono">{{ booking.id }}</span>
         <button 
           class="btn-copy-mini" 
           @click="copyOrderId(booking.id)"
-          :title="isEn ? 'Copy Order ID' : '複製訂單編號'"
+          :title="t('lookup.card.copyOrderNo')"
         >
           <Check v-if="copiedOrderId" :size="14" class="text-green" />
           <Copy v-else :size="14" />
@@ -68,12 +68,12 @@ const remainingBalance = (b) => Math.max(0, (Number(b.total_amount) || 0) - (Num
     <!-- 2. 核心訂單細節網格 -->
     <div class="order-details-grid">
       <div class="detail-item">
-        <span class="d-label">{{ isEn ? 'Plan Name' : '預訂房型方案' }}</span>
+        <span class="d-label">{{ t('lookup.card.planName') }}</span>
         <span class="d-val font-semibold">{{ booking.room_name || '山語・全區尊榮包棟' }}</span>
       </div>
 
       <div class="detail-item">
-        <span class="d-label">{{ isEn ? 'Stay Period' : '入住與退房日期' }}</span>
+        <span class="d-label">{{ t('lookup.card.stayPeriod') }}</span>
         <span class="d-val">
           <Calendar :size="14" class="inline-icon" />
           <span>{{ booking.check_in }} 至 {{ booking.check_out }} ({{ booking.nights }} 晚)</span>
@@ -81,7 +81,7 @@ const remainingBalance = (b) => Math.max(0, (Number(b.total_amount) || 0) - (Num
       </div>
 
       <div class="detail-item">
-        <span class="d-label">{{ isEn ? 'Guest Count' : '入住人數' }}</span>
+        <span class="d-label">{{ t('lookup.card.guestCount') }}</span>
         <span class="d-val">
           <Users :size="14" class="inline-icon" />
           <span>{{ booking.guest_count }} 位貴賓</span>
@@ -89,7 +89,7 @@ const remainingBalance = (b) => Math.max(0, (Number(b.total_amount) || 0) - (Num
       </div>
 
       <div class="detail-item">
-        <span class="d-label">{{ isEn ? 'Primary Guest' : '主要訂房貴賓' }}</span>
+        <span class="d-label">{{ t('lookup.card.primaryGuest') }}</span>
         <span class="d-val">{{ booking.guest_name }} ({{ booking.guest_phone }})</span>
       </div>
     </div>
@@ -97,21 +97,21 @@ const remainingBalance = (b) => Math.max(0, (Number(b.total_amount) || 0) - (Num
     <!-- 特殊需求備註 -->
     <div v-if="booking.special_requests" class="special-requests-note">
       <FileText :size="14" class="text-gold" />
-      <span><strong>{{ isEn ? 'Special Requests' : '需求備註' }}：</strong>{{ booking.special_requests }}</span>
+      <span><strong>{{ t('lookup.card.specialRequests') }}：</strong>{{ booking.special_requests }}</span>
     </div>
 
     <!-- 3. 費用明細看板 -->
     <div class="pricing-summary-bar">
       <div class="price-col">
-        <span class="p-label">{{ isEn ? 'Total Rate' : '預估總房費' }}</span>
+        <span class="p-label">{{ t('lookup.card.totalRate') }}</span>
         <span class="p-val">NT$ {{ Number(booking.total_amount).toLocaleString() }}</span>
       </div>
       <div class="price-col highlight">
-        <span class="p-label">{{ isEn ? 'Deposit (50%)' : '應收定金 (50%)' }}</span>
+        <span class="p-label">{{ t('lookup.card.deposit50') }}</span>
         <span class="p-val text-gold font-bold">NT$ {{ Number(booking.deposit_amount).toLocaleString() }}</span>
       </div>
       <div class="price-col">
-        <span class="p-label">{{ isEn ? 'Due at Check-in' : '現場結清尾款' }}</span>
+        <span class="p-label">{{ t('lookup.card.dueAtCheckIn') }}</span>
         <span class="p-val">NT$ {{ remainingBalance(booking).toLocaleString() }}</span>
       </div>
     </div>
@@ -126,7 +126,7 @@ const remainingBalance = (b) => Math.max(0, (Number(b.total_amount) || 0) - (Num
       <div class="card-cancel-row">
         <button type="button" class="btn-cancel-ghost" @click="emit('open-cancel', booking)">
           <CalendarX :size="13" />
-          <span>{{ isEn ? 'Cancel This Reservation' : '取消此筆預訂' }}</span>
+          <span>{{ t('lookup.card.cancelBtn') }}</span>
         </button>
       </div>
     </div>
@@ -142,7 +142,7 @@ const remainingBalance = (b) => Math.max(0, (Number(b.total_amount) || 0) - (Num
     <div v-else class="action-section cancelled-section">
       <div class="cancelled-box">
         <p class="cancelled-desc">
-          {{ isEn ? 'This reservation has been cancelled. Available dates have been released.' : '此預訂單目前已取消，原檔期已為您釋放。' }}
+          {{ t('lookup.card.cancelledNotice') }}
         </p>
         <div v-if="booking.refund_status === 'PENDING'" class="refund-hint-tag pending">
           ⏳ 定金退款核銷中：依規定退還 NT$ {{ Number(booking.refund_amount || 0).toLocaleString() }}，管家將匯入您指定之銀行帳戶。

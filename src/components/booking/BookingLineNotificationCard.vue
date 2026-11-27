@@ -14,7 +14,7 @@ const props = defineProps({
 
 const emit = defineEmits(['line-updated'])
 
-const { isEn } = useI18n()
+const { isEn, t } = useI18n()
 const isBinding = ref(false)
 const showManualBind = ref(false)
 const inputUid = ref('')
@@ -33,7 +33,7 @@ const officialLineUrl = computed(() => {
 const handleDirectBind = async (uidToUse) => {
   const uid = uidToUse || inputUid.value.trim()
   if (!uid) {
-    bindError.value = isEn.value ? 'Please enter a valid LINE User ID' : '請輸入有效的 LINE 識別碼'
+    bindError.value = t('lookup.line.errInvalidUid')
     return
   }
 
@@ -54,14 +54,14 @@ const handleDirectBind = async (uidToUse) => {
 
     const data = await res.json()
     if (res.ok && data.success) {
-      bindSuccess.value = data.message || (isEn.value ? 'LINE notifications bound successfully!' : 'LINE 通知已成功綁定！最新進度卡片已送達您的聊天室。')
+      bindSuccess.value = data.message || t('lookup.line.successBound')
       showManualBind.value = false
       emit('line-updated', uid)
     } else {
-      bindError.value = data.message || (isEn.value ? 'Binding failed. Please try again.' : '綁定失敗，請確認資料後重試。')
+      bindError.value = data.message || t('lookup.line.errBindFailed')
     }
   } catch (err) {
-    bindError.value = isEn.value ? 'Network error. Please try again later.' : '連線逾時，請稍後再試。'
+    bindError.value = t('lookup.line.errNetwork')
   } finally {
     isBinding.value = false
   }
@@ -84,17 +84,12 @@ const handleSimulateAuth = () => {
       </div>
       <div class="status-content">
         <div class="status-title">
-          <span>{{ isEn ? 'LINE Notifications Active' : 'LINE 官方帳號通知：已成功連動' }}</span>
-          <span class="badge-bound">{{ isEn ? 'Active' : '即時推播中' }}</span>
+          <span>{{ t('lookup.line.titleActive') }}</span>
+          <span class="badge-bound">{{ t('lookup.line.statusActive') }}</span>
         </div>
-        <p class="status-desc">
-          {{ isEn 
-            ? 'Order updates, payment confirmation, and refund notices will be delivered directly to your LINE.' 
-            : '最新預訂狀態、定金核銷、入住須知及退款進度皆會即時推送至您的 LINE 聊天室，無需反覆開啟網頁查詢。' 
-          }}
-        </p>
+        <p class="status-desc">{{ t('lookup.line.descActive') }}</p>
         <div v-if="booking.line_notified_at" class="notified-time">
-          {{ isEn ? 'Last notification sent: ' : '最近推播時間：' }}{{ booking.line_notified_at }}
+          {{ t('lookup.line.lastSent') }}{{ booking.line_notified_at }}
         </div>
       </div>
     </div>
@@ -104,30 +99,25 @@ const handleSimulateAuth = () => {
       <div class="unbound-header">
         <div class="header-left">
           <MessageSquare :size="18" class="text-line-green" />
-          <h4 class="title">{{ isEn ? 'Enable LINE Instant Notifications' : '連動 LINE 官方帳號・即時掌握訂單動態' }}</h4>
+          <h4 class="title">{{ t('lookup.line.titleInactive') }}</h4>
         </div>
-        <span class="badge-free">{{ isEn ? 'Free Service' : '即時服務' }}</span>
+        <span class="badge-free">{{ t('lookup.line.badgeFree') }}</span>
       </div>
 
-      <p class="desc">
-        {{ isEn 
-          ? 'Link your LINE account to receive booking updates, payment status, and refund progress directly.' 
-          : '建議加入山語 Villa 官方 LINE，系統將於第一時間將定金對帳結果、入住指南與退款處理進度推播給您。' 
-        }}
-      </p>
+      <p class="desc">{{ t('lookup.line.descInactive') }}</p>
 
       <div class="action-buttons">
         <!-- 途徑 A：開啟官方 LINE 對話 -->
         <a :href="officialLineUrl" target="_blank" rel="noopener noreferrer" class="btn btn-line">
           <ExternalLink :size="14" />
-          <span>{{ isEn ? 'Open Villa Official LINE' : '加入官方 LINE 帳號' }}</span>
+          <span>{{ t('lookup.line.openLine') }}</span>
         </a>
 
         <!-- 途徑 B：一鍵快速綁定推播 -->
         <button class="btn btn-outline-gold" :disabled="isBinding" @click="handleSimulateAuth">
           <Loader2 v-if="isBinding" :size="14" class="spin-icon" />
           <Bell v-else :size="14" />
-          <span>{{ isBinding ? (isEn ? 'Binding...' : '綁定中...') : (isEn ? 'Link Notifications Now' : '一鍵啟用 LINE 通知') }}</span>
+          <span>{{ isBinding ? t('lookup.line.binding') : t('lookup.line.linkBtn') }}</span>
         </button>
 
         <button 
@@ -135,7 +125,7 @@ const handleSimulateAuth = () => {
           class="btn-text-toggle" 
           @click="showManualBind = true"
         >
-          {{ isEn ? 'Enter LINE UID manually' : '手動輸入 LINE UID' }}
+          {{ t('lookup.line.manualUid') }}
         </button>
       </div>
 
@@ -146,11 +136,11 @@ const handleSimulateAuth = () => {
             v-model="inputUid" 
             type="text" 
             class="uid-input" 
-            placeholder="請輸入以 U 開頭的 33 碼 LINE 識別碼"
+            :placeholder="t('lookup.line.placeholderUid')"
             :disabled="isBinding"
           />
           <button class="btn btn-sm btn-gold" :disabled="isBinding || !inputUid" @click="handleDirectBind()">
-            {{ isBinding ? '綁定中' : '送出綁定' }}
+            {{ isBinding ? t('lookup.line.binding') : t('lookup.line.submitUid') }}
           </button>
         </div>
       </div>

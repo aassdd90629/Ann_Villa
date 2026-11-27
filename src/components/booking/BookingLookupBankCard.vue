@@ -14,7 +14,7 @@ const props = defineProps({
 
 const emit = defineEmits(['open-report'])
 
-const { isEn } = useI18n()
+const { t } = useI18n()
 const { basicInfo, formattedBankInfo } = useSiteContent()
 const copiedAccount = ref(false)
 
@@ -38,7 +38,7 @@ const lineHelpUrl = computed(() => {
     <div class="bank-info-box">
       <div class="bank-header">
         <CreditCard :size="16" class="text-gold" />
-        <span class="font-bold">{{ isEn ? 'Bank Transfer Account' : '定金匯款專用帳戶' }}</span>
+        <span class="font-bold">{{ t('lookup.bank.title') }}</span>
       </div>
       <p class="bank-desc">
         {{ formattedBankInfo }}
@@ -46,7 +46,7 @@ const lineHelpUrl = computed(() => {
       <button class="btn btn-outline-gold btn-sm mt-1" @click="copyBankDetails">
         <Check v-if="copiedAccount" :size="14" />
         <Copy v-else :size="14" />
-        <span>{{ copiedAccount ? (isEn ? 'Account Copied!' : '已複製帳號資訊！') : (isEn ? 'Copy Bank Details' : '一鍵複製匯款帳號') }}</span>
+        <span>{{ copiedAccount ? t('lookup.bank.copied') : t('lookup.bank.copyBtn') }}</span>
       </button>
     </div>
 
@@ -56,22 +56,22 @@ const lineHelpUrl = computed(() => {
         <CheckCircle2 :size="17" class="text-green" />
         <div class="reported-text">
           <p class="reported-title">
-            {{ isEn ? 'Last 5 Digits Reported: ' : '您已於線上回報帳號末五碼：' }}
+            {{ t('lookup.bank.reportedPrefix') }}
             <strong class="font-mono text-gold">{{ booking.bank_last_5 }}</strong>
           </p>
           <p class="reported-time">
-            {{ isEn ? 'Reported at: ' : '回報時間：' }}{{ booking.payment_reported_at || '近日' }}。山語 Villa 管家核對帳目中，確認後將自動更新為「已確認」。
+            {{ t('lookup.bank.reportedAt') }}{{ booking.payment_reported_at || '近日' }}{{ t('lookup.bank.verifyingNotice') }}
           </p>
         </div>
         <button class="btn btn-sm btn-outline ml-auto" @click="emit('open-report', booking)">
-          {{ isEn ? 'Modify' : '重新回報' }}
+          {{ t('lookup.bank.modify') }}
         </button>
       </div>
 
       <div v-else class="unreported-actions">
         <button class="btn btn-gold btn-block" @click="emit('open-report', booking)">
           <Send :size="16" />
-          <span>{{ isEn ? 'Report Transfer Last 5 Digits' : '線上回報匯款帳號末五碼' }}</span>
+          <span>{{ t('lookup.bank.reportBtn') }}</span>
         </button>
       </div>
     </div>
@@ -85,7 +85,7 @@ const lineHelpUrl = computed(() => {
         class="line-link"
       >
         <MessageCircle :size="15" />
-        <span>{{ isEn ? 'Need help? Contact Butler via LINE' : '亦可直接加入官方 LINE 由專屬管家為您對帳' }}</span>
+        <span>{{ t('lookup.bank.butlerHelp') }}</span>
       </a>
     </div>
   </div>

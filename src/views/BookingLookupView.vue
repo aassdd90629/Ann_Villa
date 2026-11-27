@@ -12,7 +12,7 @@ import { buildLineUrl } from '../utils/lineUrl'
 import { useSiteContent } from '../composables/useSiteContent'
 
 const route = useRoute()
-const { isEn } = useI18n()
+const { t } = useI18n()
 const { basicInfo } = useSiteContent()
 
 const {
@@ -102,15 +102,13 @@ const handleCancelBooking = async (payload) => {
       <div class="container hero-inner">
         <span class="hero-badge">
           <ShieldCheck :size="15" />
-          <span>{{ isEn ? 'Official Direct Booking Service' : '山語 Villa 官方直訂貴賓服務' }}</span>
+          <span>{{ t('lookup.heroBadge') }}</span>
         </span>
         <h1 class="hero-title">
-          {{ isEn ? 'Reservation Lookup & Verification' : '貴賓訂單查詢與線上對帳' }}
+          {{ t('lookup.heroTitle') }}
         </h1>
         <p class="hero-subtitle">
-          {{ isEn 
-            ? 'Track your reservation status, view payment details, or report your deposit transfer anytime.' 
-            : '輸入預訂時填寫的手機號碼與電子信箱，即刻掌握最新檔期保留進度、定金匯款資訊與線上回報。' }}
+          {{ t('lookup.heroSubtitle') }}
         </p>
       </div>
     </header>
@@ -142,11 +140,11 @@ const handleCancelBooking = async (payload) => {
       <section v-if="bookings.length > 0" class="results-wrapper">
         <div class="results-header">
           <h3 class="results-title">
-            {{ isEn ? 'Found Reservations' : '查詢結果' }}
+            {{ t('lookup.resultTitle') }}
             <span class="count-badge">({{ bookings.length }})</span>
           </h3>
           <p class="results-hint">
-            {{ isEn ? 'Sorted by booking creation time (newest first).' : '依訂單建立時間排序，最新訂單置於最上方。' }}
+            {{ t('lookup.resultSubtitle') }}
           </p>
         </div>
 
@@ -166,7 +164,7 @@ const handleCancelBooking = async (payload) => {
         <div class="empty-icon-wrap">
           <MessageCircle :size="32" class="text-gold" />
         </div>
-        <h4 class="empty-title">{{ isEn ? 'Need Assistance?' : '需要管家協助查詢？' }}</h4>
+        <h4 class="empty-title">{{ t('lookup.needHelpTitle') }}</h4>
         <p class="empty-desc">
           若您確認已完成直訂但查無資料，可能為填寫時手機或信箱輸入有誤。您可直接透過官方 LINE 聯繫管家為您人工查詢核對。
         </p>
@@ -177,7 +175,7 @@ const handleCancelBooking = async (payload) => {
           class="btn btn-gold"
         >
           <MessageCircle :size="16" />
-          <span>{{ isEn ? 'Contact Butler via LINE' : '加入官方 LINE 洽詢管家' }}</span>
+          <span>{{ t('lookup.contactButlerLine') }}</span>
         </a>
       </section>
     </main>
