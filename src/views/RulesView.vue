@@ -6,11 +6,10 @@ import Accordion from '../components/common/Accordion.vue'
 import { 
   ShieldCheck, 
   AlertCircle, 
-  Users, 
-  HelpCircle 
+  Users 
 } from 'lucide-vue-next'
 
-const { isEn } = useI18n()
+const { isEn, t, tField } = useI18n()
 const { rulesInfo: rulesData, faqList, fetchContent } = useSiteContent()
 fetchContent()
 </script>
@@ -18,11 +17,9 @@ fetchContent()
 <template>
   <div class="rules-page">
     <PageHeader 
-      :tag="isEn ? 'GUIDELINES & FAQ' : '入住須知與常見問題'"
-      :title="isEn ? 'Stay Policies & FAQ' : '入住須知、包棟規章與 FAQ'"
-      :desc="isEn 
-        ? 'Please review our guidelines to ensure a safe, tranquil, and comfortable stay for everyone.' 
-        : '為維護每一位住客之安全、隱私與山林清幽環境，請於預約前詳細閱讀以下規範。'"
+      :tag="t('rules.tag')"
+      :title="t('rules.title')"
+      :desc="t('rules.desc')"
     />
 
     <section class="section-py rules-content-section">
@@ -31,7 +28,7 @@ fetchContent()
         <div class="rule-block card-luxury">
           <div class="block-title-row">
             <ShieldCheck :size="22" class="title-icon" />
-            <h2>{{ isEn ? 'Check-in & Estate Rules' : '包棟入住規範與注意事項' }}</h2>
+            <h2>{{ t('rules.checkInRulesTitle') }}</h2>
           </div>
 
           <ul class="rule-list">
@@ -46,11 +43,11 @@ fetchContent()
         <div class="rule-block card-luxury">
           <div class="block-title-row">
             <AlertCircle :size="22" class="title-icon" />
-            <h2>{{ isEn ? rulesData.refundPolicyEn.title : rulesData.refundPolicyZh.title }}</h2>
+            <h2>{{ tField(rulesData.refundPolicy, 'title') }}</h2>
           </div>
 
           <ul class="rule-list refund-list">
-            <li v-for="(item, idx) in (isEn ? rulesData.refundPolicyEn.items : rulesData.refundPolicyZh.items)" :key="idx">
+            <li v-for="(item, idx) in (isEn ? rulesData.refundPolicyEn?.items : rulesData.refundPolicyZh?.items)" :key="idx">
               <span class="rule-bullet" aria-hidden="true">•</span>
               <p>{{ item }}</p>
             </li>
@@ -61,10 +58,10 @@ fetchContent()
         <div class="rule-block card-luxury">
           <div class="block-title-row">
             <Users :size="22" class="title-icon" />
-            <h2>{{ isEn ? rulesData.extraGuestsEn.title : rulesData.extraGuestsZh.title }}</h2>
+            <h2>{{ tField(rulesData.extraGuests, 'title') }}</h2>
           </div>
           <p class="extra-desc">
-            {{ isEn ? rulesData.extraGuestsEn.content : rulesData.extraGuestsZh.content }}
+            {{ tField(rulesData.extraGuests, 'content') }}
           </p>
         </div>
 
@@ -72,7 +69,7 @@ fetchContent()
         <div class="faq-section">
           <div class="section-header">
             <span class="section-tag">FAQ</span>
-            <h2 class="section-title">{{ isEn ? 'Frequently Asked Questions' : '常見問題與解答' }}</h2>
+            <h2 class="section-title">{{ t('rules.faqTitle') }}</h2>
           </div>
 
           <Accordion :items="faqList" />

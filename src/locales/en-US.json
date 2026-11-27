@@ -196,5 +196,12 @@
     "calendarDesc": "Select your check-in and check-out dates to calculate rates and reserve directly via official LINE.",
     "addonsTag": "ADD-ON SERVICES",
     "addonsTitle": "Bespoke Add-On Experiences"
+  },
+  "rules": {
+    "tag": "GUIDELINES & FAQ",
+    "title": "Stay Policies & FAQ",
+    "desc": "Please review our guidelines to ensure a safe, tranquil, and comfortable stay for everyone.",
+    "checkInRulesTitle": "Check-in & Estate Rules",
+    "faqTitle": "Frequently Asked Questions"
   }
 }
