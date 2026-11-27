@@ -1,6 +1,5 @@
 <script setup>
 import { useI18n } from '../../composables/useI18n'
-import { WEEKDAY_TIERS, useBookingPricing } from '../../composables/useBookingPricing'
 import { Users } from 'lucide-vue-next'
 
 const props = defineProps({
@@ -16,7 +15,6 @@ const props = defineProps({
 const emit = defineEmits(['update:guestCount'])
 
 const { isEn, t } = useI18n()
-const { dynamicWeekdayTiers } = useBookingPricing()
 
 const handleDecrement = () => {
   if (props.guestCount > 1) {
@@ -68,28 +66,6 @@ const handleIncrement = () => {
           @click="handleIncrement" 
           aria-label="Increase guests"
         >+</button>
-      </div>
-    </div>
-
-    <!-- 平日彈性分級優惠快捷鈕 (右上側欄：精簡俐落，完全契合側欄寬度) -->
-    <div class="weekday-quick-tiers">
-      <div class="quick-title-row">
-        <span class="quick-title">{{ isEn ? 'Weekday tiers (Mon-Thu):' : '平日分級特惠 (週一~週四適用)：' }}</span>
-        <span class="capacity-hint">{{ isEn ? 'Breakfast included' : '皆含手作早餐' }}</span>
-      </div>
-      <div class="pills-grid">
-        <button
-          v-for="tier in (dynamicWeekdayTiers || WEEKDAY_TIERS)"
-          :key="tier.price"
-          type="button"
-          class="pill-btn"
-          :class="{ active: guestCount <= tier.max && (tier.min === 1 || guestCount >= tier.min) }"
-          @click="emit('update:guestCount', tier.count)"
-          :title="isEn ? `Set to ${tier.labelEn}` : `點擊切換為 ${tier.labelZh}`"
-        >
-          <span class="p-text">{{ isEn ? tier.labelEn : tier.labelZh }}</span>
-          <span class="p-price">NT$ {{ (tier.price / 1000) }}k</span>
-        </button>
       </div>
     </div>
   </div>
@@ -196,74 +172,6 @@ const handleIncrement = () => {
       font-weight: 600;
       min-width: 50px;
       text-align: center;
-    }
-  }
-}
-
-.weekday-quick-tiers {
-  background: var(--bg-card);
-  border: 1px dashed var(--border-color);
-  border-radius: 6px;
-  padding: 0.75rem 0.85rem;
-  margin-bottom: 1.35rem;
-
-  .quick-title-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 0.45rem;
-
-    .quick-title {
-      font-size: 0.76rem;
-      font-weight: 600;
-      color: var(--gold-primary);
-    }
-
-    .capacity-hint {
-      font-size: 0.68rem;
-      color: var(--text-muted);
-    }
-  }
-
-  .pills-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0.4rem;
-
-    .pill-btn {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 0.45rem 0.25rem;
-      border-radius: 4px;
-      border: 1px solid var(--border-color);
-      background: var(--bg-primary);
-      color: var(--text-sub);
-      cursor: pointer;
-      transition: $transition-base;
-
-      .p-text {
-        font-size: 0.72rem;
-        font-weight: 500;
-      }
-
-      .p-price {
-        font-size: 0.74rem;
-        font-weight: 700;
-        color: var(--gold-primary);
-      }
-
-      &.active {
-        border-color: var(--gold-primary);
-        background: var(--badge-bg);
-        color: var(--gold-primary);
-        box-shadow: 0 0 6px rgba(197, 168, 128, 0.2);
-      }
-
-      &:hover:not(.active) {
-        border-color: var(--gold-primary);
-      }
     }
   }
 }
