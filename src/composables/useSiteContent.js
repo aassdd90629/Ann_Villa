@@ -62,6 +62,12 @@ const rulesInfo = ref({
     'Property Damage: Please care for our furniture and fixtures. Any damage or loss will be charged at replacement cost.',
     'Slow Living: Shan Yu Villa is designed for tranquility and slow living. Relax, breathe in the fresh mountain air, and enjoy your stay.'
   ],
+  extraGuests: {
+    titleZh: '容納人數與床位規範',
+    titleEn: 'Capacity & Bedding Policy',
+    contentZh: '整棟樓總共 5 間房間，最多容納 18 位貴賓，全館床位已達舒適上限，恕無法提供加床或超額入住服務。請於預訂時確實填寫入住總人數。',
+    contentEn: 'Shan Yu Villa features 5 bedrooms accommodating up to 18 guests maximum. Extra beds are not available. Please confirm exact guest counts upon reservation.'
+  },
   extraGuestsZh: {
     title: '容納人數與床位規範',
     content: '整棟樓總共 5 間房間，最多容納 18 位貴賓，全館床位已達舒適上限，恕無法提供加床或超額入住服務。請於預訂時確實填寫入住總人數。'
@@ -69,6 +75,20 @@ const rulesInfo = ref({
   extraGuestsEn: {
     title: 'Capacity & Bedding Policy',
     content: 'Shan Yu Villa features 5 bedrooms accommodating up to 18 guests maximum. Extra beds are not available. Please confirm exact guest counts upon reservation.'
+  },
+  refundPolicy: {
+    titleZh: '山語Villa豪宅山莊退費規定',
+    titleEn: 'Shan Yu Villa Cancellation & Refund Policy',
+    itemsZh: [
+      '入住前15天取消，訂金可全額退款。',
+      '入住前8-14天內取消，訂金可退還一半。',
+      '入住前7 天內取消，訂金則不退還。'
+    ],
+    itemsEn: [
+      'Cancellations made 15 days or more prior to check-in: 100% full deposit refund.',
+      'Cancellations made 8–14 days prior to check-in: 50% deposit refund.',
+      'Cancellations made within 7 days prior to check-in: Deposit is non-refundable.'
+    ]
   },
   refundPolicyZh: {
     title: '山語Villa豪宅山莊退費規定',

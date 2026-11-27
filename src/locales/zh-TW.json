@@ -266,7 +266,10 @@
     "title": "入住須知、包棟規章與 FAQ",
     "desc": "為維護每一位住客之安全、隱私與山林清幽環境，請於預約前詳細閱讀以下規範。",
     "checkInRulesTitle": "包棟入住規範與注意事項",
-    "faqTitle": "常見問題與解答"
+    "faqTitle": "常見問題與解答",
+    "refundTitle": "山語Villa豪宅山莊退費規定",
+    "extraGuestsTitle": "容納人數與床位規範",
+    "extraGuestsContent": "整棟樓總共 5 間房間，最多容納 18 位貴賓，全館床位已達舒適上限，恕無法提供加床或超額入住服務。請於預訂時確實填寫入住總人數。"
   },
   "guide": {
     "tag": "交通與周邊",

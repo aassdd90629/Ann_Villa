@@ -43,7 +43,7 @@ fetchContent()
         <div class="rule-block card-luxury">
           <div class="block-title-row">
             <AlertCircle :size="22" class="title-icon" />
-            <h2>{{ tField(rulesData.refundPolicy, 'title') }}</h2>
+            <h2>{{ (isEn ? rulesData.refundPolicyEn?.title : rulesData.refundPolicyZh?.title) || t('rules.refundTitle') }}</h2>
           </div>
 
           <ul class="rule-list refund-list">
@@ -58,10 +58,10 @@ fetchContent()
         <div class="rule-block card-luxury">
           <div class="block-title-row">
             <Users :size="22" class="title-icon" />
-            <h2>{{ tField(rulesData.extraGuests, 'title') }}</h2>
+            <h2>{{ (isEn ? rulesData.extraGuestsEn?.title : rulesData.extraGuestsZh?.title) || t('rules.extraGuestsTitle') }}</h2>
           </div>
           <p class="extra-desc">
-            {{ tField(rulesData.extraGuests, 'content') }}
+            {{ (isEn ? rulesData.extraGuestsEn?.content : rulesData.extraGuestsZh?.content) || t('rules.extraGuestsContent') }}
           </p>
         </div>
 
