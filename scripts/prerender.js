@@ -13,7 +13,7 @@ const BRAND_NAME = '山語 Villa';
 const BRAND_TITLE = '山語 Villa 豪宅山莊包棟別墅';
 const BRAND_ADDRESS = '苗栗縣卓蘭鎮景山里8鄰127-10號';
 const BRAND_PHONE = '0909-557-400';
-const BRAND_LINE = 'https://line.me/R/ti/p/@209yrich';
+const BRAND_LINE = 'https://page.line.me/209yrich';
 
 // 7 大公開核心頁面之預渲染設定與語意化骨架資料
 const routes = [

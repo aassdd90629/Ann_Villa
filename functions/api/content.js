@@ -19,7 +19,7 @@ const DEFAULT_BASIC_INFO = {
   bankHolder: '山語 Villa',
   phone: '0909-557-400',
   lineId: '@209yrich',
-  lineUrl: 'https://line.me/R/ti/p/@209yrich',
+  lineUrl: 'https://page.line.me/209yrich',
   lineTemplateMsg: '您好，我想洽詢山語Villa全棟包棟預約：【預計入住日期：】【人數：位（最多18人）】',
   instagram: 'villa_forfun001',
   instagramUrl: 'https://www.instagram.com/villa_forfun001/',

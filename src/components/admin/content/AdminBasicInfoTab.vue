@@ -46,7 +46,7 @@ watch(() => props.initialData, (newVal) => {
       bank_holder: newVal.bank_holder || '山語 Villa',
       phone: newVal.phone || '0909-557-400',
       line_id: newVal.line_id || '@209yrich',
-      line_url: newVal.line_url || 'https://line.me/R/ti/p/@209yrich',
+      line_url: newVal.line_url || 'https://page.line.me/209yrich',
       check_in_time: newVal.check_in_time || '15:00',
       check_out_time: newVal.check_out_time || '11:00',
       deposit_amount: newVal.deposit_amount || '3000'
