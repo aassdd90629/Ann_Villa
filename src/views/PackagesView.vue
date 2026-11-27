@@ -15,7 +15,7 @@ import {
 } from 'lucide-vue-next'
 import AvailabilityCalendar from '../components/booking/AvailabilityCalendar.vue'
 
-const { isEn } = useI18n()
+const { t, tField } = useI18n()
 const { pricingData } = useBookingPricing()
 const pkg = computed(() => pricingData.value.exclusivePackage)
 </script>
@@ -23,11 +23,9 @@ const pkg = computed(() => pricingData.value.exclusivePackage)
 <template>
   <div class="packages-page">
     <PageHeader 
-      :tag="isEn ? 'PACKAGES & RATES' : '包棟方案與計價'"
-      :title="isEn ? 'Exclusive Villa Packages & Rates' : '全館尊榮包棟與加值服務'"
-      :desc="isEn 
-        ? 'Transparent pricing with comprehensive amenities. Exclusive privacy for your ultimate retreat.' 
-        : '透明清楚的定價方案，全棟 5 間客房與所有公設完全獨立專屬，享有最極致的私密性。'"
+      :tag="t('packages.tag')"
+      :title="t('packages.title')"
+      :desc="t('packages.desc')"
     />
 
     <section class="section-py packages-section">
@@ -35,34 +33,34 @@ const pkg = computed(() => pricingData.value.exclusivePackage)
         <!-- 核心包棟價目表 -->
         <div class="main-package-card card-luxury">
           <div class="pkg-header">
-            <span class="badge">{{ isEn ? 'ALL-INCLUSIVE PRIVILEGE' : '尊榮全包式包棟' }}</span>
-            <h2 class="pkg-name">{{ isEn ? pkg.titleEn : pkg.titleZh }}</h2>
-            <p class="pkg-desc">{{ isEn ? pkg.descEn : pkg.descZh }}</p>
+            <span class="badge">{{ t('packages.allInclusive') }}</span>
+            <h2 class="pkg-name">{{ tField(pkg, 'title') }}</h2>
+            <p class="pkg-desc">{{ tField(pkg, 'desc') }}</p>
           </div>
 
           <div class="pricing-matrix">
             <div class="matrix-item">
-              <span class="m-label">{{ isEn ? 'Weekday (Mon - Thu)' : '平日 (週一 ~ 週四)' }}</span>
-              <span class="m-price">NT$ {{ pkg.weekday.toLocaleString() }} <small class="m-from">{{ isEn ? 'up' : '起' }}</small></span>
-              <span class="m-unit">{{ isEn ? '/ night (w/ Breakfast)' : '/ 晚 (含早餐)' }}</span>
+              <span class="m-label">{{ t('packages.weekday') }}</span>
+              <span class="m-price">NT$ {{ pkg.weekday.toLocaleString() }} <small class="m-from">{{ t('packages.fromUp') }}</small></span>
+              <span class="m-unit">{{ t('packages.weekdayUnit') }}</span>
               <div class="m-subtiers">
-                <div class="tier-line"><span>{{ isEn ? '≤10 guests' : '10人以下' }}</span><strong>NT$ 20,000</strong></div>
-                <div class="tier-line"><span>{{ isEn ? '11-14 guests' : '11-14人' }}</span><strong>NT$ 25,000</strong></div>
-                <div class="tier-line"><span>{{ isEn ? '15-18 guests' : '15-18人' }}</span><strong>NT$ 30,000</strong></div>
+                <div class="tier-line"><span>{{ t('packages.tier10') }}</span><strong>NT$ 20,000</strong></div>
+                <div class="tier-line"><span>{{ t('packages.tier14') }}</span><strong>NT$ 25,000</strong></div>
+                <div class="tier-line"><span>{{ t('packages.tier18') }}</span><strong>NT$ 30,000</strong></div>
               </div>
             </div>
 
             <div class="matrix-item featured">
-              <span class="m-tag">{{ isEn ? 'Popular' : '熱門首選' }}</span>
-              <span class="m-label">{{ isEn ? 'Regular Weekend (Fri - Sun)' : '一般假日 (週五 ~ 週日)' }}</span>
+              <span class="m-tag">{{ t('packages.popular') }}</span>
+              <span class="m-label">{{ t('packages.weekend') }}</span>
               <span class="m-price">NT$ {{ pkg.weekend.toLocaleString() }}</span>
-              <span class="m-unit">{{ isEn ? '/ night (w/ Breakfast)' : '/ 晚 (3.5萬含早餐)' }}</span>
+              <span class="m-unit">{{ t('packages.weekendUnit') }}</span>
             </div>
 
             <div class="matrix-item">
-              <span class="m-label">{{ isEn ? 'Consecutive Holidays' : '國定連續假期' }}</span>
+              <span class="m-label">{{ t('packages.holidays') }}</span>
               <span class="m-price">NT$ {{ pkg.holidayMin ? pkg.holidayMin.toLocaleString() : '35,000' }} ~ {{ pkg.holidayMax ? pkg.holidayMax.toLocaleString() : '50,000' }}</span>
-              <span class="m-unit">{{ isEn ? '/ night (Eve starts・w/ Breakfast except LNY)' : '/ 晚 (假日前一天起算・除過年外含早餐)' }}</span>
+              <span class="m-unit">{{ t('packages.holidaysUnit') }}</span>
             </div>
           </div>
 
@@ -70,24 +68,24 @@ const pkg = computed(() => pricingData.value.exclusivePackage)
             <div class="spec-box">
               <Users :size="20" class="spec-icon" />
               <div>
-                <span class="s-title">{{ isEn ? 'Included Capacity' : '基本容納人數' }}</span>
-                <p>{{ pkg.includedGuests }} {{ isEn ? 'Guests Max (No extra beds)' : '人（最多 18 人・無加床服務）' }}</p>
+                <span class="s-title">{{ t('packages.capacityTitle') }}</span>
+                <p>{{ pkg.includedGuests }} {{ t('packages.capacityDesc') }}</p>
               </div>
             </div>
 
             <div class="spec-box">
               <Clock :size="20" class="spec-icon" />
               <div>
-                <span class="s-title">{{ isEn ? 'Check-in / Check-out' : '入住 / 退房時間' }}</span>
-                <p>{{ pkg.checkInTime }} ~ 隔日 {{ pkg.checkOutTime }}</p>
+                <span class="s-title">{{ t('packages.checkInOutTitle') }}</span>
+                <p>{{ pkg.checkInTime }} ~ {{ t('packages.checkInOutNextDay') }} {{ pkg.checkOutTime }}</p>
               </div>
             </div>
 
             <div class="spec-box">
               <ShieldAlert :size="20" class="spec-icon" />
               <div>
-                <span class="s-title">{{ isEn ? 'Security Deposit' : '現場押金 (保證金)' }}</span>
-                <p>NT$ {{ pkg.deposit.toLocaleString() }} {{ isEn ? '(Refundable upon checkout)' : '(退房無損全額退還)' }}</p>
+                <span class="s-title">{{ t('packages.depositTitle') }}</span>
+                <p>NT$ {{ pkg.deposit.toLocaleString() }} {{ t('packages.depositDesc') }}</p>
               </div>
             </div>
           </div>
@@ -96,33 +94,33 @@ const pkg = computed(() => pricingData.value.exclusivePackage)
           <div class="holiday-schedule-box" v-if="pricingData.holidays && pricingData.holidays.length">
             <div class="holiday-header">
               <Sparkles :size="16" class="h-icon" />
-              <h3 class="holiday-title">{{ isEn ? 'Official Consecutive Holidays Rate Schedule' : '國定假日與連續假期專案價目表' }}</h3>
-              <span class="holiday-subnote">{{ isEn ? '(Rates apply starting from holiday eve w/ breakfast, except LNY)' : '（一律國定假日前一天開始計算國定假日房價含早餐，但過年房價不提供早餐）' }}</span>
+              <h3 class="holiday-title">{{ t('packages.holidayTableTitle') }}</h3>
+              <span class="holiday-subnote">{{ t('packages.holidayTableSubnote') }}</span>
             </div>
 
             <div class="holiday-table-wrapper">
               <table class="holiday-table">
                 <thead>
                   <tr>
-                    <th>{{ isEn ? 'Holiday' : '連假名稱' }}</th>
-                    <th>{{ isEn ? 'Dates' : '適用日期區間' }}</th>
-                    <th>{{ isEn ? 'Rate / Night' : '專案房價 / 晚' }}</th>
-                    <th>{{ isEn ? 'Breakfast' : '早餐供應' }}</th>
+                    <th>{{ t('packages.tableColHoliday') }}</th>
+                    <th>{{ t('packages.tableColDates') }}</th>
+                    <th>{{ t('packages.tableColRate') }}</th>
+                    <th>{{ t('packages.tableColBreakfast') }}</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr v-for="(h, hIdx) in pricingData.holidays" :key="hIdx">
                     <td class="h-name">
-                      <strong>{{ isEn ? (h.nameEn || h.nameZh || h.name) : (h.nameZh || h.name) }}</strong>
-                      <div v-if="h.noteZh" class="h-subnote-text">
-                        {{ isEn ? (h.noteEn || h.noteZh) : h.noteZh }}
+                      <strong>{{ tField(h, 'name') || h.name }}</strong>
+                      <div v-if="h.noteZh || h.noteEn" class="h-subnote-text">
+                        {{ tField(h, 'note') }}
                       </div>
                     </td>
                     <td class="h-dates">{{ h.dates || (h.startDate && h.endDate ? `${h.startDate} ~ ${h.endDate}` : (h.startDate || '')) }}</td>
                     <td class="h-price">NT$ {{ (h.price || 0).toLocaleString() }}</td>
                     <td class="h-breakfast">
-                      <span v-if="h.breakfast !== undefined ? h.breakfast : (h.hasBreakfast !== undefined ? Boolean(h.hasBreakfast) : (h.price < 50000 && !(h.nameZh || h.name || '').includes('春節')))" class="badge-included">{{ isEn ? 'Included' : '含早餐' }}</span>
-                      <span v-else class="badge-excluded">{{ isEn ? 'Not Included' : '不含早餐' }}</span>
+                      <span v-if="h.breakfast !== undefined ? h.breakfast : (h.hasBreakfast !== undefined ? Boolean(h.hasBreakfast) : (h.price < 50000 && !(h.nameZh || h.name || '').includes('春節')))" class="badge-included">{{ t('packages.breakfastIncluded') }}</span>
+                      <span v-else class="badge-excluded">{{ t('packages.breakfastExcluded') }}</span>
                     </td>
                   </tr>
                 </tbody>
@@ -135,7 +133,7 @@ const pkg = computed(() => pricingData.value.exclusivePackage)
               roomTitle="全館尊榮包棟"
               variant="gold"
               size="lg"
-              :text="isEn ? 'Inquire & Reserve Dates' : '立即預約包棟檔期'"
+              :text="t('packages.inquireDates')"
             />
           </div>
         </div>
@@ -143,14 +141,9 @@ const pkg = computed(() => pricingData.value.exclusivePackage)
         <!-- 3. 即時空房日曆與 OTA 雙向連動區塊 -->
         <div class="calendar-section" id="availability-section">
           <div class="section-header">
-            <span class="section-tag">{{ isEn ? 'LIVE AVAILABILITY' : '即時房態' }}</span>
-            <h2 class="section-title">{{ isEn ? 'Real-Time Availability & Booking' : '即時空房查詢與線上試算' }}</h2>
-            <p class="section-desc">
-              {{ isEn 
-                ? 'Select your check-in and check-out dates to calculate rates and reserve directly via official LINE.' 
-                : '點選預計入住與退房日期即可即時試算包棟費用，歡迎透過官方 LINE 洽詢管家預約。' 
-              }}
-            </p>
+            <span class="section-tag">{{ t('packages.calendarTag') }}</span>
+            <h2 class="section-title">{{ t('packages.calendarTitle') }}</h2>
+            <p class="section-desc">{{ t('packages.calendarDesc') }}</p>
           </div>
 
           <AvailabilityCalendar />
@@ -159,8 +152,8 @@ const pkg = computed(() => pricingData.value.exclusivePackage)
         <!-- 4. 加值服務區塊 -->
         <div class="extra-services-section">
           <div class="section-header">
-            <span class="section-tag">{{ isEn ? 'ADD-ON SERVICES' : '客製加值' }}</span>
-            <h2 class="section-title">{{ isEn ? 'Bespoke Add-On Experiences' : '多元加值服務與專案場租' }}</h2>
+            <span class="section-tag">{{ t('packages.addonsTag') }}</span>
+            <h2 class="section-title">{{ t('packages.addonsTitle') }}</h2>
           </div>
 
           <div class="services-grid">
@@ -174,9 +167,9 @@ const pkg = computed(() => pricingData.value.exclusivePackage)
                 <Utensils v-else-if="serv.id === 'private-chef'" :size="24" />
                 <Wine v-else :size="24" />
               </div>
-              <h3 class="serv-title">{{ isEn ? serv.titleEn : serv.titleZh }}</h3>
-              <p class="serv-pricing">{{ isEn ? serv.pricingEn : serv.pricingZh }}</p>
-              <p class="serv-note">{{ isEn ? serv.noteEn : serv.noteZh }}</p>
+              <h3 class="serv-title">{{ tField(serv, 'title') }}</h3>
+              <p class="serv-pricing">{{ tField(serv, 'pricing') }}</p>
+              <p class="serv-note">{{ tField(serv, 'note') }}</p>
             </div>
           </div>
         </div>
