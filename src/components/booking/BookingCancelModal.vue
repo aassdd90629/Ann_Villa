@@ -16,10 +16,10 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue', 'confirm-cancel'])
 
 const { isEn } = useI18n()
-const { channelsInfo } = useSiteContent()
+const { channelsInfo, basicInfo } = useSiteContent()
 
 const rescheduleLineUrl = computed(() => {
-  const lineId = channelsInfo.value?.directBooking?.lineUrl || '@209yrich'
+  const lineId = basicInfo.value?.lineUrl || basicInfo.value?.lineId || channelsInfo.value?.directBooking?.lineUrl || '@209yrich'
   const bookingId = props.booking?.id || ''
   const text = `您好，關於訂單【${bookingId}】，我想洽詢行程改期與定金保留事宜。`
   return buildLineUrl({ lineId, text })

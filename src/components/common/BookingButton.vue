@@ -44,6 +44,14 @@ const props = defineProps({
   customClass: {
     type: String,
     default: ''
+  },
+  lineUrl: {
+    type: String,
+    default: ''
+  },
+  lineId: {
+    type: String,
+    default: ''
   }
 })
 
@@ -80,7 +88,9 @@ const onClick = (e) => {
     roomTitle: props.roomTitle,
     checkIn: props.checkIn,
     checkOut: props.checkOut,
-    guests: props.guests
+    guests: props.guests,
+    lineUrl: props.lineUrl,
+    lineId: props.lineId
   })
   emit('click', e)
 }

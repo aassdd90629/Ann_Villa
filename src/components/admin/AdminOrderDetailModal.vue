@@ -7,6 +7,9 @@ import {
 import AdminCancelBookingModal from './AdminCancelBookingModal.vue'
 import AdminBookingAdjustments from './AdminBookingAdjustments.vue'
 import AdminBookingRefundSection from './AdminBookingRefundSection.vue'
+import { useBookingPricing } from '../../composables/useBookingPricing'
+
+const { maxCapacity } = useBookingPricing()
 
 const props = defineProps({
   modelValue: { type: Boolean, default: false },
@@ -186,7 +189,7 @@ const handleConfirmCancel = (payload) => {
               <div class="form-item"><label>聯絡電話</label><input v-model="editForm.guestPhone" type="text" class="form-input" /></div>
               <div class="form-item"><label>電子信箱</label><input v-model="editForm.guestEmail" type="email" class="form-input" /></div>
               <div class="form-item"><label>LINE ID</label><input v-model="editForm.lineId" type="text" class="form-input" /></div>
-              <div class="form-item"><label>入住人數</label><input v-model.number="editForm.guestCount" type="number" min="1" max="20" class="form-input" /></div>
+              <div class="form-item"><label>入住人數 (上限 {{ maxCapacity }} 人)</label><input v-model.number="editForm.guestCount" type="number" min="1" :max="maxCapacity" class="form-input" /></div>
               <div class="form-item">
                 <label>訂單狀態</label>
                 <select v-model="editForm.status" class="form-select">

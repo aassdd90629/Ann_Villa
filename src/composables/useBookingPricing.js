@@ -1,5 +1,6 @@
 import { ref, computed } from 'vue'
 import { buildLineUrl } from '../utils/lineUrl.js'
+import { useSiteContent } from './useSiteContent.js'
 
 export const WEEKDAY_TIERS = [
   { min: 1, max: 10, price: 20000, labelZh: '10人以下', labelEn: '10 guests or fewer', count: 10 },
@@ -7,13 +8,24 @@ export const WEEKDAY_TIERS = [
   { min: 15, max: 18, price: 30000, labelZh: '15-18人', labelEn: '15-18 guests', count: 18 }
 ]
 
-export const dynamicWeekdayTiers = computed(() => [
-  { min: 1, max: 10, price: activePricing.value.weekdayTier1 || 20000, labelZh: '10人以下', labelEn: '10 guests or fewer', count: 10 },
-  { min: 11, max: 14, price: activePricing.value.weekdayTier2 || 25000, labelZh: '11-14人', labelEn: '11-14 guests', count: 14 },
-  { min: 15, max: 18, price: activePricing.value.weekdayTier3 || 30000, labelZh: '15-18人', labelEn: '15-18 guests', count: 18 }
-])
+export const dynamicWeekdayTiers = computed(() => {
+  const t1Max = activePricing.value.weekdayTier1MaxGuests || 10
+  const t2Max = activePricing.value.weekdayTier2MaxGuests || 14
+  const maxCap = activePricing.value.exclusivePackage?.maxCapacity || activePricing.value.maxCapacity || 18
+  return [
+    { min: 1, max: t1Max, price: activePricing.value.weekdayTier1 || 20000, labelZh: `${t1Max}人以下`, labelEn: `${t1Max} guests or fewer`, count: t1Max },
+    { min: t1Max + 1, max: t2Max, price: activePricing.value.weekdayTier2 || 25000, labelZh: `${t1Max + 1}-${t2Max}人`, labelEn: `${t1Max + 1}-${t2Max} guests`, count: t2Max },
+    { min: t2Max + 1, max: maxCap, price: activePricing.value.weekdayTier3 || 30000, labelZh: `${t2Max + 1}-${maxCap}人`, labelEn: `${t2Max + 1}-${maxCap} guests`, count: maxCap }
+  ]
+})
 
 export const DEFAULT_PRICING = {
+  weekdayTier1: 20000,
+  weekdayTier2: 25000,
+  weekdayTier3: 30000,
+  weekdayTier1MaxGuests: 10,
+  weekdayTier2MaxGuests: 14,
+  maxCapacity: 18,
   exclusivePackage: {
     nameZh: '山語・全區尊榮包棟方案',
     nameEn: 'Exclusive Full Villa Buyout',
@@ -91,12 +103,16 @@ export async function fetchPricingSettings() {
           weekdayTier1: Number(p.weekdayTier1) || 20000,
           weekdayTier2: Number(p.weekdayTier2) || 25000,
           weekdayTier3: Number(p.weekdayTier3) || 30000,
+          weekdayTier1MaxGuests: Number(p.weekdayTier1MaxGuests) || 10,
+          weekdayTier2MaxGuests: Number(p.weekdayTier2MaxGuests) || 14,
+          maxCapacity: Number(p.maxCapacity) || 18,
           exclusivePackage: {
             ...activePricing.value.exclusivePackage,
             weekday: Number(p.weekdayTier1) || 20000,
             weekend: Number(p.weekend) || activePricing.value.exclusivePackage.weekend,
             deposit: Number(p.deposit) || activePricing.value.exclusivePackage.deposit,
             maxCapacity: Number(p.maxCapacity) || activePricing.value.exclusivePackage.maxCapacity,
+            includedGuests: Number(p.maxCapacity) || activePricing.value.exclusivePackage.includedGuests,
             checkInTime: p.checkInTime || activePricing.value.exclusivePackage.checkInTime,
             checkOutTime: p.checkOutTime || activePricing.value.exclusivePackage.checkOutTime
           },
@@ -114,21 +130,25 @@ export async function fetchPricingSettings() {
 // 首次引入時觸發一次靜態載入
 fetchPricingSettings()
 
-export function getWeekdayPrice(guests = 18) {
-  const g = Number(guests) || 18
+export function getWeekdayPrice(guests) {
+  const maxCap = activePricing.value.exclusivePackage?.maxCapacity || activePricing.value.maxCapacity || 18
+  const g = Number(guests) || maxCap
+  const t1Max = activePricing.value.weekdayTier1MaxGuests || 10
+  const t2Max = activePricing.value.weekdayTier2MaxGuests || 14
   const t1 = activePricing.value.weekdayTier1 || 20000
   const t2 = activePricing.value.weekdayTier2 || 25000
   const t3 = activePricing.value.weekdayTier3 || 30000
-  if (g <= 10) return t1
-  if (g <= 14) return t2
+  if (g <= t1Max) return t1
+  if (g <= t2Max) return t2
   return t3
 }
 
-export function getWeekdayTier(guests = 18) {
-  const g = Number(guests) || 18
+export function getWeekdayTier(guests) {
+  const maxCap = activePricing.value.exclusivePackage?.maxCapacity || activePricing.value.maxCapacity || 18
+  const g = Number(guests) || maxCap
   const tiers = dynamicWeekdayTiers.value
-  if (g <= 10) return tiers[0]
-  if (g <= 14) return tiers[1]
+  if (g <= tiers[0].max) return tiers[0]
+  if (g <= tiers[1].max) return tiers[1]
   return tiers[2]
 }
 
@@ -258,7 +278,8 @@ export function useBookingPricing(checkInDate, checkOutDate, guestCount) {
     const weekdayTotal = weekdayCount * currentWeekdayUnitPrice
     const weekendTotal = weekendCount * pkg.weekend
     const baseTotal = weekdayTotal + weekendTotal + holidayTotal
-    const extraGuests = Math.max(0, (guestCount.value || 18) - (pkg.includedGuests || 18))
+    const maxCap = pkg.maxCapacity || activePricing.value.maxCapacity || 18
+    const extraGuests = Math.max(0, (guestCount.value || maxCap) - (pkg.includedGuests || maxCap))
     const extraFeePerNight = extraGuests * (pkg.extraPersonFee || 1500)
     const totalExtraFee = extraFeePerNight * (weekdayCount + weekendCount + holidayCount)
     const grandTotal = baseTotal + totalExtraFee
@@ -280,20 +301,29 @@ export function useBookingPricing(checkInDate, checkOutDate, guestCount) {
     }
   })
 
+  const maxCapacity = computed(() => {
+    return activePricing.value.exclusivePackage?.maxCapacity || activePricing.value.maxCapacity || 18
+  })
+
+  const { basicInfo } = useSiteContent()
+
   const lineBookingUrl = computed(() => {
+    const maxCap = maxCapacity.value
     let msg = `您好，我想洽詢山語Villa包棟預約：`
     if (checkInDate.value && checkOutDate.value) {
       msg += `【入住：${checkInDate.value}】【退房：${checkOutDate.value} (共 ${bookingCalculation.value.nights} 晚)】【人數：${guestCount.value} 人】【預估總額：NT$ ${bookingCalculation.value.grandTotal.toLocaleString()}】`
     } else if (checkInDate.value) {
       msg += `【預計入住：${checkInDate.value}】【人數：${guestCount.value} 人】`
     } else {
-      msg = '您好，我想洽詢山語Villa全棟包棟預約：【預計入住日期：】【人數：位（最多18人）】'
+      msg = `您好，我想洽詢山語Villa全棟包棟預約：【預計入住日期：】【人數：位（最多${maxCap}人）】`
     }
-    return buildLineUrl({ lineId: '@209yrich', text: msg })
+    const targetLine = basicInfo.value?.lineUrl || basicInfo.value?.lineId
+    return buildLineUrl({ lineId: targetLine, text: msg })
   })
 
   return {
     pricingData: activePricing,
+    maxCapacity,
     WEEKDAY_TIERS,
     dynamicWeekdayTiers,
     getWeekdayPrice,

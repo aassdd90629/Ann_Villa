@@ -6,6 +6,7 @@ const props = defineProps({
   checkInDate: { type: String, default: null },
   checkOutDate: { type: String, default: null },
   guestCount: { type: Number, default: 18 },
+  maxCapacity: { type: Number, default: 18 },
   calculation: {
     type: Object,
     default: () => null
@@ -23,7 +24,8 @@ const handleDecrement = () => {
 }
 
 const handleIncrement = () => {
-  if (props.guestCount < 18) {
+  const max = props.maxCapacity || 18
+  if (props.guestCount < max) {
     emit('update:guestCount', props.guestCount + 1)
   }
 }
@@ -62,7 +64,7 @@ const handleIncrement = () => {
         <button 
           type="button" 
           class="g-btn" 
-          :disabled="guestCount >= 18" 
+          :disabled="guestCount >= (maxCapacity || 18)" 
           @click="handleIncrement" 
           aria-label="Increase guests"
         >+</button>

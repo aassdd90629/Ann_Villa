@@ -65,6 +65,7 @@ const handleClose = () => {
         <BookingButton 
           variant="gold" 
           customClass="drawer-cta"
+          :lineUrl="basicInfo.lineUrl || basicInfo.lineId"
           @click="handleClose"
         >
           <template #icon>

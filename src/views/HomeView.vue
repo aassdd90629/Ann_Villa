@@ -59,6 +59,7 @@ onMounted(async () => {
               roomTitle="全區尊榮包棟"
               variant="gold"
               :text="t('nav.reserve')"
+              :lineUrl="siteData.lineUrl || siteData.lineId"
             />
             <RouterLink to="/rooms" class="btn btn-white">
               <span>{{ t('action.explore') }}</span>
@@ -183,6 +184,7 @@ onMounted(async () => {
         <AvailabilityCalendar />
       </div>
     </section>
+
   </div>
 </template>
 

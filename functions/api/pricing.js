@@ -13,6 +13,8 @@ const DEFAULT_SETTINGS = {
   weekdayTier1: 20000,
   weekdayTier2: 25000,
   weekdayTier3: 30000,
+  weekdayTier1MaxGuests: 10,
+  weekdayTier2MaxGuests: 14,
   weekend: 35000,
   deposit: 3000,
   maxCapacity: 18,
@@ -58,6 +60,8 @@ export async function onRequestGet(context) {
           if (k === 'weekday_tier1_price') settings.weekdayTier1 = Number(v) || settings.weekdayTier1;
           if (k === 'weekday_tier2_price') settings.weekdayTier2 = Number(v) || settings.weekdayTier2;
           if (k === 'weekday_tier3_price') settings.weekdayTier3 = Number(v) || settings.weekdayTier3;
+          if (k === 'weekday_tier1_max_guests') settings.weekdayTier1MaxGuests = Number(v) || settings.weekdayTier1MaxGuests;
+          if (k === 'weekday_tier2_max_guests') settings.weekdayTier2MaxGuests = Number(v) || settings.weekdayTier2MaxGuests;
           if (k === 'weekend_price') settings.weekend = Number(v) || settings.weekend;
           if (k === 'deposit_amount') settings.deposit = Number(v) || settings.deposit;
           if (k === 'max_capacity') settings.maxCapacity = Number(v) || settings.maxCapacity;

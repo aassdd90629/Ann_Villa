@@ -56,7 +56,7 @@ async function ensureSiteContentTable(db) {
           ('bank_holder', 'basic_info', '戶名', 'Account Holder', '山語 Villa', 'Shan Yu Villa', 4, 1),
           ('phone', 'basic_info', '客服諮詢專線', 'Customer Service Phone', '0909-557-400', '0909-557-400', 5, 1),
           ('line_id', 'basic_info', '官方 LINE ID', 'Official LINE ID', '@209yrich', '@209yrich', 6, 1),
-          ('line_url', 'basic_info', '官方 LINE 邀請連結', 'LINE Invite URL', 'https://line.me/R/ti/p/@209yrich', 'https://line.me/R/ti/p/@209yrich', 7, 1),
+          ('line_url', 'basic_info', '官方 LINE 邀請連結', 'LINE Invite URL', 'https://page.line.me/209yrich', 'https://page.line.me/209yrich', 7, 1),
           ('check_in_time', 'basic_info', '入住時間 (Check-in)', 'Check-in Time', '15:00', '15:00', 8, 1),
           ('check_out_time', 'basic_info', '退房時間 (Check-out)', 'Check-out Time', '11:00', '11:00', 9, 1),
           ('deposit_amount', 'basic_info', '現場保證金 (押金)', 'Security Deposit', '3000', '3000', 10, 1),

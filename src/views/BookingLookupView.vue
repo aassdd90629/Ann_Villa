@@ -9,9 +9,11 @@ import BookingReportPaymentModal from '../components/booking/BookingReportPaymen
 import BookingCancelModal from '../components/booking/BookingCancelModal.vue'
 import { ShieldCheck, MessageCircle, AlertCircle, CheckCircle2 } from 'lucide-vue-next'
 import { buildLineUrl } from '../utils/lineUrl'
+import { useSiteContent } from '../composables/useSiteContent'
 
 const route = useRoute()
 const { isEn } = useI18n()
+const { basicInfo } = useSiteContent()
 
 const {
   isLoading,
@@ -32,7 +34,7 @@ const selectedBooking = ref(null)
 
 const lineHelpUrl = computed(() => {
   return buildLineUrl({
-    lineId: '@209yrich',
+    lineId: basicInfo.value?.lineUrl || basicInfo.value?.lineId || '@209yrich',
     text: '您好，我在官網訂單查詢系統查無資料，想請管家協助查詢訂單。'
   })
 })

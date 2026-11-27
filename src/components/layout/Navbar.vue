@@ -117,6 +117,7 @@ onUnmounted(() => {
           variant="gold" 
           customClass="btn-reserve desktop-only" 
           :text="t('nav.reserve')" 
+          :lineUrl="basicInfo.lineUrl || basicInfo.lineId"
         />
 
         <!-- 手機漢堡選單按鈕 -->

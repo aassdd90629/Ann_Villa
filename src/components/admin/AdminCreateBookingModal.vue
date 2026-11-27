@@ -35,7 +35,7 @@ const form = ref({
 const checkInRef = computed(() => form.value.checkIn)
 const checkOutRef = computed(() => form.value.checkOut)
 const guestCountRef = computed(() => form.value.guestCount)
-const { bookingCalculation } = useBookingPricing(checkInRef, checkOutRef, guestCountRef)
+const { bookingCalculation, maxCapacity } = useBookingPricing(checkInRef, checkOutRef, guestCountRef)
 
 // 重置表單
 const resetForm = () => {
@@ -202,8 +202,8 @@ const handleSubmit = async () => {
                 <input v-model="form.lineId" type="text" placeholder="例：lin123" class="form-input" />
               </div>
               <div class="field-item">
-                <label>入住人數 (上限 18 人)</label>
-                <input v-model.number="form.guestCount" type="number" min="1" max="18" class="form-input" />
+                <label>入住人數 (上限 {{ maxCapacity }} 人)</label>
+                <input v-model.number="form.guestCount" type="number" min="1" :max="maxCapacity" class="form-input" />
               </div>
             </div>
           </div>

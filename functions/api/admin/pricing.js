@@ -31,6 +31,8 @@ const DEFAULT_PRICING = {
   weekdayTier1: 20000,
   weekdayTier2: 25000,
   weekdayTier3: 30000,
+  weekdayTier1MaxGuests: 10,
+  weekdayTier2MaxGuests: 14,
   weekend: 35000,
   deposit: 3000,
   maxCapacity: 18,
@@ -74,6 +76,8 @@ async function ensureTables(db) {
         ['weekday_tier1_price', '20000', '平日 10人以下每晚價格'],
         ['weekday_tier2_price', '25000', '平日 11-14人每晚價格'],
         ['weekday_tier3_price', '30000', '平日 15-18人每晚價格'],
+        ['weekday_tier1_max_guests', '10', '平日第一階梯最高人數'],
+        ['weekday_tier2_max_guests', '14', '平日第二階梯最高人數'],
         ['weekend_price', '35000', '一般假日 (週五至週日) 每晚價格'],
         ['deposit_amount', '3000', '現場入住押金'],
         ['max_capacity', '18', '全區最高容納人數'],
@@ -149,6 +153,8 @@ export async function onRequestGet(context) {
         weekdayTier1: Number(settingsMap.weekday_tier1_price) || DEFAULT_PRICING.weekdayTier1,
         weekdayTier2: Number(settingsMap.weekday_tier2_price) || DEFAULT_PRICING.weekdayTier2,
         weekdayTier3: Number(settingsMap.weekday_tier3_price) || DEFAULT_PRICING.weekdayTier3,
+        weekdayTier1MaxGuests: Number(settingsMap.weekday_tier1_max_guests) || DEFAULT_PRICING.weekdayTier1MaxGuests,
+        weekdayTier2MaxGuests: Number(settingsMap.weekday_tier2_max_guests) || DEFAULT_PRICING.weekdayTier2MaxGuests,
         weekend: Number(settingsMap.weekend_price) || DEFAULT_PRICING.weekend,
         deposit: Number(settingsMap.deposit_amount) || DEFAULT_PRICING.deposit,
         maxCapacity: Number(settingsMap.max_capacity) || DEFAULT_PRICING.maxCapacity,
@@ -189,6 +195,8 @@ export async function onRequestPut(context) {
         ['weekday_tier1_price', String(pricing.weekdayTier1 || 20000)],
         ['weekday_tier2_price', String(pricing.weekdayTier2 || 25000)],
         ['weekday_tier3_price', String(pricing.weekdayTier3 || 30000)],
+        ['weekday_tier1_max_guests', String(pricing.weekdayTier1MaxGuests || 10)],
+        ['weekday_tier2_max_guests', String(pricing.weekdayTier2MaxGuests || 14)],
         ['weekend_price', String(pricing.weekend || 35000)],
         ['deposit_amount', String(pricing.deposit || 3000)],
         ['max_capacity', String(pricing.maxCapacity || 18)]
@@ -253,7 +261,7 @@ export async function onRequestPut(context) {
         INSERT INTO admin_audit_logs (category, action, target_id, summary, details_json, operator)
         VALUES ('pricing', 'UPDATE_PRICING', 'pricing_settings', ?, ?, ?)
       `).bind(
-        `更新全區包棟房價政策：平日（${pricing?.weekdayTier1 || 20000}/${pricing?.weekdayTier2 || 25000}/${pricing?.weekdayTier3 || 30000}）、一般假日（${pricing?.weekend || 35000}），連假檔期（共 ${holidays?.length || 0} 組）`,
+        `更新全區包棟房價政策：平日（${pricing?.weekdayTier1 || 20000}/${pricing?.weekdayTier2 || 25000}/${pricing?.weekdayTier3 || 30000}，級距：${pricing?.weekdayTier1MaxGuests || 10}/${pricing?.weekdayTier2MaxGuests || 14}/${pricing?.maxCapacity || 18}人）、一般假日（${pricing?.weekend || 35000}），連假檔期（共 ${holidays?.length || 0} 組）`,
         JSON.stringify({ pricing, holidayCount: holidays?.length || 0 }),
         operatorTag
       ).run();
