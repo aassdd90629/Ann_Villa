@@ -91,7 +91,7 @@ const statusText = computed(() => {
     margin-bottom: 0.15rem;
 
     .tt-date {
-      color: var(--text-muted);
+      color: var(--text-sub);
       font-family: monospace;
       font-weight: 600;
     }

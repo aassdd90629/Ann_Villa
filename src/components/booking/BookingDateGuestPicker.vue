@@ -175,4 +175,36 @@ const handleIncrement = () => {
     }
   }
 }
+
+// 暗黑模式對比度增強
+:root[data-theme="dark"] {
+  .date-pick-display,
+  .guests-selector-row {
+    background: rgba(255, 255, 255, 0.035);
+    border-color: rgba(255, 255, 255, 0.12);
+
+    .slot-label {
+      color: var(--text-sub);
+    }
+
+    .slot-arrow {
+      color: var(--gold-primary);
+    }
+
+    .g-label {
+      color: var(--text-primary);
+    }
+
+    .g-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.2);
+      color: var(--text-primary);
+
+      &:hover:not(:disabled) {
+        background: var(--gold-primary);
+        color: #121415;
+      }
+    }
+  }
+}
 </style>

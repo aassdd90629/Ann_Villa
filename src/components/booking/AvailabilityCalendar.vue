@@ -396,4 +396,36 @@ const selectDate = (day) => {
     }
   }
 }
+
+// 暗黑模式對比度增強
+:root[data-theme="dark"] {
+  .availability-calendar-card {
+    background: #161819;
+    border-color: rgba(255, 255, 255, 0.14);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+  }
+
+  .calendar-legend {
+    border-top-color: rgba(255, 255, 255, 0.12);
+
+    .legend-item {
+      color: var(--text-primary);
+
+      .legend-dot.available {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.22);
+      }
+
+      .legend-dot.booked {
+        background: rgba(248, 113, 113, 0.2);
+        border: 1px solid rgba(248, 113, 113, 0.4);
+      }
+
+      .legend-dot.holiday {
+        background: rgba(212, 188, 155, 0.2);
+        border: 1px solid var(--gold-primary);
+      }
+    }
+  }
+}
 </style>

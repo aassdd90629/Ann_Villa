@@ -391,4 +391,65 @@ const isCheckInWeekend = computed(() => {
     }
   }
 }
+
+// 暗黑模式對比度增強
+:root[data-theme="dark"] {
+  .summary-box {
+    background: rgba(255, 255, 255, 0.02);
+    border-color: rgba(255, 255, 255, 0.14);
+  }
+
+  .calc-breakdown {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.12);
+
+    .calc-row {
+      color: var(--text-primary);
+
+      &.sub {
+        color: var(--text-sub);
+
+        &.highlight-weekday,
+        &.highlight-holiday {
+          color: var(--gold-light);
+        }
+      }
+    }
+
+    .calc-divider {
+      background: rgba(255, 255, 255, 0.1);
+    }
+  }
+
+  .calc-checkin-preview {
+    background: rgba(255, 255, 255, 0.035);
+    border-color: var(--gold-primary);
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.4);
+
+    .preview-hint {
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--gold-light);
+    }
+  }
+
+  .calc-placeholder {
+    background: rgba(255, 255, 255, 0.025);
+    border-color: rgba(255, 255, 255, 0.15);
+
+    .placeholder-desc {
+      color: var(--text-sub);
+    }
+  }
+
+  .btn-line-secondary {
+    border-color: rgba(255, 255, 255, 0.18);
+    color: var(--text-primary);
+
+    &:hover {
+      border-color: var(--color-line);
+      color: var(--color-line);
+      background: rgba(6, 199, 85, 0.15);
+    }
+  }
+}
 </style>

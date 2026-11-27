@@ -356,13 +356,19 @@ const isInRange = (dateStr) => {
 
   &.is-selected {
     background: var(--gold-primary) !important;
-    color: #FFFFFF !important;
+    color: #121415 !important;
     border-color: var(--gold-primary);
-    box-shadow: 0 4px 12px var(--badge-bg);
+    box-shadow: 0 4px 14px rgba(212, 188, 155, 0.35);
+
+    .day-number {
+      color: #121415 !important;
+      font-weight: 700;
+    }
 
     .cell-tag {
-      background: rgba(0, 0, 0, 0.25);
-      color: #FFFFFF;
+      background: rgba(0, 0, 0, 0.18);
+      color: #121415;
+      font-weight: 700;
     }
   }
 
@@ -370,6 +376,81 @@ const isInRange = (dateStr) => {
     background: var(--badge-bg) !important;
     border-color: var(--gold-light);
     color: var(--gold-dark);
+  }
+}
+
+// 暗黑模式對比度增強 (Dark Mode Contrast Optimization)
+:root[data-theme="dark"] {
+  .month-panel-header .nav-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.16);
+    color: #F8F6F0;
+
+    &:hover:not(:disabled) {
+      background: rgba(212, 188, 155, 0.16);
+      border-color: var(--gold-primary);
+      color: var(--gold-light);
+    }
+  }
+
+  .weekdays-row .weekday-cell {
+    color: var(--text-sub);
+  }
+
+  .day-cell {
+    background: rgba(255, 255, 255, 0.035);
+    border-color: rgba(255, 255, 255, 0.08);
+    color: #F8F6F0;
+
+    &:hover:not(:disabled) {
+      background: rgba(212, 188, 155, 0.14);
+      border-color: var(--gold-primary);
+    }
+
+    &.is-past {
+      opacity: 0.28;
+      color: var(--text-muted);
+      border-color: transparent;
+      background: transparent;
+    }
+
+    &.is-booked {
+      background: rgba(255, 255, 255, 0.04);
+      border-color: rgba(255, 255, 255, 0.06);
+      color: rgba(255, 255, 255, 0.38);
+
+      .booked-tag {
+        background: rgba(248, 113, 113, 0.2);
+        color: #fca5a5;
+        border: 1px solid rgba(248, 113, 113, 0.35);
+        font-weight: 600;
+      }
+    }
+
+    &.is-selected {
+      background: var(--gold-primary) !important;
+      color: #121415 !important;
+      border-color: var(--gold-primary);
+      box-shadow: 0 4px 16px rgba(212, 188, 155, 0.4);
+
+      .day-number { color: #121415 !important; }
+      .cell-tag { background: rgba(0, 0, 0, 0.2); color: #121415; }
+    }
+
+    &.is-in-range {
+      background: rgba(212, 188, 155, 0.18) !important;
+      border-color: var(--gold-primary);
+      color: #F8F6F0;
+
+      .day-number { color: #FFFFFF; }
+    }
+
+    .cell-tag.holiday-tag {
+      background: rgba(212, 188, 155, 0.18);
+      border: 1px solid rgba(212, 188, 155, 0.32);
+      color: var(--gold-light);
+      font-weight: 600;
+    }
   }
 }
 </style>

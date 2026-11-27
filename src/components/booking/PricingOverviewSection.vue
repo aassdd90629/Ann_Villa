@@ -347,4 +347,86 @@ const selectTier = (tier) => emit('apply-tier', tier.count)
   }
   .holiday-footer-notice { font-size: 0.8rem; color: var(--text-muted); margin: 0; line-height: 1.45; }
 }
+
+// 暗黑模式對比度增強
+:root[data-theme="dark"] {
+  .tier-nav-tabs .tab-btn {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.14);
+    color: var(--text-sub);
+
+    &:hover:not(.active) {
+      border-color: var(--gold-primary);
+      color: var(--text-primary);
+    }
+
+    &.active {
+      background: rgba(212, 188, 155, 0.16);
+      border-color: var(--gold-primary);
+      color: var(--gold-light);
+      box-shadow: 0 0 12px rgba(212, 188, 155, 0.25);
+    }
+  }
+
+  .tier-card {
+    background: rgba(255, 255, 255, 0.025);
+    border-color: rgba(255, 255, 255, 0.1);
+
+    &:hover {
+      background: rgba(212, 188, 155, 0.08);
+      border-color: var(--gold-primary);
+    }
+
+    &.active {
+      background: rgba(212, 188, 155, 0.12);
+      border-color: var(--gold-primary);
+      box-shadow: 0 0 16px rgba(212, 188, 155, 0.22);
+
+      .status-badge.active-badge {
+        background: var(--gold-primary);
+        color: #121415;
+      }
+    }
+
+    .tier-price-wrap .price-amount {
+      color: var(--gold-light);
+    }
+
+    .tier-summary {
+      color: var(--text-sub);
+    }
+  }
+
+  .weekend-feature-card {
+    background: rgba(255, 255, 255, 0.025);
+    border-color: rgba(255, 255, 255, 0.1);
+
+    .wf-price-box .price-amount {
+      color: var(--gold-light);
+    }
+
+    .wf-price-box .btn-apply-weekend:hover {
+      background: var(--gold-primary);
+      color: #121415;
+    }
+  }
+
+  .holiday-overview-wrap .holiday-rate-card {
+    background: rgba(255, 255, 255, 0.025);
+    border-color: rgba(255, 255, 255, 0.1);
+
+    .h-name {
+      color: var(--text-sub);
+    }
+
+    .h-price {
+      color: var(--gold-light);
+    }
+
+    &.active {
+      background: rgba(212, 188, 155, 0.12);
+      border-color: var(--gold-primary);
+    }
+  }
+}
 </style>

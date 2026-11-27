@@ -181,4 +181,30 @@ const { channelsInfo } = useSiteContent()
     }
   }
 }
+
+// 暗黑模式對比度增強
+:root[data-theme="dark"] {
+  .booking-perks-notice {
+    border-top-color: rgba(255, 255, 255, 0.12);
+  }
+
+  .perks-card,
+  .notice-card {
+    background: rgba(255, 255, 255, 0.025);
+    border-color: rgba(255, 255, 255, 0.1);
+
+    .card-head {
+      border-bottom-color: rgba(255, 255, 255, 0.08);
+    }
+  }
+
+  .perks-list li,
+  .notice-list li {
+    color: var(--text-sub);
+
+    strong {
+      color: var(--text-primary);
+    }
+  }
+}
 </style>
