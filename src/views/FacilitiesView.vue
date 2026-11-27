@@ -3,20 +3,18 @@ import { useI18n } from '../composables/useI18n'
 import { useFacilities } from '../composables/useFacilities'
 import PageHeader from '../components/common/PageHeader.vue'
 import ImageGallery from '../components/common/ImageGallery.vue'
-import { CheckCircle, Sparkles } from 'lucide-vue-next'
+import { CheckCircle } from 'lucide-vue-next'
 
-const { isEn, tField } = useI18n()
+const { isEn, t, tField } = useI18n()
 const { facilities: facilitiesData } = useFacilities()
 </script>
 
 <template>
   <div class="facilities-page">
     <PageHeader 
-      :tag="isEn ? 'AMENITIES' : '園區空間'"
-      :title="isEn ? 'Estate Facilities & Wellness' : '園區設施與休閒空間'"
-      :desc="isEn
-        ? 'Spacious grand lounge, professional KTV, auto mahjong, gourmet kitchen & bar, outdoor tea patio, and garden BBQ for an unforgettable luxury mountain retreat.'
-        : '挑高奢華大客廳、專業KTV歡唱、電動麻將娛樂、智能中島餐廚、戶外品茗茶席與庭園BBQ烤肉，為您的包棟假期增添無盡奢華與愜意。'"
+      :tag="t('facilities.tag')"
+      :title="t('facilities.title')"
+      :desc="t('facilities.desc')"
     />
 
     <section class="section-py facilities-section">
