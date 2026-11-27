@@ -203,5 +203,23 @@
     "desc": "為維護每一位住客之安全、隱私與山林清幽環境，請於預約前詳細閱讀以下規範。",
     "checkInRulesTitle": "包棟入住規範與注意事項",
     "faqTitle": "常見問題與解答"
+  },
+  "guide": {
+    "tag": "交通與周邊",
+    "title": "地理位置、交通指引與周邊推薦",
+    "desc": "坐落於苗栗卓蘭山林幽境，坐擁開闊山嵐景致。便利自駕路線，輕鬆探訪周邊私房景點、溫泉名勝與客家道地美食。",
+    "byCarTitle": "自行開車與自駕路線",
+    "openGoogleMaps": "開啟 Google 地圖導航",
+    "publicTransTitle": "高鐵抵達與專車接駁",
+    "shuttleNote": "如需推薦車隊接駁，可提前向管家諮詢預約",
+    "addressLabel": "山莊導航地址",
+    "tabAll": "全部精選推薦",
+    "tabAttractions": "私房私景點",
+    "tabDining": "周邊在地美食",
+    "attractionsTag": "苗栗周邊景點",
+    "attractionsTitle": "山林踏青・鐵道溫泉與私房美景",
+    "diningTag": "周邊在地美食",
+    "diningTitle": "客家合菜・甕仔雞與在地人氣排隊名店",
+    "parkingAvailable": "附停車場"
   }
 }

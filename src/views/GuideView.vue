@@ -17,7 +17,7 @@ import {
   CircleParking
 } from 'lucide-vue-next'
 
-const { isEn } = useI18n()
+const { isEn, t, tField } = useI18n()
 const { guide: guideData } = useGuide()
 const { basicInfo: siteData } = useSiteContent()
 const activeTab = ref('all') // 'all', 'attractions', 'dining'
@@ -26,11 +26,9 @@ const activeTab = ref('all') // 'all', 'attractions', 'dining'
 <template>
   <div class="guide-page">
     <PageHeader 
-      :tag="isEn ? 'LOCATION & GUIDE' : '交通與周邊'"
-      :title="isEn ? 'Location & Regional Travel Guide' : '地理位置、交通指引與周邊推薦'"
-      :desc="isEn
-        ? 'Nestled in the tranquil mountains of Zhuolan, Miaoli. Discover curated local scenic spots, authentic Hakka cuisines, and peaceful nature.'
-        : '坐落於苗栗卓蘭山林幽境，坐擁開闊山嵐景致。便利自駕路線，輕鬆探訪周邊私房景點、溫泉名勝與客家道地美食。'"
+      :tag="t('guide.tag')"
+      :title="t('guide.title')"
+      :desc="t('guide.desc')"
     />
 
     <section class="section-py guide-content-section">
@@ -40,7 +38,7 @@ const activeTab = ref('all') // 'all', 'attractions', 'dining'
           <div class="trans-card card-luxury">
             <div class="trans-header">
               <Car :size="24" class="trans-icon" />
-              <h2>{{ isEn ? 'By Car & GPS Navigation' : '自行開車與自駕路線' }}</h2>
+              <h2>{{ t('guide.byCarTitle') }}</h2>
             </div>
             <ul class="trans-list">
               <li v-for="(route, rIdx) in (isEn ? guideData.transportation.byCarEn : guideData.transportation.byCarZh)" :key="rIdx">
@@ -50,7 +48,7 @@ const activeTab = ref('all') // 'all', 'attractions', 'dining'
             <div class="trans-action">
               <a :href="siteData.googleMapUrl" target="_blank" rel="noopener noreferrer" class="btn btn-gold">
                 <MapPin :size="16" />
-                <span>{{ isEn ? 'Open Google Maps' : '開啟 Google 地圖導航' }}</span>
+                <span>{{ t('guide.openGoogleMaps') }}</span>
                 <ExternalLink :size="14" />
               </a>
             </div>
@@ -59,20 +57,20 @@ const activeTab = ref('all') // 'all', 'attractions', 'dining'
           <div class="trans-card card-luxury">
             <div class="trans-header">
               <Train :size="24" class="trans-icon" />
-              <h2>{{ isEn ? 'High Speed Rail & Transfers' : '高鐵抵達與專車接駁' }}</h2>
+              <h2>{{ t('guide.publicTransTitle') }}</h2>
             </div>
             <p class="trans-desc">
-              {{ isEn ? guideData.transportation.byPublicEn : guideData.transportation.byPublicZh }}
+              {{ tField(guideData.transportation, 'byPublic') }}
             </p>
             <div class="shuttle-note">
               <Compass :size="16" />
-              <span>{{ isEn ? 'Shuttle arrangements can be requested via concierge' : '如需推薦車隊接駁，可提前向管家諮詢預約' }}</span>
+              <span>{{ t('guide.shuttleNote') }}</span>
             </div>
             <div class="address-box">
               <MapPin :size="16" class="addr-icon" />
               <div>
-                <span class="addr-label">{{ isEn ? 'Shan Yu Villa Address' : '山莊導航地址' }}</span>
-                <p class="addr-text">{{ isEn ? siteData.addressEn : siteData.addressZh }}</p>
+                <span class="addr-label">{{ t('guide.addressLabel') }}</span>
+                <p class="addr-text">{{ tField(siteData, 'address') }}</p>
               </div>
             </div>
           </div>
@@ -86,7 +84,7 @@ const activeTab = ref('all') // 'all', 'attractions', 'dining'
             @click="activeTab = 'all'"
           >
             <Sparkles :size="16" />
-            <span>{{ isEn ? 'All Recommendations' : '全部精選推薦' }} ({{ guideData.attractions.length + guideData.dining.length }})</span>
+            <span>{{ t('guide.tabAll') }} ({{ guideData.attractions.length + guideData.dining.length }})</span>
           </button>
           <button 
             class="tab-btn" 
@@ -94,7 +92,7 @@ const activeTab = ref('all') // 'all', 'attractions', 'dining'
             @click="activeTab = 'attractions'"
           >
             <Compass :size="16" />
-            <span>{{ isEn ? 'Scenic Spots' : '私房私景點' }} ({{ guideData.attractions.length }})</span>
+            <span>{{ t('guide.tabAttractions') }} ({{ guideData.attractions.length }})</span>
           </button>
           <button 
             class="tab-btn" 
@@ -102,15 +100,15 @@ const activeTab = ref('all') // 'all', 'attractions', 'dining'
             @click="activeTab = 'dining'"
           >
             <UtensilsCrossed :size="16" />
-            <span>{{ isEn ? 'Local Dining' : '周邊在地美食' }} ({{ guideData.dining.length }})</span>
+            <span>{{ t('guide.tabDining') }} ({{ guideData.dining.length }})</span>
           </button>
         </div>
 
         <!-- 2. 周邊私房推薦景點 (Attractions) -->
         <div v-if="activeTab === 'all' || activeTab === 'attractions'" class="guide-block attractions-section">
           <div class="section-header text-left">
-            <span class="section-tag">{{ isEn ? 'NEARBY ATTRACTIONS' : '苗栗周邊景點' }}</span>
-            <h2 class="section-title">{{ isEn ? 'Curated Scenic Spots & Adventures' : '山林踏青・鐵道溫泉與私房美景' }}</h2>
+            <span class="section-tag">{{ t('guide.attractionsTag') }}</span>
+            <h2 class="section-title">{{ t('guide.attractionsTitle') }}</h2>
           </div>
 
           <div class="guide-grid">
@@ -120,23 +118,23 @@ const activeTab = ref('all') // 'all', 'attractions', 'dining'
               class="guide-card card-luxury"
             >
               <div class="guide-img-box img-zoom-container">
-                <img :src="att.image" :alt="isEn ? att.nameEn : att.nameZh" loading="lazy" />
+                <img :src="att.image" :alt="tField(att, 'name')" loading="lazy" />
                 <div class="drive-time-badge">
                   <Clock :size="13" />
-                  <span>{{ isEn ? att.driveTimeEn : att.driveTimeZh }}</span>
+                  <span>{{ tField(att, 'driveTime') }}</span>
                 </div>
-                <div v-if="att.locationZh" class="location-badge">
+                <div v-if="att.locationZh || att.locationEn" class="location-badge">
                   <MapPin :size="12" />
-                  <span>{{ isEn ? att.locationEn : att.locationZh }}</span>
+                  <span>{{ tField(att, 'location') }}</span>
                 </div>
               </div>
               <div class="guide-body">
-                <div class="guide-tag">{{ isEn ? att.tagEn : att.tagZh }}</div>
-                <h3 class="guide-name">{{ isEn ? att.nameEn : att.nameZh }}</h3>
-                <p class="guide-desc">{{ isEn ? att.descEn : att.descZh }}</p>
-                <div v-if="att.noticeZh" class="guide-notice">
+                <div class="guide-tag">{{ tField(att, 'tag') }}</div>
+                <h3 class="guide-name">{{ tField(att, 'name') }}</h3>
+                <p class="guide-desc">{{ tField(att, 'desc') }}</p>
+                <div v-if="att.noticeZh || att.noticeEn" class="guide-notice">
                   <Info :size="14" class="notice-icon" />
-                  <span>{{ isEn ? att.noticeEn : att.noticeZh }}</span>
+                  <span>{{ tField(att, 'notice') }}</span>
                 </div>
               </div>
             </div>
@@ -146,8 +144,8 @@ const activeTab = ref('all') // 'all', 'attractions', 'dining'
         <!-- 3. 周邊在地美食 (Dining) -->
         <div v-if="activeTab === 'all' || activeTab === 'dining'" class="guide-block dining-section">
           <div class="section-header text-left">
-            <span class="section-tag">{{ isEn ? 'LOCAL CUISINE' : '周邊在地美食' }}</span>
-            <h2 class="section-title">{{ isEn ? 'Local Gourmet & Hakka Specialties' : '客家合菜・甕仔雞與在地人氣排隊名店' }}</h2>
+            <span class="section-tag">{{ t('guide.diningTag') }}</span>
+            <h2 class="section-title">{{ t('guide.diningTitle') }}</h2>
           </div>
 
           <div class="guide-grid">
@@ -157,23 +155,23 @@ const activeTab = ref('all') // 'all', 'attractions', 'dining'
               class="guide-card card-luxury"
             >
               <div class="guide-img-box img-zoom-container">
-                <img :src="dish.image" :alt="isEn ? dish.nameEn : dish.nameZh" loading="lazy" />
+                <img :src="dish.image" :alt="tField(dish, 'name')" loading="lazy" />
                 <div v-if="dish.parking" class="parking-badge">
                   <CircleParking :size="13" />
-                  <span>{{ isEn ? 'Parking Available' : '附停車場' }}</span>
+                  <span>{{ t('guide.parkingAvailable') }}</span>
                 </div>
-                <div v-if="dish.locationZh" class="location-badge">
+                <div v-if="dish.locationZh || dish.locationEn" class="location-badge">
                   <MapPin :size="12" />
-                  <span>{{ isEn ? dish.locationEn : dish.locationZh }}</span>
+                  <span>{{ tField(dish, 'location') }}</span>
                 </div>
               </div>
               <div class="guide-body">
-                <div class="guide-tag">{{ isEn ? dish.tagEn : dish.tagZh }}</div>
-                <h3 class="guide-name">{{ isEn ? dish.nameEn : dish.nameZh }}</h3>
-                <p class="guide-desc">{{ isEn ? dish.descEn : dish.descZh }}</p>
-                <div v-if="dish.noticeZh" class="guide-notice">
+                <div class="guide-tag">{{ tField(dish, 'tag') }}</div>
+                <h3 class="guide-name">{{ tField(dish, 'name') }}</h3>
+                <p class="guide-desc">{{ tField(dish, 'desc') }}</p>
+                <div v-if="dish.noticeZh || dish.noticeEn" class="guide-notice">
                   <Info :size="14" class="notice-icon" />
-                  <span>{{ isEn ? dish.noticeEn : dish.noticeZh }}</span>
+                  <span>{{ tField(dish, 'notice') }}</span>
                 </div>
               </div>
             </div>

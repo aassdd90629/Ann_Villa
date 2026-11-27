@@ -203,5 +203,23 @@
     "desc": "Please review our guidelines to ensure a safe, tranquil, and comfortable stay for everyone.",
     "checkInRulesTitle": "Check-in & Estate Rules",
     "faqTitle": "Frequently Asked Questions"
+  },
+  "guide": {
+    "tag": "LOCATION & GUIDE",
+    "title": "Location & Regional Travel Guide",
+    "desc": "Nestled in the tranquil mountains of Zhuolan, Miaoli. Discover curated local scenic spots, authentic Hakka cuisines, and peaceful nature.",
+    "byCarTitle": "By Car & GPS Navigation",
+    "openGoogleMaps": "Open Google Maps",
+    "publicTransTitle": "High Speed Rail & Transfers",
+    "shuttleNote": "Shuttle arrangements can be requested via concierge",
+    "addressLabel": "Shan Yu Villa Address",
+    "tabAll": "All Recommendations",
+    "tabAttractions": "Scenic Spots",
+    "tabDining": "Local Dining",
+    "attractionsTag": "NEARBY ATTRACTIONS",
+    "attractionsTitle": "Curated Scenic Spots & Adventures",
+    "diningTag": "LOCAL CUISINE",
+    "diningTitle": "Local Gourmet & Hakka Specialties",
+    "parkingAvailable": "Parking Available"
   }
 }
