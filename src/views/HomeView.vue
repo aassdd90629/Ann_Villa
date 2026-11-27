@@ -67,6 +67,7 @@ onMounted(async () => {
               roomTitle="全區尊榮包棟"
               variant="gold"
               :text="t('nav.reserve')"
+              :lineUrl="siteData.lineUrl || siteData.lineId"
             />
             <RouterLink to="/rooms" class="btn btn-white">
               <span>{{ t('action.explore') }}</span>
@@ -216,6 +217,7 @@ onMounted(async () => {
               roomTitle="全館尊榮包棟"
               variant="gold"
               :text="isEn ? 'Book Exclusive Villa' : '立即洽詢包棟檔期'"
+              :lineUrl="siteData.lineUrl || siteData.lineId"
             />
             <RouterLink to="/packages" class="btn btn-outline">
               <span>{{ isEn ? 'View Pricing & Policies' : '查看方案詳細規則' }}</span>
