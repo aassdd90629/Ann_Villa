@@ -20,7 +20,7 @@ defineProps({
 
 defineEmits(['collapse'])
 
-const { isEn, tField } = useI18n()
+const { isEn, t, tField } = useI18n()
 </script>
 
 <template>
@@ -34,10 +34,10 @@ const { isEn, tField } = useI18n()
       <button 
         class="collapse-btn" 
         @click.stop="$emit('collapse')"
-        :aria-label="isEn ? 'Collapse' : '收合詳細介紹'"
+        :aria-label="t('home.suites.collapseAria')"
       >
         <ChevronLeft :size="16" />
-        <span>{{ isEn ? 'Collapse' : '收合客房介紹' }}</span>
+        <span>{{ t('home.suites.collapseIntro') }}</span>
       </button>
     </div>
 
@@ -52,21 +52,21 @@ const { isEn, tField } = useI18n()
       <div class="spec-box">
         <Users :size="15" class="spec-icon" />
         <div class="spec-text">
-          <span class="spec-name">{{ isEn ? 'Capacity' : '容納人數' }}</span>
+          <span class="spec-name">{{ t('home.suites.capacity') }}</span>
           <span class="spec-val">{{ tField(room, 'capacity') }}</span>
         </div>
       </div>
       <div class="spec-box">
         <Bed :size="15" class="spec-icon" />
         <div class="spec-text">
-          <span class="spec-name">{{ isEn ? 'Bed Type' : '床型配置' }}</span>
+          <span class="spec-name">{{ t('home.suites.bedType') }}</span>
           <span class="spec-val">{{ tField(room, 'bedType') }}</span>
         </div>
       </div>
       <div class="spec-box">
         <Maximize2 :size="15" class="spec-icon" />
         <div class="spec-text">
-          <span class="spec-name">{{ isEn ? 'Area Size' : '空間坪數' }}</span>
+          <span class="spec-name">{{ t('home.suites.areaSize') }}</span>
           <span class="spec-val">{{ room.size }}</span>
         </div>
       </div>
@@ -74,13 +74,13 @@ const { isEn, tField } = useI18n()
 
     <!-- 詳細說明內文 -->
     <div class="drawer-desc-block">
-      <h4 class="block-title">{{ isEn ? 'Suite Concept' : '客房風格與空間特色' }}</h4>
+      <h4 class="block-title">{{ t('home.suites.suiteConcept') }}</h4>
       <p class="drawer-desc-text">{{ tField(room, 'desc') }}</p>
     </div>
 
     <!-- 設施與特色亮點 -->
     <div class="drawer-highlights-block">
-      <h4 class="block-title">{{ isEn ? 'Amenities & Features' : '房型專屬設施與特色亮點' }}</h4>
+      <h4 class="block-title">{{ t('home.suites.amenitiesFeatures') }}</h4>
       <ul class="highlights-list">
         <li 
           v-for="(item, idx) in (isEn ? room.highlightsEn : room.highlightsZh)" 
@@ -99,11 +99,11 @@ const { isEn, tField } = useI18n()
         :roomId="room.id"
         :roomTitle="tField(room, 'title')"
         variant="gold"
-        :text="isEn ? 'Inquire Availability' : '洽詢此房型包棟檔期'"
+        :text="t('home.suites.inquireAvailability')"
         customClass="btn-inquire-direct"
       />
       <RouterLink to="/rooms" class="btn btn-outline btn-all-rooms">
-        <span>{{ isEn ? 'View All Rooms' : '瀏覽全棟 5 大客房' }}</span>
+        <span>{{ t('home.suites.viewAllRooms') }}</span>
         <ArrowRight :size="15" />
       </RouterLink>
     </div>

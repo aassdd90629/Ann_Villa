@@ -8,10 +8,7 @@ import { getRooms } from '../services/roomService'
 import { 
   Users, 
   Bed, 
-  Maximize, 
-  Check, 
-  Sparkles,
-  ArrowRight
+  Check 
 } from 'lucide-vue-next'
 
 const { isEn, t, tField } = useI18n()
@@ -26,11 +23,9 @@ onMounted(async () => {
   <div class="rooms-page">
     <!-- 頂部頁頭 -->
     <PageHeader 
-      :tag="isEn ? 'ACCOMMODATION' : '房型導覽'"
-      :title="isEn ? '5 Private Suites' : '5 間獨立景觀客房'"
-      :desc="isEn 
-        ? 'Features 5 comfortable bedrooms across two floors (3 on 1F, 2 on 2F) accommodating up to 18 guests in complete privacy.' 
-        : '全館共 5 間獨立客房（1樓三間、2樓兩間），最多可容納 18 位貴賓，享受極致悠閒的山林包棟假期。'"
+      :tag="t('rooms.tag')"
+      :title="t('rooms.title')"
+      :desc="t('rooms.desc')"
     />
 
     <!-- 房型列表 -->
@@ -80,7 +75,7 @@ onMounted(async () => {
 
               <!-- 特色亮點清單 -->
               <div class="highlights-box">
-                <h4 class="box-title">{{ isEn ? 'Suite Highlights' : '房型專屬設施與亮點' }}</h4>
+                <h4 class="box-title">{{ t('rooms.highlights') }}</h4>
                 <ul class="highlights-list">
                   <li 
                     v-for="(item, hIdx) in (isEn ? room.highlightsEn : room.highlightsZh)" 
@@ -98,7 +93,7 @@ onMounted(async () => {
                   :roomId="room.id"
                   :roomTitle="tField(room, 'title')"
                   variant="gold"
-                  :text="isEn ? 'Inquire Availability' : '洽詢此房型包棟檔期'"
+                  :text="t('rooms.inquireAvailability')"
                 />
               </div>
             </div>

@@ -2,7 +2,7 @@
 import { CheckCircle2 } from 'lucide-vue-next'
 import { useI18n } from '../../composables/useI18n'
 
-const { isEn } = useI18n()
+const { t } = useI18n()
 </script>
 
 <template>
@@ -10,57 +10,51 @@ const { isEn } = useI18n()
     <div class="container">
       <div class="philosophy-grid">
         <div class="philosophy-text">
-          <span class="section-tag">{{ isEn ? 'PHILOSOPHY' : '東方隱逸美學' }}</span>
+          <span class="section-tag">{{ t('home.philosophy.tag') }}</span>
           <h2 class="section-title">
-            {{ isEn ? 'A Serene Sanctuary Floating Above the Clouds' : '於山林雲海深處，尋得片刻心靈留白' }}
+            {{ t('home.philosophy.title') }}
           </h2>
           <p class="lead">
-            {{ isEn 
-              ? 'Embracing nature with minimalist architectural design and tactile natural materials, Shan Yu Villa crafts an authentic sense of timeless luxury.' 
-              : '山語 Villa 融合東方建築的內斂留白與山林綠意，以天然石材、溫潤黑胡桃木與通透採光，營造出遠離塵囂的頂級私密假期。' 
-            }}
+            {{ t('home.philosophy.lead') }}
           </p>
           <p>
-            {{ isEn
-              ? 'Whether gathering with beloved family or hosting closed-door executive meetings, our private estate ensures uncompromising tranquility and bespoke hospitality.'
-              : '無論是三五好友家族團聚、婚紗攝影采風，亦或是企業高階閉門閉關，整座山莊皆為您一人專屬。'
-            }}
+            {{ t('home.philosophy.desc') }}
           </p>
 
           <!-- 全棟專屬設施亮點 -->
           <div class="philosophy-features">
             <div class="p-feat">
               <CheckCircle2 :size="18" class="feat-icon" />
-              <span>{{ isEn ? '5 Private Bedrooms (Up to 18 Guests)' : '全棟5間獨立客房・專屬容納最多18位' }}</span>
+              <span>{{ t('home.philosophy.features.bedrooms') }}</span>
             </div>
             <div class="p-feat">
               <CheckCircle2 :size="18" class="feat-icon" />
-              <span>{{ isEn ? 'Auto-Mahjong & KTV Karaoke Lounge' : '電動麻將桌與客廳卡拉OK歡唱空間' }}</span>
+              <span>{{ t('home.philosophy.features.entertainment') }}</span>
             </div>
             <div class="p-feat">
               <CheckCircle2 :size="18" class="feat-icon" />
-              <span>{{ isEn ? 'Smart Kitchen, Outdoor Tea Patio & BBQ' : '智能廚房、戶外品茗茶席與庭園烤肉BBQ' }}</span>
+              <span>{{ t('home.philosophy.features.patio') }}</span>
             </div>
           </div>
 
           <!-- 包棟計價與方案費用說明 -->
           <div class="philosophy-pricing-box">
             <div class="pricing-group">
-              <span class="pricing-title">{{ isEn ? 'Weekdays:' : '平日：' }}</span>
+              <span class="pricing-title">{{ t('home.philosophy.pricing.weekdays') }}</span>
               <ul class="pricing-list">
-                <li>{{ isEn ? '• 10 guests or fewer: NT$ 20,000 w/ Breakfast' : '• 10人以下2萬元含早餐' }}</li>
-                <li>{{ isEn ? '• 11-14 guests: NT$ 25,000 w/ Breakfast' : '• 11-14人以下2.5萬元含早餐' }}</li>
-                <li>{{ isEn ? '• 15-18 guests: NT$ 30,000 w/ Breakfast' : '• 15-18人以下3萬元含早餐' }}</li>
+                <li>{{ t('home.philosophy.pricing.tier10') }}</li>
+                <li>{{ t('home.philosophy.pricing.tier14') }}</li>
+                <li>{{ t('home.philosophy.pricing.tier18') }}</li>
               </ul>
             </div>
 
             <div class="pricing-group">
               <div class="pricing-line">
-                {{ isEn ? '• Regular Weekend: NT$ 35,000 w/ Breakfast (Fri, Sat, Sun)' : '• 一般假日3.5萬元含早餐（一般假日是指星期五、六、日）' }}
+                {{ t('home.philosophy.pricing.weekend') }}
               </div>
               <div class="pricing-line holiday-line">
-                <span class="holiday-title">{{ isEn ? 'National Holidays: ' : '國定假日：' }}</span>
-                <span class="holiday-note">{{ isEn ? '（Holiday rates apply starting from the day before holiday w/ breakfast; Lunar New Year does not include breakfast）' : '（一律國定假日前一天，開始算國定假日的房價含早餐，但過年房價不提供早餐）' }}</span>
+                <span class="holiday-title">{{ t('home.philosophy.pricing.holidays') }}</span>
+                <span class="holiday-note">{{ t('home.philosophy.pricing.holidayNote') }}</span>
               </div>
             </div>
           </div>
@@ -70,14 +64,14 @@ const { isEn } = useI18n()
           <div class="img-frame-main img-zoom-container">
             <img 
               src="/img/house/house-01.webp" 
-              :alt="isEn ? 'Shan Yu Villa Estate Exterior & Lawn' : '山語 Villa 莊園建築外觀與青翠草坪'" 
+              :alt="t('home.philosophy.altExterior')" 
               loading="lazy"
             />
           </div>
           <div class="img-frame-sub img-zoom-container">
             <img 
               src="/img/cloud-sea/cloud-sea-02.webp" 
-              :alt="isEn ? 'Mountain Mist and Cloud Sea Horizon' : '山語莊園遠眺層巒雲霧仙境'" 
+              :alt="t('home.philosophy.altClouds')" 
               loading="lazy"
             />
           </div>

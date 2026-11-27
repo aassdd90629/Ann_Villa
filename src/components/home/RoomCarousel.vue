@@ -15,7 +15,7 @@ const props = defineProps({
   }
 })
 
-const { isEn } = useI18n()
+const { t } = useI18n()
 
 // 焦點輪播狀態 (最中間那張焦點集中)
 const activeIndex = ref(0)
@@ -161,17 +161,12 @@ onUnmounted(() => {
     <div class="stage-hint-bar">
       <div class="hint-content">
         <Sparkles :size="13" class="hint-icon" />
-        <span>
-          {{ isEn 
-            ? 'Hover to pause · Click any card to expand details to the right' 
-            : '滑鼠懸停自動暫停・點擊整張卡片直接向右展開客房詳情' 
-          }}
-        </span>
+        <span>{{ t('home.suites.carouselHint') }}</span>
       </div>
       <div class="state-pill" :class="{ 'paused': isPaused || isExpanded }">
         <Pause v-if="isPaused || isExpanded" :size="11" />
         <Play v-else :size="11" />
-        <span>{{ (isPaused || isExpanded) ? (isEn ? 'Paused' : '暫停中') : (isEn ? 'Auto-cycling' : '輪播中') }}</span>
+        <span>{{ (isPaused || isExpanded) ? t('common.paused') : t('common.autoCycling') }}</span>
       </div>
     </div>
 
@@ -182,7 +177,7 @@ onUnmounted(() => {
         v-if="isExpanded" 
         class="expanded-backdrop" 
         @click="collapse" 
-        :title="isEn ? 'Click to collapse' : '點擊空白處收合'"
+        :title="t('home.suites.clickToCollapse')"
       />
 
       <div class="stage-track">

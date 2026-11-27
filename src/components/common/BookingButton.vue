@@ -55,7 +55,7 @@ const props = defineProps({
   }
 })
 
-const { isEn } = useI18n()
+const { t } = useI18n()
 
 const iconSize = computed(() => {
   if (props.size === 'lg') return 18
@@ -106,7 +106,7 @@ const onClick = (e) => {
       <Sparkles v-if="showIcon" :size="iconSize" />
     </slot>
     <slot>
-      <span>{{ text || (isEn ? 'Reserve Now' : '立即預約') }}</span>
+      <span>{{ text || t('action.bookNow') }}</span>
     </slot>
   </button>
 </template>

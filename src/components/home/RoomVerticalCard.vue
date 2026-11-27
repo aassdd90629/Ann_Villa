@@ -25,7 +25,7 @@ const props = defineProps({
 
 const emit = defineEmits(['open', 'collapse'])
 
-const { isEn, tField } = useI18n()
+const { t, tField } = useI18n()
 
 // 點擊整張卡片任何區域皆觸發打開展開
 const handleCardClick = (event) => {
@@ -93,7 +93,7 @@ const handleCardClick = (event) => {
         <p class="compact-desc">{{ tField(room, 'desc') }}</p>
 
         <div class="compact-footer">
-          <span class="action-text">{{ isEn ? 'Expand Details' : '點開詳細介紹' }}</span>
+          <span class="action-text">{{ t('home.suites.expandDetails') }}</span>
           <div class="action-arrow-circle">
             <ArrowRight :size="14" />
           </div>

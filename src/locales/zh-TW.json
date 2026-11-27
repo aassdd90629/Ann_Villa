@@ -1,0 +1,158 @@
+{
+  "brand": {
+    "name": "山語 Villa",
+    "sub": "豪宅山莊包棟別墅",
+    "slogan": "山嵐隱逸・東方極境"
+  },
+  "nav": {
+    "home": "首頁",
+    "rooms": "房型導覽",
+    "facilities": "園區設施",
+    "packages": "包棟方案",
+    "rules": "入住須知",
+    "guide": "周邊景點",
+    "news": "最新消息",
+    "lookup": "訂單查詢",
+    "reserve": "預約諮詢"
+  },
+  "action": {
+    "call": "一鍵撥號",
+    "line": "LINE 預約諮詢",
+    "map": "地圖導航",
+    "explore": "探索山莊",
+    "details": "查看詳情",
+    "back": "返回列表",
+    "bookNow": "立即預約",
+    "viewMore": "了解更多"
+  },
+  "footer": {
+    "about": "關於山語",
+    "aboutText": "隱匿於翠巒疊嶂之間的頂級私邸，以東方極致留白美學與靜謐山林為靈感，為您提供 5 間客房的專屬包棟奢華度假體驗。",
+    "contact": "聯絡與預約",
+    "address": "地址",
+    "phone": "客服專線",
+    "line": "官方 LINE",
+    "ig": "Instagram",
+    "rights": "版權所有",
+    "admin": "後台管理"
+  },
+  "theme": {
+    "light": "晨曦模式",
+    "dark": "夜景模式"
+  },
+  "calendar": {
+    "title": "即時空房查詢與包棟預約",
+    "subtitle": "點選預計入住與退房日期即可即時試算包棟費用",
+    "checkIn": "入住日期",
+    "checkOut": "退房日期",
+    "selectDates": "請於日曆選取預計入住與退房日期",
+    "selectCheckIn": "請點選入住日期",
+    "selectCheckOut": "請點選退房日期",
+    "nights": "晚",
+    "guests": "入住人數",
+    "guestCount": "人",
+    "estimatedTotal": "預估包棟總金額",
+    "pricingBreakdown": "費用明細試算",
+    "weekdayNights": "平日晚數",
+    "weekendNights": "假日晚數",
+    "holidayNights": "連假晚數",
+    "booked": "已預約",
+    "available": "可預約",
+    "selected": "已選取",
+    "inRange": "選取範圍",
+    "syncNotice": "房態僅供即時參考，最新空房檔期請以官方 LINE 管家確認為準",
+    "lastSync": "最後同步時間",
+    "directPerksTitle": "山語 Villa 官方直訂專屬禮遇",
+    "otaAltTitle": "亦可透過官方合作之 OTA 平台預訂",
+    "inquireViaLine": "帶入日期透過 LINE 官方立即預約",
+    "minStayNotice": "包棟預約每次至少為 1 晚",
+    "contactForCustom": "如需客製拍攝場租或特殊包場，請直接聯繫管家"
+  },
+  "common": {
+    "expandDetails": "點開詳細介紹",
+    "collapse": "收合",
+    "viewAll": "查看全部",
+    "paused": "暫停中",
+    "autoCycling": "輪播中",
+    "previous": "上一頁",
+    "next": "下一頁"
+  },
+  "home": {
+    "hero": {
+      "badge": "苗栗・全新完工豪宅山莊包棟",
+      "desc": "坐落於山林之間，獨享 5 間獨立客房、客廳KTV、電動麻將桌、智能廚房與庭園烤肉區，專為10人、14人、18人的貴賓打造專屬的慢活包棟時光。",
+      "stats": {
+        "suites": "間獨立景觀客房",
+        "maxGuests": "位專屬包棟上限",
+        "privateEstate": "獨門獨院包棟"
+      },
+      "pureView": "沉浸純景",
+      "villaInfo": "山莊簡介",
+      "hideTextTitle": "隱藏文字沉浸賞景",
+      "showTextTitle": "顯示山莊簡介",
+      "pauseCarousel": "暫停輪播",
+      "playCarousel": "播放輪播",
+      "prevSlide": "上一張景觀",
+      "nextSlide": "下一張景觀"
+    },
+    "philosophy": {
+      "tag": "東方隱逸美學",
+      "title": "於山林雲海深處，尋得片刻心靈留白",
+      "lead": "山語 Villa 融合東方建築的內斂留白與山林綠意，以天然石材、溫潤黑胡桃木與通透採光，營造出遠離塵囂的頂級私密假期。",
+      "desc": "無論是三五好友家族團聚、婚紗攝影采風，亦或是企業高階閉門閉關，整座山莊皆為您一人專屬。",
+      "features": {
+        "bedrooms": "全棟5間獨立客房・專屬容納最多18位",
+        "entertainment": "電動麻將桌與客廳卡拉OK歡唱空間",
+        "patio": "智能廚房、戶外品茗茶席與庭園烤肉BBQ"
+      },
+      "pricing": {
+        "weekdays": "平日：",
+        "tier10": "• 10人以下2萬元含早餐",
+        "tier14": "• 11-14人以下2.5萬元含早餐",
+        "tier18": "• 15-18人以下3萬元含早餐",
+        "weekend": "• 一般假日3.5萬元含早餐（一般假日是指星期五、六、日）",
+        "holidays": "國定假日：",
+        "holidayNote": "（一律國定假日前一天，開始算國定假日的房價含早餐，但過年房價不提供早餐）"
+      },
+      "altExterior": "山語 Villa 莊園建築外觀與青翠草坪",
+      "altClouds": "山語莊園遠眺層巒雲霧仙境"
+    },
+    "suites": {
+      "tag": "獨立景觀客房",
+      "title": "五間獨立景觀客房・舒適成境",
+      "desc": "全館共 5 間獨立客房（1樓三間、2樓兩間），採光明亮清幽，最多容納 18 位貴賓。",
+      "viewAll": "查看 5 間客房完整圖集",
+      "carouselHint": "滑鼠懸停自動暫停・點擊整張卡片直接向右展開客房詳情",
+      "clickToCollapse": "點擊空白處收合",
+      "collapseIntro": "收合客房介紹",
+      "collapseAria": "收合詳細介紹",
+      "capacity": "容納人數",
+      "bedType": "床型配置",
+      "areaSize": "空間坪數",
+      "suiteConcept": "客房風格與空間特色",
+      "amenitiesFeatures": "房型專屬設施與特色亮點",
+      "inquireAvailability": "洽詢此房型包棟檔期",
+      "viewAllRooms": "瀏覽全棟 5 大客房",
+      "expandDetails": "點開詳細介紹"
+    },
+    "facilities": {
+      "tag": "頂級園區空間",
+      "title": "尊榮設施・打造極致度假儀式感",
+      "desc": "精心規劃 6 大空間：挑高歡唱客廳、頂級中島吧台、戶外原木品茗茶席、美式庭園烤肉、星空觀景露台與百坪青翠草坪。",
+      "spaceTag": "園區空間",
+      "viewAll": "查看 6 大空間完整設施圖集"
+    },
+    "calendar": {
+      "tag": "即時房態與預約",
+      "title": "全館檔期查詢・線上預約試算",
+      "desc": "點選預計入住與退房日期即可即時預估包棟費用；最新空房檔期歡迎透過官方 LINE 洽詢管家確認預約。"
+    }
+  },
+  "rooms": {
+    "tag": "房型導覽",
+    "title": "5 間獨立景觀客房",
+    "desc": "全館共 5 間獨立客房（1樓三間、2樓兩間），最多可容納 18 位貴賓，享受極致悠閒的山林包棟假期。",
+    "highlights": "房型專屬設施與亮點",
+    "inquireAvailability": "洽詢此房型包棟檔期"
+  }
+}

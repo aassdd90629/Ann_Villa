@@ -42,7 +42,7 @@ const props = defineProps({
   }
 })
 
-const { isEn } = useI18n()
+const { isEn, t } = useI18n()
 
 const currentIndex = ref(0)
 const prevIndex = ref(0)
@@ -263,7 +263,7 @@ watch(effectiveTextDuration, () => {
         type="button" 
         class="carousel-arrow prev" 
         @click="prevSlide"
-        :aria-label="isEn ? 'Previous slide' : '上一張景觀'"
+        :aria-label="t('home.hero.prevSlide')"
       >
         <ChevronLeft :size="24" />
       </button>
@@ -271,7 +271,7 @@ watch(effectiveTextDuration, () => {
         type="button" 
         class="carousel-arrow next" 
         @click="nextSlide"
-        :aria-label="isEn ? 'Next slide' : '下一張景觀'"
+        :aria-label="t('home.hero.nextSlide')"
       >
         <ChevronRight :size="24" />
       </button>
@@ -315,11 +315,11 @@ watch(effectiveTextDuration, () => {
           type="button" 
           class="info-toggle-btn"
           @click="toggleContent"
-          :title="showContent ? (isEn ? 'Hide text for panoramic view' : '隱藏文字沉浸賞景') : (isEn ? 'Show estate intro' : '顯示山莊簡介')"
+          :title="showContent ? t('home.hero.hideTextTitle') : t('home.hero.showTextTitle')"
           :aria-label="showContent ? 'Hide estate info' : 'Show estate info'"
         >
           <Info :size="13" />
-          <span class="info-toggle-text">{{ showContent ? (isEn ? 'Pure View' : '沉浸純景') : (isEn ? 'Villa Info' : '山莊簡介') }}</span>
+          <span class="info-toggle-text">{{ showContent ? t('home.hero.pureView') : t('home.hero.villaInfo') }}</span>
         </button>
 
         <span class="carousel-counter">
@@ -331,7 +331,7 @@ watch(effectiveTextDuration, () => {
           type="button" 
           class="play-toggle-btn"
           @click="togglePlay"
-          :aria-label="isPlaying ? (isEn ? 'Pause' : '暫停輪播') : (isEn ? 'Play' : '播放輪播')"
+          :aria-label="isPlaying ? t('home.hero.pauseCarousel') : t('home.hero.playCarousel')"
         >
           <Pause v-if="isPlaying" :size="12" />
           <Play v-else :size="12" />

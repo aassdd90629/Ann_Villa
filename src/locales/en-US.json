@@ -1,0 +1,158 @@
+{
+  "brand": {
+    "name": "Shan Yu Villa",
+    "sub": "Luxury Estate & Private Retreat",
+    "slogan": "Oriental Serenity & Mountain Luxury"
+  },
+  "nav": {
+    "home": "Home",
+    "rooms": "Suites",
+    "facilities": "Facilities",
+    "packages": "Packages",
+    "rules": "Guidelines & FAQ",
+    "guide": "Travel Guide",
+    "news": "News",
+    "lookup": "Booking Lookup",
+    "reserve": "Inquiry"
+  },
+  "action": {
+    "call": "Call Us",
+    "line": "LINE Inquiry",
+    "map": "Get Directions",
+    "explore": "Explore Estate",
+    "details": "Suite Details",
+    "back": "Back to List",
+    "bookNow": "Book Now",
+    "viewMore": "Discover More"
+  },
+  "footer": {
+    "about": "About Shan Yu",
+    "aboutText": "A private mountain sanctuary nestled in tranquil greenery, crafted with oriental minimalist aesthetics and pure serenity for exclusive private villa experiences.",
+    "contact": "Contact & Booking",
+    "address": "Address",
+    "phone": "Phone",
+    "line": "Official LINE",
+    "ig": "Instagram",
+    "rights": "All rights reserved.",
+    "admin": "CMS Portal"
+  },
+  "theme": {
+    "light": "Dawn Mode",
+    "dark": "Night Mode"
+  },
+  "calendar": {
+    "title": "Live Availability & Direct Reservation",
+    "subtitle": "Select your dates to estimate your villa stay rates",
+    "checkIn": "Check-in",
+    "checkOut": "Check-out",
+    "selectDates": "Please select your check-in & check-out dates",
+    "selectCheckIn": "Select check-in date",
+    "selectCheckOut": "Select check-out date",
+    "nights": "night(s)",
+    "guests": "Guests",
+    "guestCount": "guests",
+    "estimatedTotal": "Estimated Total",
+    "pricingBreakdown": "Rate Calculation",
+    "weekdayNights": "Weekday Nights",
+    "weekendNights": "Weekend Nights",
+    "holidayNights": "Holiday Nights",
+    "booked": "Booked",
+    "available": "Available",
+    "selected": "Selected",
+    "inRange": "In Range",
+    "syncNotice": "Calendar availability is for reference; please confirm final dates with our butler via official LINE.",
+    "lastSync": "Last synced",
+    "directPerksTitle": "Direct Booking Exclusive Privileges",
+    "otaAltTitle": "Or Book via Our Official OTA Partners",
+    "inquireViaLine": "Reserve Dates via Official LINE",
+    "minStayNotice": "Minimum stay is 1 night for exclusive villa retreat",
+    "contactForCustom": "For photo shoots or corporate events, please contact our concierge"
+  },
+  "common": {
+    "expandDetails": "Expand Details",
+    "collapse": "Collapse",
+    "viewAll": "View All",
+    "paused": "Paused",
+    "autoCycling": "Auto-cycling",
+    "previous": "Previous",
+    "next": "Next"
+  },
+  "home": {
+    "hero": {
+      "badge": "EXCLUSIVE MOUNTAIN RETREAT",
+      "desc": "Nestled amid rolling mountain mist, offering 5 private bedrooms, living lounge with KTV, auto-mahjong, smart kitchen, and BBQ patio, crafted for exclusive private retreats of 10, 14, or 18 guests.",
+      "stats": {
+        "suites": "Private Suites",
+        "maxGuests": "Max Guests",
+        "privateEstate": "Private Estate"
+      },
+      "pureView": "Pure View",
+      "villaInfo": "Villa Info",
+      "hideTextTitle": "Hide text for panoramic view",
+      "showTextTitle": "Show estate intro",
+      "pauseCarousel": "Pause",
+      "playCarousel": "Play",
+      "prevSlide": "Previous slide",
+      "nextSlide": "Next slide"
+    },
+    "philosophy": {
+      "tag": "PHILOSOPHY",
+      "title": "A Serene Sanctuary Floating Above the Clouds",
+      "lead": "Embracing nature with minimalist architectural design and tactile natural materials, Shan Yu Villa crafts an authentic sense of timeless luxury.",
+      "desc": "Whether gathering with beloved family or hosting closed-door executive meetings, our private estate ensures uncompromising tranquility and bespoke hospitality.",
+      "features": {
+        "bedrooms": "5 Private Bedrooms (Up to 18 Guests)",
+        "entertainment": "Auto-Mahjong & KTV Karaoke Lounge",
+        "patio": "Smart Kitchen, Outdoor Tea Patio & BBQ"
+      },
+      "pricing": {
+        "weekdays": "Weekdays:",
+        "tier10": "• 10 guests or fewer: NT$ 20,000 w/ Breakfast",
+        "tier14": "• 11-14 guests: NT$ 25,000 w/ Breakfast",
+        "tier18": "• 15-18 guests: NT$ 30,000 w/ Breakfast",
+        "weekend": "• Regular Weekend: NT$ 35,000 w/ Breakfast (Fri, Sat, Sun)",
+        "holidays": "National Holidays: ",
+        "holidayNote": "（Holiday rates apply starting from the day before holiday w/ breakfast; Lunar New Year does not include breakfast）"
+      },
+      "altExterior": "Shan Yu Villa Estate Exterior & Lawn",
+      "altClouds": "Mountain Mist and Cloud Sea Horizon"
+    },
+    "suites": {
+      "tag": "SUITES",
+      "title": "5 Distinct Aesthetic Living Spaces",
+      "desc": "Features 5 comfortable bedrooms across two floors (3 on 1F, 2 on 2F) accommodating up to 18 guests.",
+      "viewAll": "View All 5 Suites",
+      "carouselHint": "Hover to pause · Click any card to expand details to the right",
+      "clickToCollapse": "Click to collapse",
+      "collapseIntro": "Collapse",
+      "collapseAria": "Collapse",
+      "capacity": "Capacity",
+      "bedType": "Bed Type",
+      "areaSize": "Area Size",
+      "suiteConcept": "Suite Concept",
+      "amenitiesFeatures": "Amenities & Features",
+      "inquireAvailability": "Inquire Availability",
+      "viewAllRooms": "View All Rooms",
+      "expandDetails": "Expand Details"
+    },
+    "facilities": {
+      "tag": "FACILITIES",
+      "title": "Curated Amenities for Unforgettable Moments",
+      "desc": "Immerse yourself in our 6 private spaces: living lounge with karaoke, chef kitchen & social bar, tea terrace, garden BBQ, panoramic deck, and private lawn.",
+      "spaceTag": "SPACE",
+      "viewAll": "Explore All 6 Spaces & Amenities"
+    },
+    "calendar": {
+      "tag": "AVAILABILITY & RESERVATION",
+      "title": "Villa Calendar & Online Rate Estimator",
+      "desc": "Select your check-in and check-out dates to estimate packages. Connect directly with our concierge via official LINE for the latest confirmed availability and exclusive privileges."
+    }
+  },
+  "rooms": {
+    "tag": "ACCOMMODATION",
+    "title": "5 Private Suites",
+    "desc": "Features 5 comfortable bedrooms across two floors (3 on 1F, 2 on 2F) accommodating up to 18 guests in complete privacy.",
+    "highlights": "Suite Highlights",
+    "inquireAvailability": "Inquire Availability"
+  }
+}

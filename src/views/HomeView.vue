@@ -19,7 +19,7 @@ import { useMediaAssets } from '../composables/useMediaAssets'
 const AvailabilityCalendar = defineAsyncComponent(() => import('../components/booking/AvailabilityCalendar.vue'))
 const ImageGallery = defineAsyncComponent(() => import('../components/common/ImageGallery.vue'))
 
-const { isEn, t, tField } = useI18n()
+const { t, tField } = useI18n()
 const { basicInfo: siteData } = useSiteContent()
 const { facilities: facilitiesData } = useFacilities()
 const { heroSlides, fetchMedia } = useMediaAssets()
@@ -39,19 +39,16 @@ onMounted(async () => {
         <div class="container hero-content">
           <span class="hero-badge">
             <Sparkles :size="14" />
-            <span>{{ isEn ? 'EXCLUSIVE MOUNTAIN RETREAT' : '苗栗・全新完工豪宅山莊包棟' }}</span>
+            <span>{{ t('home.hero.badge') }}</span>
           </span>
           <h1 class="hero-title">
-            {{ isEn ? siteData.brandNameEn : siteData.brandNameZh }}
+            {{ tField(siteData, 'brandName') }}
           </h1>
           <p class="hero-subtitle">
-            {{ isEn ? siteData.sloganEn : siteData.sloganZh }}
+            {{ tField(siteData, 'slogan') }}
           </p>
           <p class="hero-desc">
-            {{ isEn 
-              ? 'Nestled amid rolling mountain mist, offering 5 private bedrooms, living lounge with KTV, auto-mahjong, smart kitchen, and BBQ patio, crafted for exclusive private retreats of 10, 14, or 18 guests.' 
-              : '坐落於山林之間，獨享 5 間獨立客房、客廳KTV、電動麻將桌、智能廚房與庭園烤肉區，專為10人、14人、18人的貴賓打造專屬的慢活包棟時光。' 
-            }}
+            {{ t('home.hero.desc') }}
           </p>
 
           <div class="hero-actions">
@@ -71,17 +68,17 @@ onMounted(async () => {
           <div class="hero-stats">
             <div class="stat-item">
               <span class="stat-num">5</span>
-              <span class="stat-label">{{ isEn ? 'Private Suites' : '間獨立景觀客房' }}</span>
+              <span class="stat-label">{{ t('home.hero.stats.suites') }}</span>
             </div>
             <div class="stat-divider"></div>
             <div class="stat-item">
               <span class="stat-num">{{ siteData.maxGuests }}</span>
-              <span class="stat-label">{{ isEn ? 'Max Guests' : '位專屬包棟上限' }}</span>
+              <span class="stat-label">{{ t('home.hero.stats.maxGuests') }}</span>
             </div>
             <div class="stat-divider"></div>
             <div class="stat-item">
               <span class="stat-num">100%</span>
-              <span class="stat-label">{{ isEn ? 'Private Estate' : '獨門獨院包棟' }}</span>
+              <span class="stat-label">{{ t('home.hero.stats.privateEstate') }}</span>
             </div>
           </div>
         </div>
@@ -95,14 +92,9 @@ onMounted(async () => {
     <section class="section-py rooms-preview-section">
       <div class="container">
         <div class="section-header">
-          <span class="section-tag">{{ isEn ? 'SUITES' : '獨立景觀客房' }}</span>
-          <h2 class="section-title">{{ isEn ? '5 Distinct Aesthetic Living Spaces' : '五間獨立景觀客房・舒適成境' }}</h2>
-          <p class="section-desc">
-            {{ isEn 
-              ? 'Features 5 comfortable bedrooms across two floors (3 on 1F, 2 on 2F) accommodating up to 18 guests.' 
-              : '全館共 5 間獨立客房（1樓三間、2樓兩間），採光明亮清幽，最多容納 18 位貴賓。' 
-            }}
-          </p>
+          <span class="section-tag">{{ t('home.suites.tag') }}</span>
+          <h2 class="section-title">{{ t('home.suites.title') }}</h2>
+          <p class="section-desc">{{ t('home.suites.desc') }}</p>
         </div>
 
         <!-- 直式卡片輪播：滑鼠移到上方暫停、點擊彈窗詳細介紹 -->
@@ -110,7 +102,7 @@ onMounted(async () => {
 
         <div class="section-more-btn">
           <RouterLink to="/rooms" class="btn btn-outline">
-            <span>{{ isEn ? 'View All 5 Suites' : '查看 5 間客房完整圖集' }}</span>
+            <span>{{ t('home.suites.viewAll') }}</span>
             <ArrowRight :size="16" />
           </RouterLink>
         </div>
@@ -121,14 +113,9 @@ onMounted(async () => {
     <section class="section-py facilities-preview-section">
       <div class="container">
         <div class="section-header">
-          <span class="section-tag">{{ isEn ? 'FACILITIES' : '頂級園區空間' }}</span>
-          <h2 class="section-title">{{ isEn ? 'Curated Amenities for Unforgettable Moments' : '尊榮設施・打造極致度假儀式感' }}</h2>
-          <p class="section-desc">
-            {{ isEn 
-              ? 'Immerse yourself in our 6 private spaces: living lounge with karaoke, chef kitchen & social bar, tea terrace, garden BBQ, panoramic deck, and private lawn.' 
-              : '精心規劃 6 大空間：挑高歡唱客廳、頂級中島吧台、戶外原木品茗茶席、美式庭園烤肉、星空觀景露台與百坪青翠草坪。' 
-            }}
-          </p>
+          <span class="section-tag">{{ t('home.facilities.tag') }}</span>
+          <h2 class="section-title">{{ t('home.facilities.title') }}</h2>
+          <p class="section-desc">{{ t('home.facilities.desc') }}</p>
         </div>
 
         <div class="facilities-grid">
@@ -151,7 +138,7 @@ onMounted(async () => {
               />
             </div>
             <div class="fac-info">
-              <span class="fac-tag">0{{ index + 1 }}・{{ isEn ? 'SPACE' : '園區空間' }}</span>
+              <span class="fac-tag">0{{ index + 1 }}・{{ t('home.facilities.spaceTag') }}</span>
               <h4 class="fac-title">{{ tField(fac, 'title') }}</h4>
               <p class="fac-desc">{{ tField(fac, 'desc') }}</p>
             </div>
@@ -160,7 +147,7 @@ onMounted(async () => {
 
         <div class="section-more-btn">
           <RouterLink to="/facilities" class="btn btn-outline">
-            <span>{{ isEn ? 'Explore All 6 Spaces & Amenities' : '查看 6 大空間完整設施圖集' }}</span>
+            <span>{{ t('home.facilities.viewAll') }}</span>
             <ArrowRight :size="16" />
           </RouterLink>
         </div>
@@ -171,14 +158,9 @@ onMounted(async () => {
     <section class="section-py home-calendar-section">
       <div class="container">
         <div class="section-header">
-          <span class="section-tag">{{ isEn ? 'AVAILABILITY & RESERVATION' : '即時房態與預約' }}</span>
-          <h2 class="section-title">{{ isEn ? 'Villa Calendar & Online Rate Estimator' : '全館檔期查詢・線上預約試算' }}</h2>
-          <p class="section-desc">
-            {{ isEn 
-              ? 'Select your check-in and check-out dates to estimate packages. Connect directly with our concierge via official LINE for the latest confirmed availability and exclusive privileges.' 
-              : '點選預計入住與退房日期即可即時預估包棟費用；最新空房檔期歡迎透過官方 LINE 洽詢管家確認預約。' 
-            }}
-          </p>
+          <span class="section-tag">{{ t('home.calendar.tag') }}</span>
+          <h2 class="section-title">{{ t('home.calendar.title') }}</h2>
+          <p class="section-desc">{{ t('home.calendar.desc') }}</p>
         </div>
 
         <AvailabilityCalendar />
