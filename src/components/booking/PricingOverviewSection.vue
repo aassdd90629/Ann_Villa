@@ -305,7 +305,7 @@ const selectTier = (tier) => emit('apply-tier', tier.count)
       display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0.85rem 0.65rem;
       background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 6px; text-align: center; transition: $transition-base;
       .h-name { font-size: 0.8rem; font-weight: 600; color: var(--text-sub); margin-bottom: 0.35rem; }
-      .h-price { font-family: $font-display; font-size: 1.05rem; font-weight: 700; color: var(--gold-primary); }
+      .h-price { font-family: $font-display; font-size: 1.05rem; font-weight: 700; color: var(--gold-dark); }
       .h-unit { font-size: 0.72rem; color: var(--text-muted); }
       &.active { border-color: var(--gold-primary); background: var(--badge-bg); box-shadow: 0 0 10px rgba(197, 168, 128, 0.2); .h-name { color: var(--gold-primary); font-weight: 700; } }
     }

@@ -111,7 +111,7 @@ const pkg = computed(() => pricingData.value.exclusivePackage)
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="(h, hIdx) in pricingData.holidays" :key="hIdx" :class="{ 'cny-row': h.price >= 50000 || (h.nameZh && h.nameZh.includes('春節')) }">
+                  <tr v-for="(h, hIdx) in pricingData.holidays" :key="hIdx">
                     <td class="h-name">
                       <strong>{{ isEn ? (h.nameEn || h.nameZh || h.name) : (h.nameZh || h.name) }}</strong>
                       <div v-if="h.noteZh" class="h-subnote-text">
@@ -406,8 +406,9 @@ const pkg = computed(() => pricingData.value.exclusivePackage)
 
       .h-price {
         font-family: $font-display;
-        font-weight: 600;
-        color: var(--gold-primary);
+        font-weight: 700;
+        font-size: 1.05rem;
+        color: var(--gold-dark);
       }
 
       .badge-included,
@@ -433,10 +434,6 @@ const pkg = computed(() => pricingData.value.exclusivePackage)
         font-size: 0.78rem;
         color: #dc2626;
         margin-top: 2px;
-      }
-
-      .cny-row td {
-        background: rgba(212, 175, 55, 0.08);
       }
     }
   }

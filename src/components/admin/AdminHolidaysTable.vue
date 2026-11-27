@@ -106,8 +106,7 @@ const handleTriggerImport = () => {
         <tbody>
           <tr 
             v-for="(h, idx) in props.holidays" 
-            :key="h.id || idx" 
-            :class="{ 'is-cny': h.nameZh && (h.nameZh.includes('春節') || h.nameZh.includes('過年')) }"
+            :key="h.id || idx"
           >
             <td>
               <input type="text" v-model="h.nameZh" class="form-control table-input" placeholder="連假名稱" />
@@ -318,10 +317,6 @@ const handleTriggerImport = () => {
     text-align: center;
   }
 
-  tr.is-cny td {
-    background: rgba(200, 169, 110, 0.05);
-  }
-
   .empty-state {
     text-align: center;
     padding: 2.5rem 1rem;
@@ -340,7 +335,8 @@ const handleTriggerImport = () => {
 
     &.text-right {
       text-align: right;
-      font-weight: 600;
+      font-weight: 700;
+      color: var(--gold-dark);
     }
 
     &:focus {
@@ -356,9 +352,9 @@ const handleTriggerImport = () => {
     gap: 0.25rem;
 
     .p-sign {
-      color: var(--gold-primary);
-      font-weight: 600;
-      font-size: 0.82rem;
+      color: var(--gold-dark);
+      font-weight: 700;
+      font-size: 0.85rem;
     }
   }
 
