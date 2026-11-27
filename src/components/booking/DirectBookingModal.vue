@@ -39,6 +39,10 @@ const props = defineProps({
     type: Number,
     default: 18
   },
+  maxCapacity: {
+    type: Number,
+    default: 18
+  },
   calculation: {
     type: Object,
     default: () => ({

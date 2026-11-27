@@ -200,14 +200,22 @@ export async function onRequestPost(context) {
       }, { status: 400 });
     }
 
-    // 7. 查詢房型資訊與人數上限防呆 (阻擋 0 人、負數、小數)
+    // 7. 查詢房型資訊與人數上限防呆 (阻擋 0 人、負數、小數、超載)
     const room = await env.DB.prepare('SELECT * FROM rooms WHERE id = ?').bind(roomId).first();
     if (!room) {
       return Response.json({ success: false, message: '所選房型不存在。' }, { status: 404 });
     }
 
+    // 動態自 pricing_settings 讀取全區最高容納人數
+    let maxGuests = room.capacity_max || 18;
+    try {
+      const capRow = await env.DB.prepare("SELECT setting_value FROM pricing_settings WHERE setting_key = 'max_capacity'").first();
+      if (capRow && capRow.setting_value) {
+        maxGuests = Math.max(room.capacity_max || 0, Number(capRow.setting_value) || 18);
+      }
+    } catch (_) {}
+
     const parsedGuests = parseInt(guestCount, 10);
-    const maxGuests = Math.max(room.capacity_max || 14, 18);
     if (isNaN(parsedGuests) || parsedGuests < 1 || parsedGuests > maxGuests) {
       return Response.json({
         success: false,
@@ -285,6 +293,9 @@ export async function onRequestPost(context) {
     let t2Price = 25000;
     let t3Price = 30000;
     let weekendPrice = 35000;
+    let t1MaxGuests = 10;
+    let t2MaxGuests = 14;
+    let systemMaxCapacity = 18;
 
     try {
       const pRows = await env.DB.prepare('SELECT setting_key, setting_value FROM pricing_settings').all();
@@ -293,7 +304,10 @@ export async function onRequestPost(context) {
           if (row.setting_key === 'weekday_tier1_price') t1Price = Number(row.setting_value) || t1Price;
           if (row.setting_key === 'weekday_tier2_price') t2Price = Number(row.setting_value) || t2Price;
           if (row.setting_key === 'weekday_tier3_price') t3Price = Number(row.setting_value) || t3Price;
+          if (row.setting_key === 'weekday_tier1_max_guests') t1MaxGuests = Number(row.setting_value) || t1MaxGuests;
+          if (row.setting_key === 'weekday_tier2_max_guests') t2MaxGuests = Number(row.setting_value) || t2MaxGuests;
           if (row.setting_key === 'weekend_price') weekendPrice = Number(row.setting_value) || weekendPrice;
+          if (row.setting_key === 'max_capacity') systemMaxCapacity = Number(row.setting_value) || systemMaxCapacity;
         }
       }
 
@@ -308,9 +322,9 @@ export async function onRequestPost(context) {
     } catch (_) {}
 
     const getWeekdayTierPrice = (count) => {
-      const g = Number(count) || 18;
-      if (g <= 10) return t1Price;
-      if (g <= 14) return t2Price;
+      const g = Number(count) || systemMaxCapacity;
+      if (g <= t1MaxGuests) return t1Price;
+      if (g <= t2MaxGuests) return t2Price;
       return t3Price;
     };
 

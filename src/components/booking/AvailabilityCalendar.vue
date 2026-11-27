@@ -29,7 +29,7 @@ const bookedRanges = ref([])
 const isSyncing = ref(false)
 
 // 價格與試算 Composable
-const { getHolidayForDate, isWeekdayDate, bookingCalculation, lineBookingUrl } = useBookingPricing(checkInDate, checkOutDate, guestCount)
+const { getHolidayForDate, isWeekdayDate, bookingCalculation, lineBookingUrl, maxCapacity } = useBookingPricing(checkInDate, checkOutDate, guestCount)
 
 // 線上預約填單 Modal 狀態
 const isModalOpen = ref(false)
@@ -47,9 +47,12 @@ const refreshAvailability = async () => {
     setTimeout(() => { isSyncing.value = false }, 400)
   }
 }
-onMounted(() => {
+onMounted(async () => {
   refreshAvailability()
-  fetchPricingSettings()
+  const p = await fetchPricingSettings()
+  if (p && (p.maxCapacity || p.exclusivePackage?.maxCapacity)) {
+    guestCount.value = p.maxCapacity || p.exclusivePackage.maxCapacity
+  }
 })
 const openBookingModal = () => {
   if (!checkInDate.value || !checkOutDate.value) {
@@ -279,6 +282,7 @@ const selectDate = (day) => {
       :check-in-date="checkInDate"
       :check-out-date="checkOutDate"
       :guest-count="guestCount"
+      :max-capacity="maxCapacity"
       :calculation="bookingCalculation"
       @booking-success="handleBookingSuccess"
     />

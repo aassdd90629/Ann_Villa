@@ -180,6 +180,7 @@ export async function onRequestPost(context) {
       ];
       let dynamicHolidays = DEFAULT_HOLIDAYS;
       let t1Price = 20000, t2Price = 25000, t3Price = 30000, weekendPrice = 35000;
+      let t1MaxGuests = 10, t2MaxGuests = 14, systemMaxCapacity = 18;
 
       try {
         const pRows = await env.DB.prepare('SELECT setting_key, setting_value FROM pricing_settings').all();
@@ -188,7 +189,10 @@ export async function onRequestPost(context) {
             if (row.setting_key === 'weekday_tier1_price') t1Price = Number(row.setting_value) || t1Price;
             if (row.setting_key === 'weekday_tier2_price') t2Price = Number(row.setting_value) || t2Price;
             if (row.setting_key === 'weekday_tier3_price') t3Price = Number(row.setting_value) || t3Price;
+            if (row.setting_key === 'weekday_tier1_max_guests') t1MaxGuests = Number(row.setting_value) || t1MaxGuests;
+            if (row.setting_key === 'weekday_tier2_max_guests') t2MaxGuests = Number(row.setting_value) || t2MaxGuests;
             if (row.setting_key === 'weekend_price') weekendPrice = Number(row.setting_value) || weekendPrice;
+            if (row.setting_key === 'max_capacity') systemMaxCapacity = Number(row.setting_value) || systemMaxCapacity;
           }
         }
         const hRows = await env.DB.prepare('SELECT start_date, end_date, price FROM holiday_rates WHERE is_active = 1').all();
@@ -198,9 +202,9 @@ export async function onRequestPost(context) {
       } catch {}
 
       const getWeekdayTierPrice = (count) => {
-        const g = Number(count) || 14;
-        if (g <= 10) return t1Price;
-        if (g <= 14) return t2Price;
+        const g = Number(count) || systemMaxCapacity;
+        if (g <= t1MaxGuests) return t1Price;
+        if (g <= t2MaxGuests) return t2Price;
         return t3Price;
       };
 

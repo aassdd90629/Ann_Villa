@@ -13,7 +13,7 @@ const props = defineProps({
 
 const emit = defineEmits(['apply-tier'])
 const { isEn } = useI18n()
-const { getHolidayForDate, isWeekdayDate, isWeekendDate, pricingData, dynamicWeekdayTiers } = useBookingPricing()
+const { getHolidayForDate, isWeekdayDate, isWeekendDate, pricingData, dynamicWeekdayTiers, maxCapacity } = useBookingPricing()
 
 const DEFAULT_HOLIDAY_TIERS = [
   { price: 35000, labelZh: '端午/中秋等', labelEn: 'Dragon/Moon', tagZh: 'NT$ 35,000' },
@@ -136,9 +136,9 @@ const selectTier = (tier) => emit('apply-tier', tier.count)
             <span class="price-unit">{{ isEn ? '/ night' : '/ 晚' }}</span>
           </div>
           <p class="tier-summary">
-            <template v-if="tier.max === 10">{{ isEn ? 'Exclusive 5 suites & grounds for intimate groups & small families.' : '享全棟 5 間客房與所有公設，小家庭與好友專屬' }}</template>
-            <template v-else-if="tier.max === 14">{{ isEn ? 'Comfortable space for medium gathering with KTV & mahjong.' : '中型朋友聚會首選，歡唱 KTV、電動麻將與戶外空間' }}</template>
-            <template v-else>{{ isEn ? 'Full capacity up to 18 guests with full luxury perks.' : '全棟頂級尊榮享受，最多可容納 18 位貴賓同樂放鬆' }}</template>
+            <template v-if="tier.count === (pricingData?.weekdayTier1MaxGuests || 10)">{{ isEn ? 'Exclusive 5 suites & grounds for intimate groups & small families.' : '享全棟 5 間客房與所有公設，小家庭與好友專屬' }}</template>
+            <template v-else-if="tier.count === (pricingData?.weekdayTier2MaxGuests || 14)">{{ isEn ? 'Comfortable space for medium gathering with KTV & mahjong.' : '中型朋友聚會首選，歡唱 KTV、電動麻將與戶外空間' }}</template>
+            <template v-else>{{ isEn ? `Full capacity up to ${maxCapacity} guests with full luxury perks.` : `全棟頂級尊榮享受，最多可容納 ${maxCapacity} 位貴賓同樂放鬆` }}</template>
           </p>
         </div>
       </div>
@@ -150,16 +150,16 @@ const selectTier = (tier) => emit('apply-tier', tier.count)
         <div class="wf-content">
           <div class="wf-badge"><CalendarCheck :size="14" class="text-gold" /><span>{{ isEn ? 'Regular Weekend Buyout (Fri - Sun)' : '一般假日全區包棟（週五至週日適用）' }}</span></div>
           <h4 class="wf-title">{{ isEn ? 'Friday - Sunday Luxury Buyout' : '週五至週日尊榮私密包棟' }}</h4>
-          <p class="wf-desc">{{ isEn ? '5 Exclusive suites · Accommodate up to 18 guests · KTV, Mahjong & Lawn · Handmade breakfast included.' : '獨享 5 間獨立客房與整座庭園公設，歡唱 KTV、電動麻將與景觀戶外空間，包含翌日晨光手作早餐。' }}</p>
+          <p class="wf-desc">{{ isEn ? `5 Exclusive suites · Accommodate up to ${maxCapacity} guests · KTV, Mahjong & Lawn · Handmade breakfast included.` : '獨享 5 間獨立客房與整座庭園公設，歡唱 KTV、電動麻將與景觀戶外空間，包含翌日晨光手作早餐。' }}</p>
           <div class="wf-perks">
             <span class="perk-pill">✨ 5 間獨立景觀套房</span>
-            <span class="perk-pill">✨ 最多容納 18 位貴賓</span>
+            <span class="perk-pill">✨ 最多容納 {{ maxCapacity }} 位貴賓</span>
             <span class="perk-pill">✨ 附贈手作精緻早餐</span>
           </div>
         </div>
         <div class="wf-price-box">
           <div class="wf-p-row"><span class="currency">NT$</span><span class="price-amount">{{ weekendPrice.toLocaleString() }}</span><span class="price-unit">{{ isEn ? '/ night' : '/ 晚' }}</span></div>
-          <button type="button" class="btn-apply-weekend" @click="emit('apply-tier', 18)">{{ isEn ? 'Apply 18 Guests' : '套用 18 位包棟' }}</button>
+          <button type="button" class="btn-apply-weekend" @click="emit('apply-tier', maxCapacity)">{{ isEn ? `Apply ${maxCapacity} Guests` : `套用 ${maxCapacity} 位包棟` }}</button>
         </div>
       </div>
     </div>
@@ -178,7 +178,7 @@ const selectTier = (tier) => emit('apply-tier', tier.count)
             <div class="h-unit">{{ isEn ? '/ night' : '/ 晚' }}</div>
           </div>
         </div>
-        <p class="holiday-footer-notice">✨ {{ isEn ? 'Full buyout for up to 18 guests. Handmade breakfast included for all holidays except CNY.' : '國定連假皆享全區 18 位包棟尊榮禮遇；除農曆春節期間外，其餘連假皆包含翌日精緻手作早餐。' }}</p>
+        <p class="holiday-footer-notice">✨ {{ isEn ? `Full buyout for up to ${maxCapacity} guests. Handmade breakfast included for all holidays except CNY.` : `國定連假皆享全區 ${maxCapacity} 位包棟尊榮禮遇；除農曆春節期間外，其餘連假皆包含翌日精緻手作早餐。` }}</p>
       </div>
     </div>
   </div>

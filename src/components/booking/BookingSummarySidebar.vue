@@ -19,7 +19,7 @@ const props = defineProps({
 const emit = defineEmits(['update:guestCount', 'open-booking'])
 
 const { isEn, t } = useI18n()
-const { getHolidayForDate, isWeekendDate } = useBookingPricing()
+const { getHolidayForDate, isWeekendDate, maxCapacity } = useBookingPricing()
 
 const checkInHoliday = computed(() => {
   if (!props.checkInDate) return null
@@ -45,6 +45,7 @@ const isCheckInWeekend = computed(() => {
         :check-in-date="checkInDate"
         :check-out-date="checkOutDate"
         :guest-count="guestCount"
+        :max-capacity="maxCapacity"
         :calculation="calculation"
         @update:guest-count="emit('update:guestCount', $event)"
       />

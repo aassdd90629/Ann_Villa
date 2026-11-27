@@ -20,6 +20,8 @@ const pricing = ref({
   weekdayTier1: 20000,
   weekdayTier2: 25000,
   weekdayTier3: 30000,
+  weekdayTier1MaxGuests: 10,
+  weekdayTier2MaxGuests: 14,
   weekend: 35000,
   deposit: 3000,
   maxCapacity: 18

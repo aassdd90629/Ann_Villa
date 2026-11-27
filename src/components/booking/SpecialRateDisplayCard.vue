@@ -1,6 +1,7 @@
 <script setup>
 import { computed } from 'vue'
 import { useI18n } from '../../composables/useI18n'
+import { useBookingPricing } from '../../composables/useBookingPricing'
 import { PartyPopper, Sparkles, CalendarDays } from 'lucide-vue-next'
 
 const props = defineProps({
@@ -13,6 +14,7 @@ const props = defineProps({
 })
 
 const { isEn } = useI18n()
+const { maxCapacity } = useBookingPricing()
 
 const isHoliday = computed(() => Boolean(props.holiday))
 
@@ -42,7 +44,7 @@ const displayPrice = computed(() => {
         </div>
         <h4 class="holiday-title">{{ displayTitle }}</h4>
         <p class="header-desc">
-          {{ isHoliday ? (isEn ? 'Exclusive buyout package for up to 18 guests.' : '全區私密包棟尊榮特惠，獨享 180 坪莊園公設與 5 間獨立景觀套房（最多 18 位）：') : (isEn ? 'Exclusive buyout with breakfast for up to 18 guests.' : '享整座私密山林莊園、5 間景觀套房與所有娛樂公設（含精緻手作早餐）：') }}
+          {{ isHoliday ? (isEn ? `Exclusive buyout package for up to ${maxCapacity} guests.` : `全區私密包棟尊榮特惠，獨享 180 坪莊園公設與 5 間獨立景觀套房（最多 ${maxCapacity} 位）：`) : (isEn ? `Exclusive buyout with breakfast for up to ${maxCapacity} guests.` : `享整座私密山林莊園、5 間景觀套房與所有娛樂公設（含精緻手作早餐）：`) }}
         </p>
       </div>
 
@@ -67,7 +69,7 @@ const displayPrice = computed(() => {
         <div class="tier-price-wrap">
           <span class="currency">NT$</span>
           <span class="price-amount">{{ displayPrice }}</span>
-          <span class="price-unit">{{ isEn ? '/ night (Up to 18 guests)' : '/ 晚（最多 18 人全包棟）' }}</span>
+          <span class="price-unit">{{ isEn ? `/ night (Up to ${maxCapacity} guests)` : `/ 晚（最多 ${maxCapacity} 人全包棟）` }}</span>
         </div>
       </div>
 

@@ -60,6 +60,11 @@ export async function onRequestPatch(context) {
     const newGuestEmail = guestEmail !== undefined ? String(guestEmail).trim() : existing.guest_email;
     const newLineId = lineId !== undefined ? String(lineId).trim() : existing.line_id;
     const newGuestCount = guestCount !== undefined ? Number(guestCount) : existing.guest_count;
+    if (guestCount !== undefined) {
+      if (isNaN(newGuestCount) || newGuestCount < 1) {
+        return Response.json({ success: false, message: '入住人數必須為大於 0 之整數。' }, { status: 400 });
+      }
+    }
     const newSpecialRequests = specialRequests !== undefined ? String(specialRequests).trim() : existing.special_requests;
 
     // 取消原因分類處理 (P3 級別)
