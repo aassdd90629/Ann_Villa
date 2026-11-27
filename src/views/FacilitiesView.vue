@@ -71,7 +71,11 @@ const { facilities: facilitiesData } = useFacilities()
 .facilities-flow {
   display: flex;
   flex-direction: column;
-  gap: 4.5rem;
+  gap: 3rem;
+
+  @media (min-width: $bp-sm) {
+    gap: 4.5rem;
+  }
 
   @media (min-width: $bp-lg) {
     gap: 6rem;
@@ -81,8 +85,12 @@ const { facilities: facilitiesData } = useFacilities()
 .fac-item-row {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 2.5rem;
+  gap: 1.75rem;
   align-items: center;
+
+  @media (min-width: $bp-sm) {
+    gap: 2.5rem;
+  }
 
   @media (min-width: $bp-lg) {
     grid-template-columns: 1.1fr 1fr;

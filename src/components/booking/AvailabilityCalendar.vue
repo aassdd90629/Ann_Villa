@@ -349,7 +349,7 @@ const selectDate = (day) => {
   gap: 1.75rem;
   margin-bottom: 1.75rem;
 
-  @media (min-width: 860px) {
+  @media (min-width: $bp-md) {
     grid-template-columns: 1fr 1fr;
     gap: 1.5rem;
   }

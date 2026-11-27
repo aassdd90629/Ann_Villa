@@ -192,6 +192,11 @@ const pkg = computed(() => pricingData.value.exclusivePackage)
   padding: 2.5rem 1.5rem;
   margin-bottom: 5rem;
 
+  @media (max-width: $bp-sm) {
+    padding: 1.75rem 1rem;
+    margin-bottom: 3.5rem;
+  }
+
   @media (min-width: $bp-lg) {
     padding: 3.5rem 3rem;
   }
@@ -233,6 +238,10 @@ const pkg = computed(() => pricingData.value.exclusivePackage)
     flex-direction: column;
     justify-content: center;
     position: relative;
+
+    @media (max-width: $bp-sm) {
+      padding: 1.5rem 1rem;
+    }
 
     .m-label {
       font-size: 0.9rem;
@@ -353,6 +362,10 @@ const pkg = computed(() => pricingData.value.exclusivePackage)
   border-radius: 6px;
   padding: 1.5rem;
 
+  @media (max-width: $bp-sm) {
+    padding: 1rem 0.75rem;
+  }
+
   .holiday-header {
     display: flex;
     align-items: center;
@@ -460,6 +473,10 @@ const pkg = computed(() => pricingData.value.exclusivePackage)
     padding: 2rem;
     display: flex;
     flex-direction: column;
+
+    @media (max-width: $bp-sm) {
+      padding: 1.5rem 1.15rem;
+    }
 
     .serv-icon-box {
       width: 48px;

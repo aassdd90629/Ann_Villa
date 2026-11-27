@@ -136,6 +136,10 @@ const handleSearch = () => {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
   transition: border-color 0.2s ease;
 
+  @media (max-width: $bp-sm) {
+    padding: 1.5rem 1.15rem;
+  }
+
   &:hover {
     transform: none;
     border-color: var(--border-gold-subtle);
@@ -165,6 +169,10 @@ const handleSearch = () => {
     font-weight: 600;
     color: var(--text-primary);
     margin-bottom: 0.5rem;
+
+    @media (max-width: $bp-sm) {
+      font-size: 1.25rem;
+    }
   }
 
   .form-desc {

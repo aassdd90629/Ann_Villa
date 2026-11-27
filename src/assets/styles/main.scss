@@ -26,6 +26,11 @@
   --color-danger-border: #{$color-error-border};
   --color-brand-line: #{$color-brand-line};
   --color-brand-line-bg: #{$color-brand-line-bg};
+  --bg-body: #{$color-bg-light};
+  --bg-hover: rgba(197, 168, 128, 0.08);
+  --text-secondary: #{$color-text-light-sub};
+  --border-gold-subtle: rgba(197, 168, 128, 0.35);
+  --gold-hover: #{$color-gold-light-dark};
 
   // 後台專用 Token (淺色模式 - 晨曦雲霧：亮背景、深色字)
   --admin-bg-base: #F5F3EC;
@@ -68,6 +73,11 @@
   --color-danger-border: rgba(248, 113, 113, 0.35);
   --color-line: #{$color-brand-line};
   --color-line-bg: rgba(6, 199, 85, 0.12);
+  --bg-body: #{$color-bg-dark};
+  --bg-hover: rgba(255, 255, 255, 0.05);
+  --text-secondary: #{$color-text-dark-sub};
+  --border-gold-subtle: rgba(212, 188, 155, 0.25);
+  --gold-hover: #{$color-gold-dark-highlight};
 
   // 後台專用 Token (深色模式 - 靜謐夜景：暗背景、亮色字)
   --admin-bg-base: #0d131f;
@@ -197,8 +207,13 @@ img {
   max-width: 1320px;
   margin-left: auto;
   margin-right: auto;
-  padding-left: 1.5rem;
-  padding-right: 1.5rem;
+  padding-left: 1.15rem;
+  padding-right: 1.15rem;
+
+  @media (min-width: $bp-sm) {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
 
   @media (min-width: $bp-lg) {
     padding-left: 2.5rem;
@@ -211,8 +226,13 @@ img {
 }
 
 .section-py {
-  padding-top: 5rem;
-  padding-bottom: 5rem;
+  padding-top: 3.5rem;
+  padding-bottom: 3.5rem;
+
+  @media (min-width: $bp-sm) {
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+  }
 
   @media (min-width: $bp-lg) {
     padding-top: 8rem;
@@ -225,7 +245,11 @@ img {
 // ==========================================================================
 .section-header {
   text-align: center;
-  margin-bottom: 3.5rem;
+  margin-bottom: 2.25rem;
+
+  @media (min-width: $bp-sm) {
+    margin-bottom: 3.5rem;
+  }
 
   @media (min-width: $bp-lg) {
     margin-bottom: 4.5rem;

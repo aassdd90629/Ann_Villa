@@ -5,15 +5,13 @@ import { useI18n } from '../../composables/useI18n'
 import { useTheme } from '../../composables/useTheme'
 import { useSiteContent } from '../../composables/useSiteContent'
 import BookingButton from '../common/BookingButton.vue'
+import MobileNavDrawer from './MobileNavDrawer.vue'
 import { 
   Menu, 
   X, 
   Sun, 
   Moon, 
-  Globe, 
-  PhoneCall, 
-  MessageCircle,
-  Sparkles
+  Globe
 } from 'lucide-vue-next'
 
 const { isEn, toggleLocale, t } = useI18n()
@@ -133,52 +131,13 @@ onUnmounted(() => {
       </div>
     </div>
 
-    <!-- 手機端全螢幕抽屜選單 -->
-    <transition name="drawer">
-      <div v-if="mobileMenuOpen" class="mobile-drawer">
-        <div class="drawer-header">
-          <div class="drawer-brand">
-            <img 
-              src="/img/logo-dark.png" 
-              :alt="basicInfo.brandNameZh" 
-              class="drawer-logo-img logo-dark-version" 
-            />
-            <img 
-              src="/img/logo-white.png" 
-              :alt="basicInfo.brandNameZh" 
-              class="drawer-logo-img logo-white-version" 
-            />
-          </div>
-        </div>
-
-        <nav class="mobile-nav-list">
-          <RouterLink 
-            v-for="link in navLinks" 
-            :key="link.path" 
-            :to="link.path"
-            class="mobile-nav-item"
-            :class="{ 'active': route.path === link.path }"
-            @click="closeMobileMenu"
-          >
-            <span>{{ t(link.labelKey) }}</span>
-            <span class="nav-arrow">→</span>
-          </RouterLink>
-        </nav>
-
-        <div class="drawer-footer">
-          <BookingButton 
-            variant="gold" 
-            customClass="drawer-cta"
-            @click="closeMobileMenu"
-          >
-            <template #icon>
-              <MessageCircle :size="18" />
-            </template>
-            <span>{{ t('action.line') }}</span>
-          </BookingButton>
-        </div>
-      </div>
-    </transition>
+    <!-- 手機端全螢幕抽屜選單 (獨立模組化組件) -->
+    <MobileNavDrawer 
+      :isOpen="mobileMenuOpen"
+      :navLinks="navLinks"
+      :basicInfo="basicInfo"
+      @close="closeMobileMenu"
+    />
   </header>
 </template>
 
@@ -239,10 +198,14 @@ onUnmounted(() => {
 .nav-container {
   max-width: 1380px;
   margin: 0 auto;
-  padding: 1.1rem 1.5rem;
+  padding: 0.85rem 1rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
+
+  @media (min-width: $bp-sm) {
+    padding: 1.1rem 1.5rem;
+  }
 
   @media (min-width: $bp-lg) {
     padding: 1.25rem 2.5rem;
@@ -255,10 +218,14 @@ onUnmounted(() => {
   text-decoration: none;
 
   .brand-logo-img {
-    height: 44px;
+    height: 38px;
     width: auto;
     object-fit: contain;
     transition: transform $transition-smooth;
+
+    @media (min-width: $bp-sm) {
+      height: 44px;
+    }
 
     @media (min-width: $bp-lg) {
       height: 50px;
@@ -373,7 +340,11 @@ onUnmounted(() => {
 .nav-actions {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.5rem;
+
+  @media (min-width: $bp-sm) {
+    gap: 0.75rem;
+  }
 
   @media (min-width: $bp-lg) {
     gap: 1.25rem;
@@ -383,14 +354,20 @@ onUnmounted(() => {
 .btn-icon {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
-  padding: 0.45rem 0.75rem;
+  gap: 0.3rem;
+  padding: 0.38rem 0.55rem;
   border-radius: 4px;
   border: 1px solid var(--border-color);
   color: var(--text-primary);
   background: var(--bg-card-glass);
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-weight: 500;
+
+  @media (min-width: $bp-sm) {
+    gap: 0.35rem;
+    padding: 0.45rem 0.75rem;
+    font-size: 0.85rem;
+  }
 
   &:hover {
     border-color: var(--gold-primary);
@@ -428,77 +405,5 @@ onUnmounted(() => {
   @media (min-width: $bp-lg) {
     display: none;
   }
-}
-
-// 手機抽屜樣式
-.mobile-drawer {
-  position: fixed;
-  top: 72px;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: calc(100vh - 72px);
-  background: var(--bg-primary);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 2rem 1.75rem 6rem;
-  overflow-y: auto;
-  border-top: 1px solid var(--border-color);
-
-  @media (min-width: $bp-lg) {
-    display: none;
-  }
-}
-
-.mobile-nav-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-  margin: 1.5rem 0;
-
-  .mobile-nav-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-family: $font-serif;
-    font-size: 1.25rem;
-    color: var(--text-primary);
-    padding-bottom: 0.75rem;
-    border-bottom: 1px solid var(--border-color);
-
-    .nav-arrow {
-      font-family: $font-sans;
-      color: var(--text-muted);
-      transition: transform 0.3s ease;
-    }
-
-    &.active, &:hover {
-      color: var(--gold-primary);
-      .nav-arrow {
-        transform: translateX(4px);
-        color: var(--gold-primary);
-      }
-    }
-  }
-}
-
-.drawer-footer {
-  .drawer-cta {
-    width: 100%;
-    padding: 0.9rem;
-    font-size: 1rem;
-  }
-}
-
-.drawer-enter-active,
-.drawer-leave-active {
-  transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
-.drawer-enter-from,
-.drawer-leave-to {
-  opacity: 0;
-  transform: translateY(-10px);
 }
 </style>

@@ -4,17 +4,10 @@ import { RouterLink } from 'vue-router'
 import { useI18n } from '../composables/useI18n'
 import { useSiteContent } from '../composables/useSiteContent'
 import { useFacilities } from '../composables/useFacilities'
-import { useBookingPricing } from '../composables/useBookingPricing'
 import { getRooms } from '../services/roomService'
 import { 
-  Users, 
   Sparkles, 
-  Waves, 
-  Maximize2, 
-  ArrowRight, 
-  Flame, 
-  Calendar,
-  Compass
+  ArrowRight
 } from 'lucide-vue-next'
 import HeroCarousel from '../components/home/HeroCarousel.vue'
 import PhilosophySection from '../components/home/PhilosophySection.vue'
@@ -29,7 +22,6 @@ const ImageGallery = defineAsyncComponent(() => import('../components/common/Ima
 const { isEn, t, tField } = useI18n()
 const { basicInfo: siteData } = useSiteContent()
 const { facilities: facilitiesData } = useFacilities()
-const { pricingData } = useBookingPricing()
 const { heroSlides, fetchMedia } = useMediaAssets()
 fetchMedia()
 
@@ -191,39 +183,6 @@ onMounted(async () => {
         <AvailabilityCalendar />
       </div>
     </section>
-
-    <!-- 6. 尊榮包棟方案亮點 (Pricing Banner) -->
-    <section class="pricing-banner-section">
-      <div class="container">
-        <div class="pricing-banner-box">
-          <div class="pricing-banner-info">
-            <span class="badge">{{ isEn ? 'EXCLUSIVE PACKAGE' : '全館尊榮包棟' }}</span>
-            <h2 class="pricing-title">{{ isEn ? pricingData.exclusivePackage.titleEn : pricingData.exclusivePackage.titleZh }}</h2>
-            <p class="pricing-desc">{{ isEn ? pricingData.exclusivePackage.descEn : pricingData.exclusivePackage.descZh }}</p>
-            <div class="price-tags">
-              <div class="price-chip">
-                <span class="label">{{ isEn ? 'Weekday (Mon - Thu)' : '平日 (週一~週四・含早餐)' }}</span>
-                <span class="val">NT$ {{ pricingData.exclusivePackage.weekday.toLocaleString() }} <small>{{ isEn ? 'up' : '起' }}</small></span>
-              </div>
-              <div class="price-chip highlight">
-                <span class="label">{{ isEn ? 'Weekend (Fri - Sun)' : '一般假日 (週五~週日)' }}</span>
-                <span class="val">NT$ {{ pricingData.exclusivePackage.weekend.toLocaleString() }} <small>{{ isEn ? '(w/ Breakfast)' : '(3.5萬含早餐)' }}</small></span>
-              </div>
-            </div>
-          </div>
-          <div class="pricing-banner-cta">
-            <BookingButton 
-              roomTitle="全館尊榮包棟"
-              variant="gold"
-              :text="isEn ? 'Book Exclusive Villa' : '立即洽詢包棟檔期'"
-            />
-            <RouterLink to="/packages" class="btn btn-outline">
-              <span>{{ isEn ? 'View Pricing & Policies' : '查看方案詳細規則' }}</span>
-            </RouterLink>
-          </div>
-        </div>
-      </div>
-    </section>
   </div>
 </template>
 
@@ -294,6 +253,16 @@ onMounted(async () => {
     gap: 1.25rem;
     justify-content: center;
     margin-bottom: 3.5rem;
+
+    @media (max-width: $bp-sm) {
+      gap: 0.85rem;
+      margin-bottom: 2.25rem;
+
+      .btn {
+        width: 100%;
+        max-width: 280px;
+      }
+    }
   }
 }
 
@@ -308,6 +277,18 @@ onMounted(async () => {
   border-radius: 6px;
   gap: 2rem;
 
+  @media (max-width: $bp-sm) {
+    padding: 0.75rem 1rem;
+    gap: 1rem;
+    width: 100%;
+    max-width: 360px;
+  }
+
+  @media (max-width: 380px) {
+    padding: 0.6rem 0.65rem;
+    gap: 0.65rem;
+  }
+
   .stat-item {
     display: flex;
     flex-direction: column;
@@ -319,12 +300,21 @@ onMounted(async () => {
       font-weight: 700;
       color: #E6D5BE;
       line-height: 1;
+
+      @media (max-width: $bp-sm) {
+        font-size: 1.45rem;
+      }
     }
 
     .stat-label {
       font-size: 0.78rem;
       color: rgba(255, 255, 255, 0.75);
       margin-top: 4px;
+      white-space: nowrap;
+
+      @media (max-width: 380px) {
+        font-size: 0.72rem;
+      }
     }
   }
 
@@ -332,6 +322,10 @@ onMounted(async () => {
     width: 1px;
     height: 28px;
     background: rgba(255, 255, 255, 0.2);
+
+    @media (max-width: $bp-sm) {
+      height: 22px;
+    }
   }
 }
 
@@ -415,90 +409,6 @@ onMounted(async () => {
       color: var(--text-sub);
       line-height: 1.75;
       flex: 1;
-    }
-  }
-}
-
-// Pricing Banner
-.pricing-banner-section {
-  padding: 2rem 0 5rem;
-}
-
-.pricing-banner-box {
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: 6px;
-  padding: 3rem 2rem;
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  box-shadow: var(--shadow-card);
-
-  @media (min-width: $bp-lg) {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    padding: 4rem 3.5rem;
-  }
-
-  .pricing-banner-info {
-    max-width: 680px;
-
-    .pricing-title {
-      font-size: 2rem;
-      margin: 0.8rem 0;
-    }
-
-    .pricing-desc {
-      font-size: 0.95rem;
-      color: var(--text-sub);
-      margin-bottom: 1.5rem;
-    }
-
-    .price-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-
-      .price-chip {
-        display: flex;
-        flex-direction: column;
-        background: var(--bg-primary);
-        padding: 0.6rem 1.2rem;
-        border-radius: 4px;
-        border: 1px solid var(--border-color);
-
-        .label {
-          font-size: 0.75rem;
-          color: var(--text-muted);
-        }
-
-        .val {
-          font-family: $font-display;
-          font-size: 1.25rem;
-          font-weight: 700;
-          color: var(--text-primary);
-        }
-
-        &.highlight {
-          border-color: var(--gold-primary);
-          .val {
-            color: var(--gold-primary);
-          }
-        }
-      }
-    }
-  }
-
-  .pricing-banner-cta {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    flex-shrink: 0;
-
-    .btn {
-      width: 100%;
-      min-width: 220px;
     }
   }
 }

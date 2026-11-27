@@ -30,11 +30,16 @@ defineProps({
 @use '../../assets/styles/variables' as *;
 
 .page-header {
-  padding-top: 8.5rem;
-  padding-bottom: 3.5rem;
+  padding-top: 6.25rem;
+  padding-bottom: 2.25rem;
   background-color: var(--bg-card);
   border-bottom: 1px solid var(--border-color);
   text-align: center;
+
+  @media (min-width: $bp-md) {
+    padding-top: 8.5rem;
+    padding-bottom: 3.5rem;
+  }
 
   .header-container {
     max-width: 800px;

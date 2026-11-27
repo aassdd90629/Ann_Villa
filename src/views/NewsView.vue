@@ -72,10 +72,16 @@ fetchContent()
 .news-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 2rem;
+  gap: 1.5rem;
 
-  @media (min-width: $bp-md) {
+  @media (min-width: $bp-sm) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.75rem;
+  }
+
+  @media (min-width: $bp-lg) {
     grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
   }
 }
 
@@ -104,10 +110,14 @@ fetchContent()
   }
 
   .news-body {
-    padding: 1.5rem;
+    padding: 1.15rem 1rem;
     display: flex;
     flex-direction: column;
     flex: 1;
+
+    @media (min-width: $bp-sm) {
+      padding: 1.5rem;
+    }
 
     .date-row {
       display: flex;

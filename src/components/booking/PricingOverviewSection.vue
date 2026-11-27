@@ -221,7 +221,26 @@ const selectTier = (tier) => emit('apply-tier', tier.count)
 }
 
 .tier-nav-tabs {
-  display: flex; gap: 0.5rem; margin-bottom: 1.15rem; flex-wrap: wrap;
+  display: flex; 
+  gap: 0.5rem; 
+  margin-bottom: 1.15rem; 
+  flex-wrap: wrap;
+
+  @media (max-width: $bp-sm) {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 0.35rem;
+    -webkit-overflow-scrolling: touch;
+    gap: 0.45rem;
+
+    .tab-btn {
+      white-space: nowrap;
+      flex-shrink: 0;
+      padding: 0.45rem 0.85rem;
+      font-size: 0.8rem;
+    }
+  }
+
   .tab-btn {
     display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.5rem 1rem; font-size: 0.84rem; font-weight: 600;
     border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-primary); color: var(--text-sub); cursor: pointer; transition: $transition-base;
@@ -232,12 +251,17 @@ const selectTier = (tier) => emit('apply-tier', tier.count)
 
 .tiers-grid {
   display: grid; grid-template-columns: 1fr; gap: 1rem;
-  @media (min-width: 768px) { grid-template-columns: repeat(3, 1fr); }
+  @media (min-width: $bp-md) { grid-template-columns: repeat(3, 1fr); }
 }
 
 .tier-card {
   display: flex; flex-direction: column; padding: 1.15rem 1.15rem 1.25rem; border-radius: 8px; background: var(--bg-card);
   border: 1px solid var(--border-color); cursor: pointer; transition: border-color 0.25s ease, background 0.25s ease;
+
+  @media (max-width: $bp-sm) {
+    padding: 1rem;
+  }
+
   &:hover { border-color: var(--gold-primary); background: var(--badge-bg); }
   &.active { border-color: var(--gold-primary); background: var(--badge-bg); box-shadow: 0 0 12px rgba(197, 168, 128, 0.22); }
 
@@ -298,12 +322,23 @@ const selectTier = (tier) => emit('apply-tier', tier.count)
     .active-h-tag { font-size: 0.8rem; font-weight: 600; color: var(--gold-primary); background: var(--badge-bg); border: 1px solid var(--gold-primary); padding: 0.25rem 0.65rem; border-radius: 4px; }
   }
   .holiday-cards-grid {
-    display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem;
-    @media (min-width: 768px) { grid-template-columns: repeat(3, 1fr); }
-    @media (min-width: 1024px) { grid-template-columns: repeat(5, 1fr); }
+    display: grid; 
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 0.65rem;
+
+    @media (min-width: $bp-sm) { 
+      grid-template-columns: repeat(3, 1fr); 
+      gap: 0.75rem; 
+    }
+
+    @media (min-width: $bp-lg) { 
+      grid-template-columns: repeat(5, 1fr); 
+    }
+
     .holiday-rate-card {
-      display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0.85rem 0.65rem;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0.85rem 0.5rem;
       background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 6px; text-align: center; transition: $transition-base;
+      word-break: break-word;
       .h-name { font-size: 0.8rem; font-weight: 600; color: var(--text-sub); margin-bottom: 0.35rem; }
       .h-price { font-family: $font-display; font-size: 1.05rem; font-weight: 700; color: var(--gold-dark); }
       .h-unit { font-size: 0.72rem; color: var(--text-muted); }

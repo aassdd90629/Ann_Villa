@@ -126,13 +126,18 @@ onMounted(async () => {
 .room-detail-card {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 2.5rem;
+  gap: 2rem;
   background: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: 6px;
   overflow: hidden;
   box-shadow: var(--shadow-card);
-  padding: 1.5rem;
+  padding: 1.15rem 1rem;
+
+  @media (min-width: $bp-sm) {
+    padding: 1.5rem;
+    gap: 2.5rem;
+  }
 
   @media (min-width: $bp-lg) {
     grid-template-columns: 1.15fr 1fr;
@@ -221,10 +226,14 @@ onMounted(async () => {
 
   .highlights-box {
     background: var(--bg-primary);
-    padding: 1.25rem 1.5rem;
+    padding: 1rem 1rem;
     border-radius: 4px;
     border-left: 3px solid var(--gold-primary);
     margin-bottom: 1.75rem;
+
+    @media (min-width: $bp-sm) {
+      padding: 1.25rem 1.5rem;
+    }
 
     .box-title {
       font-size: 0.95rem;

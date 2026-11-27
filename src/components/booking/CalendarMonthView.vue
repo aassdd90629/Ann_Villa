@@ -210,7 +210,7 @@ const isInRange = (dateStr) => {
 
     &.mobile-only-btn {
       display: none;
-      @media (max-width: 767px) {
+      @media (max-width: ($bp-md - 1)) {
         display: inline-flex;
       }
     }
@@ -224,7 +224,7 @@ const isInRange = (dateStr) => {
 
     &.desktop-only {
       display: none;
-      @media (min-width: 768px) {
+      @media (min-width: $bp-md) {
         display: inline-block;
       }
     }

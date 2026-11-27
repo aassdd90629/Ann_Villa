@@ -87,8 +87,13 @@ fetchContent()
 
 
 .rule-block {
-  padding: 2.25rem 2rem;
-  margin-bottom: 2.5rem;
+  padding: 1.5rem 1.15rem;
+  margin-bottom: 1.75rem;
+
+  @media (min-width: $bp-sm) {
+    padding: 2.25rem 2rem;
+    margin-bottom: 2.5rem;
+  }
 
   .block-title-row {
     display: flex;
@@ -152,7 +157,11 @@ fetchContent()
 }
 
 .faq-section {
-  margin-top: 4.5rem;
+  margin-top: 2.75rem;
+
+  @media (min-width: $bp-sm) {
+    margin-top: 4.5rem;
+  }
 }
 
 

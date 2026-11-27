@@ -166,7 +166,7 @@ const handleSubmit = () => {
 .report-modal-overlay {
   position: fixed;
   inset: 0;
-  z-index: 1000;
+  z-index: 9999;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -174,17 +174,30 @@ const handleSubmit = () => {
   background-color: rgba(0, 0, 0, 0.72);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
+
+  @media (max-width: 640px) {
+    padding: 0.75rem;
+    align-items: flex-start;
+  }
 }
 
 .report-modal-card {
   position: relative;
   width: 100%;
   max-width: 520px;
+  max-height: calc(100dvh - 2rem);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   background-color: var(--bg-card);
   border: 1px solid var(--border-gold-subtle);
   border-radius: 12px;
   padding: 2.25rem 2rem;
   box-shadow: 0 20px 48px rgba(0, 0, 0, 0.4);
+
+  @media (max-width: 640px) {
+    padding: 1.5rem 1.15rem;
+    margin: auto 0;
+  }
 
   &:hover {
     transform: none;
@@ -334,6 +347,10 @@ const handleSubmit = () => {
   display: flex;
   gap: 0.85rem;
   margin-top: 0.75rem;
+
+  @media (max-width: 480px) {
+    flex-direction: column-reverse;
+  }
 
   .btn {
     flex: 1;

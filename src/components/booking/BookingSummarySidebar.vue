@@ -192,9 +192,15 @@ const isCheckInWeekend = computed(() => {
   .calc-row {
     display: flex;
     justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.75rem;
     font-size: 0.88rem;
     margin-bottom: 0.4rem;
     color: var(--text-sub);
+
+    span:last-child {
+      flex-shrink: 0;
+    }
 
     &.sub {
       font-size: 0.82rem;

@@ -211,10 +211,14 @@ const handleCancelBooking = async (payload) => {
 }
 
 .lookup-hero {
-  padding: 8rem 1.5rem 4rem;
+  padding: 6.25rem 1rem 3rem;
   background: radial-gradient(circle at 50% 20%, rgba(212, 175, 55, 0.08), transparent 70%);
   text-align: center;
   border-bottom: 1px solid var(--border-color);
+
+  @media (min-width: $bp-md) {
+    padding: 8rem 1.5rem 4rem;
+  }
 
   .hero-badge {
     display: inline-flex;

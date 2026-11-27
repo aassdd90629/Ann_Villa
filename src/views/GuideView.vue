@@ -298,16 +298,21 @@ const activeTab = ref('all') // 'all', 'attractions', 'dining'
 .guide-filter-tabs {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem;
-  margin-bottom: 3rem;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
   justify-content: center;
+
+  @media (min-width: $bp-sm) {
+    gap: 0.75rem;
+    margin-bottom: 3rem;
+  }
 
   .tab-btn {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.65rem 1.4rem;
-    font-size: 0.9rem;
+    gap: 0.4rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.82rem;
     font-weight: 500;
     border-radius: 999px;
     border: 1px solid var(--border-color);
@@ -315,6 +320,12 @@ const activeTab = ref('all') // 'all', 'attractions', 'dining'
     color: var(--text-sub);
     cursor: pointer;
     transition: all 0.3s ease;
+
+    @media (min-width: $bp-sm) {
+      gap: 0.5rem;
+      padding: 0.65rem 1.4rem;
+      font-size: 0.9rem;
+    }
 
     &:hover {
       border-color: var(--gold-primary);
