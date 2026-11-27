@@ -12,7 +12,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['apply-tier'])
-const { isEn } = useI18n()
+const { isEn, t } = useI18n()
 const { getHolidayForDate, isWeekdayDate, isWeekendDate, pricingData, dynamicWeekdayTiers, maxCapacity } = useBookingPricing()
 
 const DEFAULT_HOLIDAY_TIERS = [
@@ -80,15 +80,15 @@ const selectTier = (tier) => emit('apply-tier', tier.count)
       <div class="header-main">
         <div class="header-badge">
           <Sparkles :size="15" class="text-gold" />
-          <span>{{ isEn ? 'Rates & Buyout Privilege' : '包棟價格方案與特惠一覽' }}</span>
+          <span>{{ t('pricingOverview.badge') }}</span>
         </div>
         <p class="header-desc">
-          {{ isEn ? 'Transparent rates synchronized with calendar dates (All include breakfast except CNY):' : '依人數與檔期透明計價，動態連動月曆選取（除農曆春節外皆含精緻手作早餐）：' }}
+          {{ t('pricingOverview.desc') }}
         </p>
       </div>
       <div class="header-date-tag">
         <CalendarDays :size="14" class="text-gold" />
-        <span class="tag-label">{{ selectedDate ? (isEn ? 'Check-in:' : '預選入住：') : (isEn ? 'Select date on calendar' : '點選日曆開始預訂') }}</span>
+        <span class="tag-label">{{ selectedDate ? t('pricingOverview.checkInLabel') : t('pricingOverview.selectDatePrompt') }}</span>
         <strong v-if="selectedDate" class="tag-val">{{ formattedDateText }}</strong>
       </div>
     </div>
@@ -97,15 +97,15 @@ const selectTier = (tier) => emit('apply-tier', tier.count)
     <div class="tier-nav-tabs" role="tablist">
       <button type="button" class="tab-btn" :class="{ active: activeTab === 'weekday' }" @click="activeTab = 'weekday'">
         <Sparkles :size="13" />
-        <span>{{ isEn ? 'Weekday Tiers (Mon-Thu)' : '平日分級特惠 (週一~週四)' }}</span>
+        <span>{{ t('pricingOverview.tabWeekday') }}</span>
       </button>
       <button type="button" class="tab-btn" :class="{ active: activeTab === 'weekend' }" @click="activeTab = 'weekend'">
         <CalendarCheck :size="13" />
-        <span>{{ isEn ? 'Regular Weekend (Fri-Sun)' : '一般假日 (週五~週日)' }}</span>
+        <span>{{ t('pricingOverview.tabWeekend') }}</span>
       </button>
       <button type="button" class="tab-btn" :class="{ active: activeTab === 'holiday' }" @click="activeTab = 'holiday'">
         <PartyPopper :size="13" />
-        <span>{{ isEn ? 'National Holiday Specials' : '國定連續假期專案' }}</span>
+        <span>{{ t('pricingOverview.tabHoliday') }}</span>
       </button>
     </div>
 
@@ -127,18 +127,18 @@ const selectTier = (tier) => emit('apply-tier', tier.count)
               <Users :size="15" class="text-gold" />
               <span class="tier-label">{{ isEn ? tier.labelEn : tier.labelZh }}</span>
             </div>
-            <span v-if="isTierActive(tier)" class="status-badge active-badge"><Check :size="12" /><span>{{ isEn ? 'Active' : '目前套用' }}</span></span>
-            <span v-else class="status-badge tap-hint"><span>{{ isEn ? 'Tap to apply' : '點選套用' }}</span></span>
+            <span v-if="isTierActive(tier)" class="status-badge active-badge"><Check :size="12" /><span>{{ t('pricingOverview.applied') }}</span></span>
+            <span v-else class="status-badge tap-hint"><span>{{ t('pricingOverview.tapToApply') }}</span></span>
           </div>
           <div class="tier-price-wrap">
             <span class="currency">NT$</span>
             <span class="price-amount">{{ tier.price.toLocaleString() }}</span>
-            <span class="price-unit">{{ isEn ? '/ night' : '/ 晚' }}</span>
+            <span class="price-unit">{{ t('pricingOverview.perNight') }}</span>
           </div>
           <p class="tier-summary">
-            <template v-if="tier.count === (pricingData?.weekdayTier1MaxGuests || 10)">{{ isEn ? 'Exclusive 5 suites & grounds for intimate groups & small families.' : '享全棟 5 間客房與所有公設，小家庭與好友專屬' }}</template>
-            <template v-else-if="tier.count === (pricingData?.weekdayTier2MaxGuests || 14)">{{ isEn ? 'Comfortable space for medium gathering with KTV & mahjong.' : '中型朋友聚會首選，歡唱 KTV、電動麻將與戶外空間' }}</template>
-            <template v-else>{{ isEn ? `Full capacity up to ${maxCapacity} guests with full luxury perks.` : `全棟頂級尊榮享受，最多可容納 ${maxCapacity} 位貴賓同樂放鬆` }}</template>
+            <template v-if="tier.count === (pricingData?.weekdayTier1MaxGuests || 10)">{{ t('pricingOverview.tierSummary1') }}</template>
+            <template v-else-if="tier.count === (pricingData?.weekdayTier2MaxGuests || 14)">{{ t('pricingOverview.tierSummary2') }}</template>
+            <template v-else>{{ t('pricingOverview.tierSummary3', { max: maxCapacity }) }}</template>
           </p>
         </div>
       </div>
@@ -148,18 +148,18 @@ const selectTier = (tier) => emit('apply-tier', tier.count)
     <div v-else-if="activeTab === 'weekend'" class="tab-panel">
       <div class="weekend-feature-card">
         <div class="wf-content">
-          <div class="wf-badge"><CalendarCheck :size="14" class="text-gold" /><span>{{ isEn ? 'Regular Weekend Buyout (Fri - Sun)' : '一般假日全區包棟（週五至週日適用）' }}</span></div>
-          <h4 class="wf-title">{{ isEn ? 'Friday - Sunday Luxury Buyout' : '週五至週日尊榮私密包棟' }}</h4>
-          <p class="wf-desc">{{ isEn ? `5 Exclusive suites · Accommodate up to ${maxCapacity} guests · KTV, Mahjong & Lawn · Handmade breakfast included.` : '獨享 5 間獨立客房與整座庭園公設，歡唱 KTV、電動麻將與景觀戶外空間，包含翌日晨光手作早餐。' }}</p>
+          <div class="wf-badge"><CalendarCheck :size="14" class="text-gold" /><span>{{ t('pricingOverview.weekendBuyoutBadge') }}</span></div>
+          <h4 class="wf-title">{{ t('pricingOverview.weekendTitle') }}</h4>
+          <p class="wf-desc">{{ t('pricingOverview.weekendDesc', { max: maxCapacity }) }}</p>
           <div class="wf-perks">
-            <span class="perk-pill">✨ 5 間獨立景觀套房</span>
-            <span class="perk-pill">✨ 最多容納 {{ maxCapacity }} 位貴賓</span>
-            <span class="perk-pill">✨ 附贈手作精緻早餐</span>
+            <span class="perk-pill">{{ t('pricingOverview.weekendPerk1') }}</span>
+            <span class="perk-pill">{{ t('pricingOverview.weekendPerk2', { max: maxCapacity }) }}</span>
+            <span class="perk-pill">{{ t('pricingOverview.weekendPerk3') }}</span>
           </div>
         </div>
         <div class="wf-price-box">
-          <div class="wf-p-row"><span class="currency">NT$</span><span class="price-amount">{{ weekendPrice.toLocaleString() }}</span><span class="price-unit">{{ isEn ? '/ night' : '/ 晚' }}</span></div>
-          <button type="button" class="btn-apply-weekend" @click="emit('apply-tier', maxCapacity)">{{ isEn ? `Apply ${maxCapacity} Guests` : `套用 ${maxCapacity} 位包棟` }}</button>
+          <div class="wf-p-row"><span class="currency">NT$</span><span class="price-amount">{{ weekendPrice.toLocaleString() }}</span><span class="price-unit">{{ t('pricingOverview.perNight') }}</span></div>
+          <button type="button" class="btn-apply-weekend" @click="emit('apply-tier', maxCapacity)">{{ t('pricingOverview.applyWeekendBtn', { max: maxCapacity }) }}</button>
         </div>
       </div>
     </div>
@@ -168,17 +168,17 @@ const selectTier = (tier) => emit('apply-tier', tier.count)
     <div v-else-if="activeTab === 'holiday'" class="tab-panel">
       <div class="holiday-overview-wrap">
         <div class="holiday-header-bar">
-          <span class="h-title">{{ isEn ? 'National Holiday Buyout Packages (by holiday season):' : '國定連續假期專案價格（依各專案檔期計價）：' }}</span>
-          <span v-if="selectedHoliday" class="active-h-tag">🎯 {{ isEn ? 'Selected:' : '預選日適逢：' }} {{ selectedHoliday.nameZh || selectedHoliday.name }}</span>
+          <span class="h-title">{{ t('pricingOverview.holidayPackagesTitle') }}</span>
+          <span v-if="selectedHoliday" class="active-h-tag">{{ t('pricingOverview.selectedHolidayPrefix') }} {{ selectedHoliday.nameZh || selectedHoliday.name }}</span>
         </div>
         <div class="holiday-cards-grid">
           <div v-for="hTier in dynamicHolidayTiers" :key="hTier.price" class="holiday-rate-card" :class="{ active: selectedHoliday && Number(selectedHoliday.price) === hTier.price }">
             <div class="h-name">{{ isEn ? hTier.labelEn : hTier.labelZh }}</div>
             <div class="h-price">NT$ {{ hTier.price.toLocaleString() }}</div>
-            <div class="h-unit">{{ isEn ? '/ night' : '/ 晚' }}</div>
+            <div class="h-unit">{{ t('pricingOverview.perNight') }}</div>
           </div>
         </div>
-        <p class="holiday-footer-notice">✨ {{ isEn ? `Full buyout for up to ${maxCapacity} guests. Handmade breakfast included for all holidays except CNY.` : `國定連假皆享全區 ${maxCapacity} 位包棟尊榮禮遇；除農曆春節期間外，其餘連假皆包含翌日精緻手作早餐。` }}</p>
+        <p class="holiday-footer-notice">{{ t('pricingOverview.holidayFooter', { max: maxCapacity }) }}</p>
       </div>
     </div>
   </div>

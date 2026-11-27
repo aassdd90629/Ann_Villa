@@ -25,7 +25,7 @@ const props = defineProps({
 
 const emit = defineEmits(['lookup', 'close'])
 
-const { isEn } = useI18n()
+const { isEn, t } = useI18n()
 const copiedOrderId = ref(false)
 
 const copyOrderId = async () => {
@@ -50,38 +50,38 @@ const lineReportSuccessUrl = computed(() => {
     <div class="success-icon-wrap">
       <CheckCircle2 :size="56" class="text-gold" />
     </div>
-    <h3 class="success-title">{{ isEn ? 'Reservation Request Submitted' : '預約單已成功送出！' }}</h3>
+    <h3 class="success-title">{{ t('bookingModal.success.title') }}</h3>
     <p class="success-subtitle">
-      {{ isEn ? 'Your reservation request has been secured in our system.' : '您的包棟檔期已在系統成功登記保留，請依指示完成定金支付。' }}
+      {{ t('bookingModal.success.subtitle') }}
     </p>
 
     <div class="order-summary-ticket">
       <div class="ticket-row">
-        <span class="t-label">{{ isEn ? 'Order Number' : '訂單編號' }}</span>
+        <span class="t-label">{{ t('bookingModal.success.orderNumber') }}</span>
         <div class="order-id-action">
           <span class="t-value order-id font-mono">{{ booking.id }}</span>
-          <button type="button" class="btn-copy-mini" @click="copyOrderId" :title="isEn ? 'Copy' : '複製單號'">
+          <button type="button" class="btn-copy-mini" @click="copyOrderId" :title="t('bookingModal.success.copyTitle')">
             <Check v-if="copiedOrderId" :size="13" class="text-green" />
             <Copy v-else :size="13" />
-            <span class="hint">{{ copiedOrderId ? (isEn ? 'Copied' : '已複製') : (isEn ? 'Copy' : '複製') }}</span>
+            <span class="hint">{{ copiedOrderId ? t('bookingModal.success.copied') : t('bookingModal.success.copy') }}</span>
           </button>
         </div>
       </div>
       <div class="ticket-row">
-        <span class="t-label">{{ isEn ? 'Selected Plan' : '預訂項目' }}</span>
+        <span class="t-label">{{ t('bookingModal.success.selectedPlan') }}</span>
         <span class="t-value">{{ booking.roomName }}</span>
       </div>
       <div class="ticket-row">
-        <span class="t-label">{{ isEn ? 'Dates & Guests' : '日期與人數' }}</span>
-        <span class="t-value">{{ booking.checkIn }} 至 {{ booking.checkOut }} ({{ booking.nights }} 晚・{{ booking.guestCount }} 人)</span>
+        <span class="t-label">{{ t('bookingModal.success.datesAndGuests') }}</span>
+        <span class="t-value">{{ t('bookingModal.success.datesSummary', { checkIn: booking.checkIn, checkOut: booking.checkOut, nights: booking.nights, guests: booking.guestCount }) }}</span>
       </div>
       <div class="ticket-divider"></div>
       <div class="ticket-row">
-        <span class="t-label">{{ isEn ? 'Total Amount' : '預估總房費' }}</span>
+        <span class="t-label">{{ t('bookingModal.success.totalAmount') }}</span>
         <span class="t-value">NT$ {{ Number(booking.totalAmount).toLocaleString() }}</span>
       </div>
       <div class="ticket-row highlight">
-        <span class="t-label font-bold">{{ isEn ? 'Required Deposit (50%)' : '應收定金 (50%)' }}</span>
+        <span class="t-label font-bold">{{ t('bookingModal.success.requiredDeposit') }}</span>
         <span class="t-value deposit-price">NT$ {{ Number(booking.depositAmount).toLocaleString() }}</span>
       </div>
     </div>
@@ -89,10 +89,13 @@ const lineReportSuccessUrl = computed(() => {
     <div class="payment-instructions-box">
       <h5 class="pay-heading">
         <CreditCard :size="16" />
-        <span>{{ isEn ? 'Payment Instructions' : '定金匯款說明' }}</span>
+        <span>{{ t('bookingModal.success.paymentTitle') }}</span>
       </h5>
       <p class="pay-desc">
-        請於 <strong>24 小時內</strong> 將定金匯款至民宿帳戶：<strong>{{ formattedBankInfo }}</strong>。匯款完成後可點擊下方按鈕直接<strong>線上回報末五碼</strong>或加入官方 LINE (<strong>{{ lineId }}</strong>) 由管家核對確認！
+        {{ isEn 
+          ? t('bookingModal.success.paymentDescEn', { bankInfo: formattedBankInfo, lineId: lineId }) 
+          : t('bookingModal.success.paymentDesc', { bankInfo: formattedBankInfo, lineId: lineId }) 
+        }}
       </p>
     </div>
 
@@ -104,7 +107,7 @@ const lineReportSuccessUrl = computed(() => {
         @click="emit('lookup')"
       >
         <Search :size="18" />
-        <span>{{ isEn ? 'View Reservation & Report Transfer' : '查看訂單詳細資料 / 線上回報末五碼' }}</span>
+        <span>{{ t('bookingModal.success.viewAndReport') }}</span>
       </button>
 
       <!-- 官方 LINE 聯繫 -->
@@ -115,11 +118,11 @@ const lineReportSuccessUrl = computed(() => {
         class="btn btn-outline-gold btn-block"
       >
         <Send :size="16" />
-        <span>{{ isEn ? 'Report Transfer via LINE' : '加入官方 LINE 回報後五碼' }}</span>
+        <span>{{ t('bookingModal.success.reportLine') }}</span>
       </a>
 
       <button type="button" class="btn btn-outline btn-block" @click="emit('close')">
-        {{ isEn ? 'Close & Return' : '確認並返回網站' }}
+        {{ t('bookingModal.success.closeReturn') }}
       </button>
     </div>
   </div>

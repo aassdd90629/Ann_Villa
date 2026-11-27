@@ -14,7 +14,7 @@ const props = defineProps({
 
 const emit = defineEmits(['line-updated'])
 
-const { isEn, t } = useI18n()
+const { t } = useI18n()
 const isBinding = ref(false)
 const showManualBind = ref(false)
 const inputUid = ref('')

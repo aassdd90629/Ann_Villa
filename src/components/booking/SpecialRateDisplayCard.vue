@@ -13,7 +13,7 @@ const props = defineProps({
   calculation: { type: Object, default: () => null }
 })
 
-const { isEn } = useI18n()
+const { isEn, t } = useI18n()
 const { maxCapacity } = useBookingPricing()
 
 const isHoliday = computed(() => Boolean(props.holiday))
@@ -22,7 +22,7 @@ const displayTitle = computed(() => {
   if (props.holiday) {
     return isEn.value ? (props.holiday.nameEn || props.holiday.nameZh) : (props.holiday.nameZh || props.holiday.name)
   }
-  return isEn.value ? 'Friday - Sunday Weekend Buyout' : '週五至週日・全區尊榮包棟'
+  return t('pricingOverview.specialWeekendTitle')
 })
 
 const displayPrice = computed(() => {
@@ -40,17 +40,17 @@ const displayPrice = computed(() => {
         <div class="header-badge" :class="{ 'holiday-badge': isHoliday }">
           <PartyPopper v-if="isHoliday" :size="16" class="text-gold" />
           <Sparkles v-else :size="15" class="text-gold" />
-          <span>{{ isHoliday ? (isEn ? 'Consecutive Holiday Package' : '國定連續假期專案特惠') : (isEn ? 'Weekend Buyout Privilege' : '一般假日包棟方案') }}</span>
+          <span>{{ isHoliday ? t('pricingOverview.specialHolidayBadge') : t('pricingOverview.specialWeekendBadge') }}</span>
         </div>
         <h4 class="holiday-title">{{ displayTitle }}</h4>
         <p class="header-desc">
-          {{ isHoliday ? (isEn ? `Exclusive buyout package for up to ${maxCapacity} guests.` : `全區私密包棟尊榮特惠，獨享 180 坪莊園公設與 5 間獨立景觀套房（最多 ${maxCapacity} 位）：`) : (isEn ? `Exclusive buyout with breakfast for up to ${maxCapacity} guests.` : `享整座私密山林莊園、5 間景觀套房與所有娛樂公設（含精緻手作早餐）：`) }}
+          {{ isHoliday ? t('pricingOverview.specialHolidayDesc', { max: maxCapacity }) : t('pricingOverview.specialWeekendDesc', { max: maxCapacity }) }}
         </p>
       </div>
 
       <div class="header-date-tag">
         <CalendarDays :size="14" class="text-gold" />
-        <span class="tag-label">{{ isEn ? 'Check-in:' : '預選入住：' }}</span>
+        <span class="tag-label">{{ t('pricingOverview.checkInLabel') }}</span>
         <strong class="tag-val">{{ formattedDateText }}</strong>
       </div>
     </div>
@@ -58,10 +58,10 @@ const displayPrice = computed(() => {
     <div class="special-rate-card" :class="isHoliday ? 'holiday-card' : 'weekend-card'">
       <div class="rate-card-top">
         <div class="rate-badge">
-          {{ isHoliday ? (isEn ? 'Holiday Buyout Rate' : '連續假期全棟包棟') : (isEn ? 'Weekend Rate' : '一般假日包棟價') }}
+          {{ isHoliday ? t('pricingOverview.rateCardHolidayBadge') : t('pricingOverview.rateCardWeekendBadge') }}
         </div>
         <div class="breakfast-badge" :class="{ 'no-breakfast': isHoliday && !holiday.breakfast }">
-          {{ isHoliday ? (holiday.breakfast ? (isEn ? 'Handmade Breakfast Included' : '含精緻手作早餐') : (isEn ? 'No breakfast during CNY' : '春節期間不提供早餐')) : (isEn ? 'Handmade Breakfast Included' : '含精緻手作早餐') }}
+          {{ isHoliday ? (holiday.breakfast ? t('pricingOverview.breakfastIncluded') : t('pricingOverview.cnyNoBreakfast')) : t('pricingOverview.breakfastIncluded') }}
         </div>
       </div>
 
@@ -69,23 +69,23 @@ const displayPrice = computed(() => {
         <div class="tier-price-wrap">
           <span class="currency">NT$</span>
           <span class="price-amount">{{ displayPrice }}</span>
-          <span class="price-unit">{{ isEn ? `/ night (Up to ${maxCapacity} guests)` : `/ 晚（最多 ${maxCapacity} 人全包棟）` }}</span>
+          <span class="price-unit">{{ t('pricingOverview.rateUnit', { max: maxCapacity }) }}</span>
         </div>
       </div>
 
       <p class="rate-perks">
-        {{ isHoliday ? (holiday.noteZh || (isEn ? 'Includes all 5 suites, KTV, automatic mahjong, outdoor BBQ grill, and pool.' : '包含 5 間雙人/四人景觀套房、獨立隔音 KTV、電動四口麻將、戶外庭園大型美式烤肉區與戲水池。')) : (isEn ? 'Enjoy 180-ping private estate with 5 ensuite bedrooms, KTV lounge, auto-mahjong table, BBQ grill, and private outdoor pool.' : '獨享 180 坪私密山林莊園，5 間獨立景觀套房、戶外景觀戲水池、歡唱隔音 KTV、電動四口麻將與美式烤肉公設。') }}
+        {{ isHoliday ? (holiday.noteZh || t('pricingOverview.holidayPerksDefault')) : t('pricingOverview.weekendPerksDefault') }}
       </p>
 
       <div class="rate-step-prompt">
         <template v-if="checkOutDate && calculation && calculation.nights > 0">
           <span class="prompt-text highlight-gold">
-            ✅ {{ isEn ? `Selected ${selectedDate} to ${checkOutDate} (${calculation.nights} night(s), Total: NT$ ${calculation.grandTotal.toLocaleString()})` : `已選擇入住區間：${selectedDate} 至 ${checkOutDate}（共 ${calculation.nights} 晚，預估總額 NT$ ${calculation.grandTotal.toLocaleString()}）` }}
+            {{ t('pricingOverview.selectedIntervalPrompt', { checkIn: selectedDate, checkOut: checkOutDate, nights: calculation.nights, total: calculation.grandTotal.toLocaleString() }) }}
           </span>
         </template>
         <template v-else>
           <span class="prompt-text">
-            👉 {{ isEn ? 'Please click your Check-out date on the calendar to finalize pricing & reservation' : '請接續在上方月曆點選【退房日期】，系統將即時試算總額並開放線上直訂' }}
+            {{ t('pricingOverview.clickCheckOutPrompt') }}
           </span>
         </template>
       </div>
