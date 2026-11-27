@@ -28,17 +28,23 @@
   "footer": {
     "about": "關於山語",
     "aboutText": "隱匿於翠巒疊嶂之間的頂級私邸，以東方極致留白美學與靜謐山林為靈感，為您提供 5 間客房的專屬包棟奢華度假體驗。",
+    "navigation": "網站導覽",
     "contact": "聯絡與預約",
     "address": "地址",
     "phone": "客服專線",
     "line": "官方 LINE",
+    "lineReservation": "LINE 官方預約",
     "ig": "Instagram",
     "rights": "版權所有",
     "admin": "後台管理"
   },
   "theme": {
     "light": "晨曦模式",
-    "dark": "夜景模式"
+    "dark": "夜景模式",
+    "switchToLight": "切換為晨曦模式",
+    "switchToDark": "切換為夜景模式",
+    "switchToZh": "切換為繁體中文",
+    "switchToEn": "切換為英文"
   },
   "calendar": {
     "title": "即時空房查詢與包棟預約",

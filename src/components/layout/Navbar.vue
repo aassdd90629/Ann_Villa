@@ -94,7 +94,7 @@ onUnmounted(() => {
         <button 
           class="btn-icon" 
           @click="toggleLocale" 
-          :title="isEn ? 'Switch to Traditional Chinese' : '切換為英文'"
+          :title="isEn ? t('theme.switchToZh') : t('theme.switchToEn')"
           aria-label="Toggle language"
         >
           <Globe :size="18" />
@@ -105,7 +105,7 @@ onUnmounted(() => {
         <button 
           class="btn-icon" 
           @click="toggleTheme" 
-          :title="theme === 'light' ? '切換為夜景模式' : '切換為晨曦模式'"
+          :title="theme === 'light' ? t('theme.switchToDark') : t('theme.switchToLight')"
           aria-label="Toggle theme"
         >
           <Moon v-if="theme === 'light'" :size="18" />

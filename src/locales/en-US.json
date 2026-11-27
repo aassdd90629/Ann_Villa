@@ -28,17 +28,23 @@
   "footer": {
     "about": "About Shan Yu",
     "aboutText": "A private mountain sanctuary nestled in tranquil greenery, crafted with oriental minimalist aesthetics and pure serenity for exclusive private villa experiences.",
+    "navigation": "Navigation",
     "contact": "Contact & Booking",
     "address": "Address",
     "phone": "Phone",
     "line": "Official LINE",
+    "lineReservation": "Reserve via LINE",
     "ig": "Instagram",
     "rights": "All rights reserved.",
     "admin": "CMS Portal"
   },
   "theme": {
     "light": "Dawn Mode",
-    "dark": "Night Mode"
+    "dark": "Night Mode",
+    "switchToLight": "Switch to Dawn Mode",
+    "switchToDark": "Switch to Night Mode",
+    "switchToZh": "Switch to Traditional Chinese",
+    "switchToEn": "Switch to English"
   },
   "calendar": {
     "title": "Live Availability & Direct Reservation",

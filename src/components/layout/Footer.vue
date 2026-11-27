@@ -8,11 +8,10 @@ import {
   MapPin, 
   Instagram, 
   MessageSquare, 
-  ShieldCheck, 
   ArrowUpRight
 } from 'lucide-vue-next'
 
-const { isEn, t } = useI18n()
+const { t, tField } = useI18n()
 const { basicInfo: siteData } = useSiteContent()
 
 const navLinks = [
@@ -49,15 +48,11 @@ const currentYear = new Date().getFullYear()
         <p class="footer-desc">
           {{ t('footer.aboutText') }}
         </p>
-        <!-- <div class="license-tag">
-          <ShieldCheck :size="15" />
-          <span>{{ siteData.licenseNumber }}</span>
-        </div> -->
       </div>
 
       <!-- 頁面快速導覽 -->
       <div class="footer-col nav-col">
-        <h4 class="col-title">{{ isEn ? 'Navigation' : '網站導覽' }}</h4>
+        <h4 class="col-title">{{ t('footer.navigation') }}</h4>
         <ul class="footer-links">
           <li v-for="link in navLinks" :key="link.path">
             <RouterLink :to="link.path" class="footer-link">
@@ -73,7 +68,7 @@ const currentYear = new Date().getFullYear()
         <div class="contact-list">
           <div class="contact-item">
             <MapPin :size="17" class="item-icon" />
-            <a :href="siteData.googleMapUrl" target="_blank" rel="noopener noreferrer" class="contact-link">{{ isEn ? siteData.addressEn : siteData.addressZh }}</a>
+            <a :href="siteData.googleMapUrl" target="_blank" rel="noopener noreferrer" class="contact-link">{{ tField(siteData, 'address') }}</a>
           </div>
           <div class="contact-item">
             <Phone :size="17" class="item-icon" />
@@ -94,7 +89,7 @@ const currentYear = new Date().getFullYear()
             title="官方 LINE 諮詢"
           >
             <MessageSquare :size="16" />
-            <span>LINE 官方預約</span>
+            <span>{{ t('footer.lineReservation') }}</span>
             <ArrowUpRight :size="14" />
           </BookingButton>
           <a 
@@ -116,7 +111,7 @@ const currentYear = new Date().getFullYear()
     <div class="footer-bottom">
       <div class="container bottom-container">
         <p class="copyright">
-          © {{ currentYear }} {{ isEn ? siteData.brandNameEn : siteData.brandNameZh }}. {{ t('footer.rights') }}
+          © {{ currentYear }} {{ tField(siteData, 'brandName') }}. {{ t('footer.rights') }}
         </p>
       </div>
     </div>
