@@ -101,11 +101,11 @@ const selectTier = (tier) => emit('apply-tier', tier.count)
       </button>
       <button type="button" class="tab-btn" :class="{ active: activeTab === 'weekend' }" @click="activeTab = 'weekend'">
         <CalendarCheck :size="13" />
-        <span>{{ isEn ? `Weekend (${Math.round(weekendPrice / 1000)}k)` : `一般假日 (${Math.round(weekendPrice / 1000)}k)` }}</span>
+        <span>{{ isEn ? 'Regular Weekend (Fri-Sun)' : '一般假日 (週五~週日)' }}</span>
       </button>
       <button type="button" class="tab-btn" :class="{ active: activeTab === 'holiday' }" @click="activeTab = 'holiday'">
         <PartyPopper :size="13" />
-        <span>{{ isEn ? 'Holiday Specials (35k-50k)' : '國定連續假期專案 (35k~50k)' }}</span>
+        <span>{{ isEn ? 'National Holiday Specials' : '國定連續假期專案' }}</span>
       </button>
     </div>
 
@@ -169,7 +169,7 @@ const selectTier = (tier) => emit('apply-tier', tier.count)
       <div class="holiday-overview-wrap">
         <div class="holiday-header-bar">
           <span class="h-title">{{ isEn ? 'National Holiday Buyout Packages (by holiday season):' : '國定連續假期專案價格（依各專案檔期計價）：' }}</span>
-          <span v-if="selectedHoliday" class="active-h-tag">🎯 {{ isEn ? 'Selected:' : '預選日適逢：' }} {{ selectedHoliday.nameZh || selectedHoliday.name }} (NT$ {{ Number(selectedHoliday.price).toLocaleString() }})</span>
+          <span v-if="selectedHoliday" class="active-h-tag">🎯 {{ isEn ? 'Selected:' : '預選日適逢：' }} {{ selectedHoliday.nameZh || selectedHoliday.name }}</span>
         </div>
         <div class="holiday-cards-grid">
           <div v-for="hTier in dynamicHolidayTiers" :key="hTier.price" class="holiday-rate-card" :class="{ active: selectedHoliday && Number(selectedHoliday.price) === hTier.price }">
