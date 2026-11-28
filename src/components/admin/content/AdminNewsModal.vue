@@ -1,6 +1,7 @@
 <script setup>
 import { ref, watch, computed } from 'vue'
 import { X, Newspaper, Check, AlertCircle } from 'lucide-vue-next'
+import AdminImageUploadField from '../common/AdminImageUploadField.vue'
 
 const props = defineProps({
   show: { type: Boolean, default: false },
@@ -24,7 +25,6 @@ const sortOrder = ref(1)
 const isActive = ref(true)
 const isLoading = ref(false)
 const errorMessage = ref('')
-const imagePreviewError = ref(false)
 const defaultPlaceholderImg = '/img/homebanner/homebanner-01.webp'
 
 watch(() => props.show, (newVal) => {
@@ -188,23 +188,13 @@ const handleSubmit = async () => {
             <textarea v-model="summaryZh" rows="3" class="form-textarea" placeholder="請詳細填寫公告或專案活動說明..." required></textarea>
           </div>
 
-          <div class="form-group">
-            <div class="label-with-action">
-              <label class="form-label">封面照片網址 (URL)</label>
-              <button 
-                type="button" 
-                class="btn-text-gold" 
-                @click="image = defaultPlaceholderImg"
-              >
-                帶入預設山莊美照
-              </button>
-            </div>
-            <input v-model="image" type="url" class="form-input font-mono" placeholder="https://..." />
-            <div v-if="image" class="img-preview-box">
-              <img :src="image" alt="預覽" @error="imagePreviewError = true" @load="imagePreviewError = false" />
-              <span v-if="imagePreviewError" class="preview-error">⚠️ 圖片網址無法載入，請確認網址正確</span>
-            </div>
-          </div>
+          <AdminImageUploadField 
+            v-model="image" 
+            category="news"
+            label="封面照片"
+            :default-image="defaultPlaceholderImg"
+            default-button-text="帶入預設山莊美照"
+          />
 
           <div class="form-row-2">
             <div class="form-group checkbox-group">
@@ -293,26 +283,6 @@ const handleSubmit = async () => {
     &.font-mono { font-family: monospace; font-size: 0.8rem; }
   }
   .form-textarea { resize: vertical; line-height: 1.5; }
-
-  .label-with-action {
-    display: flex; align-items: center; justify-content: space-between;
-    .btn-text-gold {
-      background: transparent; border: none; color: var(--gold-primary, #d4af37);
-      font-size: 0.75rem; cursor: pointer; text-decoration: underline; padding: 0;
-      &:hover { opacity: 0.8; }
-    }
-  }
-
-  .img-preview-box {
-    margin-top: 0.4rem; height: 110px; border-radius: 6px; overflow: hidden; position: relative;
-    border: 1px solid var(--admin-border-subtle, rgba(255, 255, 255, 0.1));
-    background: var(--admin-bg-base, #0d131f);
-    img { width: 100%; height: 100%; object-fit: cover; }
-    .preview-error {
-      position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-      background: rgba(0, 0, 0, 0.75); color: #ef4444; font-size: 0.78rem; padding: 0.5rem;
-    }
-  }
 }
 
 .form-row-2 {
