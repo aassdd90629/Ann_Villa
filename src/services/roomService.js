@@ -7,13 +7,13 @@
 
 let cachedRooms = null;
 
-export async function getRooms(force = false) {
+export async function getRooms(force = true) {
   if (cachedRooms && !force) {
     return cachedRooms;
   }
 
   try {
-    const res = await fetch('/api/rooms');
+    const res = await fetch('/api/rooms?t=' + Date.now(), { cache: 'no-cache' });
     if (res.ok) {
       const data = await res.json();
       if (data && data.success && Array.isArray(data.rooms)) {

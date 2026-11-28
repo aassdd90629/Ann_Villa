@@ -1,0 +1,382 @@
+<script setup>
+import { ref, watch, computed } from 'vue'
+import { X, UploadCloud, Check, AlertCircle, BedDouble, Lock } from 'lucide-vue-next'
+
+const props = defineProps({
+  show: { type: Boolean, default: false },
+  targetRoomId: { type: String, default: '' },
+  existingRooms: { type: Array, default: () => [] }
+})
+
+const emit = defineEmits(['close', 'uploaded'])
+
+// 是否處於單一空間鎖定模式
+const isLocked = computed(() => Boolean(props.targetRoomId && props.targetRoomId.trim()))
+
+// 整理乾淨的客房列表 (排除了照片 ID 雜訊，僅放真實客房)
+const availableRooms = computed(() => {
+  if (!props.existingRooms || !props.existingRooms.length) return []
+  return props.existingRooms.map(r => ({
+    id: r.id,
+    nameZh: r.titleZh || r.name || r.nameZh || r.id,
+    floor: r.floor || '1F',
+    beds: r.bedTypeZh || r.beds || ''
+  }))
+})
+
+// 鎖定模式下顯示的客房名稱
+const lockedRoomDisplay = computed(() => {
+  if (!props.targetRoomId) return ''
+  const found = availableRooms.value.find(r => r.id === props.targetRoomId)
+  if (found) {
+    return `[${found.floor}] ${found.nameZh}`
+  }
+  return props.targetRoomId
+})
+
+const selectedRoomId = ref('')
+const titleZh = ref('')
+const titleEn = ref('')
+const tagZh = ref('')
+const tagEn = ref('')
+const isActive = ref(true)
+
+const selectedFile = ref(null)
+const previewUrl = ref('')
+const fileInfo = ref({ width: 0, height: 0, sizeKb: 0 })
+const isCompressing = ref(false)
+const isLoading = ref(false)
+const errorMessage = ref('')
+const fileInputRef = ref(null)
+
+const updateDefaultTag = () => {
+  const currentId = isLocked.value ? props.targetRoomId : selectedRoomId.value
+  const found = availableRooms.value.find(r => r.id === currentId)
+  if (found && !tagZh.value) {
+    tagZh.value = `${found.floor} ${found.nameZh}`.trim()
+  }
+}
+
+watch(() => props.show, (newVal) => {
+  if (!newVal) return
+  if (isLocked.value) {
+    selectedRoomId.value = props.targetRoomId
+  } else if (availableRooms.value.length > 0) {
+    selectedRoomId.value = availableRooms.value[0].id
+  } else {
+    selectedRoomId.value = ''
+  }
+
+  titleZh.value = ''
+  titleEn.value = ''
+  tagZh.value = ''
+  tagEn.value = ''
+  isActive.value = true
+  selectedFile.value = null
+  previewUrl.value = ''
+  errorMessage.value = ''
+  fileInfo.value = { width: 0, height: 0, sizeKb: 0 }
+  updateDefaultTag()
+})
+
+watch(selectedRoomId, () => updateDefaultTag())
+
+const handleClose = () => {
+  if (!isLoading.value) emit('close')
+}
+
+const handleFileDrop = (e) => {
+  const files = e.dataTransfer?.files
+  if (files?.length) processImageFile(files[0])
+}
+
+const handleFileSelect = (e) => {
+  const files = e.target?.files
+  if (files?.length) processImageFile(files[0])
+}
+
+const processImageFile = (file) => {
+  if (!file.type.startsWith('image/')) {
+    errorMessage.value = '請選擇有效的圖片檔案 (JPG, PNG, WebP)。'
+    return
+  }
+
+  isCompressing.value = true
+  errorMessage.value = ''
+
+  const reader = new FileReader()
+  reader.onload = (e) => {
+    const img = new Image()
+    img.onload = () => {
+      let { width: w, height: h } = img
+      const maxEdge = 2560
+      if (w > maxEdge || h > maxEdge) {
+        if (w > h) { h = Math.round((h * maxEdge) / w); w = maxEdge }
+        else { w = Math.round((w * maxEdge) / h); h = maxEdge }
+      }
+
+      const canvas = document.createElement('canvas')
+      canvas.width = w
+      canvas.height = h
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h)
+
+      const webpBase64 = canvas.toDataURL('image/webp', 0.88)
+      previewUrl.value = webpBase64
+      selectedFile.value = file
+      fileInfo.value = { width: w, height: h, sizeKb: Math.round((webpBase64.length * 3) / 4096) }
+      if (!titleZh.value) titleZh.value = file.name.replace(/\.[^/.]+$/, '')
+      isCompressing.value = false
+    }
+    img.onerror = () => {
+      errorMessage.value = '讀取圖片失敗，請更換其他檔案。'
+      isCompressing.value = false
+    }
+    img.src = e.target.result
+  }
+  reader.readAsDataURL(file)
+}
+
+const handleSubmit = async () => {
+  if (!previewUrl.value) {
+    errorMessage.value = '請先選擇或拖曳欲上傳之客房照片。'
+    return
+  }
+  if (!titleZh.value.trim()) {
+    errorMessage.value = '請填寫照片標題或角度說明（例如：晨光大面窗景、衛浴空間）。'
+    return
+  }
+
+  const finalSubCategory = isLocked.value ? props.targetRoomId : selectedRoomId.value
+  if (!finalSubCategory) {
+    errorMessage.value = '請選擇所屬客房空間分類。'
+    return
+  }
+
+  isLoading.value = true
+  errorMessage.value = ''
+
+  try {
+    const token = localStorage.getItem('shanyu_admin_token')
+    const payload = {
+      category: 'room',
+      subCategory: finalSubCategory,
+      titleZh: titleZh.value.trim(),
+      titleEn: titleEn.value.trim(),
+      tagZh: tagZh.value.trim(),
+      tagEn: tagEn.value.trim(),
+      base64Data: previewUrl.value,
+      width: fileInfo.value.width,
+      height: fileInfo.value.height,
+      isActive: isActive.value
+    }
+
+    const res = await fetch('/api/admin/media', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(payload)
+    })
+
+    const data = await res.json()
+    if (!res.ok || !data.success) {
+      throw new Error(data.message || '客房照片上傳失敗')
+    }
+    emit('uploaded', data.asset)
+    emit('close')
+  } catch (err) {
+    errorMessage.value = err.message || '上傳發生未預期錯誤，請稍後再試。'
+  } finally {
+    isLoading.value = false
+  }
+}
+</script>
+
+<template>
+  <Teleport to="body">
+    <div v-if="show" class="admin-modal-overlay" @click.self="handleClose">
+      <div class="admin-modal-container">
+        <!-- 頂部標題 -->
+        <div class="modal-header">
+          <div class="header-title-group">
+            <BedDouble :size="20" class="gold-icon" />
+            <div>
+              <h3>上傳客房實景照片</h3>
+              <p class="header-desc">上傳實景寫真相片至目標客房圖集，支援前台即時同步展示</p>
+            </div>
+          </div>
+          <button type="button" class="btn-close" @click="handleClose" :disabled="isLoading">
+            <X :size="18" />
+          </button>
+        </div>
+
+        <div v-if="errorMessage" class="modal-alert error">
+          <AlertCircle :size="16" />
+          <span>{{ errorMessage }}</span>
+        </div>
+
+        <form @submit.prevent="handleSubmit" class="modal-form">
+          <!-- 情況 A：鎖定指定分類 (完全不給換，避免誤觸) -->
+          <div v-if="isLocked" class="locked-banner">
+            <div class="locked-content">
+              <Lock :size="16" class="locked-icon" />
+              <span class="locked-tag">目標客房已鎖定</span>
+              <strong class="locked-name">{{ lockedRoomDisplay }}</strong>
+            </div>
+            <span class="locked-hint">此張照片將直接儲存至此客房相簿</span>
+          </div>
+
+          <!-- 情況 B：未指定分類時，提供乾淨的客房下拉選單 (無任何相片 ID 雜訊) -->
+          <div v-else class="form-group">
+            <label class="form-label">選擇目標客房 <span class="required">*</span></label>
+            <select v-model="selectedRoomId" class="form-select" required>
+              <option value="" disabled>請選擇所屬客房空間</option>
+              <option v-for="rm in availableRooms" :key="rm.id" :value="rm.id">
+                [{{ rm.floor }}] {{ rm.nameZh }} {{ rm.beds ? '— ' + rm.beds : '' }}
+              </option>
+            </select>
+          </div>
+
+          <!-- 拖曳上傳區 -->
+          <div 
+            class="dropzone-box" 
+            :class="{ 'has-file': previewUrl }"
+            @dragover.prevent
+            @drop.prevent="handleFileDrop"
+            @click="fileInputRef?.click()"
+          >
+            <input 
+              ref="fileInputRef" 
+              type="file" 
+              accept="image/*" 
+              class="hidden-input" 
+              @change="handleFileSelect" 
+            />
+
+            <div v-if="!previewUrl" class="dropzone-empty">
+              <UploadCloud :size="34" class="dropzone-icon" />
+              <p class="drop-text">點擊或拖曳客房實景照片至此</p>
+              <span class="drop-hint">自動壓縮優化為次世代 WebP (支援 JPG, PNG, WebP)</span>
+            </div>
+
+            <div v-else class="dropzone-preview">
+              <img :src="previewUrl" alt="預覽照片" class="preview-img" />
+              <div class="preview-overlay">
+                <span class="preview-badge">點擊更換圖片</span>
+                <span v-if="fileInfo.width" class="preview-meta">
+                  {{ fileInfo.width }} × {{ fileInfo.height }} px (約 {{ fileInfo.sizeKb }} KB)
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 照片資訊欄位 (對齊前台) -->
+          <div class="form-row-2">
+            <div class="form-group">
+              <label class="form-label">照片標題 / 角度說明 (繁中) <span class="required">*</span></label>
+              <input 
+                v-model="titleZh" 
+                type="text" 
+                class="form-input" 
+                placeholder="例如：晨光大面窗景、衛浴空間、舒眠雙大床" 
+                required 
+              />
+            </div>
+            <div class="form-group">
+              <label class="form-label">空間標籤 (Tag 繁中)</label>
+              <input 
+                v-model="tagZh" 
+                type="text" 
+                class="form-input" 
+                placeholder="例如：1F 四人房、景觀衛浴、獨立露台" 
+              />
+            </div>
+          </div>
+
+          <!-- 發佈狀態切換 -->
+          <div class="form-group">
+            <label class="form-label">發佈狀態</label>
+            <div class="status-toggle-row">
+              <button 
+                type="button" 
+                class="status-btn" 
+                :class="{ active: isActive }" 
+                @click="isActive = true"
+              >
+                <span class="dot active"></span>
+                <span>直接上架 (公開展示)</span>
+              </button>
+              <button 
+                type="button" 
+                class="status-btn" 
+                :class="{ active: !isActive }" 
+                @click="isActive = false"
+              >
+                <span class="dot draft"></span>
+                <span>先存為草稿 (暫不上架)</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn-cancel" @click="handleClose" :disabled="isLoading">
+              取消
+            </button>
+            <button type="submit" class="btn-submit" :disabled="isLoading || isCompressing || !previewUrl">
+              <Check v-if="!isLoading" :size="16" />
+              <span>{{ isLoading ? '處理中...' : (isActive ? '確認上傳並公開' : '儲存為草稿') }}</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </Teleport>
+</template>
+
+<style lang="scss" scoped>
+@use '../../../assets/styles/variables' as *;
+@use '../../../assets/styles/admin-media-modals' as *;
+
+.locked-banner {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.85rem 1.15rem;
+  background: var(--gold-light, rgba(184, 144, 71, 0.08));
+  border: 1px solid var(--gold-primary, #b89047);
+  border-radius: $radius-sm;
+
+  .locked-content {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.95rem;
+
+    .locked-icon {
+      color: var(--gold-primary, #b89047);
+      flex-shrink: 0;
+    }
+
+    .locked-tag {
+      background: var(--gold-primary, #b89047);
+      color: #ffffff;
+      font-size: 0.75rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+      font-weight: 600;
+    }
+
+    .locked-name {
+      color: var(--text-primary, #1e293b);
+      font-weight: 600;
+    }
+  }
+
+  .locked-hint {
+    font-size: 0.8rem;
+    color: var(--text-secondary, #64748b);
+    padding-left: 1.6rem;
+  }
+}
+</style>

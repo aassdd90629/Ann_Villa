@@ -1,12 +1,9 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { 
-  Image as ImageIcon, 
-  UploadCloud, 
   RefreshCw, 
   CheckCircle, 
   AlertCircle, 
-  Sparkles, 
   Cloud, 
   X,
   Home,
@@ -14,31 +11,55 @@ import {
   Coffee
 } from 'lucide-vue-next'
 import { useAdminAuth } from '../../composables/useAdminAuth'
+import { useAdminMediaManager } from '../../composables/useAdminMediaManager'
 import AdminHeroMediaTab from '../../components/admin/media/AdminHeroMediaTab.vue'
 import AdminRoomMediaTab from '../../components/admin/media/AdminRoomMediaTab.vue'
 import AdminFacilityMediaTab from '../../components/admin/media/AdminFacilityMediaTab.vue'
-import AdminMediaUploadModal from '../../components/admin/media/AdminMediaUploadModal.vue'
+import AdminHeroUploadModal from '../../components/admin/media/AdminHeroUploadModal.vue'
+import AdminRoomUploadModal from '../../components/admin/media/AdminRoomUploadModal.vue'
+import AdminFacilityUploadModal from '../../components/admin/media/AdminFacilityUploadModal.vue'
 import AdminMediaEditModal from '../../components/admin/media/AdminMediaEditModal.vue'
+import AdminRoomCategoryModal from '../../components/admin/media/AdminRoomCategoryModal.vue'
+import AdminFacilityCategoryModal from '../../components/admin/media/AdminFacilityCategoryModal.vue'
 
 const { isViewer } = useAdminAuth()
+const {
+  isLoading,
+  feedbackMessage,
+  feedbackType,
+  hasR2,
+  counts,
+  heroSlides,
+  roomAssets,
+  facilityAssets,
+  dbRooms,
+  dbFacilities,
+  fetchAllData,
+  togglePhotoActive,
+  deletePhoto,
+  deleteRoom,
+  deleteFacility,
+  reorderHero
+} = useAdminMediaManager()
 
 const currentTab = ref('hero')
-const isLoading = ref(false)
-const feedbackMessage = ref('')
-const feedbackType = ref('success')
 
-const hasR2 = ref(false)
-const counts = ref({ hero: 0, room: 0, facility: 0, total: 0 })
-const heroSlides = ref([])
-const roomAssets = ref([])
-const facilityAssets = ref([])
+// 相片上傳彈窗狀態
+const showHeroUploadModal = ref(false)
+const showRoomUploadModal = ref(false)
+const targetRoomId = ref('')
+const showFacilityUploadModal = ref(false)
+const targetFacilityId = ref('')
 
-// Modal 狀態
-const showUploadModal = ref(false)
-const uploadDefaultCategory = ref('hero')
-
+// 圖片說明編輯彈窗
 const showEditModal = ref(false)
 const selectedMediaForEdit = ref(null)
+
+// 空間規格管理彈窗 (全欄位對齊前台)
+const showRoomCategoryModal = ref(false)
+const selectedRoomForEdit = ref(null)
+const showFacilityCategoryModal = ref(false)
+const selectedFacilityForEdit = ref(null)
 
 const tabs = [
   { id: 'hero', name: '首頁 Hero 輪播圖集', icon: Home },
@@ -46,108 +67,66 @@ const tabs = [
   { id: 'facility', name: '園區公設休閒照', icon: Coffee }
 ]
 
-const fetchMediaList = async () => {
-  isLoading.value = true
-  feedbackMessage.value = ''
-  try {
-    const token = localStorage.getItem('shanyu_admin_token')
-    const res = await fetch('/api/admin/media', {
-      headers: { 'Authorization': `Bearer ${token}` }
-    })
-    const data = await res.json()
-    if (!res.ok || !data.success) {
-      throw new Error(data.message || '讀取媒體庫失敗')
-    }
-    hasR2.value = Boolean(data.hasR2)
-    counts.value = data.counts || {}
-    heroSlides.value = data.hero || []
-    roomAssets.value = data.room || []
-    facilityAssets.value = data.facility || []
-  } catch (err) {
-    feedbackMessage.value = err.message
-    feedbackType.value = 'error'
-  } finally {
-    isLoading.value = false
-  }
-}
-
 onMounted(() => {
-  fetchMediaList()
+  fetchAllData()
 })
 
-const handleOpenUpload = (cat = 'hero') => {
-  uploadDefaultCategory.value = cat
-  showUploadModal.value = true
+// === 客房空間相關操作 ===
+const handleAddRoom = () => {
+  selectedRoomForEdit.value = null
+  showRoomCategoryModal.value = true
 }
 
-const handleOpenEdit = (item) => {
+const handleEditRoom = (room) => {
+  selectedRoomForEdit.value = { ...room }
+  showRoomCategoryModal.value = true
+}
+
+// === 公設空間相關操作 ===
+const handleAddFacility = () => {
+  selectedFacilityForEdit.value = null
+  showFacilityCategoryModal.value = true
+}
+
+const handleEditFacility = (facility) => {
+  selectedFacilityForEdit.value = { ...facility }
+  showFacilityCategoryModal.value = true
+}
+
+// === 照片上傳彈窗開啟 (支援鎖定目標分類) ===
+const handleOpenHeroUpload = () => {
+  showHeroUploadModal.value = true
+}
+
+const handleOpenRoomUpload = (roomId = '') => {
+  targetRoomId.value = roomId || ''
+  showRoomUploadModal.value = true
+}
+
+const handleOpenFacilityUpload = (facilityId = '') => {
+  targetFacilityId.value = facilityId || ''
+  showFacilityUploadModal.value = true
+}
+
+// 公設別名映射表 (與 AdminFacilityMediaTab 保持一致)
+const facilityAliasMap = {
+  'ktv-theater': ['living-ktv', 'ktv-theater', 'ktv'],
+  'smart-kitchen': ['kitchen', 'smart-kitchen', 'kitchen-bar'],
+  'mahjong-room': ['mahjong', 'mahjong-room', 'fac-mahjong-01', 'fac-mahjong-02'],
+  'outdoor-bbq': ['bbq', 'outdoor-bbq'],
+  'tea-ceremony': ['tea', 'tea-ceremony'],
+  'viewing-deck': ['viewing-deck', 'terrace']
+}
+
+// === 圖片操作 ===
+const handleOpenEditPhoto = (item) => {
   selectedMediaForEdit.value = { ...item }
   showEditModal.value = true
 }
 
-const handleReorder = async (items) => {
-  try {
-    const token = localStorage.getItem('shanyu_admin_token')
-    const res = await fetch('/api/admin/media', {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify({ action: 'reorder', items })
-    })
-    const data = await res.json()
-    if (!res.ok || !data.success) {
-      throw new Error(data.message || '順序更新失敗')
-    }
-    feedbackMessage.value = '輪播播放順序已成功更新！'
-    feedbackType.value = 'success'
-    fetchMediaList()
-  } catch (err) {
-    feedbackMessage.value = err.message
-    feedbackType.value = 'error'
-  }
-}
-
-const handleToggleActive = async (asset) => {
+const handleDeletePhoto = async (asset) => {
   if (isViewer.value) {
-    alert('您的身分為唯讀人員，無權限切換狀態。')
-    return
-  }
-
-  const nextActive = !asset.isActive
-  try {
-    const token = localStorage.getItem('shanyu_admin_token')
-    const res = await fetch('/api/admin/media', {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify({
-        action: 'toggle_active',
-        id: asset.id,
-        isActive: nextActive
-      })
-    })
-
-    const data = await res.json()
-    if (!res.ok || !data.success) {
-      throw new Error(data.message || '狀態切換失敗')
-    }
-
-    asset.isActive = nextActive
-    feedbackMessage.value = `圖片「${asset.titleZh}」已成功${nextActive ? '上架顯示' : '轉為草稿'}！`
-    feedbackType.value = 'success'
-  } catch (err) {
-    feedbackMessage.value = err.message
-    feedbackType.value = 'error'
-  }
-}
-
-const handleDelete = async (asset) => {
-  if (isViewer.value) {
-    alert('您的身分為唯讀人員，無權限刪除圖片。')
+    alert('唯讀人員無權限刪除圖片。')
     return
   }
 
@@ -155,30 +134,75 @@ const handleDelete = async (asset) => {
     return
   }
 
-  try {
-    const token = localStorage.getItem('shanyu_admin_token')
-    const res = await fetch(`/api/admin/media?id=${encodeURIComponent(asset.id)}`, {
-      method: 'DELETE',
-      headers: { 'Authorization': `Bearer ${token}` }
+  // 1. 預先判定該照片是否為該空間分類的「最後一張照片」
+  let matchedCategoryType = null // 'room' | 'facility'
+  let matchedCategoryItem = null
+  let isLastPhotoInCategory = false
+
+  if (asset.category === 'room') {
+    const normSub = (asset.subCategory || '').toLowerCase().replace(/^room-0?/, 'room-')
+    const matchedRoom = dbRooms.value.find(r => {
+      const normId = (r.id || '').toLowerCase().replace(/^room-0?/, 'room-')
+      return normId === normSub || r.id === asset.subCategory || (normId === 'room-1' && asset.subCategory === 'room-01-cover')
     })
 
-    const data = await res.json()
-    if (!res.ok || !data.success) {
-      throw new Error(data.message || '刪除失敗')
+    if (matchedRoom) {
+      const normRoomId = (matchedRoom.id || '').toLowerCase().replace(/^room-0?/, 'room-')
+      const remaining = roomAssets.value.filter(p => {
+        const pSub = (p.subCategory || '').toLowerCase().replace(/^room-0?/, 'room-')
+        return pSub === normRoomId || p.subCategory === matchedRoom.id || (normRoomId === 'room-1' && p.subCategory === 'room-01-cover')
+      })
+      if (remaining.length === 1 && remaining[0].id === asset.id) {
+        matchedCategoryType = 'room'
+        matchedCategoryItem = matchedRoom
+        isLastPhotoInCategory = true
+      }
     }
+  } else if (asset.category === 'facility') {
+    const matchedFac = dbFacilities.value.find(f => {
+      const aliases = facilityAliasMap[f.id] || [f.id]
+      return aliases.includes(asset.subCategory)
+    })
 
-    feedbackMessage.value = `已成功刪除圖片「${asset.titleZh}」！`
-    feedbackType.value = 'success'
-    fetchMediaList()
-  } catch (err) {
-    feedbackMessage.value = err.message
-    feedbackType.value = 'error'
+    if (matchedFac) {
+      const aliases = facilityAliasMap[matchedFac.id] || [matchedFac.id]
+      const remaining = facilityAssets.value.filter(p => aliases.includes(p.subCategory))
+      if (remaining.length === 1 && remaining[0].id === asset.id) {
+        matchedCategoryType = 'facility'
+        matchedCategoryItem = matchedFac
+        isLastPhotoInCategory = true
+      }
+    }
+  }
+
+  // 2. 執行刪除照片
+  const photoDeleted = await deletePhoto(asset)
+  if (!photoDeleted) return
+
+  // 3. 若為該分類的最後一張照片，依指示詢問使用者是否順便將該空間分類一併刪除
+  if (isLastPhotoInCategory && matchedCategoryItem) {
+    const categoryName = matchedCategoryType === 'room'
+      ? (matchedCategoryItem.titleZh || matchedCategoryItem.name || '此客房')
+      : (matchedCategoryItem.titleZh || '此公共設施')
+    const typeLabel = matchedCategoryType === 'room' ? '客房空間' : '公共設施空間'
+
+    const shouldRemoveCategory = confirm(
+      `此照片為「${categoryName}」${typeLabel}的最後一張照片！\n\n請問您是否要順便將「${categoryName}」空間分類一併刪除？\n\n・點選「確定」：連同此${typeLabel}一併刪除\n・點選「取消」：僅刪除照片，保留空分類方便日後補上傳`
+    )
+
+    if (shouldRemoveCategory) {
+      if (matchedCategoryType === 'room') {
+        await deleteRoom(matchedCategoryItem)
+      } else {
+        await deleteFacility(matchedCategoryItem)
+      }
+    }
   }
 }
 
 const handleModalSaved = () => {
-  fetchMediaList()
-  feedbackMessage.value = '媒體庫已成功更新並同步至前台！'
+  fetchAllData()
+  feedbackMessage.value = '資料已成功儲存並同步至前台！'
   feedbackType.value = 'success'
 }
 </script>
@@ -189,17 +213,16 @@ const handleModalSaved = () => {
     <div class="admin-page-header">
       <div class="header-left">
         <h1 class="page-title">全站圖片與媒體庫管理後台</h1>
-        <p class="page-subtitle">管理首頁 Hero 輪播 11 張大圖、五大客房寫真與公設空間照，支援 Cloudflare R2 雲端儲存與極速 CDN 加速。</p>
+        <p class="page-subtitle">管理首頁 Hero 輪播大圖、獨立客房寫真與公設空間照，全欄位對齊前台規格並支援動態分類。</p>
       </div>
 
       <div class="header-actions">
-        <!-- 雲端圖床狀態標籤 -->
         <span class="storage-badge" :class="{ r2: hasR2, local: !hasR2 }">
           <Cloud :size="14" />
           <span>{{ hasR2 ? 'Cloudflare R2 雲端儲存 (0元流量費已連線)' : '本機動態媒體儲存模式' }}</span>
         </span>
 
-        <button type="button" class="btn-refresh" @click="fetchMediaList" :disabled="isLoading" title="重新整理">
+        <button type="button" class="btn-refresh" @click="fetchAllData" :disabled="isLoading" title="重新整理">
           <RefreshCw :size="15" :class="{ spinning: isLoading }" />
           <span>重新整理</span>
         </button>
@@ -239,49 +262,88 @@ const handleModalSaved = () => {
         v-if="currentTab === 'hero'" 
         :slides="heroSlides" 
         :is-loading="isLoading" 
-        @upload="handleOpenUpload" 
-        @edit="handleOpenEdit" 
-        @delete="handleDelete" 
-        @toggle-active="handleToggleActive" 
-        @reorder="handleReorder" 
+        @upload="handleOpenHeroUpload" 
+        @edit="handleOpenEditPhoto" 
+        @delete="handleDeletePhoto" 
+        @toggle-active="togglePhotoActive" 
+        @reorder="reorderHero" 
       />
 
-      <!-- 2. 客房寫真 -->
+      <!-- 2. 客房寫真 (傳入真實 rooms 與 photos) -->
       <AdminRoomMediaTab 
         v-else-if="currentTab === 'room'" 
-        :rooms="roomAssets" 
+        :rooms="dbRooms" 
+        :photos="roomAssets" 
         :is-loading="isLoading" 
-        @upload="handleOpenUpload" 
-        @edit="handleOpenEdit" 
-        @delete="handleDelete" 
-        @toggle-active="handleToggleActive" 
+        @upload="handleOpenRoomUpload" 
+        @edit-photo="handleOpenEditPhoto" 
+        @delete-photo="handleDeletePhoto" 
+        @toggle-photo-active="togglePhotoActive" 
+        @add-room="handleAddRoom" 
+        @edit-room="handleEditRoom" 
       />
 
-      <!-- 3. 公設空間照 -->
+      <!-- 3. 公設空間照 (傳入真實 facilities 與 photos) -->
       <AdminFacilityMediaTab 
         v-else-if="currentTab === 'facility'" 
-        :facilities="facilityAssets" 
+        :facilities="dbFacilities" 
+        :photos="facilityAssets" 
         :is-loading="isLoading" 
-        @upload="handleOpenUpload" 
-        @edit="handleOpenEdit" 
-        @delete="handleDelete" 
-        @toggle-active="handleToggleActive" 
+        @upload="handleOpenFacilityUpload" 
+        @edit-photo="handleOpenEditPhoto" 
+        @delete-photo="handleDeletePhoto" 
+        @toggle-photo-active="togglePhotoActive" 
+        @add-facility="handleAddFacility" 
+        @edit-facility="handleEditFacility" 
       />
     </div>
 
-    <!-- 彈窗 1：圖片上傳與自動 WebP 壓縮 -->
-    <AdminMediaUploadModal 
-      :show="showUploadModal" 
-      :default-category="uploadDefaultCategory" 
-      @close="showUploadModal = false" 
+    <!-- 彈窗 1：首頁 Hero 輪播大圖上傳 -->
+    <AdminHeroUploadModal 
+      :show="showHeroUploadModal" 
+      @close="showHeroUploadModal = false" 
       @uploaded="handleModalSaved" 
     />
 
-    <!-- 彈窗 2：編輯圖片資訊 -->
+    <!-- 彈窗 2：客房寫真照片上傳 (鎖定指定房型，傳入真實客房清單防雜訊) -->
+    <AdminRoomUploadModal 
+      :show="showRoomUploadModal" 
+      :target-room-id="targetRoomId" 
+      :existing-rooms="dbRooms" 
+      @close="showRoomUploadModal = false" 
+      @uploaded="handleModalSaved" 
+    />
+
+    <!-- 彈窗 3：公設休閒照片上傳 (鎖定指定公設，傳入真實公設清單防雜訊) -->
+    <AdminFacilityUploadModal 
+      :show="showFacilityUploadModal" 
+      :target-facility-id="targetFacilityId" 
+      :existing-facilities="dbFacilities" 
+      @close="showFacilityUploadModal = false" 
+      @uploaded="handleModalSaved" 
+    />
+
+    <!-- 彈窗 4：編輯既有圖片資訊 -->
     <AdminMediaEditModal 
       :show="showEditModal" 
       :media-item="selectedMediaForEdit" 
       @close="showEditModal = false" 
+      @saved="handleModalSaved" 
+    />
+
+    <!-- 彈窗 5：全欄位客房空間規格管理 (新增/編輯) -->
+    <AdminRoomCategoryModal 
+      :show="showRoomCategoryModal" 
+      :room-item="selectedRoomForEdit" 
+      @close="showRoomCategoryModal = false" 
+      @saved="handleModalSaved" 
+    />
+
+    <!-- 彈窗 6：全欄位公設空間規格管理 (新增/編輯) -->
+    <AdminFacilityCategoryModal 
+      :show="showFacilityCategoryModal" 
+      :facility-item="selectedFacilityForEdit" 
+      @close="showFacilityCategoryModal = false" 
       @saved="handleModalSaved" 
     />
   </div>
@@ -290,24 +352,32 @@ const handleModalSaved = () => {
 <style lang="scss" scoped>
 @use '../../assets/styles/variables' as *;
 
-.admin-media-view { padding-bottom: 3rem; }
+.admin-media-view {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
 
 .admin-page-header {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  margin-bottom: 1.5rem;
+  align-items: center;
   flex-wrap: wrap;
   gap: 1rem;
 
-  .page-title {
-    font-size: 1.45rem;
-    font-weight: 600;
-    color: var(--admin-text-main, #f8fafc);
-    margin: 0 0 0.4rem 0;
-  }
+  .header-left {
+    .page-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-primary, #1e293b);
+      margin-bottom: 0.25rem;
+    }
 
-  .page-subtitle { font-size: 0.85rem; color: var(--admin-text-muted, #94a3b8); margin: 0; }
+    .page-subtitle {
+      font-size: 0.875rem;
+      color: var(--text-secondary, #64748b);
+    }
+  }
 
   .header-actions {
     display: flex;
@@ -317,21 +387,22 @@ const handleModalSaved = () => {
     .storage-badge {
       display: inline-flex;
       align-items: center;
-      gap: 0.35rem;
+      gap: 0.4rem;
       padding: 0.35rem 0.75rem;
-      border-radius: 20px;
-      font-size: 0.75rem;
-      font-weight: 600;
+      font-size: 0.8rem;
+      border-radius: 999px;
+      font-weight: 500;
 
       &.r2 {
-        background: rgba(34, 197, 94, 0.15);
-        border: 1px solid rgba(34, 197, 94, 0.35);
-        color: #22c55e;
+        background: rgba(245, 158, 11, 0.12);
+        color: #d97706;
+        border: 1px solid rgba(245, 158, 11, 0.3);
       }
+
       &.local {
-        background: rgba(212, 175, 55, 0.15);
-        border: 1px solid rgba(212, 175, 55, 0.35);
-        color: var(--gold-primary, #d4af37);
+        background: var(--bg-hover, #f1f5f9);
+        color: var(--text-secondary, #64748b);
+        border: 1px solid var(--border-color, #cbd5e1);
       }
     }
 
@@ -339,14 +410,22 @@ const handleModalSaved = () => {
       display: inline-flex;
       align-items: center;
       gap: 0.4rem;
-      padding: 0.55rem 0.9rem;
-      background: var(--admin-bg-card, #151f32);
-      border: 1px solid var(--admin-border, rgba(212, 175, 55, 0.25));
-      border-radius: 6px;
-      color: var(--admin-text-main, #e2e8f0);
-      font-size: 0.82rem;
+      padding: 0.45rem 0.85rem;
+      font-size: 0.85rem;
+      border: 1px solid var(--border-color, #cbd5e1);
+      border-radius: $radius-sm;
+      background: var(--bg-card, #ffffff);
+      color: var(--text-primary, #1e293b);
       cursor: pointer;
-      &:hover:not(:disabled) { border-color: var(--gold-primary, #d4af37); color: var(--gold-primary, #d4af37); }
+
+      &:hover:not(:disabled) {
+        background: var(--bg-hover, #f8fafc);
+        border-color: var(--gold-primary, #b89047);
+      }
+
+      .spinning {
+        animation: spin 1s linear infinite;
+      }
     }
   }
 }
@@ -355,97 +434,77 @@ const handleModalSaved = () => {
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  padding: 0.75rem 1.25rem;
-  border-radius: 6px;
-  margin-bottom: 1.25rem;
-  font-size: 0.85rem;
+  padding: 0.75rem 1rem;
+  border-radius: $radius-sm;
+  font-size: 0.9rem;
 
-  &.success { background: rgba(34, 197, 94, 0.12); border: 1px solid rgba(34, 197, 94, 0.35); color: #22c55e; }
-  &.error { background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.35); color: #ef4444; }
+  &.success {
+    background: #dcfce7;
+    border: 1px solid #86efac;
+    color: #15803d;
+  }
+
+  &.error {
+    background: #fee2e2;
+    border: 1px solid #fca5a5;
+    color: #b91c1c;
+  }
 
   .btn-dismiss {
     margin-left: auto;
-    background: transparent;
+    background: none;
     border: none;
-    color: inherit;
     cursor: pointer;
-    display: flex;
+    color: inherit;
+    padding: 0.2rem;
   }
 }
 
 .media-nav-tabs {
   display: flex;
-  gap: 0.6rem;
-  margin-bottom: 1.5rem;
-  padding: 0.4rem;
-  background: var(--admin-bg-card, #151f32);
-  border: 1px solid var(--admin-border, rgba(212, 175, 55, 0.25));
-  border-radius: 8px;
-  overflow-x: auto;
+  gap: 0.5rem;
+  border-bottom: 2px solid var(--border-color, #e2e8f0);
 
   .tab-btn {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.6rem 1.15rem;
-    border-radius: 6px;
+    padding: 0.75rem 1.25rem;
+    border: none;
     background: transparent;
-    border: 1px solid transparent;
-    color: var(--admin-text-sub, #cbd5e1);
-    font-size: 0.85rem;
-    font-weight: 500;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-secondary, #64748b);
     cursor: pointer;
-    white-space: nowrap;
-    transition: all 0.2s ease;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: color $transition-fast, border-color $transition-fast;
 
-    .tab-icon { color: var(--admin-text-muted, #94a3b8); }
-    .count-badge {
-      font-size: 0.7rem;
-      background: var(--admin-bg-base, rgba(0, 0, 0, 0.3));
-      padding: 0.1rem 0.4rem;
-      border-radius: 10px;
-      color: var(--admin-text-muted, #94a3b8);
+    &:hover {
+      color: var(--text-primary, #1e293b);
     }
 
-    &:hover { color: #fff; background: var(--admin-tr-hover, rgba(255, 255, 255, 0.05)); }
     &.active {
-      background: rgba(212, 175, 55, 0.18);
-      border-color: var(--gold-primary, #d4af37);
-      color: var(--gold-primary, #d4af37);
-      font-weight: 600;
-      .tab-icon { color: var(--gold-primary, #d4af37); }
-      .count-badge { background: var(--gold-primary, #d4af37); color: #121415; }
+      color: var(--gold-primary, #b89047);
+      border-bottom-color: var(--gold-primary, #b89047);
+    }
+
+    .count-badge {
+      font-size: 0.75rem;
+      padding: 0.1rem 0.45rem;
+      border-radius: 999px;
+      background: var(--bg-hover, #f1f5f9);
+      color: var(--text-secondary, #475569);
     }
   }
 }
 
-.spinning { animation: spin 1s linear infinite; }
-@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+.tab-content-area {
+  min-height: 400px;
+}
 
-@media (max-width: 768px) {
-  .admin-page-header {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0.85rem;
-
-    .page-title {
-      font-size: 1.25rem;
-    }
-
-    .header-actions {
-      justify-content: space-between;
-      width: 100%;
-    }
-  }
-
-  .media-nav-tabs {
-    -webkit-overflow-scrolling: touch;
-    padding: 0.35rem;
-
-    .tab-btn {
-      padding: 0.5rem 0.85rem;
-      font-size: 0.8rem;
-    }
-  }
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 </style>

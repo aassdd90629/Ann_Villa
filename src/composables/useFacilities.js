@@ -74,12 +74,12 @@ const isLoaded = ref(false)
 const isLoading = ref(false)
 
 export function useFacilities() {
-  const fetchFacilities = async (force = false) => {
+  const fetchFacilities = async (force = true) => {
     if (isLoaded.value && !force) return
 
     isLoading.value = true
     try {
-      const res = await fetch('/api/facilities')
+      const res = await fetch('/api/facilities?t=' + Date.now(), { cache: 'no-cache' })
       if (res.ok) {
         const data = await res.json()
         if (data && data.success && Array.isArray(data.facilities)) {
@@ -94,9 +94,7 @@ export function useFacilities() {
     }
   }
 
-  if (!isLoaded.value && !isLoading.value) {
-    fetchFacilities()
-  }
+  fetchFacilities(true)
 
   return {
     facilities,

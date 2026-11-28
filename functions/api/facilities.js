@@ -2,12 +2,17 @@
  * functions/api/facilities.js
  * 
  * GET /api/facilities - 公開取得所有公共休閒娛樂設施與相片圖集 (100% 資料庫驅動)
+ * 
+ * 重大更新：
+ * 1. 設施相簿 (gallery) 與主圖 (image) 全面連線 D1 media_assets 表 (WHERE category = 'facility' AND is_active = 1)
+ * 2. 後台管家新增公設照片、刪除或下架為草稿，前台即時同步生效，徹底告別假資料覆蓋
+ * 3. 停用 HTTP 快取 (no-cache, no-store)，確保更新後即時可見
  */
 
 const DEFAULT_FACILITIES = [
   {
     id: 'ktv-theater',
-    titleZh: '大客廳與專業卡拉OK歡唱系統',
+    titleZh: 'Grand Lounge 奢華客廳與 KTV 視聽劇院',
     titleEn: 'Grand Living Hall & Professional KTV System',
     descZh: '挑高寬敞的豪華大客廳，配備高階音響、大螢幕電視與最新點歌卡拉OK系統，支援多人對唱，讓您的歡聚之夜充滿歌聲與笑聲。',
     descEn: 'Soaring, spacious living hall equipped with professional acoustics, big-screen display, and the latest karaoke system with wireless microphones.',
@@ -35,7 +40,7 @@ const DEFAULT_FACILITIES = [
   },
   {
     id: 'smart-kitchen',
-    titleZh: '頂級智能廚房與時尚 Mini Bar',
+    titleZh: '中島開放式智能廚房與吧檯',
     titleEn: 'Smart Gourmet Kitchen & Mini Bar Lounge',
     descZh: '現代化開放式智能中島廚房與高腳 Mini Bar，大型雙門冰箱、微波爐、電鍋、熱水壺及餐具一應俱全，無論料理下廚或調飲皆隨心所欲。',
     descEn: 'Contemporary open-concept island kitchen and stylish high-top mini bar, equipped with large double-door refrigerator, appliances, and glassware.',
@@ -115,7 +120,7 @@ const DEFAULT_FACILITIES = [
   },
   {
     id: 'tea-ceremony',
-    titleZh: '高山景觀品茗賞景茶席',
+    titleZh: '高山山景品茗賞景茶席',
     titleEn: 'Scenic Mountain Tea Tasting Lounge',
     descZh: '特別規劃的景觀茶席空間，備有典雅精緻茶具與山泉水快煮設備。在雲霧繚繞中細細品嚐高山冷泡茶或東方美人茶，沉澱心靈享受隱逸慢時光。',
     descEn: 'A tranquil space dedicated to slow tea appreciation, complete with handcrafted ceramic tea ware, overlooking panoramic mountain mists.',
@@ -169,49 +174,99 @@ const DEFAULT_FACILITIES = [
   }
 ];
 
+const facilityAliasMap = {
+  'ktv-theater': ['living-ktv', 'ktv-theater', 'ktv'],
+  'smart-kitchen': ['kitchen', 'smart-kitchen', 'kitchen-bar'],
+  'mahjong-room': ['mahjong', 'mahjong-room'],
+  'outdoor-bbq': ['bbq', 'outdoor-bbq'],
+  'tea-ceremony': ['tea', 'tea-ceremony'],
+  'viewing-deck': ['viewing-deck', 'terrace']
+};
+
 export async function onRequestGet(context) {
   const { env } = context;
 
+  const noCacheHeaders = {
+    'Content-Type': 'application/json; charset=utf-8',
+    'Cache-Control': 'no-cache, no-store, must-revalidate',
+    'Pragma': 'no-cache',
+    'Expires': '0'
+  };
+
   try {
     if (!env || !env.DB) {
-      return Response.json({
-        success: true,
-        facilities: DEFAULT_FACILITIES
-      }, {
-        headers: { 'Content-Type': 'application/json; charset=utf-8' }
-      });
+      return Response.json({ success: true, facilities: DEFAULT_FACILITIES }, { headers: noCacheHeaders });
     }
 
-    // 嘗試查詢 facilities 資料表
-    const { results } = await env.DB.prepare(`
-      SELECT 
-        id, 
-        title_zh AS titleZh, 
-        title_en AS titleEn,
-        desc_zh AS descZh, 
-        desc_en AS descEn,
-        image,
-        features_zh_json AS featuresZhJson,
-        features_en_json AS featuresEnJson,
-        gallery_json AS galleryJson,
-        sort_order AS sortOrder
-      FROM facilities
-      WHERE is_active = 1
-      ORDER BY sort_order ASC
-    `).all();
-
-    if (!results || results.length === 0) {
-      return Response.json({
-        success: true,
-        facilities: DEFAULT_FACILITIES
-      }, {
-        headers: { 'Content-Type': 'application/json; charset=utf-8' }
-      });
+    // 1. 查詢 D1 facilities 表
+    let facResults = [];
+    try {
+      const dbFacs = await env.DB.prepare(`
+        SELECT 
+          id, 
+          title_zh AS titleZh, 
+          title_en AS titleEn,
+          desc_zh AS descZh, 
+          desc_en AS descEn,
+          image,
+          features_zh_json AS featuresZhJson,
+          features_en_json AS featuresEnJson,
+          gallery_json AS galleryJson,
+          sort_order AS sortOrder
+        FROM facilities
+        WHERE is_active = 1
+        ORDER BY sort_order ASC
+      `).all();
+      facResults = dbFacs?.results || [];
+    } catch (facErr) {
+      console.warn('[Facilities API] 查詢 facilities 表警訊:', facErr.message);
     }
 
-    const formattedFacilities = results.map(f => {
+    const baseFacs = facResults.length > 0 ? facResults : DEFAULT_FACILITIES;
+
+    // 2. 核心：即時自 media_assets 查詢啟用中的園區公設照片 (is_active = 1)
+    let activeMedia = [];
+    try {
+      const mediaRes = await env.DB.prepare(`
+        SELECT sub_category, cdn_url, sort_order, title_zh, tag_zh
+        FROM media_assets 
+        WHERE category = 'facility' AND is_active = 1 
+        ORDER BY sort_order ASC, created_at ASC
+      `).all();
+      activeMedia = mediaRes?.results || [];
+    } catch (mediaErr) {
+      console.warn('[Facilities API] 查詢 media_assets 警訊:', mediaErr.message);
+    }
+
+    // 3. 將 media_assets 的動態圖片綁定至各設施空間
+    const formattedFacilities = baseFacs.map(f => {
       const defaultMatch = DEFAULT_FACILITIES.find(d => d.id === f.id) || {};
-      
+      const aliases = facilityAliasMap[f.id] || [f.id];
+
+      // 匹配該設施的所有啟用相片
+      const matchedMedia = activeMedia.filter(m => aliases.includes(m.sub_category));
+
+      let gallery = [];
+      let image = f.image || defaultMatch.image;
+
+      // 🎯 只要 media_assets 中有圖片管理記錄，100% 以 media_assets 為準！
+      // 若管家將公設照片下架，該圖片立即從 gallery 消失；若上傳新圖立即出現在 gallery
+      if (activeMedia.length > 0) {
+        gallery = matchedMedia.map(m => m.cdn_url);
+        if (gallery.length > 0) {
+          image = gallery[0];
+        } else {
+          image = defaultMatch.image || '';
+        }
+      } else {
+        if (f.galleryJson) {
+          try { gallery = JSON.parse(f.galleryJson); } catch (e) {}
+        }
+        if (!gallery || gallery.length === 0) {
+          gallery = defaultMatch.gallery || [];
+        }
+      }
+
       let featuresZh = defaultMatch.featuresZh || [];
       if (f.featuresZhJson) {
         try { featuresZh = JSON.parse(f.featuresZhJson); } catch (e) {}
@@ -222,18 +277,13 @@ export async function onRequestGet(context) {
         try { featuresEn = JSON.parse(f.featuresEnJson); } catch (e) {}
       }
 
-      let gallery = defaultMatch.gallery || [];
-      if (f.galleryJson) {
-        try { gallery = JSON.parse(f.galleryJson); } catch (e) {}
-      }
-
       return {
         id: f.id,
         titleZh: f.titleZh || defaultMatch.titleZh,
         titleEn: f.titleEn || defaultMatch.titleEn,
         descZh: f.descZh || defaultMatch.descZh,
         descEn: f.descEn || defaultMatch.descEn,
-        image: f.image || defaultMatch.image,
+        image,
         featuresZh,
         featuresEn,
         gallery,
@@ -241,23 +291,44 @@ export async function onRequestGet(context) {
       };
     });
 
+    // 4. 動態納入管家在後台自訂新增的全新公設空間 (如 fac-custom-xxx)
+    const allKnownAliases = new Set(Object.values(facilityAliasMap).flat());
+    const customFacSubCats = new Set();
+    activeMedia.forEach(m => {
+      if (m.sub_category && !allKnownAliases.has(m.sub_category)) {
+        customFacSubCats.add(m.sub_category);
+      }
+    });
+
+    customFacSubCats.forEach(customSubId => {
+      const customPhotos = activeMedia.filter(m => m.sub_category === customSubId);
+      if (customPhotos.length > 0) {
+        formattedFacilities.push({
+          id: customSubId,
+          titleZh: customPhotos[0].tag_zh || '全新規劃公設空間',
+          titleEn: 'Custom Leisure Amenity',
+          descZh: '全新規劃之莊園公共休閒空間，提供尊榮愜意的山居休閒體驗。',
+          descEn: 'Exclusive leisure amenity space for relaxation.',
+          image: customPhotos[0].cdn_url,
+          featuresZh: ['專屬休閒設施', '舒適放鬆空間', '全天候開放'],
+          featuresEn: ['Exclusive amenity', 'Relaxing space'],
+          gallery: customPhotos.map(m => m.cdn_url),
+          sortOrder: 99
+        });
+      }
+    });
+
     return Response.json({
       success: true,
       facilities: formattedFacilities
-    }, {
-      headers: {
-        'Content-Type': 'application/json; charset=utf-8',
-        'Cache-Control': 'public, max-age=60'
-      }
-    });
+    }, { headers: noCacheHeaders });
+
   } catch (err) {
-    console.warn('[Facilities API] 讀取設施資料失敗，切換為安全預設值:', err.message);
+    console.warn('[Facilities API] 讀取失敗，回傳安全預設:', err.message);
     return Response.json({
       success: true,
       facilities: DEFAULT_FACILITIES,
       _fallback: true
-    }, {
-      headers: { 'Content-Type': 'application/json; charset=utf-8' }
-    });
+    }, { headers: noCacheHeaders });
   }
 }

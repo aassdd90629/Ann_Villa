@@ -6,7 +6,8 @@ import {
   Trash2, 
   UploadCloud, 
   Sparkles, 
-  Image as ImageIcon 
+  Image as ImageIcon,
+  Tag
 } from 'lucide-vue-next'
 import { useAdminAuth } from '../../../composables/useAdminAuth'
 
@@ -84,7 +85,6 @@ const handleMoveDown = (index) => {
           <img :src="slide.cdnUrl" :alt="slide.titleZh" class="thumb-img" loading="lazy" />
           <div class="order-badge">#{{ idx + 1 }}</div>
           <span v-if="!slide.isActive" class="draft-badge">草稿</span>
-          <span v-if="slide.tagZh" class="tag-pill">{{ slide.tagZh }}</span>
         </div>
 
         <!-- 資訊與控制區塊 -->
@@ -92,7 +92,18 @@ const handleMoveDown = (index) => {
           <div class="content-top">
             <h4 class="slide-title">{{ slide.titleZh }}</h4>
             <p v-if="slide.titleEn" class="slide-title-en">{{ slide.titleEn }}</p>
-            <span class="slide-url font-mono">{{ slide.cdnUrl }}</span>
+            <div class="slide-tags">
+              <span v-if="slide.tagZh" class="slide-tag-pill">
+                <Tag :size="12" class="tag-icon" />
+                <span>{{ slide.tagZh }}</span>
+              </span>
+              <span v-if="slide.tagEn" class="slide-tag-pill en">
+                <span>{{ slide.tagEn }}</span>
+              </span>
+              <span v-if="!slide.tagZh && !slide.tagEn" class="slide-tag-pill empty">
+                <span>未設定空間標籤</span>
+              </span>
+            </div>
           </div>
 
           <div class="content-bottom-actions">
@@ -271,16 +282,6 @@ const handleMoveDown = (index) => {
       backdrop-filter: blur(4px);
     }
 
-    .tag-pill {
-      position: absolute;
-      bottom: 0.6rem;
-      left: 0.6rem;
-      font-size: 0.7rem;
-      background: rgba(0, 0, 0, 0.75);
-      color: #fff;
-      padding: 0.15rem 0.45rem;
-      border-radius: 4px;
-    }
   }
 
   .slide-content-box {
@@ -305,10 +306,43 @@ const handleMoveDown = (index) => {
         font-style: italic;
       }
 
-      .slide-url {
-        font-size: 0.75rem;
-        color: var(--admin-text-sub, #94a3b8);
-        word-break: break-all;
+      .slide-tags {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        flex-wrap: wrap;
+        margin-top: 0.25rem;
+
+        .slide-tag-pill {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.25rem;
+          font-size: 0.72rem;
+          font-weight: 500;
+          padding: 0.15rem 0.5rem;
+          border-radius: 4px;
+          background: rgba(184, 144, 71, 0.12);
+          color: var(--gold-primary, #b89047);
+          border: 1px solid rgba(184, 144, 71, 0.25);
+
+          .tag-icon {
+            opacity: 0.85;
+          }
+
+          &.en {
+            background: var(--admin-bg-base, rgba(0, 0, 0, 0.05));
+            color: var(--admin-text-sub, #64748b);
+            border-color: var(--admin-border-subtle, rgba(0, 0, 0, 0.08));
+            font-style: italic;
+          }
+
+          &.empty {
+            background: transparent;
+            color: var(--admin-text-muted, #94a3b8);
+            border: 1px dashed var(--admin-border-subtle, rgba(0, 0, 0, 0.15));
+            font-size: 0.7rem;
+          }
+        }
       }
     }
 

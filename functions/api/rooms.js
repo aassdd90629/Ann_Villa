@@ -2,6 +2,11 @@
  * functions/api/rooms.js
  * 
  * GET /api/rooms - 公開取得所有房型詳細規格、圖片與定價資訊 (100% 資料庫驅動)
+ * 
+ * 重大更新：
+ * 1. 圖片圖集 (gallery) 與封面主圖 (image) 全面連線 D1 media_assets 表 (WHERE category = 'room' AND is_active = 1)
+ * 2. 後台管家新增照片、刪除或下架為草稿，前台即時同步生效，徹底告別假資料覆蓋
+ * 3. 停用 HTTP 快取 (no-cache, no-store)，確保管家更新後旅客與測試端立即看到最新圖片
  */
 
 const DEFAULT_ROOMS = [
@@ -147,8 +152,7 @@ const DEFAULT_ROOMS = [
       '/img/room-4/room-4-01.webp',
       '/img/room-4/room-4-02.webp',
       '/img/room-4/room-4-03.webp',
-      '/img/room-4/room-4-04.webp',
-      '/img/room-4/room-4-05.webp'
+      '/img/room-4/room-4-04.webp'
     ],
     highlightsZh: [
       '擁有 2 樓專屬開闊戶外觀景露台，飽覽層疊山巒',
@@ -209,66 +213,105 @@ const DEFAULT_ROOMS = [
   }
 ];
 
+const normalizeRoomId = (id) => (id || '').toLowerCase().replace(/^room-0?/, 'room-');
+
 export async function onRequestGet(context) {
   const { env } = context;
 
+  const noCacheHeaders = {
+    'Content-Type': 'application/json; charset=utf-8',
+    'Cache-Control': 'no-cache, no-store, must-revalidate',
+    'Pragma': 'no-cache',
+    'Expires': '0'
+  };
+
   try {
     if (!env || !env.DB) {
-      return Response.json({
-        success: true,
-        rooms: DEFAULT_ROOMS
-      }, {
-        headers: { 'Content-Type': 'application/json; charset=utf-8' }
-      });
+      return Response.json({ success: true, rooms: DEFAULT_ROOMS }, { headers: noCacheHeaders });
     }
 
-    // 查詢 D1 rooms 資料表
-    const { results } = await env.DB.prepare(`
-      SELECT 
-        id, 
-        name AS titleZh, 
-        title_en AS titleEn,
-        subtitle AS subtitleZh, 
-        subtitle_en AS subtitleEn,
-        floor,
-        capacity_standard AS capacityStandard, 
-        capacity_max AS capacityMax, 
-        capacity_zh AS capacityZh,
-        capacity_en AS capacityEn,
-        bed_type_zh AS bedTypeZh,
-        bed_type_en AS bedTypeEn,
-        size_info AS size,
-        base_price AS basePrice, 
-        holiday_price AS holidayPrice, 
-        extra_bed_price AS extraBedPrice,
-        image,
-        gallery_json AS galleryJson,
-        highlights_zh_json AS highlightsZhJson,
-        highlights_en_json AS highlightsEnJson,
-        desc_zh AS descZh,
-        desc_en AS descEn,
-        is_active AS isActive
-      FROM rooms
-      WHERE is_active = 1 AND id != 'villa-full'
-      ORDER BY id ASC
-    `).all();
-
-    if (!results || results.length === 0) {
-      return Response.json({
-        success: true,
-        rooms: DEFAULT_ROOMS
-      }, {
-        headers: { 'Content-Type': 'application/json; charset=utf-8' }
-      });
+    // 1. 查詢 D1 rooms 基本房型資訊
+    let roomResults = [];
+    try {
+      const dbRooms = await env.DB.prepare(`
+        SELECT 
+          id, 
+          name AS titleZh, 
+          title_en AS titleEn,
+          subtitle AS subtitleZh, 
+          subtitle_en AS subtitleEn,
+          floor,
+          capacity_standard AS capacityStandard, 
+          capacity_max AS capacityMax, 
+          capacity_zh AS capacityZh,
+          capacity_en AS capacityEn,
+          bed_type_zh AS bedTypeZh,
+          bed_type_en AS bedTypeEn,
+          size_info AS size,
+          base_price AS basePrice, 
+          holiday_price AS holidayPrice, 
+          extra_bed_price AS extraBedPrice,
+          image,
+          gallery_json AS galleryJson,
+          highlights_zh_json AS highlightsZhJson,
+          highlights_en_json AS highlightsEnJson,
+          desc_zh AS descZh,
+          desc_en AS descEn,
+          is_active AS isActive
+        FROM rooms
+        WHERE is_active = 1 AND id != 'villa-full'
+        ORDER BY id ASC
+      `).all();
+      roomResults = dbRooms?.results || [];
+    } catch (roomErr) {
+      console.warn('[Rooms API] 查詢 rooms 表警訊:', roomErr.message);
     }
 
-    // 格式化解析 JSON 欄位
-    const formattedRooms = results.map(r => {
-      const defaultMatch = DEFAULT_ROOMS.find(d => d.id === r.id) || {};
-      
-      let gallery = defaultMatch.gallery || [];
-      if (r.galleryJson) {
-        try { gallery = JSON.parse(r.galleryJson); } catch (e) {}
+    // 若 rooms 表暫無資料，以 DEFAULT_ROOMS 作為基礎框架
+    const baseRooms = roomResults.length > 0 ? roomResults : DEFAULT_ROOMS;
+
+    // 2. 核心：即時自 media_assets 查詢啟用中的客房實景寫真 (is_active = 1)
+    let activeMedia = [];
+    try {
+      const mediaRes = await env.DB.prepare(`
+        SELECT sub_category, cdn_url, sort_order, title_zh, tag_zh
+        FROM media_assets 
+        WHERE category = 'room' AND is_active = 1 
+        ORDER BY sort_order ASC, created_at ASC
+      `).all();
+      activeMedia = mediaRes?.results || [];
+    } catch (mediaErr) {
+      console.warn('[Rooms API] 查詢 media_assets 警訊:', mediaErr.message);
+    }
+
+    // 3. 將 media_assets 的動態圖片綁定至各房型
+    const formattedRooms = baseRooms.map(r => {
+      const defaultMatch = DEFAULT_ROOMS.find(d => normalizeRoomId(d.id) === normalizeRoomId(r.id)) || {};
+
+      // 匹配該房型的所有啟用圖片 (支援 room-1 與 room-01 兼容)
+      const matchedMedia = activeMedia.filter(m => normalizeRoomId(m.sub_category) === normalizeRoomId(r.id));
+
+      let gallery = [];
+      let image = r.image || defaultMatch.image;
+
+      // 🎯 只要 media_assets 中有圖片管理記錄，100% 以 media_assets 為準！
+      // 若管家將圖片下架，該圖片立即從 gallery 消失；若上傳新圖立即出現在 gallery
+      if (activeMedia.length > 0) {
+        gallery = matchedMedia.map(m => m.cdn_url);
+        if (gallery.length > 0) {
+          image = gallery[0];
+        } else {
+          // 該房型所有相片皆被管家暫停/下架，保留首張預設或空圖
+          image = defaultMatch.image || '';
+        }
+      } else {
+        // media_assets 表尚未建立時的安全降級
+        if (r.galleryJson) {
+          try { gallery = JSON.parse(r.galleryJson); } catch (e) {}
+        }
+        if (!gallery || gallery.length === 0) {
+          gallery = defaultMatch.gallery || [];
+        }
       }
 
       let highlightsZh = defaultMatch.highlightsZh || [];
@@ -288,16 +331,16 @@ export async function onRequestGet(context) {
         titleEn: r.titleEn || defaultMatch.titleEn,
         subtitleZh: r.subtitleZh || defaultMatch.subtitleZh,
         subtitleEn: r.subtitleEn || defaultMatch.subtitleEn,
-        capacityZh: r.capacityZh || defaultMatch.capacityZh || `${r.capacityStandard} 人`,
-        capacityEn: r.capacityEn || defaultMatch.capacityEn || `${r.capacityStandard} Guests`,
+        capacityZh: r.capacityZh || defaultMatch.capacityZh || `${r.capacityStandard || 4} 人`,
+        capacityEn: r.capacityEn || defaultMatch.capacityEn || `${r.capacityStandard || 4} Guests`,
         bedTypeZh: r.bedTypeZh || defaultMatch.bedTypeZh,
         bedTypeEn: r.bedTypeEn || defaultMatch.bedTypeEn,
         size: r.size || defaultMatch.size,
         basePrice: r.basePrice || defaultMatch.basePrice,
         holidayPrice: r.holidayPrice || defaultMatch.holidayPrice,
-        capacityStandard: r.capacityStandard || defaultMatch.capacityStandard,
-        capacityMax: r.capacityMax || defaultMatch.capacityMax,
-        image: r.image || defaultMatch.image,
+        capacityStandard: r.capacityStandard || defaultMatch.capacityStandard || 4,
+        capacityMax: r.capacityMax || defaultMatch.capacityMax || 4,
+        image,
         gallery,
         highlightsZh,
         highlightsEn,
@@ -306,23 +349,56 @@ export async function onRequestGet(context) {
       };
     });
 
+    // 4. 動態納入管家在後台自訂新增的全新客房分類 (如 room-custom-xxx)
+    const baseNormalizedIds = new Set(baseRooms.map(r => normalizeRoomId(r.id)));
+    const customSubCats = new Set();
+    activeMedia.forEach(m => {
+      const norm = normalizeRoomId(m.sub_category);
+      if (norm && !baseNormalizedIds.has(norm)) {
+        customSubCats.add(m.sub_category);
+      }
+    });
+
+    customSubCats.forEach(customSubId => {
+      const customPhotos = activeMedia.filter(m => m.sub_category === customSubId);
+      if (customPhotos.length > 0) {
+        formattedRooms.push({
+          id: customSubId,
+          floor: '自訂',
+          titleZh: customPhotos[0].tag_zh || '全新規劃特色客房',
+          titleEn: 'Exclusive Private Suite',
+          subtitleZh: '專屬私人景觀空間・獨立衛浴',
+          subtitleEn: 'Exclusive Private Suite · Ensuite Bath',
+          capacityZh: '4 人',
+          capacityEn: '4 Guests',
+          bedTypeZh: '雙人床',
+          bedTypeEn: 'Double Bed',
+          size: '約 12 坪',
+          basePrice: 8800,
+          holidayPrice: 10800,
+          capacityStandard: 4,
+          capacityMax: 4,
+          image: customPhotos[0].cdn_url,
+          gallery: customPhotos.map(m => m.cdn_url),
+          highlightsZh: ['專屬私密空間', '自然採光通風良好', '乾濕分離衛浴'],
+          highlightsEn: ['Private sanctuary', 'Natural daylight', 'Private ensuite'],
+          descZh: '全新規劃之特色客房空間，環境幽靜宜人。',
+          descEn: 'Newly designed private guest suite.'
+        });
+      }
+    });
+
     return Response.json({
       success: true,
       rooms: formattedRooms
-    }, {
-      headers: {
-        'Content-Type': 'application/json; charset=utf-8',
-        'Cache-Control': 'public, max-age=60'
-      }
-    });
+    }, { headers: noCacheHeaders });
+
   } catch (err) {
-    console.warn('[Rooms API] 讀取資料庫失敗，回傳安全預設房型:', err.message);
+    console.warn('[Rooms API] 讀取失敗，回傳安全預設:', err.message);
     return Response.json({
       success: true,
       rooms: DEFAULT_ROOMS,
       _fallback: true
-    }, {
-      headers: { 'Content-Type': 'application/json; charset=utf-8' }
-    });
+    }, { headers: noCacheHeaders });
   }
 }

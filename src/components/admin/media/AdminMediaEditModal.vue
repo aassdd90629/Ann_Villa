@@ -328,57 +328,68 @@ const handleSubmit = async () => {
 @use '../../../assets/styles/variables' as *;
 
 .admin-modal-overlay {
-  position: fixed; inset: 0; z-index: 9999; background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; padding: 1.5rem;
+  position: fixed; inset: 0; z-index: 9999; 
+  background: var(--overlay-bg, rgba(18, 20, 21, 0.65));
+  backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; padding: 1.5rem;
 }
 
 .admin-modal-container {
-  width: 100%; max-width: 520px; background: var(--admin-bg-card, #151f32);
-  border: 1px solid var(--admin-border, rgba(212, 175, 55, 0.35)); border-radius: 12px;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); display: flex; flex-direction: column; overflow: hidden;
+  width: 100%; max-width: 520px; 
+  background: var(--admin-bg-card, #FFFFFF);
+  border: 1px solid var(--admin-border, rgba(197, 168, 128, 0.28)); 
+  border-radius: $radius-lg;
+  box-shadow: var(--shadow-lg, 0 16px 40px rgba(0, 0, 0, 0.15)), 0 0 16px rgba(197, 168, 128, 0.08); 
+  display: flex; flex-direction: column; overflow: hidden;
+  transition: background-color $transition-fast, border-color $transition-fast;
 }
 
 .modal-header {
-  display: flex; align-items: center; justify-content: space-between; padding: 1.15rem 1.4rem;
-  border-bottom: 1px solid var(--admin-border-subtle, rgba(255, 255, 255, 0.08));
+  display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 1.5rem;
+  background: var(--admin-bg-card, #FFFFFF);
+  border-bottom: 1px solid var(--admin-border-subtle, rgba(0, 0, 0, 0.06));
   .header-title-group {
     display: flex; align-items: center; gap: 0.6rem;
-    .gold-icon { color: var(--gold-primary, #d4af37); }
-    h3 { font-size: 1.1rem; font-weight: 600; color: var(--admin-text-main, #f8fafc); margin: 0; }
+    .gold-icon { color: var(--gold-primary, #C5A880); }
+    h3 { font-size: 1.15rem; font-weight: 700; color: var(--admin-text-main, #1A1E1F); margin: 0; }
   }
   .btn-close {
-    background: transparent; border: none; color: var(--admin-text-muted, #94a3b8);
-    cursor: pointer; padding: 0.3rem; border-radius: 4px; display: flex; align-items: center;
-    &:hover:not(:disabled) { color: var(--admin-text-main, #fff); background: var(--admin-tr-hover, rgba(255, 255, 255, 0.08)); }
+    background: transparent; border: none; color: var(--admin-text-muted, #64748b);
+    cursor: pointer; padding: 0.35rem; border-radius: $radius-xs; display: inline-flex; align-items: center;
+    transition: color $transition-fast, background-color $transition-fast;
+    &:hover:not(:disabled) { color: var(--admin-text-main, #1A1E1F); background: var(--admin-tr-hover, rgba(197, 168, 128, 0.12)); }
   }
 }
 
 .modal-alert {
   display: flex; align-items: center; gap: 0.5rem; padding: 0.65rem 1.25rem; margin: 0.85rem 1.4rem 0;
-  border-radius: 6px; font-size: 0.82rem;
-  &.error { background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.3); color: #ef4444; }
+  border-radius: $radius-sm; font-size: 0.82rem;
+  &.error { 
+    background: var(--color-danger-bg, rgba(239, 68, 68, 0.12)); 
+    border: 1px solid var(--color-danger-border, rgba(239, 68, 68, 0.3)); 
+    color: var(--color-danger, #EF4444); 
+  }
 }
 
 .image-replace-card {
   display: flex; align-items: center; gap: 1rem; padding: 1rem 1.4rem;
-  background: var(--admin-bg-base, rgba(0, 0, 0, 0.3));
-  border-bottom: 1px solid var(--admin-border-subtle, rgba(255, 255, 255, 0.08));
-  transition: border-color 0.2s ease;
-  &.replaced { border-bottom-color: rgba(212, 175, 55, 0.4); background: rgba(212, 175, 55, 0.06); }
+  background: var(--admin-bg-base, rgba(197, 168, 128, 0.06));
+  border-bottom: 1px solid var(--admin-border-subtle, rgba(0, 0, 0, 0.06));
+  transition: border-color $transition-fast, background-color $transition-fast;
+  &.replaced { border-bottom-color: var(--gold-primary, #C5A880); background: var(--admin-tr-hover, rgba(197, 168, 128, 0.12)); }
 
   .preview-box {
-    position: relative; width: 110px; height: 70px; flex-shrink: 0; border-radius: 6px;
-    overflow: hidden; background: #000; border: 1px solid var(--admin-border-subtle, rgba(255, 255, 255, 0.15));
+    position: relative; width: 110px; height: 70px; flex-shrink: 0; border-radius: $radius-sm;
+    overflow: hidden; background: #000; border: 1px solid var(--admin-border-subtle, rgba(0, 0, 0, 0.1));
     .main-img { width: 100%; height: 100%; object-fit: cover; display: block; }
     .tag-replaced {
-      position: absolute; bottom: 0; left: 0; right: 0; background: rgba(212, 175, 55, 0.9);
-      color: #121415; font-size: 0.65rem; font-weight: 700; display: flex; align-items: center;
+      position: absolute; bottom: 0; left: 0; right: 0; background: var(--gold-primary, #C5A880);
+      color: #FFFFFF; font-size: 0.65rem; font-weight: 700; display: flex; align-items: center;
       justify-content: center; gap: 0.2rem; padding: 0.15rem 0.2rem;
     }
     .overlay-compressing {
       position: absolute; inset: 0; background: rgba(0, 0, 0, 0.75); display: flex;
       flex-direction: column; align-items: center; justify-content: center;
-      color: var(--gold-primary, #d4af37); font-size: 0.65rem; gap: 0.25rem;
+      color: var(--gold-primary, #C5A880); font-size: 0.65rem; gap: 0.25rem;
     }
   }
 
@@ -386,42 +397,49 @@ const handleSubmit = async () => {
     flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.45rem;
     .meta-row {
       display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;
-      .media-id { font-size: 0.72rem; color: var(--gold-primary, #d4af37); }
-      .media-dim { font-size: 0.72rem; color: var(--admin-text-muted, #94a3b8); }
+      .media-id { font-size: 0.72rem; color: var(--gold-primary, #C5A880); font-weight: 600; }
+      .media-dim { font-size: 0.72rem; color: var(--admin-text-muted, #64748b); }
     }
     .btn-replace-row {
       display: flex; align-items: center; gap: 0.5rem;
       .hidden-file-input { display: none; }
       .btn-replace {
         display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.35rem 0.75rem;
-        background: rgba(212, 175, 55, 0.15); border: 1px solid var(--gold-primary, #d4af37);
-        border-radius: 4px; color: var(--gold-primary, #d4af37); font-size: 0.78rem; font-weight: 500;
-        cursor: pointer; &:hover:not(:disabled) { background: rgba(212, 175, 55, 0.28); }
+        background: var(--admin-tr-hover, rgba(197, 168, 128, 0.15)); 
+        border: 1px solid var(--gold-primary, #C5A880);
+        border-radius: $radius-xs; color: var(--gold-primary, #C5A880); font-size: 0.78rem; font-weight: 600;
+        cursor: pointer; transition: background-color $transition-fast;
+        &:hover:not(:disabled) { background: var(--gold-primary, #C5A880); color: #FFFFFF; }
       }
       .btn-revert {
         display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.35rem 0.65rem;
-        background: transparent; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 4px;
-        color: var(--admin-text-muted, #94a3b8); font-size: 0.75rem; cursor: pointer;
-        &:hover:not(:disabled) { color: #fff; border-color: rgba(255, 255, 255, 0.4); }
+        background: transparent; border: 1px solid var(--border-color, #cbd5e1); border-radius: $radius-xs;
+        color: var(--admin-text-muted, #64748b); font-size: 0.75rem; cursor: pointer;
+        transition: color $transition-fast, border-color $transition-fast;
+        &:hover:not(:disabled) { color: var(--admin-text-main, #1A1E1F); border-color: var(--gold-primary, #C5A880); }
       }
     }
-    .hint-text { font-size: 0.68rem; color: var(--admin-text-muted, #94a3b8); }
+    .hint-text { font-size: 0.68rem; color: var(--admin-text-muted, #64748b); }
   }
 }
 
-.modal-form { padding: 1.15rem 1.4rem; display: flex; flex-direction: column; gap: 1rem; }
+.modal-form { padding: 1.25rem 1.5rem; display: flex; flex-direction: column; gap: 1rem; }
 
 .form-group {
   display: flex; flex-direction: column; gap: 0.35rem;
   .form-label {
-    font-size: 0.8rem; font-weight: 500; color: var(--admin-text-sub, #cbd5e1);
-    .required { color: #ef4444; margin-left: 0.2rem; }
+    font-size: 0.84rem; font-weight: 600; color: var(--admin-text-sub, #475569);
+    .required { color: var(--color-danger, #EF4444); margin-left: 0.2rem; }
   }
   .form-input {
-    width: 100%; padding: 0.65rem 0.8rem; background: var(--admin-input-bg, rgba(13, 19, 31, 0.8));
-    border: 1px solid var(--admin-input-border, rgba(212, 175, 55, 0.25)); border-radius: 6px;
-    color: var(--admin-text-main, #fff); font-size: 0.88rem; outline: none; transition: border-color 0.2s ease;
-    &:focus { border-color: var(--gold-primary, #d4af37); box-shadow: 0 0 8px rgba(212, 175, 55, 0.25); }
+    width: 100%; padding: 0.65rem 0.85rem; 
+    background: var(--admin-input-bg, #FFFFFF);
+    border: 1px solid var(--admin-input-border, rgba(197, 168, 128, 0.4)); 
+    border-radius: $radius-sm;
+    color: var(--admin-text-main, #1A1E1F); font-size: 0.88rem; outline: none; 
+    transition: border-color $transition-fast, box-shadow $transition-fast;
+    &:focus { border-color: var(--gold-primary, #C5A880); box-shadow: 0 0 8px rgba(197, 168, 128, 0.25); }
+    &::placeholder { color: var(--admin-text-muted, #94a3b8); opacity: 0.75; }
   }
 }
 
@@ -429,13 +447,16 @@ const handleSubmit = async () => {
   display: flex; gap: 0.6rem;
   .status-pill-option {
     flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
-    padding: 0.55rem 0.75rem; border-radius: 6px; background: var(--admin-bg-base, rgba(0, 0, 0, 0.25));
-    border: 1px solid var(--admin-border-subtle, rgba(255, 255, 255, 0.12)); color: var(--admin-text-muted, #94a3b8);
-    font-size: 0.82rem; cursor: pointer; transition: all 0.2s ease;
-    .dot { width: 7px; height: 7px; border-radius: 50%; &.draft { background: #94a3b8; } &.published { background: #22c55e; } }
+    padding: 0.55rem 0.75rem; border-radius: $radius-sm; 
+    background: var(--admin-bg-base, rgba(197, 168, 128, 0.08));
+    border: 1px solid var(--admin-border-subtle, rgba(0, 0, 0, 0.08)); 
+    color: var(--admin-text-muted, #64748b);
+    font-size: 0.82rem; cursor: pointer; transition: all $transition-fast;
+    .dot { width: 7px; height: 7px; border-radius: 50%; &.draft { background: #94a3b8; } &.published { background: #16a34a; } }
     &.active {
-      background: rgba(212, 175, 55, 0.14); border-color: var(--gold-primary, #d4af37);
-      color: var(--gold-primary, #d4af37); font-weight: 600;
+      background: var(--admin-tr-hover, rgba(197, 168, 128, 0.16)); 
+      border-color: var(--gold-primary, #C5A880);
+      color: var(--admin-text-main, #1A1E1F); font-weight: 600;
     }
   }
 }
@@ -444,18 +465,21 @@ const handleSubmit = async () => {
 
 .modal-footer {
   display: flex; align-items: center; justify-content: flex-end; gap: 0.75rem; padding-top: 0.65rem;
-  border-top: 1px solid var(--admin-border-subtle, rgba(255, 255, 255, 0.08));
+  border-top: 1px solid var(--admin-border-subtle, rgba(0, 0, 0, 0.06));
   .btn-cancel {
-    padding: 0.6rem 1.15rem; background: transparent; border: 1px solid var(--admin-border-subtle, rgba(255, 255, 255, 0.2));
-    border-radius: 6px; color: var(--admin-text-sub, #cbd5e1); font-size: 0.82rem; cursor: pointer;
-    &:hover:not(:disabled) { background: var(--admin-tr-hover, rgba(255, 255, 255, 0.05)); color: #fff; }
+    padding: 0.55rem 1.15rem; background: transparent; 
+    border: 1px solid var(--border-color, #cbd5e1);
+    border-radius: $radius-sm; color: var(--admin-text-sub, #475569); font-size: 0.85rem; font-weight: 500; cursor: pointer;
+    transition: color $transition-fast, border-color $transition-fast, background-color $transition-fast;
+    &:hover:not(:disabled) { color: var(--admin-text-main, #1A1E1F); border-color: var(--gold-primary, #C5A880); background: var(--admin-tr-hover, rgba(197, 168, 128, 0.12)); }
   }
   .btn-confirm {
-    display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.6rem 1.3rem;
-    background: var(--gold-primary, #d4af37); border: 1px solid var(--gold-primary, #d4af37); border-radius: 6px;
-    color: #121415; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: background-color 0.2s ease;
-    &:hover:not(:disabled) { background: #dfbc46; }
-    &:disabled { opacity: 0.6; cursor: not-allowed; }
+    display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.55rem 1.35rem;
+    background: var(--gold-primary, #C5A880); border: 1px solid var(--gold-primary, #C5A880); border-radius: $radius-sm;
+    color: #FFFFFF; font-weight: 600; font-size: 0.85rem; cursor: pointer; 
+    transition: background-color $transition-fast, border-color $transition-fast;
+    &:hover:not(:disabled) { background: var(--gold-dark, #91754F); border-color: var(--gold-dark, #91754F); }
+    &:disabled { opacity: 0.5; cursor: not-allowed; }
   }
 }
 
