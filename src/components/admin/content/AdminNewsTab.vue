@@ -246,10 +246,12 @@ const { isViewer } = useAdminAuth()
         align-items: center;
         gap: 0.35rem;
         padding: 0.2rem 0.6rem;
-        border-radius: 12px;
+        border-radius: 9999px;
         font-size: 0.72rem;
         border: 1px solid transparent;
         cursor: pointer;
+        white-space: nowrap;
+        flex-shrink: 0;
 
         .indicator { width: 6px; height: 6px; border-radius: 50%; }
 

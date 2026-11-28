@@ -1,19 +1,8 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { 
-  Compass, 
-  Plus, 
-  Edit3, 
-  Trash2, 
-  Layers, 
-  MapPin, 
-  CircleParking,
-  UtensilsCrossed,
-  Sparkles,
-  Coffee,
-  Camera,
-  Trees,
-  Store
+  Compass, Plus, Edit3, Trash2, Layers, MapPin, 
+  CircleParking, UtensilsCrossed, Sparkles, Coffee, Camera, Trees, Store
 } from 'lucide-vue-next'
 import { useAdminAuth } from '../../../composables/useAdminAuth'
 
@@ -88,7 +77,9 @@ const getCategoryName = (typeId) => {
           :class="{ inactive: !cat.isActive }"
         >
           <div class="cat-pill-left">
-            <component :is="getIcon(cat.icon)" :size="18" class="cat-icon" />
+            <div class="cat-icon-box">
+              <component :is="getIcon(cat.icon)" :size="18" class="cat-icon" />
+            </div>
             <div class="cat-names">
               <span class="cat-title">{{ cat.nameZh }}</span>
               <span class="cat-slug">ID: {{ cat.id }} · {{ cat.count || 0 }} 筆項目</span>
@@ -283,42 +274,51 @@ const getCategoryName = (typeId) => {
 }
 
 .categories-pill-grid {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 0.85rem;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 1rem;
 }
 
 .cat-pill-card {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 0.75rem 1rem; background: var(--admin-bg-base, #0d131f);
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  padding: 0.85rem 1.15rem; background: var(--admin-bg-base, #0d131f);
   border: 1px solid var(--admin-border-subtle, rgba(255, 255, 255, 0.1));
   border-radius: 8px; transition: border-color 0.2s ease;
   &:hover { border-color: rgba(212, 175, 55, 0.4); }
   &.inactive { opacity: 0.6; }
 
   .cat-pill-left {
-    display: flex; align-items: center; gap: 0.65rem;
-    .cat-icon { color: var(--gold-primary, #d4af37); flex-shrink: 0; }
+    display: flex; align-items: center; gap: 0.85rem; min-width: 0; flex: 1;
+    .cat-icon-box {
+      width: 38px; height: 38px; border-radius: 8px;
+      background: rgba(212, 175, 55, 0.1); border: 1px solid rgba(212, 175, 55, 0.22);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+      .cat-icon { color: var(--gold-primary, #d4af37); }
+    }
     .cat-names {
-      display: flex; flex-direction: column;
-      .cat-title { font-size: 0.88rem; font-weight: 600; color: var(--admin-text-main, #fff); }
-      .cat-slug { font-size: 0.72rem; color: var(--admin-text-muted, #94a3b8); }
+      display: flex; flex-direction: column; gap: 0.2rem; min-width: 0;
+      .cat-title { font-size: 0.95rem; font-weight: 600; color: var(--admin-text-main, #fff); line-height: 1.25; white-space: nowrap; }
+      .cat-slug { font-size: 0.75rem; color: var(--admin-text-muted, #94a3b8); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     }
   }
-  .cat-pill-actions { display: flex; align-items: center; gap: 0.35rem; }
+  .cat-pill-actions { display: flex; align-items: center; gap: 0.45rem; flex-shrink: 0; }
 }
 
 .status-pill-btn {
-  display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.2rem 0.55rem;
-  border-radius: 12px; font-size: 0.72rem; border: 1px solid transparent; cursor: pointer;
-  .indicator { width: 6px; height: 6px; border-radius: 50%; }
-  &.active { background: rgba(34, 197, 94, 0.15); border-color: rgba(34, 197, 94, 0.35); color: #22c55e; .indicator { background: #22c55e; } }
-  &.disabled { background: rgba(148, 163, 184, 0.15); border-color: rgba(148, 163, 184, 0.35); color: #94a3b8; .indicator { background: #94a3b8; } }
+  display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.25rem 0.65rem;
+  border-radius: 9999px; font-size: 0.75rem; font-weight: 500; border: 1px solid transparent;
+  cursor: pointer; white-space: nowrap; flex-shrink: 0; line-height: 1.2;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  .indicator { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+  &.active { background: rgba(34, 197, 94, 0.15); border-color: rgba(34, 197, 94, 0.35); color: #16a34a; .indicator { background: #22c55e; } }
+  &.disabled { background: rgba(148, 163, 184, 0.15); border-color: rgba(148, 163, 184, 0.35); color: #64748b; .indicator { background: #94a3b8; } }
 }
 
 .btn-icon-action {
-  background: transparent; border: 1px solid rgba(255, 255, 255, 0.1);
-  color: var(--admin-text-sub, #cbd5e1); padding: 0.35rem; border-radius: 4px; cursor: pointer; display: flex; align-items: center;
-  &:hover:not(:disabled) { background: rgba(255, 255, 255, 0.08); color: #fff; }
-  &.delete:hover:not(:disabled) { background: rgba(239, 68, 68, 0.15); color: #ef4444; border-color: rgba(239, 68, 68, 0.3); }
+  width: 28px; height: 28px; background: transparent; border: 1px solid var(--admin-border-subtle, rgba(255, 255, 255, 0.12));
+  color: var(--admin-text-sub, #cbd5e1); border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  &:hover:not(:disabled) { background: rgba(212, 175, 55, 0.1); color: var(--gold-primary, #d4af37); border-color: rgba(212, 175, 55, 0.3); }
+  &.delete:hover:not(:disabled) { background: rgba(239, 68, 68, 0.12); color: #ef4444; border-color: rgba(239, 68, 68, 0.3); }
+  &:disabled { opacity: 0.35; cursor: not-allowed; }
 }
 
 .filter-bar {
