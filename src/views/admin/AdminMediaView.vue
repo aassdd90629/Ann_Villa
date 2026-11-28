@@ -137,7 +137,7 @@ const handleToggleActive = async (asset) => {
     }
 
     asset.isActive = nextActive
-    feedbackMessage.value = `圖片「${asset.titleZh}」已成功${nextActive ? '啟用顯示' : '暫停隱藏'}！`
+    feedbackMessage.value = `圖片「${asset.titleZh}」已成功${nextActive ? '上架顯示' : '轉為草稿'}！`
     feedbackType.value = 'success'
   } catch (err) {
     feedbackMessage.value = err.message

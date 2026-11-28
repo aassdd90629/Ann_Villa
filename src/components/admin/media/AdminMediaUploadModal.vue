@@ -15,6 +15,7 @@ const titleZh = ref('')
 const titleEn = ref('')
 const tagZh = ref('')
 const tagEn = ref('')
+const isActive = ref(false) // 預設為草稿，符合「先草稿再上架」業務流程
 
 const selectedFile = ref(null)
 const previewUrl = ref('')
@@ -35,6 +36,7 @@ watch(() => props.show, (newVal) => {
   category.value = props.defaultCategory || 'hero'
   subCategory.value = category.value === 'room' ? 'room-1' : category.value === 'facility' ? 'living-ktv' : 'banner'
   titleZh.value = ''; titleEn.value = ''; tagZh.value = ''; tagEn.value = ''
+  isActive.value = false // 預設草稿
   selectedFile.value = null; previewUrl.value = ''; errorMessage.value = ''
   fileInfo.value = { width: 0, height: 0, sizeKb: 0 }
 })
@@ -116,7 +118,8 @@ const handleSubmit = async () => {
         width: fileInfo.value.width,
         height: fileInfo.value.height,
         fileSize: fileInfo.value.sizeKb * 1024,
-        mimeType: 'image/webp'
+        mimeType: 'image/webp',
+        isActive: isActive.value
       })
     })
 
@@ -217,11 +220,36 @@ const handleSubmit = async () => {
             </div>
           </div>
 
+          <!-- 發佈狀態：預設草稿 -->
+          <div class="form-group">
+            <label class="form-label">發佈狀態 (Status)</label>
+            <div class="status-choice-row">
+              <button 
+                type="button" 
+                class="status-pill-option" 
+                :class="{ active: !isActive }"
+                @click="isActive = false"
+              >
+                <span class="dot draft"></span>
+                <span class="label">先存為草稿 (預設，暫不上架)</span>
+              </button>
+              <button 
+                type="button" 
+                class="status-pill-option" 
+                :class="{ active: isActive }"
+                @click="isActive = true"
+              >
+                <span class="dot published"></span>
+                <span class="label">直接上架 (公開展示)</span>
+              </button>
+            </div>
+          </div>
+
           <div class="modal-footer">
             <button type="button" class="btn-cancel" @click="handleClose" :disabled="isLoading">取消</button>
             <button type="submit" class="btn-confirm" :disabled="isLoading || !previewUrl || isCompressing">
               <Check v-if="!isLoading" :size="16" />
-              <span>{{ isLoading ? '圖片處理上傳中...' : '確認加入媒體庫' }}</span>
+              <span>{{ isLoading ? '圖片處理上傳中...' : (isActive ? '確認直接上架' : '確認存為草稿') }}</span>
             </button>
           </div>
         </form>
@@ -234,94 +262,55 @@ const handleSubmit = async () => {
 @use '../../../assets/styles/variables' as *;
 
 .admin-modal-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(4px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1.5rem;
+  position: fixed; inset: 0; z-index: 9999; background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; padding: 1.5rem;
 }
 
 .admin-modal-container {
-  width: 100%;
-  max-width: 540px;
-  background: var(--admin-bg-card, #151f32);
-  border: 1px solid var(--admin-border, rgba(212, 175, 55, 0.35));
-  border-radius: 12px;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
+  width: 100%; max-width: 540px; background: var(--admin-bg-card, #151f32);
+  border: 1px solid var(--admin-border, rgba(212, 175, 55, 0.35)); border-radius: 12px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); display: flex; flex-direction: column; overflow: hidden;
 }
 
 .modal-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1.25rem 1.5rem;
+  display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 1.5rem;
   border-bottom: 1px solid var(--admin-border-subtle, rgba(255, 255, 255, 0.08));
 
   .header-title-group {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
+    display: flex; align-items: center; gap: 0.6rem;
     .gold-icon { color: var(--gold-primary, #d4af37); }
     h3 { font-size: 1.15rem; font-weight: 600; color: var(--admin-text-main, #f8fafc); margin: 0; }
   }
 
   .btn-close {
-    background: transparent;
-    border: none;
-    color: var(--admin-text-muted, #94a3b8);
-    cursor: pointer;
-    padding: 0.3rem;
-    display: flex;
+    background: transparent; border: none; color: var(--admin-text-muted, #94a3b8);
+    cursor: pointer; padding: 0.3rem; display: flex;
     &:hover:not(:disabled) { color: #fff; }
   }
 }
 
 .modal-alert {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.25rem;
-  margin: 1rem 1.5rem 0;
-  border-radius: 6px;
-  font-size: 0.85rem;
+  display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.25rem; margin: 1rem 1.5rem 0;
+  border-radius: 6px; font-size: 0.85rem;
   &.error { background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.3); color: #ef4444; }
 }
 
 .modal-form {
-  padding: 1.25rem 1.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.1rem;
+  padding: 1.25rem 1.5rem; display: flex; flex-direction: column; gap: 1.1rem;
 }
 
 .category-pills {
-  display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
+  display: flex; gap: 0.5rem; flex-wrap: wrap;
 
   .pill-btn {
-    padding: 0.35rem 0.8rem;
-    background: var(--admin-bg-base, rgba(0, 0, 0, 0.25));
-    border: 1px solid var(--admin-border-subtle, rgba(255, 255, 255, 0.1));
-    border-radius: 20px;
-    color: var(--admin-text-sub, #cbd5e1);
-    font-size: 0.78rem;
-    cursor: pointer;
-    transition: all 0.2s ease;
+    padding: 0.35rem 0.8rem; background: var(--admin-bg-base, rgba(0, 0, 0, 0.25));
+    border: 1px solid var(--admin-border-subtle, rgba(255, 255, 255, 0.1)); border-radius: 20px;
+    color: var(--admin-text-sub, #cbd5e1); font-size: 0.78rem; cursor: pointer; transition: all 0.2s ease;
 
     &:hover { border-color: rgba(212, 175, 55, 0.4); color: var(--gold-primary, #d4af37); }
     &.active {
-      background: rgba(212, 175, 55, 0.18);
-      border-color: var(--gold-primary, #d4af37);
-      color: var(--gold-primary, #d4af37);
-      font-weight: 600;
+      background: rgba(212, 175, 55, 0.18); border-color: var(--gold-primary, #d4af37);
+      color: var(--gold-primary, #d4af37); font-weight: 600;
     }
   }
 }
@@ -409,6 +398,42 @@ const handleSubmit = async () => {
 }
 
 .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; }
+
+.status-choice-row {
+  display: flex;
+  gap: 0.6rem;
+
+  .status-pill-option {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.55rem 0.75rem;
+    border-radius: 6px;
+    background: var(--admin-bg-base, rgba(0, 0, 0, 0.25));
+    border: 1px solid var(--admin-border-subtle, rgba(255, 255, 255, 0.12));
+    color: var(--admin-text-muted, #94a3b8);
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      &.draft { background: #94a3b8; }
+      &.published { background: #22c55e; }
+    }
+
+    &.active {
+      background: rgba(212, 175, 55, 0.14);
+      border-color: var(--gold-primary, #d4af37);
+      color: var(--gold-primary, #d4af37);
+      font-weight: 600;
+    }
+  }
+}
 
 .modal-footer {
   display: flex;

@@ -96,6 +96,9 @@ export async function onRequestPost(context) {
       cdnUrl = base64;
     }
 
+    // 狀態預設為 0 (草稿，符合「先草稿再上架」規範)
+    const initialActive = (body.isActive === true || body.isActive === 1) ? 1 : 0;
+
     // 取得當前最大排序值
     const maxSortRow = await env.DB.prepare(
       'SELECT MAX(sort_order) as maxSort FROM media_assets WHERE category = ?'
@@ -106,7 +109,7 @@ export async function onRequestPost(context) {
     await env.DB.prepare(`
       INSERT INTO media_assets (
         id, category, sub_category, title_zh, title_en, tag_zh, tag_en, r2_key, cdn_url, file_size, width, height, sort_order, is_active
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `).bind(
       mediaId,
       category,
@@ -120,7 +123,8 @@ export async function onRequestPost(context) {
       Number(fileSize) || 0,
       Number(width) || 1920,
       Number(height) || 1080,
-      nextSort
+      nextSort,
+      initialActive
     ).run();
 
     // 寫入操作日誌
@@ -130,14 +134,14 @@ export async function onRequestPost(context) {
       VALUES ('media', 'UPLOAD_IMAGE', ?, ?, ?, ?)
     `).bind(
       mediaId,
-      `上傳新圖片：「${cleanTitleZh}」至【${category === 'hero' ? '首頁Hero' : category === 'room' ? '客房' : '公設'}】（${r2Key ? 'Cloudflare R2' : '本地儲存'}）`,
-      JSON.stringify({ mediaId, category, width, height, r2Key }),
+      `上傳新圖片：「${cleanTitleZh}」至【${category === 'hero' ? '首頁Hero' : category === 'room' ? '客房' : '公設'}】（狀態：${initialActive === 1 ? '直接上架' : '草稿'}，儲存於：${r2Key ? 'Cloudflare R2' : '本地儲存'}）`,
+      JSON.stringify({ mediaId, category, width, height, r2Key, isActive: Boolean(initialActive) }),
       operator
     ).run();
 
     return Response.json({
       success: true,
-      message: '圖片已成功上傳並加入媒體庫！',
+      message: initialActive === 1 ? '圖片已成功上架並加入媒體庫！' : '圖片已成功儲存為草稿（待審核後可一鍵上架）！',
       asset: {
         id: mediaId,
         category,
@@ -149,7 +153,7 @@ export async function onRequestPost(context) {
         cdnUrl,
         r2Key,
         sortOrder: nextSort,
-        isActive: true
+        isActive: Boolean(initialActive)
       }
     }, { headers: CORS_HEADERS });
 

@@ -71,22 +71,25 @@ const roomPresets = [
               <img :src="asset.cdnUrl" :alt="asset.titleZh" />
               <button 
                 type="button" 
-                class="status-dot" 
-                :class="{ active: asset.isActive, disabled: !asset.isActive }"
+                class="status-pill-btn" 
+                :class="{ active: asset.isActive, draft: !asset.isActive }"
                 @click="emit('toggleActive', asset)"
                 :disabled="isViewer"
-                :title="asset.isActive ? '點擊停用' : '點擊啟用'"
-              ></button>
+                :title="asset.isActive ? '點擊轉為草稿' : '點擊上架顯示'"
+              >
+                <span class="indicator"></span>
+                <span>{{ asset.isActive ? '上架中' : '草稿' }}</span>
+              </button>
             </div>
 
             <div class="thumb-desc">
-              <span class="thumb-name">{{ asset.titleZh }}</span>
+              <span class="thumb-name" :title="asset.titleZh">{{ asset.titleZh }}</span>
               <div class="thumb-actions">
                 <button 
                   type="button" 
                   class="btn-action edit" 
                   @click="emit('edit', asset)" 
-                  title="編輯"
+                  title="編輯資訊與更換圖片"
                   :disabled="isViewer"
                 >
                   <Edit3 :size="13" />
@@ -229,18 +232,36 @@ const roomPresets = [
 
     img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-    .status-dot {
+    .status-pill-btn {
       position: absolute;
       top: 0.4rem;
       right: 0.4rem;
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      border: 2px solid rgba(0, 0, 0, 0.75);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.15rem 0.45rem;
+      border-radius: 10px;
+      font-size: 0.68rem;
+      font-weight: 500;
+      border: 1px solid transparent;
       cursor: pointer;
+      backdrop-filter: blur(4px);
 
-      &.active { background: #22c55e; }
-      &.disabled { background: #ef4444; }
+      .indicator { width: 5px; height: 5px; border-radius: 50%; }
+
+      &.active {
+        background: rgba(18, 20, 21, 0.85);
+        border-color: rgba(34, 197, 94, 0.5);
+        color: #22c55e;
+        .indicator { background: #22c55e; }
+      }
+
+      &.draft, &.disabled {
+        background: rgba(18, 20, 21, 0.85);
+        border-color: rgba(148, 163, 184, 0.5);
+        color: #94a3b8;
+        .indicator { background: #94a3b8; }
+      }
     }
   }
 

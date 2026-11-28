@@ -83,6 +83,7 @@ const handleMoveDown = (index) => {
         <div class="slide-thumb-box">
           <img :src="slide.cdnUrl" :alt="slide.titleZh" class="thumb-img" loading="lazy" />
           <div class="order-badge">#{{ idx + 1 }}</div>
+          <span v-if="!slide.isActive" class="draft-badge">草稿</span>
           <span v-if="slide.tagZh" class="tag-pill">{{ slide.tagZh }}</span>
         </div>
 
@@ -117,16 +118,17 @@ const handleMoveDown = (index) => {
               </button>
             </div>
 
-            <!-- 顯示狀態切換 -->
+            <!-- 顯示狀態切換：上架中 / 草稿 -->
             <button 
               type="button" 
               class="status-pill-btn" 
-              :class="{ active: slide.isActive, disabled: !slide.isActive }"
+              :class="{ active: slide.isActive, draft: !slide.isActive }"
               @click="emit('toggleActive', slide)"
               :disabled="isViewer"
+              :title="slide.isActive ? '點擊轉為草稿' : '點擊上架輪播'"
             >
               <span class="indicator"></span>
-              <span>{{ slide.isActive ? '輪播中' : '已暫停' }}</span>
+              <span>{{ slide.isActive ? '上架中' : '草稿' }}</span>
             </button>
 
             <!-- 編輯與刪除 -->
@@ -135,11 +137,11 @@ const handleMoveDown = (index) => {
                 type="button" 
                 class="btn-action edit" 
                 @click="emit('edit', slide)" 
-                title="編輯文案與標籤"
+                title="編輯文案、更換圖片與調整狀態"
                 :disabled="isViewer"
               >
                 <Edit3 :size="14" />
-                <span>編輯</span>
+                <span>編輯 / 換圖</span>
               </button>
               <button 
                 type="button" 
@@ -255,6 +257,20 @@ const handleMoveDown = (index) => {
       backdrop-filter: blur(4px);
     }
 
+    .draft-badge {
+      position: absolute;
+      top: 0.6rem;
+      right: 0.6rem;
+      font-size: 0.7rem;
+      font-weight: 700;
+      background: rgba(100, 116, 139, 0.88);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #fff;
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      backdrop-filter: blur(4px);
+    }
+
     .tag-pill {
       position: absolute;
       bottom: 0.6rem;
@@ -349,7 +365,7 @@ const handleMoveDown = (index) => {
           .indicator { background: #22c55e; }
         }
 
-        &.disabled {
+        &.draft, &.disabled {
           background: rgba(148, 163, 184, 0.15);
           border-color: rgba(148, 163, 184, 0.35);
           color: #94a3b8;
