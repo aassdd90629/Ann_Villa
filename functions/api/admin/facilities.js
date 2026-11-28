@@ -301,16 +301,16 @@ export async function onRequestGet(context) {
 
     return Response.json({
       success: true,
-      facilities: facilitiesList.length > 0 ? facilitiesList : DEFAULT_FACILITIES
+      facilities: facilitiesList
     }, { headers: CORS_HEADERS });
 
   } catch (err) {
     console.error('[Admin Facilities API] GET 錯誤:', err);
-    // 安全 fallback
     return Response.json({
-      success: true,
-      facilities: DEFAULT_FACILITIES
-    }, { headers: CORS_HEADERS });
+      success: false,
+      facilities: [],
+      error: '載入公設資料失敗'
+    }, { status: 500, headers: CORS_HEADERS });
   }
 }
 

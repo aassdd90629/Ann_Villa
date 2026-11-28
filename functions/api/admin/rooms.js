@@ -389,16 +389,16 @@ export async function onRequestGet(context) {
 
     return Response.json({
       success: true,
-      rooms: roomsList.length > 0 ? roomsList : DEFAULT_ROOMS
+      rooms: roomsList
     }, { headers: CORS_HEADERS });
 
   } catch (err) {
     console.error('[Admin Rooms API] GET 錯誤:', err);
-    // 安全 fallback
     return Response.json({
-      success: true,
-      rooms: DEFAULT_ROOMS
-    }, { headers: CORS_HEADERS });
+      success: false,
+      rooms: [],
+      error: '載入客房資料失敗'
+    }, { status: 500, headers: CORS_HEADERS });
   }
 }
 
