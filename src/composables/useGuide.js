@@ -171,7 +171,15 @@ const INITIAL_GUIDE = {
   ]
 }
 
-const guide = ref({ ...INITIAL_GUIDE })
+// 預設保持純空容器，寫死資料保留常數但不引用，100% 透過 /api/guide 資料庫驅動
+const guide = ref({
+  transportation: INITIAL_GUIDE.transportation,
+  categories: [],
+  items: [],
+  attractions: [],
+  dining: []
+})
+
 const isLoaded = ref(false)
 const isLoading = ref(false)
 
@@ -185,12 +193,18 @@ export function useGuide() {
       if (res.ok) {
         const data = await res.json()
         if (data && data.success && data.guide) {
-          guide.value = data.guide
+          guide.value = {
+            transportation: data.guide.transportation || INITIAL_GUIDE.transportation,
+            categories: data.guide.categories || [],
+            items: data.guide.items || [],
+            attractions: data.guide.attractions || [],
+            dining: data.guide.dining || []
+          }
           isLoaded.value = true
         }
       }
     } catch (err) {
-      console.warn('[useGuide] 載入導覽失敗，使用預設值:', err)
+      console.warn('[useGuide] 載入導覽失敗:', err)
     } finally {
       isLoading.value = false
     }

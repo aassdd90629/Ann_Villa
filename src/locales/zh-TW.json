@@ -287,13 +287,18 @@
     "attractionsTitle": "山林踏青・鐵道溫泉與私房美景",
     "diningTag": "周邊在地美食",
     "diningTitle": "客家合菜・甕仔雞與在地人氣排隊名店",
-    "parkingAvailable": "附停車場"
+    "parkingAvailable": "附停車場",
+    "emptyTitle": "目前尚無周邊景點推薦",
+    "emptyDesc": "山語 Villa 正在為您精選苗栗卓蘭私房步道、採果農場與在地老饕美食，敬請期待。"
   },
   "news": {
     "tag": "最新消息",
     "title": "最新消息、節慶優惠與公告",
     "desc": "掌握山語 Villa 最新檔期開放、早鳥限定禮遇與專案活動資訊。",
-    "inquirePromotion": "洽詢專案詳情"
+    "inquirePromotion": "洽詢專案詳情",
+    "featuredBadge": "精選置頂",
+    "emptyTitle": "目前尚無最新活動公告",
+    "emptyDesc": "山語 Villa 正在規劃更多季節包棟禮遇與私廚驚喜，歡迎隨時關注或加入官方 LINE 洽詢專案。"
   },
   "lookup": {
     "heroBadge": "山語 Villa 官方直訂貴賓服務",

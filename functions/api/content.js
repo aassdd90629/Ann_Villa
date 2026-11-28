@@ -207,7 +207,7 @@ export async function onRequestGet(context) {
     success: true,
     basicInfo: { ...DEFAULT_BASIC_INFO },
     faq: [...DEFAULT_FAQS],
-    news: [...DEFAULT_NEWS],
+    news: [], // 寫死資料 DEFAULT_NEWS 保留宣告但不做引用，全站最新消息 100% 由資料庫動態驅動
     rules: { ...DEFAULT_RULES },
     channels: { ...DEFAULT_CHANNELS }
   };
@@ -312,8 +312,19 @@ export async function onRequestGet(context) {
             summaryEn: extra.summaryEn || r.content_en || r.content_zh,
             featured: Boolean(extra.featured),
             image: extra.image || '',
-            sortOrder: r.sort_order
+            sortOrder: Number(r.sort_order) || 1
           };
+        }).sort((a, b) => {
+          // 精選置頂優先排列在最前面
+          if (a.featured !== b.featured) {
+            return a.featured ? -1 : 1;
+          }
+          // 其次依日期降序（最新在上）
+          if (a.date && b.date && a.date !== b.date) {
+            return b.date.localeCompare(a.date);
+          }
+          // 最後依 sort_order 升序
+          return a.sortOrder - b.sortOrder;
         });
       }
 

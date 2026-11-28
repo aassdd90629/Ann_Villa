@@ -24,6 +24,8 @@ const sortOrder = ref(1)
 const isActive = ref(true)
 const isLoading = ref(false)
 const errorMessage = ref('')
+const imagePreviewError = ref(false)
+const defaultPlaceholderImg = 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1000&q=80'
 
 watch(() => props.show, (newVal) => {
   if (newVal) {
@@ -187,8 +189,21 @@ const handleSubmit = async () => {
           </div>
 
           <div class="form-group">
-            <label class="form-label">封面照片網址 (URL)</label>
+            <div class="label-with-action">
+              <label class="form-label">封面照片網址 (URL)</label>
+              <button 
+                type="button" 
+                class="btn-text-gold" 
+                @click="image = defaultPlaceholderImg"
+              >
+                帶入預設山莊美照
+              </button>
+            </div>
             <input v-model="image" type="url" class="form-input font-mono" placeholder="https://..." />
+            <div v-if="image" class="img-preview-box">
+              <img :src="image" alt="預覽" @error="imagePreviewError = true" @load="imagePreviewError = false" />
+              <span v-if="imagePreviewError" class="preview-error">⚠️ 圖片網址無法載入，請確認網址正確</span>
+            </div>
           </div>
 
           <div class="form-row-2">
@@ -224,155 +239,107 @@ const handleSubmit = async () => {
 @use '../../../assets/styles/variables' as *;
 
 .admin-modal-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(4px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1.5rem;
+  position: fixed; inset: 0; z-index: 9999;
+  background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center; padding: 1.5rem;
 }
 
 .admin-modal-container {
-  width: 100%;
-  max-width: 560px;
+  width: 100%; max-width: 560px;
   background: var(--admin-bg-card, #151f32);
   border: 1px solid var(--admin-border, rgba(212, 175, 55, 0.35));
-  border-radius: 12px;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
+  border-radius: 12px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  display: flex; flex-direction: column; overflow: hidden;
 }
 
 .modal-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1.25rem 1.5rem;
-  border-bottom: 1px solid var(--admin-border-subtle, rgba(255, 255, 255, 0.08));
-
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--admin-border-subtle, rgba(255, 255, 255, 0.08));
   .header-title-group {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
+    display: flex; align-items: center; gap: 0.6rem;
     .gold-icon { color: var(--gold-primary, #d4af37); }
     h3 { font-size: 1.15rem; font-weight: 600; color: var(--admin-text-main, #f8fafc); margin: 0; }
   }
-
   .btn-close {
-    background: transparent;
-    border: none;
-    color: var(--admin-text-muted, #94a3b8);
-    cursor: pointer;
-    padding: 0.3rem;
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
+    background: transparent; border: none; color: var(--admin-text-muted, #94a3b8);
+    cursor: pointer; padding: 0.3rem; border-radius: 4px; display: flex; align-items: center;
     &:hover:not(:disabled) { color: var(--admin-text-main, #fff); background: var(--admin-tr-hover, rgba(255, 255, 255, 0.08)); }
   }
 }
 
 .modal-alert {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.25rem;
-  margin: 1rem 1.5rem 0;
-  border-radius: 6px;
-  font-size: 0.85rem;
+  display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.25rem;
+  margin: 1rem 1.5rem 0; border-radius: 6px; font-size: 0.85rem;
   &.error { background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.3); color: #ef4444; }
 }
 
 .modal-form {
-  padding: 1.25rem 1.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+  padding: 1.25rem 1.5rem; display: flex; flex-direction: column; gap: 1rem;
 }
 
 .form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-
+  display: flex; flex-direction: column; gap: 0.4rem;
   .form-label {
-    font-size: 0.82rem;
-    font-weight: 500;
-    color: var(--admin-text-sub, #cbd5e1);
+    font-size: 0.82rem; font-weight: 500; color: var(--admin-text-sub, #cbd5e1);
     .required { color: #ef4444; margin-left: 0.2rem; }
   }
-
   .form-input, .form-textarea {
-    width: 100%;
-    padding: 0.7rem 0.85rem;
+    width: 100%; padding: 0.7rem 0.85rem;
     background: var(--admin-input-bg, rgba(13, 19, 31, 0.8));
     border: 1px solid var(--admin-input-border, rgba(212, 175, 55, 0.25));
-    border-radius: 6px;
-    color: var(--admin-text-main, #fff);
-    font-size: 0.9rem;
-    outline: none;
+    border-radius: 6px; color: var(--admin-text-main, #fff); font-size: 0.9rem; outline: none;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
     &:focus { border-color: var(--gold-primary, #d4af37); box-shadow: 0 0 8px rgba(212, 175, 55, 0.25); }
     &.font-mono { font-family: monospace; font-size: 0.8rem; }
   }
-
   .form-textarea { resize: vertical; line-height: 1.5; }
+
+  .label-with-action {
+    display: flex; align-items: center; justify-content: space-between;
+    .btn-text-gold {
+      background: transparent; border: none; color: var(--gold-primary, #d4af37);
+      font-size: 0.75rem; cursor: pointer; text-decoration: underline; padding: 0;
+      &:hover { opacity: 0.8; }
+    }
+  }
+
+  .img-preview-box {
+    margin-top: 0.4rem; height: 110px; border-radius: 6px; overflow: hidden; position: relative;
+    border: 1px solid var(--admin-border-subtle, rgba(255, 255, 255, 0.1));
+    background: var(--admin-bg-base, #0d131f);
+    img { width: 100%; height: 100%; object-fit: cover; }
+    .preview-error {
+      position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+      background: rgba(0, 0, 0, 0.75); color: #ef4444; font-size: 0.78rem; padding: 0.5rem;
+    }
+  }
 }
 
 .form-row-2 {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-  align-items: center;
-
+  display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; align-items: center;
   .checkbox-group {
     padding-top: 0.5rem;
     .checkbox-label {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 0.82rem;
-      color: var(--admin-text-sub, #cbd5e1);
-      cursor: pointer;
+      display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.82rem;
+      color: var(--admin-text-sub, #cbd5e1); cursor: pointer;
       input[type="checkbox"] { accent-color: var(--gold-primary, #d4af37); }
     }
   }
 }
 
 .modal-footer {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 0.75rem;
-  padding-top: 0.75rem;
-  border-top: 1px solid var(--admin-border-subtle, rgba(255, 255, 255, 0.08));
-
+  display: flex; align-items: center; justify-content: flex-end; gap: 0.75rem;
+  padding-top: 0.75rem; border-top: 1px solid var(--admin-border-subtle, rgba(255, 255, 255, 0.08));
   .btn-cancel {
-    padding: 0.65rem 1.25rem;
-    background: transparent;
+    padding: 0.65rem 1.25rem; background: transparent;
     border: 1px solid var(--admin-border-subtle, rgba(255, 255, 255, 0.2));
-    border-radius: 6px;
-    color: var(--admin-text-sub, #cbd5e1);
-    font-size: 0.85rem;
-    cursor: pointer;
+    border-radius: 6px; color: var(--admin-text-sub, #cbd5e1); font-size: 0.85rem; cursor: pointer;
     &:hover:not(:disabled) { background: var(--admin-tr-hover, rgba(255, 255, 255, 0.05)); color: var(--admin-text-main, #fff); }
   }
-
   .btn-confirm {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 0.65rem 1.4rem;
-    background: var(--gold-primary, #d4af37);
-    border: 1px solid var(--gold-primary, #d4af37);
-    border-radius: 6px;
-    color: #121415;
-    font-weight: 600;
-    font-size: 0.85rem;
-    cursor: pointer;
+    display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.65rem 1.4rem;
+    background: var(--gold-primary, #d4af37); border: 1px solid var(--gold-primary, #d4af37);
+    border-radius: 6px; color: #121415; font-weight: 600; font-size: 0.85rem; cursor: pointer;
     transition: background-color 0.2s ease;
     &:hover:not(:disabled) { background: #dfbc46; }
     &:disabled { opacity: 0.6; cursor: not-allowed; }

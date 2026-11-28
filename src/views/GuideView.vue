@@ -1,26 +1,77 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useI18n } from '../composables/useI18n'
 import { useGuide } from '../composables/useGuide'
 import { useSiteContent } from '../composables/useSiteContent'
 import PageHeader from '../components/common/PageHeader.vue'
+import GuideTransportSection from '../components/guide/GuideTransportSection.vue'
+import GuideItemCard from '../components/guide/GuideItemCard.vue'
 import { 
-  Car, 
-  Train, 
-  MapPin, 
-  Clock, 
+  Sparkles, 
   Compass, 
-  ExternalLink,
-  UtensilsCrossed,
-  Sparkles,
-  Info,
-  CircleParking
+  UtensilsCrossed, 
+  MapPin, 
+  Coffee, 
+  Camera, 
+  Trees, 
+  Store,
+  HelpCircle
 } from 'lucide-vue-next'
 
-const { isEn, t, tField } = useI18n()
-const { guide: guideData } = useGuide()
+const { t, tField } = useI18n()
+const { guide: guideData, isLoading } = useGuide()
 const { basicInfo: siteData } = useSiteContent()
-const activeTab = ref('all') // 'all', 'attractions', 'dining'
+
+// 目前選取的膠囊分類，預設 'all'
+const activeTab = ref('all')
+
+// 動態分類清單
+const categories = computed(() => guideData.value.categories || [])
+
+// 所有景點/推薦項目清單
+const allItems = computed(() => guideData.value.items || [])
+
+// 總項目計數
+const totalCount = computed(() => allItems.value.length)
+
+// 動態圖示匹配字典
+const iconMap = {
+  Compass,
+  UtensilsCrossed,
+  Sparkles,
+  MapPin,
+  Coffee,
+  Camera,
+  Trees,
+  Store
+}
+
+const getCategoryIcon = (iconName) => {
+  return iconMap[iconName] || Compass
+}
+
+// 根據當前膠囊分類過濾顯示項目
+const displayedSections = computed(() => {
+  if (categories.value.length === 0) {
+    return []
+  }
+
+  if (activeTab.value === 'all') {
+    // 顯示所有擁有項目的分類區塊
+    return categories.value.map(cat => ({
+      category: cat,
+      items: allItems.value.filter(it => it.type === cat.id)
+    }))
+  }
+
+  // 僅顯示當前選中的分類
+  const targetCat = categories.value.find(c => c.id === activeTab.value)
+  if (!targetCat) return []
+  return [{
+    category: targetCat,
+    items: allItems.value.filter(it => it.type === targetCat.id)
+  }]
+})
 </script>
 
 <template>
@@ -34,146 +85,85 @@ const activeTab = ref('all') // 'all', 'attractions', 'dining'
     <section class="section-py guide-content-section">
       <div class="container">
         <!-- 1. 交通指引 (自駕 / 大眾運輸) -->
-        <div class="transport-grid">
-          <div class="trans-card card-luxury">
-            <div class="trans-header">
-              <Car :size="24" class="trans-icon" />
-              <h2>{{ t('guide.byCarTitle') }}</h2>
-            </div>
-            <ul class="trans-list">
-              <li v-for="(route, rIdx) in (isEn ? guideData.transportation.byCarEn : guideData.transportation.byCarZh)" :key="rIdx">
-                <span>{{ route }}</span>
-              </li>
-            </ul>
-            <div class="trans-action">
-              <a :href="siteData.googleMapUrl" target="_blank" rel="noopener noreferrer" class="btn btn-gold">
-                <MapPin :size="16" />
-                <span>{{ t('guide.openGoogleMaps') }}</span>
-                <ExternalLink :size="14" />
-              </a>
-            </div>
-          </div>
+        <GuideTransportSection 
+          :transportation="guideData.transportation" 
+          :site-data="siteData" 
+        />
 
-          <div class="trans-card card-luxury">
-            <div class="trans-header">
-              <Train :size="24" class="trans-icon" />
-              <h2>{{ t('guide.publicTransTitle') }}</h2>
-            </div>
-            <p class="trans-desc">
-              {{ tField(guideData.transportation, 'byPublic') }}
-            </p>
-            <div class="shuttle-note">
-              <Compass :size="16" />
-              <span>{{ t('guide.shuttleNote') }}</span>
-            </div>
-            <div class="address-box">
-              <MapPin :size="16" class="addr-icon" />
-              <div>
-                <span class="addr-label">{{ t('guide.addressLabel') }}</span>
-                <p class="addr-text">{{ tField(siteData, 'address') }}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 分類篩選列 -->
+        <!-- 2. 中間動態膠囊狀分類篩選列 (Pill Filter Tabs) -->
         <div class="guide-filter-tabs">
+          <!-- 全部推薦膠囊 -->
           <button 
+            type="button"
             class="tab-btn" 
             :class="{ active: activeTab === 'all' }"
             @click="activeTab = 'all'"
           >
             <Sparkles :size="16" />
-            <span>{{ t('guide.tabAll') }} ({{ guideData.attractions.length + guideData.dining.length }})</span>
+            <span>{{ t('guide.tabAll') }} ({{ totalCount }})</span>
           </button>
+
+          <!-- 動態由資料庫新增與維護之各膠囊分類 -->
           <button 
+            v-for="cat in categories" 
+            :key="cat.id"
+            type="button"
             class="tab-btn" 
-            :class="{ active: activeTab === 'attractions' }"
-            @click="activeTab = 'attractions'"
+            :class="{ active: activeTab === cat.id }"
+            @click="activeTab = cat.id"
           >
-            <Compass :size="16" />
-            <span>{{ t('guide.tabAttractions') }} ({{ guideData.attractions.length }})</span>
-          </button>
-          <button 
-            class="tab-btn" 
-            :class="{ active: activeTab === 'dining' }"
-            @click="activeTab = 'dining'"
-          >
-            <UtensilsCrossed :size="16" />
-            <span>{{ t('guide.tabDining') }} ({{ guideData.dining.length }})</span>
+            <component :is="getCategoryIcon(cat.icon)" :size="16" />
+            <span>{{ tField(cat, 'name') }} ({{ cat.count !== undefined ? cat.count : allItems.filter(i => i.type === cat.id).length }})</span>
           </button>
         </div>
 
-        <!-- 2. 周邊私房推薦景點 (Attractions) -->
-        <div v-if="activeTab === 'all' || activeTab === 'attractions'" class="guide-block attractions-section">
-          <div class="section-header text-left">
-            <span class="section-tag">{{ t('guide.attractionsTag') }}</span>
-            <h2 class="section-title">{{ t('guide.attractionsTitle') }}</h2>
-          </div>
-
-          <div class="guide-grid">
-            <div 
-              v-for="att in guideData.attractions" 
-              :key="att.id"
-              class="guide-card card-luxury"
-            >
-              <div class="guide-img-box img-zoom-container">
-                <img :src="att.image" :alt="tField(att, 'name')" loading="lazy" />
-                <div class="drive-time-badge">
-                  <Clock :size="13" />
-                  <span>{{ tField(att, 'driveTime') }}</span>
-                </div>
-                <div v-if="att.locationZh || att.locationEn" class="location-badge">
-                  <MapPin :size="12" />
-                  <span>{{ tField(att, 'location') }}</span>
-                </div>
-              </div>
-              <div class="guide-body">
-                <div class="guide-tag">{{ tField(att, 'tag') }}</div>
-                <h3 class="guide-name">{{ tField(att, 'name') }}</h3>
-                <p class="guide-desc">{{ tField(att, 'desc') }}</p>
-                <div v-if="att.noticeZh || att.noticeEn" class="guide-notice">
-                  <Info :size="14" class="notice-icon" />
-                  <span>{{ tField(att, 'notice') }}</span>
-                </div>
-              </div>
+        <!-- 載入中骨架屏 -->
+        <div v-if="isLoading && totalCount === 0" class="guide-grid">
+          <div v-for="n in 3" :key="'skeleton-' + n" class="card-luxury skeleton-card">
+            <div class="skeleton-img"></div>
+            <div class="skeleton-body">
+              <div class="skeleton-line sm"></div>
+              <div class="skeleton-line md"></div>
+              <div class="skeleton-line lg"></div>
             </div>
           </div>
         </div>
 
-        <!-- 3. 周邊在地美食 (Dining) -->
-        <div v-if="activeTab === 'all' || activeTab === 'dining'" class="guide-block dining-section">
-          <div class="section-header text-left">
-            <span class="section-tag">{{ t('guide.diningTag') }}</span>
-            <h2 class="section-title">{{ t('guide.diningTitle') }}</h2>
-          </div>
+        <!-- 全站尚無任何導覽推薦時的空狀態 -->
+        <div v-else-if="totalCount === 0" class="empty-guide-box card-luxury">
+          <Compass :size="44" class="empty-icon" />
+          <h3 class="empty-title">{{ t('guide.emptyTitle') || '目前尚無周邊景點推薦' }}</h3>
+          <p class="empty-desc">{{ t('guide.emptyDesc') || '山語 Villa 正在為您精選苗栗卓蘭私房步道、採果農場與在地老饕美食，敬請期待。' }}</p>
+        </div>
 
-          <div class="guide-grid">
-            <div 
-              v-for="dish in guideData.dining" 
-              :key="dish.id"
-              class="guide-card card-luxury"
-            >
-              <div class="guide-img-box img-zoom-container">
-                <img :src="dish.image" :alt="tField(dish, 'name')" loading="lazy" />
-                <div v-if="dish.parking" class="parking-badge">
-                  <CircleParking :size="13" />
-                  <span>{{ t('guide.parkingAvailable') }}</span>
-                </div>
-                <div v-if="dish.locationZh || dish.locationEn" class="location-badge">
-                  <MapPin :size="12" />
-                  <span>{{ tField(dish, 'location') }}</span>
-                </div>
-              </div>
-              <div class="guide-body">
-                <div class="guide-tag">{{ tField(dish, 'tag') }}</div>
-                <h3 class="guide-name">{{ tField(dish, 'name') }}</h3>
-                <p class="guide-desc">{{ tField(dish, 'desc') }}</p>
-                <div v-if="dish.noticeZh || dish.noticeEn" class="guide-notice">
-                  <Info :size="14" class="notice-icon" />
-                  <span>{{ tField(dish, 'notice') }}</span>
-                </div>
-              </div>
+        <!-- 3. 動態分類項目區塊 -->
+        <div v-else>
+          <div 
+            v-for="section in displayedSections" 
+            :key="section.category.id"
+            class="guide-block"
+          >
+            <!-- 區塊標題列 -->
+            <div class="section-header text-left">
+              <span v-if="section.category.tagZh || section.category.tagEn" class="section-tag">
+                {{ tField(section.category, 'tag') }}
+              </span>
+              <h2 class="section-title">{{ tField(section.category, 'name') }}</h2>
+            </div>
+
+            <!-- 分類下無項目的小空狀態 -->
+            <div v-if="section.items.length === 0" class="empty-section-hint">
+              <HelpCircle :size="20" />
+              <span>該分類目前尚無發布中的推薦項目。</span>
+            </div>
+
+            <!-- 項目卡片網格 -->
+            <div v-else class="guide-grid">
+              <GuideItemCard 
+                v-for="item in section.items" 
+                :key="item.id" 
+                :item="item" 
+              />
             </div>
           </div>
         </div>
@@ -185,113 +175,6 @@ const activeTab = ref('all') // 'all', 'attractions', 'dining'
 
 <style lang="scss" scoped>
 @use '../assets/styles/variables' as *;
-
-.transport-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 2rem;
-  margin-bottom: 4rem;
-
-  @media (min-width: $bp-md) {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-.trans-card {
-  padding: 2.25rem 2rem;
-  display: flex;
-  flex-direction: column;
-
-  .trans-header {
-    display: flex;
-    align-items: center;
-    gap: 0.85rem;
-    margin-bottom: 1.5rem;
-    padding-bottom: 0.75rem;
-    border-bottom: 1px solid var(--border-color);
-
-    .trans-icon {
-      color: var(--gold-primary);
-    }
-
-    h2 {
-      font-size: 1.25rem;
-      margin: 0;
-    }
-  }
-
-  .trans-list {
-    list-style: disc;
-    padding-left: 1.25rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.85rem;
-    margin-bottom: 2rem;
-    flex: 1;
-
-    li {
-      font-size: 0.93rem;
-      color: var(--text-sub);
-      line-height: 1.75;
-    }
-  }
-
-  .trans-desc {
-    font-size: 0.95rem;
-    line-height: 1.85;
-    color: var(--text-sub);
-    margin-bottom: 1.25rem;
-    flex: 1;
-  }
-
-  .shuttle-note {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    font-size: 0.82rem;
-    color: var(--gold-primary);
-    background: var(--badge-bg);
-    padding: 0.4rem 0.75rem;
-    border-radius: 4px;
-    margin-bottom: 1.5rem;
-    align-self: flex-start;
-  }
-
-  .address-box {
-    display: flex;
-    gap: 0.75rem;
-    padding: 1rem;
-    background: var(--bg-hover);
-    border-radius: 4px;
-    border-left: 3px solid var(--gold-primary);
-    margin-bottom: 1.5rem;
-
-    .addr-icon {
-      color: var(--gold-primary);
-      flex-shrink: 0;
-      margin-top: 2px;
-    }
-
-    .addr-label {
-      display: block;
-      font-size: 0.78rem;
-      color: var(--text-muted);
-      letter-spacing: 0.05em;
-      margin-bottom: 0.25rem;
-    }
-
-    .addr-text {
-      font-size: 0.88rem;
-      color: var(--text-primary);
-      margin: 0;
-      line-height: 1.4;
-    }
-  }
-
-  .trans-action {
-    margin-top: auto;
-  }
-}
 
 .guide-filter-tabs {
   display: flex;
@@ -367,99 +250,61 @@ const activeTab = ref('all') // 'all', 'attractions', 'dining'
   }
 }
 
-.guide-card {
+.empty-guide-box {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 4rem 1.5rem;
+  border: 1px dashed var(--border-color);
+  border-radius: 8px;
+  max-width: 600px;
+  margin: 2rem auto;
+
+  .empty-icon { color: var(--gold-primary); opacity: 0.7; margin-bottom: 1rem; }
+  .empty-title { font-size: 1.25rem; font-weight: 600; color: var(--text-main); margin-bottom: 0.5rem; }
+  .empty-desc { font-size: 0.9rem; color: var(--text-sub); line-height: 1.65; margin: 0; }
+}
+
+.empty-section-hint {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 2rem 1.5rem;
+  background: var(--bg-hover);
+  border-radius: 6px;
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  justify-content: center;
+}
+
+.skeleton-card {
   overflow: hidden;
-
-  .guide-img-box {
-    position: relative;
+  .skeleton-img {
     height: 220px;
-
-    .drive-time-badge,
-    .parking-badge {
-      position: absolute;
-      top: 0.75rem;
-      right: 0.75rem;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.3rem;
-      background: rgba(18, 20, 21, 0.8);
-      color: #FFFFFF;
-      font-size: 0.75rem;
-      padding: 0.25rem 0.65rem;
-      border-radius: 4px;
-      backdrop-filter: blur(6px);
-      z-index: 2;
-    }
-
-    .parking-badge {
-      background: rgba(46, 125, 50, 0.85);
-    }
-
-    .location-badge {
-      position: absolute;
-      bottom: 0.75rem;
-      left: 0.75rem;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.25rem;
-      background: rgba(18, 20, 21, 0.75);
-      color: #FFFFFF;
-      font-size: 0.72rem;
-      padding: 0.2rem 0.55rem;
-      border-radius: 3px;
-      backdrop-filter: blur(4px);
-      z-index: 2;
-    }
+    background: var(--bg-surface, rgba(255, 255, 255, 0.05));
+    animation: pulse 1.8s infinite ease-in-out;
   }
-
-  .guide-body {
+  .skeleton-body {
     padding: 1.5rem;
     display: flex;
     flex-direction: column;
-    flex: 1;
-
-    .guide-tag {
-      font-size: 0.75rem;
-      color: var(--gold-primary);
-      font-weight: 500;
-      letter-spacing: 0.05em;
-      margin-bottom: 0.4rem;
-    }
-
-    .guide-name {
-      font-size: 1.2rem;
-      margin-bottom: 0.75rem;
-      line-height: 1.35;
-    }
-
-    .guide-desc {
-      font-size: 0.88rem;
-      color: var(--text-sub);
-      line-height: 1.7;
-      margin-bottom: 1rem;
-      flex: 1;
-    }
-
-    .guide-notice {
-      display: flex;
-      align-items: flex-start;
-      gap: 0.4rem;
-      padding: 0.65rem 0.85rem;
-      background: var(--bg-hover);
+    gap: 0.75rem;
+    .skeleton-line {
+      height: 14px;
       border-radius: 4px;
-      border-left: 2px solid var(--gold-primary);
-      font-size: 0.8rem;
-      color: var(--text-sub);
-      line-height: 1.45;
-
-      .notice-icon {
-        color: var(--gold-primary);
-        flex-shrink: 0;
-        margin-top: 2px;
-      }
+      background: var(--bg-surface, rgba(255, 255, 255, 0.05));
+      animation: pulse 1.8s infinite ease-in-out;
+      &.sm { width: 35%; height: 12px; }
+      &.md { width: 80%; height: 18px; }
+      &.lg { width: 95%; height: 14px; }
     }
   }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
 }
 </style>

@@ -1,7 +1,8 @@
 /**
  * functions/api/guide.js
  * 
- * GET /api/guide - 公開取得交通路線、私房景點與在地美食推薦指南 (100% 資料庫驅動)
+ * GET /api/guide - 公開取得交通路線、周邊推薦膠囊分類與景點美食項目 (100% 資料庫驅動)
+ * 遵守規範：寫死的 DEFAULT_GUIDE 保留宣告但不做引用，全站導覽資料 100% 由 D1 資料庫動態驅動。
  */
 
 const DEFAULT_GUIDE = {
@@ -175,104 +176,155 @@ const DEFAULT_GUIDE = {
   ]
 };
 
+/**
+ * 確保 guide_categories 表存在 (自我修復)
+ */
+async function ensureGuideTables(db) {
+  try {
+    await db.prepare(`
+      CREATE TABLE IF NOT EXISTS guide_categories (
+        id TEXT PRIMARY KEY,
+        name_zh TEXT NOT NULL,
+        name_en TEXT,
+        icon TEXT DEFAULT 'Compass',
+        tag_zh TEXT,
+        tag_en TEXT,
+        sort_order INTEGER DEFAULT 1,
+        is_active INTEGER DEFAULT 1,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `).run();
+
+    await db.prepare(`CREATE INDEX IF NOT EXISTS idx_guide_categories_sort ON guide_categories(is_active, sort_order ASC)`).run();
+
+    const countRes = await db.prepare('SELECT COUNT(*) as cnt FROM guide_categories').first();
+    if (!countRes || countRes.cnt === 0) {
+      await db.prepare(`
+        INSERT OR IGNORE INTO guide_categories (id, name_zh, name_en, icon, tag_zh, tag_en, sort_order, is_active) VALUES
+          ('attraction', '周邊景點', 'Attractions', 'Compass', '私房景點推薦', 'Curated Scenic Spots', 1, 1),
+          ('dining', '在地美食', 'Local Dining', 'UtensilsCrossed', '私房美食品嚐', 'Authentic Local Dining', 2, 1)
+      `).run();
+    }
+  } catch (e) {
+    console.warn('[Guide API] ensureGuideTables warning:', e.message);
+  }
+}
+
 export async function onRequestGet(context) {
   const { env } = context;
 
-  try {
-    if (!env || !env.DB) {
-      return Response.json({
-        success: true,
-        guide: DEFAULT_GUIDE
-      }, {
-        headers: { 'Content-Type': 'application/json; charset=utf-8' }
-      });
-    }
+  // 預設純空容器（不引用寫死的 DEFAULT_GUIDE.attractions / dining）
+  const emptyGuide = {
+    transportation: DEFAULT_GUIDE.transportation,
+    categories: [],
+    items: [],
+    attractions: [],
+    dining: []
+  };
 
-    // 查詢 guide_items
-    const { results } = await env.DB.prepare(`
+  if (!env || !env.DB) {
+    return Response.json({
+      success: true,
+      guide: emptyGuide
+    }, {
+      headers: { 'Content-Type': 'application/json; charset=utf-8' }
+    });
+  }
+
+  try {
+    await ensureGuideTables(env.DB);
+
+    // 1. 查詢所有啟用中膠囊分類
+    const { results: catRows } = await env.DB.prepare(`
+      SELECT id, name_zh as nameZh, name_en as nameEn, icon, tag_zh as tagZh, tag_en as tagEn, sort_order as sortOrder
+      FROM guide_categories
+      WHERE is_active = 1
+      ORDER BY sort_order ASC, created_at ASC
+    `).all();
+
+    // 2. 查詢所有啟用中景點項目與交通指引
+    const { results: itemRows } = await env.DB.prepare(`
       SELECT 
         id, 
         type, 
         name_zh AS nameZh, 
-        name_en AS nameEn,
+        name_en AS nameEn, 
         location_zh AS locationZh, 
-        location_en AS locationEn,
+        location_en AS locationEn, 
         tag_zh AS tagZh, 
-        tag_en AS tagEn,
+        tag_en AS tagEn, 
         desc_zh AS descZh, 
-        desc_en AS descEn,
+        desc_en AS descEn, 
         notice_zh AS noticeZh, 
-        notice_en AS noticeEn,
+        notice_en AS noticeEn, 
         image, 
         parking, 
-        data_json AS dataJson,
+        data_json AS dataJson, 
         sort_order AS sortOrder
       FROM guide_items
       WHERE is_active = 1
-      ORDER BY sort_order ASC
+      ORDER BY sort_order ASC, created_at DESC
     `).all();
 
-    if (!results || results.length === 0) {
-      return Response.json({
-        success: true,
-        guide: DEFAULT_GUIDE
-      }, {
-        headers: { 'Content-Type': 'application/json; charset=utf-8' }
-      });
-    }
-
     let transportation = DEFAULT_GUIDE.transportation;
+    const items = [];
     const attractions = [];
     const dining = [];
 
-    for (const item of results) {
+    for (const item of (itemRows || [])) {
       if (item.type === 'transportation') {
         if (item.dataJson) {
           try {
             transportation = JSON.parse(item.dataJson);
           } catch (e) {}
         }
-      } else if (item.type === 'attraction') {
-        attractions.push({
+      } else {
+        const parsedItem = {
           id: item.id,
+          type: item.type,
           nameZh: item.nameZh,
-          nameEn: item.nameEn,
-          locationZh: item.locationZh,
-          locationEn: item.locationEn,
-          tagZh: item.tagZh,
-          tagEn: item.tagEn,
-          descZh: item.descZh,
-          descEn: item.descEn,
-          noticeZh: item.noticeZh,
-          noticeEn: item.noticeEn,
-          image: item.image,
-          parking: Boolean(item.parking)
-        });
-      } else if (item.type === 'dining') {
-        dining.push({
-          id: item.id,
-          nameZh: item.nameZh,
-          nameEn: item.nameEn,
-          locationZh: item.locationZh,
-          locationEn: item.locationEn,
-          tagZh: item.tagZh,
-          tagEn: item.tagEn,
-          descZh: item.descZh,
-          descEn: item.descEn,
-          noticeZh: item.noticeZh,
-          noticeEn: item.noticeEn,
-          image: item.image,
-          parking: Boolean(item.parking)
-        });
+          nameEn: item.nameEn || '',
+          locationZh: item.locationZh || '',
+          locationEn: item.locationEn || '',
+          tagZh: item.tagZh || '',
+          tagEn: item.tagEn || '',
+          descZh: item.descZh || '',
+          descEn: item.descEn || '',
+          noticeZh: item.noticeZh || '',
+          noticeEn: item.noticeEn || '',
+          image: item.image || '',
+          parking: Boolean(item.parking),
+          sortOrder: Number(item.sortOrder) || 1
+        };
+
+        items.push(parsedItem);
+
+        if (item.type === 'attraction') {
+          attractions.push(parsedItem);
+        } else if (item.type === 'dining') {
+          dining.push(parsedItem);
+        }
       }
     }
+
+    // 計算每個分類底下的項目數量
+    const categories = (catRows || []).map(cat => {
+      const count = items.filter(it => it.type === cat.id).length;
+      return {
+        ...cat,
+        count
+      };
+    });
 
     return Response.json({
       success: true,
       guide: {
-        transportation: transportation || DEFAULT_GUIDE.transportation,
-        attractions: attractions.length > 0 ? attractions : DEFAULT_GUIDE.attractions,
-        dining: dining.length > 0 ? dining : DEFAULT_GUIDE.dining
+        transportation,
+        categories,
+        items,
+        attractions,
+        dining
       }
     }, {
       headers: {
@@ -280,11 +332,12 @@ export async function onRequestGet(context) {
         'Cache-Control': 'public, max-age=60'
       }
     });
+
   } catch (err) {
-    console.warn('[Guide API] 讀取旅遊指南失敗，切換為安全預設值:', err.message);
+    console.error('[Guide API] 讀取導覽資料異常:', err);
     return Response.json({
       success: true,
-      guide: DEFAULT_GUIDE,
+      guide: emptyGuide,
       _fallback: true
     }, {
       headers: { 'Content-Type': 'application/json; charset=utf-8' }

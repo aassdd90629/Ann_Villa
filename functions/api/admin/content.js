@@ -63,8 +63,7 @@ async function ensureSiteContentTable(db) {
           ('faq-01', 'faq', '平假日與國定連假的收費標準與早餐如何規定？', 'What are the pricing rules?', '【平日 (週一至週四)】：10人以下 20,000$ (含早餐)、11-14人以下 25,000$ (含早餐)、15-18人以下 30,000$ (含早餐)。【一般假日 (週五、六、日)】：35,000$ (含早餐)。【國定假日】：一律自國定假日前一天起算國定假日房價 (含早餐)，唯農曆春節過年房價不提供早餐。', '', 1, 1),
           ('faq-02', 'faq', '民宿內有提供廚房與烤肉設備嗎？收費與規範為何？', 'Do you provide kitchen and BBQ facilities?', '全棟包棟免費開放使用中島開放式廚房與戶外庭院專業美式 BBQ 烤肉爐。我們提供鍋具、餐具與基本烤肉網；食材、木炭、瓦斯罐及調味料需由貴賓自行準備。使用完畢請協助垃圾分類與器具清洗歸位。', '', 2, 1),
           ('faq-03', 'faq', '續住會主動更換毛巾或備品嗎？', 'Do you replace towels during consecutive stays?', '為實踐友善山林低碳永續理念，續住期間管家不主動進入客房更換毛巾、浴巾與床單。如需更換毛巾備品或清理垃圾，請隨時通知駐館管家為您安排。', '', 3, 1),
-          ('faq-04', 'faq', '可以攜帶寵物或在園區施放煙火嗎？', 'Are pets allowed or fireworks permitted?', '全館室內嚴禁攜帶任何寵物入內。同時為維護山林生態與園區安全，園區內全面禁止施放煙火、鞭炮及仙女棒，敬請各位貴賓共同愛護山林清幽環境。', '', 4, 1),
-          ('news-01', 'news', '2026 春夏包棟檔期正式開放預訂與早鳥禮遇', '2026 Spring & Summer Bookings Open', '{"date":"2026-03-15","categoryZh":"最新公告","categoryEn":"Announcement","titleZh":"2026 春夏包棟檔期正式開放預訂與早鳥禮遇","titleEn":"2026 Spring & Summer Bookings Open with Early Bird Privileges","summaryZh":"即日起預訂 2026 年 5 月至 9 月包棟住宿，即贈送苗栗在地精選迎賓茶點組及產地冷泡茶禮盒。","summaryEn":"Book your exclusive summer retreat now and receive artisan welcome tea set.","featured":true,"image":"https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1000&q=80"}', '', 1, 1)
+          ('faq-04', 'faq', '可以攜帶寵物或在園區施放煙火嗎？', 'Are pets allowed or fireworks permitted?', '全館室內嚴禁攜帶任何寵物入內。同時為維護山林生態與園區安全，園區內全面禁止施放煙火、鞭炮及仙女棒，敬請各位貴賓共同愛護山林清幽環境。', '', 4, 1)
       `).run();
     }
   } catch (err) {
@@ -140,6 +139,17 @@ export async function onRequestGet(context) {
       }
     }
 
+    // 最新消息依置頂優先、日期由新到舊排序
+    news.sort((a, b) => {
+      if (a.featured !== b.featured) {
+        return a.featured ? -1 : 1;
+      }
+      if (a.date && b.date && a.date !== b.date) {
+        return b.date.localeCompare(a.date);
+      }
+      return (a.sortOrder || 1) - (b.sortOrder || 1);
+    });
+
     return Response.json({
       success: true,
       basicInfo,
@@ -148,8 +158,9 @@ export async function onRequestGet(context) {
     }, { headers: CORS_HEADERS });
 
   } catch (err) {
+    console.error('[AdminContent GET] 讀取內容失敗:', err);
     return Response.json(
-      { success: false, message: '讀取內容失敗: ' + err.message },
+      { success: false, message: '讀取全站內容失敗，請稍後再試。' },
       { status: 500, headers: CORS_HEADERS }
     );
   }
@@ -257,7 +268,8 @@ export async function onRequestPost(context) {
     return Response.json({ success: false, message: '未知的分類類型。' }, { status: 400, headers: CORS_HEADERS });
 
   } catch (err) {
-    return Response.json({ success: false, message: '新增內容失敗: ' + err.message }, { status: 500, headers: CORS_HEADERS });
+    console.error('[AdminContent POST] 新增內容失敗:', err);
+    return Response.json({ success: false, message: '新增內容失敗，請檢查資料或稍後再試。' }, { status: 500, headers: CORS_HEADERS });
   }
 }
 
@@ -406,7 +418,8 @@ export async function onRequestPatch(context) {
     return Response.json({ success: false, message: '無效的操作指令。' }, { status: 400, headers: CORS_HEADERS });
 
   } catch (err) {
-    return Response.json({ success: false, message: '更新內容失敗: ' + err.message }, { status: 500, headers: CORS_HEADERS });
+    console.error('[AdminContent PATCH] 更新內容失敗:', err);
+    return Response.json({ success: false, message: '更新內容失敗，請稍後再試。' }, { status: 500, headers: CORS_HEADERS });
   }
 }
 
@@ -457,6 +470,7 @@ export async function onRequestDelete(context) {
     return Response.json({ success: true, message: `已成功刪除項目「${existing.title_zh}」！` }, { headers: CORS_HEADERS });
 
   } catch (err) {
-    return Response.json({ success: false, message: '刪除失敗: ' + err.message }, { status: 500, headers: CORS_HEADERS });
+    console.error('[AdminContent DELETE] 刪除失敗:', err);
+    return Response.json({ success: false, message: '刪除失敗，請稍後再試。' }, { status: 500, headers: CORS_HEADERS });
   }
 }

@@ -287,13 +287,18 @@
     "attractionsTitle": "Curated Scenic Spots & Adventures",
     "diningTag": "LOCAL CUISINE",
     "diningTitle": "Local Gourmet & Hakka Specialties",
-    "parkingAvailable": "Parking Available"
+    "parkingAvailable": "Parking Available",
+    "emptyTitle": "No Guide Recommendations Currently",
+    "emptyDesc": "Shan Yu Villa is curating local hiking trails, fruit orchards, and culinary gems. Stay tuned."
   },
   "news": {
     "tag": "NEWS & OFFERS",
     "title": "Latest News & Seasonal Offers",
     "desc": "Stay informed about our exclusive seasonal packages, culinary events, and estate updates.",
-    "inquirePromotion": "Inquire Promotion"
+    "inquirePromotion": "Inquire Promotion",
+    "featuredBadge": "Featured",
+    "emptyTitle": "No Announcements Currently",
+    "emptyDesc": "Shan Yu Villa is preparing new seasonal retreat packages. Stay tuned or contact our butler via LINE."
   },
   "lookup": {
     "heroBadge": "Official Direct Booking Service",
