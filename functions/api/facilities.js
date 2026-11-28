@@ -249,15 +249,11 @@ export async function onRequestGet(context) {
       let gallery = [];
       let image = f.image || defaultMatch.image;
 
-      // 🎯 只要 media_assets 中有圖片管理記錄，100% 以 media_assets 為準！
+      // 🎯 只要 media_assets 中有該設施的圖片管理記錄，100% 以 media_assets 為準！
       // 若管家將公設照片下架，該圖片立即從 gallery 消失；若上傳新圖立即出現在 gallery
-      if (activeMedia.length > 0) {
+      if (matchedMedia.length > 0) {
         gallery = matchedMedia.map(m => m.cdn_url);
-        if (gallery.length > 0) {
-          image = gallery[0];
-        } else {
-          image = defaultMatch.image || '';
-        }
+        image = gallery[0];
       } else {
         if (f.galleryJson) {
           try { gallery = JSON.parse(f.galleryJson); } catch (e) {}
@@ -265,6 +261,7 @@ export async function onRequestGet(context) {
         if (!gallery || gallery.length === 0) {
           gallery = defaultMatch.gallery || [];
         }
+        image = f.image || (gallery.length > 0 ? gallery[0] : defaultMatch.image || '');
       }
 
       let featuresZh = defaultMatch.featuresZh || [];

@@ -109,7 +109,23 @@ async function ensureMediaAssetsTable(db) {
           ('fac-tea-01', 'facility', 'tea', '高山山景品茗賞景茶席 (主景)', 'Scenic Mountain Tea Ceremony Pavilion', '品茗茶席', 'Tea Pavilion', '/img/outdoor-bbq-tea/outdoor-bbq-tea-03.webp', 1, 1),
           ('fac-tea-02', 'facility', 'tea', '半戶外茶座遠眺層疊山嵐仙境', 'Covered Viewing Tea Lounge & Peaks', '品茗茶席', 'Tea Pavilion', '/img/outdoor-bbq-tea/outdoor-bbq-tea-04.webp', 2, 1),
           ('fac-tea-03', 'facility', 'tea', '天然原木大茶桌與功夫茶具', 'Natural Timber Tea Table & Kung Fu Set', '品茗茶席', 'Tea Pavilion', '/img/outdoor-bbq-tea/outdoor-bbq-tea-06.webp', 3, 1),
-          ('fac-tea-04', 'facility', 'tea', '翠綠林間微風伴隨品茗時刻', 'Breezy Mountain Forest Tea Sanctuary', '品茗茶席', 'Tea Pavilion', '/img/outdoor-bbq-tea/outdoor-bbq-tea-02.webp', 4, 1)
+          ('fac-tea-04', 'facility', 'tea', '翠綠林間微風伴隨品茗時刻', 'Breezy Mountain Forest Tea Sanctuary', '品茗茶席', 'Tea Pavilion', '/img/outdoor-bbq-tea/outdoor-bbq-tea-02.webp', 4, 1),
+          ('fac-deck-01', 'facility', 'viewing-deck', '觀景木棧露台與璀璨星夜 (主景)', 'Panoramic Viewing Deck & Starlight Terrace', '觀景露台', 'Viewing Deck', '/img/homebanner/homebanner-02.webp', 1, 1),
+          ('fac-deck-02', 'facility', 'viewing-deck', '露台漫步雲海・壯闊仙境視野', 'Strolling Cloud Sea & Expansive Vista', '漫步雲海', 'Cloud Sea Vista', '/img/cloud-sea/cloud-sea-01.webp', 2, 1),
+          ('fac-deck-03', 'facility', 'viewing-deck', '璀璨星空夜景・浪漫微光倒影', 'Starry Sky & Ambient Night Reflections', '璀璨星夜', 'Starry Night', '/img/scenery-night/scenery-night-02.webp', 3, 1),
+          ('fac-deck-04', 'facility', 'viewing-deck', '山林夜幕低垂・清幽觀星時刻', 'Mountain Twilight & Stargazing Hours', '清幽觀星', 'Stargazing', '/img/scenery-night/scenery-night-01.webp', 4, 1)
+      `).run();
+    }
+
+    // 確保第 6 大公設 viewing-deck 照片存在
+    const deckCount = await db.prepare("SELECT COUNT(*) as cnt FROM media_assets WHERE sub_category = 'viewing-deck'").first();
+    if (!deckCount || deckCount.cnt === 0) {
+      await db.prepare(`
+        INSERT OR IGNORE INTO media_assets (id, category, sub_category, title_zh, title_en, tag_zh, tag_en, cdn_url, sort_order, is_active) VALUES
+          ('fac-deck-01', 'facility', 'viewing-deck', '觀景木棧露台與璀璨星夜 (主景)', 'Panoramic Viewing Deck & Starlight Terrace', '觀景露台', 'Viewing Deck', '/img/homebanner/homebanner-02.webp', 1, 1),
+          ('fac-deck-02', 'facility', 'viewing-deck', '露台漫步雲海・壯闊仙境視野', 'Strolling Cloud Sea & Expansive Vista', '漫步雲海', 'Cloud Sea Vista', '/img/cloud-sea/cloud-sea-01.webp', 2, 1),
+          ('fac-deck-03', 'facility', 'viewing-deck', '璀璨星空夜景・浪漫微光倒影', 'Starry Sky & Ambient Night Reflections', '璀璨星夜', 'Starry Night', '/img/scenery-night/scenery-night-02.webp', 3, 1),
+          ('fac-deck-04', 'facility', 'viewing-deck', '山林夜幕低垂・清幽觀星時刻', 'Mountain Twilight & Stargazing Hours', '清幽觀星', 'Stargazing', '/img/scenery-night/scenery-night-01.webp', 4, 1)
       `).run();
     }
 
