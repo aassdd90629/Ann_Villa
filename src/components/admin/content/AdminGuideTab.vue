@@ -188,7 +188,7 @@ const getCategoryName = (typeId) => {
           :class="{ inactive: !item.isActive }"
         >
           <div class="item-img-col">
-            <img :src="item.image || 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80'" :alt="item.nameZh" />
+            <img :src="item.image || '/img/scenery-night/scenery-night-02.webp'" :alt="item.nameZh" />
             <span class="type-badge">{{ getCategoryName(item.type) }}</span>
           </div>
 

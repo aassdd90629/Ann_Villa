@@ -34,7 +34,7 @@ const DEFAULT_GUIDE = {
       parking: true,
       noticeZh: '一桌型菜需事先預訂；訂兩桌以上需先預付 2,000 元訂金',
       noticeEn: 'Pre-booking required; NT$ 2,000 deposit for 2+ tables',
-      image: 'https://images.unsplash.com/photo-1541544741938-0af808871cc0?auto=format&fit=crop&w=1000&q=80'
+      image: '/img/kitchen-bar/kitchen-bar-02.webp'
     },
     {
       id: 'yun-ye-ju',
@@ -49,7 +49,7 @@ const DEFAULT_GUIDE = {
       parking: true,
       noticeZh: '主打精緻定食，最好事先電話預約',
       noticeEn: 'Specializes in set meals; advance phone booking advised',
-      image: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1000&q=80'
+      image: '/img/outdoor-bbq-tea/outdoor-bbq-tea-01.webp'
     },
     {
       id: 'zhuolan-goose-dan',
@@ -64,7 +64,7 @@ const DEFAULT_GUIDE = {
       parking: true,
       noticeZh: '假日排隊人潮眾多，建議提早前往或先電話洽詢',
       noticeEn: 'Peak weekend queues; early arrival recommended',
-      image: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=1000&q=80'
+      image: '/img/kitchen-bar/kitchen-bar-04.webp'
     },
     {
       id: 'chuan-ji-breeze',
@@ -79,7 +79,7 @@ const DEFAULT_GUIDE = {
       parking: true,
       noticeZh: '每週二公休，每日新鮮限量供應賣完為止',
       noticeEn: 'Closed Tuesdays; daily batches sold until sold out',
-      image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=1000&q=80'
+      image: '/img/kitchen-bar/kitchen-bar-05.webp'
     },
     {
       id: 'vilavilla-dining',
@@ -94,7 +94,7 @@ const DEFAULT_GUIDE = {
       parking: true,
       noticeZh: '入園需購買門票（可折抵餐飲消費）',
       noticeEn: 'Admission ticket required; partially redeemable for dining',
-      image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1000&q=80'
+      image: '/img/outdoor-bbq-tea/outdoor-bbq-tea-04.webp'
     }
   ],
   attractions: [
@@ -111,7 +111,7 @@ const DEFAULT_GUIDE = {
       parking: true,
       noticeZh: '雨季及颱風過後溪水湍急請勿靠近水邊，注意防曬與步道行走安全',
       noticeEn: 'Exercise caution along riverbanks; wear sunscreen and sturdy walking shoes',
-      image: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1000&q=80'
+      image: '/img/scenery-night/scenery-night-02.webp'
     },
     {
       id: 'jiangmayuan-trail',
@@ -126,7 +126,7 @@ const DEFAULT_GUIDE = {
       parking: true,
       noticeZh: '清晨與傍晚為觀賞雲海最佳黃金時段，山區氣溫偏低請備薄外套',
       noticeEn: 'Dawn and dusk are optimal for cloud seas; bring a light warm jacket',
-      image: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1000&q=80'
+      image: '/img/cloud-sea/cloud-sea-02.webp'
     },
     {
       id: 'liyutan-reservoir',
@@ -141,7 +141,7 @@ const DEFAULT_GUIDE = {
       parking: true,
       noticeZh: '免門票入園，設有大型免費停車場與洗手間',
       noticeEn: 'Free admission; spacious parking lot and restrooms available',
-      image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1000&q=80'
+      image: '/img/shengxing-station.webp'
     },
     {
       id: 'dahu-strawberry-orchards',
@@ -156,7 +156,7 @@ const DEFAULT_GUIDE = {
       parking: true,
       noticeZh: '各果園收費標準採秤斤計費，建議下田前先詢問當日價格',
       noticeEn: 'Priced by weight; ask individual orchards for current daily rates',
-      image: 'https://images.unsplash.com/photo-1518635017498-87f514b751ba?auto=format&fit=crop&w=1000&q=80'
+      image: '/img/outdoor-bbq-tea/outdoor-bbq-tea-03.webp'
     },
     {
       id: 'flower-home',
@@ -171,7 +171,7 @@ const DEFAULT_GUIDE = {
       parking: true,
       noticeZh: '入園門票可部分折抵園內各項消費與下午茶',
       noticeEn: 'Admission tickets redeemable against farm retail and tea café',
-      image: 'https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=1000&q=80'
+      image: '/img/homebanner/homebanner-07.webp'
     }
   ]
 };

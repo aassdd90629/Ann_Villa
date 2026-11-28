@@ -32,7 +32,7 @@ const isLoading = ref(false)
 const errorMessage = ref('')
 const imagePreviewError = ref(false)
 
-const defaultSpotImg = 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1000&q=80'
+const defaultSpotImg = '/img/scenery-night/scenery-night-02.webp'
 
 watch(() => props.show, (newVal) => {
   if (newVal) {

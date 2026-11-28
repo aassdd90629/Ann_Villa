@@ -9,7 +9,7 @@ const { t, tField } = useI18n()
 const { newsList, fetchContent, isLoading } = useSiteContent()
 fetchContent()
 
-const fallbackImg = 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1000&q=80'
+const fallbackImg = '/img/homebanner/homebanner-01.webp'
 
 const handleImageError = (e) => {
   if (e.target.src !== fallbackImg) {

@@ -25,7 +25,7 @@ const isActive = ref(true)
 const isLoading = ref(false)
 const errorMessage = ref('')
 const imagePreviewError = ref(false)
-const defaultPlaceholderImg = 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1000&q=80'
+const defaultPlaceholderImg = '/img/homebanner/homebanner-01.webp'
 
 watch(() => props.show, (newVal) => {
   if (newVal) {
@@ -50,7 +50,7 @@ watch(() => props.show, (newVal) => {
       date.value = new Date().toISOString().split('T')[0]
       summaryZh.value = ''
       summaryEn.value = ''
-      image.value = 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1000&q=80'
+      image.value = '/img/homebanner/homebanner-01.webp'
       featured.value = false
       sortOrder.value = 1
       isActive.value = true

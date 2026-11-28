@@ -167,7 +167,7 @@ const DEFAULT_NEWS = [
     summaryZh: '即日起預訂 2026 年 5 月至 9 月包棟住宿，即贈送苗栗在地精選迎賓茶點組及產地冷泡茶禮盒。',
     summaryEn: 'Book your exclusive summer retreat now and receive a complimentary artisan welcome tea set and handcrafted local gift box.',
     featured: true,
-    image: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1000&q=80',
+    image: '/img/homebanner/homebanner-01.webp',
     sortOrder: 1
   },
   {
@@ -180,7 +180,7 @@ const DEFAULT_NEWS = [
     summaryZh: '山語攜手在地頂級名廚，為包棟貴賓提供量身打造之高山山海無菜單料理晚宴。',
     summaryEn: 'Partnering with top regional chefs to deliver a bespoke dining journey showcasing premium local delicacies.',
     featured: false,
-    image: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=1000&q=80',
+    image: '/img/kitchen-bar/kitchen-bar-01.webp',
     sortOrder: 2
   },
   {
@@ -193,7 +193,7 @@ const DEFAULT_NEWS = [
     summaryZh: '全館採用高規格環保沐浴備品，響應不主動提供一次性備品，共同守護卓蘭翠綠山林生態。',
     summaryEn: 'Embracing organic botanical amenities and zero-plastic policies to protect regional biodiversity.',
     featured: false,
-    image: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=1000&q=80',
+    image: '/img/cloud-sea/cloud-sea-01.webp',
     sortOrder: 3
   }
 ];

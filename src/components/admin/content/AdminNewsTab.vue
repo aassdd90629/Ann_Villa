@@ -50,7 +50,7 @@ const { isViewer } = useAdminAuth()
         :class="{ inactive: !item.isActive, featured: item.featured }"
       >
         <div class="news-img-col">
-          <img :src="item.image || 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=400&q=80'" :alt="item.titleZh" />
+          <img :src="item.image || '/img/homebanner/homebanner-01.webp'" :alt="item.titleZh" />
           <span v-if="item.featured" class="featured-badge">
             <Star :size="11" />
             <span>精選置頂</span>

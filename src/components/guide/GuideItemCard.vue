@@ -8,7 +8,7 @@ const props = defineProps({
 
 const { tField } = useI18n()
 
-const fallbackImg = 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1000&q=80'
+const fallbackImg = '/img/scenery-night/scenery-night-02.webp'
 
 const handleImageError = (e) => {
   if (e.target.src !== fallbackImg) {
